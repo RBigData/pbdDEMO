@@ -1,0 +1,15 @@
+citHeader("To cite pbdDEMO in a publication use:")
+
+citEntry(
+  entry = "Manual",
+  title = "pbd Demonstrations",
+  author = personList(as.person("Drew Schmidt"),
+                      as.person("Wei-Chen Chen"),
+                      as.person("George Ostrouchov"),
+                      as.person("Pragneshkumar Patel")),
+  year = "2012",
+  url = "http://r-pbd.org/",
+  textVersion = "Schmidt, D., Chen, W.-C., Ostrouchov, G., and Patel, P. (2012)
+                 Distributed Matrix Algebra Computation."
+)
+

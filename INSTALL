@@ -1,0 +1,30 @@
+### This file is a quick installation for Solaris, Linux, and Mac OS X.
+### See `INSTALL.win.src' for a source installation for Windows system.
+### See `INSTALL.win.bin' for a binary installation for Windows system.
+
+--- 'pbdMPI' Installation:
+   See 'pbdMPI/INSTALL' for the details.
+
+
+--- 'pbdSLAP' Installation:
+   See 'pbdSLAP/INSTALL' for the details.
+
+
+--- 'pbdDMAC' Installation:
+0. Download and extract 'pbdDMAC'
+
+     > tar zxvf pbdDMAC_0.1-0.tar.gz
+
+1. Default Installation:
+   This should work with most platforms with 'OpenMPI' installed. The
+   configuration is based on Rmpi but detect the flags and libraries from
+   'mpicc --showme:*' which is more portable.
+
+     > R CMD INSTALL pbdDMAC
+
+
+--- Testing:
+   Suppose 'pbdMPI', 'pbdSLAP', and 'pbdDMAC' are all installed correctly.
+   I can run
+
+     > mpiexec -np 2 Rscript -e "demo(simple,'pbdDMAC',ask=F,echo=F)"

@@ -1,0 +1,6 @@
+
+======================= Log Before Release =====================================
+2012-09-11:
+  * Package created
+  * DMAC - Added sql reader
+  * DMAC - Added huge random matrix generation
