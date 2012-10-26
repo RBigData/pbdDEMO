@@ -1,5 +1,8 @@
 
 ======================= Log Before Release =====================================
+2012-10-26:
+  * Add pbdMPI examples.
+
 2012-09-11:
   * Package created
   * DMAC - Added sql reader

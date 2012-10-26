@@ -5,20 +5,24 @@
 --- 'pbdMPI' Installation:
    See 'pbdMPI/INSTALL.win.bin' for the details.
 
-
 --- 'pbdSLAP' Installation:
    See 'pbdSLAP/INSTALL.win.bin' for the details.
 
+--- 'pbdBASE' Installation:
+   See 'pbdBASE/INSTALL.win.bin' for the details.
 
---- 'pbdDMAC' Installation:
+--- 'pbdDMAT' Installation:
+   See 'pbdDMAT/INSTALL.win.bin' for the details.
+
+--- 'pbdDEMO' Installation:
    Default Installation:
+   ("set_mpi.bat" is available in "pbdMPI/INSTALL.win.bin")
 
      C:/> set_mpi
-     C:/> R CMD INSTALL pbdDMAC_0.1-0.zip
-
+     C:/> R CMD INSTALL pbdDEMO_0.1-0.zip
 
 --- Testing:
    Suppose all environments are set correctly, I can run test examples by
 
      C:/> set_mpi
-     C:/> mpiexec -np 2 Rscript.exe -e "demo(simple,'pbdDMAC',ask=F,echo=F)"
+     C:/> mpiexec -np 2 Rscript.exe -e "demo(ex_1,'pbdDEMO',ask=F,echo=F)"

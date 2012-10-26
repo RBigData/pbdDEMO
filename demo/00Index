@@ -1,0 +1,6 @@
+mpi_1		pbdDEMO		Simple statistics.
+mpi_2		pbdDEMO		Simple binning.
+mpi_3		pbdDEMO		Simple quantile.
+mpi_4		pbdDEMO		Simple ordinary least square estimate.
+mpi_5		pbdDEMO		Simple global quick sort.
+testing		pbdDEMO		pbdDMAT.

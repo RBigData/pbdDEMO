@@ -12,7 +12,7 @@ filter <- function(dx, ..., ICTXT, bldim)
 {
   # setup
   oldctxt <- dx@CTXT
-  if (missing(bldim)
+  if (missing(bldim))
     oldbldim <- dx@bldim
   else 
     oldbldim <- bldim

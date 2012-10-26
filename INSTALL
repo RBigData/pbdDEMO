@@ -5,26 +5,30 @@
 --- 'pbdMPI' Installation:
    See 'pbdMPI/INSTALL' for the details.
 
-
 --- 'pbdSLAP' Installation:
    See 'pbdSLAP/INSTALL' for the details.
 
+--- 'pbdBASE' Installation:
+   See 'pbdBASE/INSTALL' for the details.
 
---- 'pbdDMAC' Installation:
-0. Download and extract 'pbdDMAC'
+--- 'pbdDMAT' Installation:
+   See 'pbdDMAT/INSTALL' for the details.
 
-     > tar zxvf pbdDMAC_0.1-0.tar.gz
+--- 'pbdDEMO' Installation:
+0. Download and extract 'pbdDEMO'
+
+     > tar zxvf pbdDEMO_0.1-0.tar.gz
 
 1. Default Installation:
    This should work with most platforms with 'OpenMPI' installed. The
    configuration is based on Rmpi but detect the flags and libraries from
    'mpicc --showme:*' which is more portable.
 
-     > R CMD INSTALL pbdDMAC
+     > R CMD INSTALL pbdDEMO
 
 
 --- Testing:
-   Suppose 'pbdMPI', 'pbdSLAP', and 'pbdDMAC' are all installed correctly.
-   I can run
+   Suppose 'pbdMPI', 'pbdSLAP', 'pbdBASE' and 'pbdDMAC' are all installed
+   correctly.  I can run
 
-     > mpiexec -np 2 Rscript -e "demo(simple,'pbdDMAC',ask=F,echo=F)"
+     > mpiexec -np 2 Rscript -e "demo(ex_1,'pbdDEMO',ask=F,echo=F)"
