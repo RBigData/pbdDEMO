@@ -4,7 +4,7 @@
 library(pbdDEMO, quiet = TRUE)
 init()
 
-### Generate fake data.
+### Generate balanced fake data.
 comm.set.seed(1234, diff = TRUE)
 N <- 100                  # Pretend N is large.
 p <- 2

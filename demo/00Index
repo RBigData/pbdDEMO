@@ -1,6 +1,6 @@
-mpi_1		pbdDEMO		Simple statistics.
-mpi_2		pbdDEMO		Simple binning.
-mpi_3		pbdDEMO		Simple quantile.
-mpi_4		pbdDEMO		Simple ordinary least square estimate.
-mpi_5		pbdDEMO		Simple global quick sort.
+mpi_stat	pbdDEMO		Simple statistics.
+mpi_bin		pbdDEMO		Simple binning.
+mpi_quantil	pbdDEMO		Simple quantile.
+mpi_ols		pbdDEMO		Simple ordinary least square estimate.
+spmd2dmat	pbdDEMO		Simple convertion from SPMD to DMAT.
 testing		pbdDEMO		pbdDMAT.

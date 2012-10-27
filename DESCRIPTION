@@ -1,20 +1,22 @@
 Package: pbdDEMO
-Title: Demonstrations and Examples for the pbd Project
+Title: Programming with Big Data -- Demonstrations of pbd Packages
 Version: 0.1-0
 Date: 2012-10-25
 Depends: R (>= 2.13.0), methods, rlecuyer, pbdMPI, pbdSLAP, Rcpp (>=
-        0.9.10), pbdBASE, pbdDMAT, sqldf
+        0.9.10), pbdBASE, pbdDMAT
+LazyLoad: yes
+LazyData: yes
 Authors@R: c(person("Drew", "Schmidt", role = c("aut", "cre"), email =
         "schmidt@math.utk.edu"), person("Wei-Chen", "Chen", role =
         "aut"), person("George", "Ostrouchov", role = "aut"),
         person("Pragneshkumar", "Patel", role = "aut"))
-Description: pbdDEMO is examples of implementation by utilizing higher level
-        functionality of all other pbd packages.
+Description: pbdDEMO is a package for pbd implementations by utilizing higher
+        level functionalities of all other pbd packages.
 SystemRequirements: OpenMPI (>= 1.5.4) on Linux and Mac, MPICH2 (>=
         1.4.1p1) on Windows
 License: GPL (>= 2)
 URL: http://r-pbd.org/
-Packaged: 2012-10-26 04:40:12 UTC; snoweye
+Packaged: 2012-10-27 03:23:52 UTC; snoweye
 Author: Drew Schmidt [aut, cre],
   Wei-Chen Chen [aut],
   George Ostrouchov [aut],

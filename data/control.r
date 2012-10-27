@@ -1,2 +1,7 @@
-# Default blocking size
-.BLDIM <- c(64, 64)
+# DEMO control.
+
+.DEMO.CT <- list(
+  ictxt = 0, 
+  bldim = c(2, 2)
+) # End of .DEMO.CT
+

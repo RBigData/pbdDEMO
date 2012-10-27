@@ -1,4 +1,9 @@
 
 import(methods, rlecuyer, pbdMPI, pbdSLAP, Rcpp, pbdBASE, pbdDMAT)
 
-exportPattern("^demo\\.[[:alpha:]]+")
+exportPattern("^mpi\\.[[:alpha:]]+")
+export(
+  balance.info,
+  load.balance,
+  spmd2dmat
+)
