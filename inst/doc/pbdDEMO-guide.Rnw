@@ -87,10 +87,8 @@ Oak Ridge, TN, USA \\
 \setcounter{page}{1}
 
 \input{./pbdDEMO-include/01-introduction}
-\input{./pbdDEMO-include/02-performance}
-\input{./pbdDEMO-include/03-faq}
-\input{./pbdDEMO-include/04-windows}
-\input{./pbdDEMO-include/05-analog}
+\input{./pbdDEMO-include/02-statistics}
+\input{./pbdDEMO-include/03-reader}
 
 \newpage
 \phantomsection

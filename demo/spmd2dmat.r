@@ -8,6 +8,7 @@ init.grid()
 comm.set.seed(1234, diff = TRUE)
 N <- 10 + 2 * comm.rank()
 p <- 4
+### X.spmd can be readed from .csv files distributedly.
 X.spmd <- matrix(rnorm(N * p), ncol = p)
 
 ### Run.
