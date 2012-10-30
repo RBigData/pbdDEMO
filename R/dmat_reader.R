@@ -6,23 +6,17 @@
   # a distributed dataframe.
 read.ddmatrix.sql <- function(dbname, table, bldim=.BLDIM, num.rdrs=1, ICTXT=0)
 {
-  newgrid <- FALSE # flag for 'did we create a new grid' in ICTXT 3
-  
-  ### WCC: we should not do require/library inside a package.
-  # require(sqldf, quietly=TRUE)
-  
-  # Determine blacs grid information
   nprocs <- comm.size()
   
-  
+  newgrid <- FALSE # flag for 'did we create a new grid' in ICTXT 3
   if (num.rdrs > nprocs){
-    warning("Numer of readers supplied is less than number requested; defaulting to", nprocs, "readers")
+    warning("Number of readers supplied is less than number requested; defaulting to", nprocs, "readers")
     num.rdrs <- nprocs
-  } 
-  else if (num.rdrs == nprocs){
-    MYCTXT <- 2
   }
-  else {
+  
+  if (num.rdrs == nprocs){
+    MYCTXT <- 2
+  } else {
     assign(x=".__blacs_gridinfo_3", 
        value=.Fortran("mpi_blacs_initialize", 
               NPROW=as.integer(num.rdrs), NPCOL=as.integer(1), 
@@ -81,6 +75,108 @@ read.ddmatrix.sql <- function(dbname, table, bldim=.BLDIM, num.rdrs=1, ICTXT=0)
   
   if (newgrid)
     gridexit(3)
+  
+  return(out)
+}
+
+
+
+# 4 readers
+# bldim = (1/4, ncol)
+# scan(n= first 1/4, skip = 0)
+# scan(n= 2nd 1/4, skip = 1/4)
+# ...
+
+
+# same as above but for csv
+read.ddmatrix.csv <- function(file, sep=",", nrows, ncols, bldim=4, num.rdrs=1, ICTXT=0)
+{
+  if (length(bldim)==1)
+    bldim <- rep(bldim, 2)
+  
+  msng <- FALSE
+  if (missing(ncols)){
+    msng <- TRUE
+    if (comm.rank()==0)
+      ncols <- length(scan(file=file, sep=sep, nlines=1L, quiet=T))
+    else 
+      ncols <- 0L
+  }
+  ncols <- pbdMPI::allreduce(ncols, op='sum')
+  
+  if (missing(nrows)){
+    msng <- TRUE
+#     size <- as.numeric(unlist(strsplit(x=system(paste("du -b", file), intern=T), split="\t"))[1])
+    if (comm.rank()==0){
+#      nrows <- as.numeric(unlist(strsplit(x=system(paste("wc -l", file), intern=T), split=" "))[1])
+      seps <- ncols * (length(unlist(strsplit(sep, split="")))) - 1
+      x <- length(unlist(strsplit(scan(file=file, sep=sep, nlines=1L, quiet=T, what='character'), split="")))
+      nrows <- ceiling( file.info(file)[1] / (x+seps) )#(ncols + seps) ) # adjust for sep character
+    } else {
+      nrows <- 0L
+    }
+  }
+  nrows <- pbdMPI::allreduce(nrows, op='sum')
+  comm.print(nrows)
+  dim <- c(nrows, ncols)
+  
+  nprocs <- comm.size()
+  
+  newgrid <- FALSE # flag for 'did we create a new grid' in ICTXT 3
+  if (num.rdrs > nprocs){
+    warning("Number of readers supplied is less than number requested; defaulting to", nprocs, "readers")
+    num.rdrs <- nprocs
+  }
+  
+  if (num.rdrs == nprocs){
+    MYCTXT <- 2
+  } else {
+    assign(x=".__blacs_gridinfo_3", 
+       value=.Fortran("mpi_blacs_initialize", 
+              NPROW=as.integer(num.rdrs), NPCOL=as.integer(1), 
+              ICTXT=as.integer(3), MYROW=as.integer(0), 
+              MYCOL=as.integer(0) ),
+       envir=.GlobalEnv )
+    MYCTXT <- 3
+    newgrid <- TRUE
+  }
+  
+  blacs_ <- base.blacs(MYCTXT)
+  
+  # each process grabs its data
+  nlines <- ceiling(dim[1] / num.rdrs)
+  tmpbl <- c(nlines, ncols)
+  if (blacs_$MYROW != -1){
+    skip <- comm.rank() * nlines
+    x <- scan(file=file, skip=skip, sep=sep, nlines=nlines, quiet=T)
+  } else {
+    x <- NULL
+  }
+  
+  ldim <- length(x) / ncols
+  
+  dim[1] <- pbdMPI::allreduce(ldim, op='sum')
+  
+  if (ldim==0){
+    ldim <- c(1,1)
+    Data <- matrix(0)
+  }
+  else {
+    ldim <- c(ldim, ncols)
+    Data <- matrix(x, nrow=ldim[1], ncol=ldim[2], byrow=T)
+  }
+  
+  out <- new("ddmatrix", Data=Data, dim=dim, ldim=ldim,
+              bldim=tmpbl, CTXT=MYCTXT)
+  
+  if (ICTXT != MYCTXT)
+    out <- base.redistribute(dx=out, bldim=bldim, ICTXT=ICTXT)
+  
+  if (newgrid)
+    gridexit(3)
+  
+  if (msng)
+    warning(paste("Failing to supply nrows= and ncols= will dramatically impact performance.\nFor future reference, this file is ", dim[1], "x", dim[2], sep=""))
   
   return(out)
 }
