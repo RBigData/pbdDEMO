@@ -1,4 +1,13 @@
 Package: pbdDEMO
+<<<<<<< HEAD
+Title: Demonstrations and Examples for the pbdR set of packages
+Version: 0.1-0
+Date: 2012-08-31
+Depends: R (>= 2.15.1), pbdMPI, pbdSLAP, pbdBASE, pbdDMAT
+Author: Drew Schmidt, Wei-Chen Chen, George Ostrouchov, and Pragneshkumar Patel
+Maintainer: Drew Schmidt <schmidt@math.utk.edu>
+Description: pbdDEMO is a package for 
+=======
 Title: Programming with Big Data -- Demonstrations of pbd Packages
 Version: 0.1-0
 Date: 2012-10-30
@@ -12,6 +21,7 @@ Authors@R: c(person("Drew", "Schmidt", role = c("aut", "cre"), email =
         person("Pragneshkumar", "Patel", role = "aut"))
 Description: pbdDEMO is a package for pbd implementations by utilizing higher
         level functionalities of all other pbd packages.
+>>>>>>> snoweye/master
 SystemRequirements: OpenMPI (>= 1.5.4) on Linux and Mac, MPICH2 (>=
         1.4.1p1) on Windows
 License: GPL (>= 2)

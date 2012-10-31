@@ -1,17 +1,17 @@
-pbdDMAC is a package for distributed matrix algebra computations over MPI
-to BLACS, PBLAS, and ScaLAPACK via pbdMPI and pbdSLAP.
+pbdDEMO is a package for pbd implementations by utilizing higher
+level functionalities of all other pbd packages.
 
-pbdDMAC requires
-  - R version 2.14.0 or higher with pbdMPI and pbdSLAP.
+pbdDEMO requires
+  - R version 2.14.0 or higher with pbdMPI, pbdSLAP, pbdBASE, and pbdDMAT.
   - SUN HPC 8.2.1 (OpenMPI) for Solaris.
   - OpenMPI for Linux.
   - OpenMPI for Mac OS X.
   - MPICH2 for Windows.
 
-For installing pbdDMAC, 
+For installing pbdDEMO, 
   - see "INSTALL" for Solaris, Linux and Mac OS, and
   - see "INSTALL.win.*" for Windows.
 
-More information about pbdDMAC can be found in
-  1. pbdDMAC vignette at 'pbdDMAC/inst/doc/pbdDMAC-guide.pdf'
-  2. 'http://r-pbd.org/
+More information about pbdDEMO can be found in
+  1. pbdDEMO vignette at 'pbdDEMO/inst/doc/pbdDEMO-guide.pdf'
+  2. 'http://r-pbd.org/'.

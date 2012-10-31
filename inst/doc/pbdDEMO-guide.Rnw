@@ -1,0 +1,99 @@
+%\VignetteIndexEntry{pbdDEMO-guide}
+
+\documentclass[article,shortnames,nojss]{pbdDEMO-include/jss}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% declarations for jss.cls %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% almost as usual
+\author{
+\begin{minipage}{6in}
+\centering
+Drew Schmidt$^1$, Wei-Chen Chen$^2$, George Ostrouchov$^{1,2}$, \\
+Pragneshkumar Patel$^1$
+\end{minipage}
+\\
+\\
+$^1$Remote Data Analysis and Visualization Center,\\
+University of Tennessee, \\
+Knoxville, TN, USA \\
+$^2$Computer Science and Mathematics Division, \\
+Oak Ridge National Laboratory, \\
+Oak Ridge, TN, USA \\
+%\\
+%\\
+%\today
+}
+\title{A Quick Guide for the \pkg{pbdDEMO} Package}
+%\\
+%\vspace{0.2cm} \large (Based on Version 0.1-2)}
+
+%% for pretty printing and a nice hypersummary also set:
+\Plainauthor{Drew Schmidt, Wei-Chen Chen, George Ostrouchov, Pragneshkumar Patel} %% comma-separated
+\Plaintitle{Quick Guide for pbdDEMO} %% without formatting
+\Shorttitle{Quick Guide for pbdDEMO} %% a short title (if necessary)
+
+%% an abstract and keywords
+%\Abstract{
+%}
+%\Keywords{}
+%\Plainkeywords{} %% without formatting
+%% at least one keyword must be supplied
+
+%% publication information
+%% NOTE: Typically, this can be left commented and will be filled out by the technical editor
+%% \Volume{13}
+%% \Issue{9}
+%% \Month{September}
+%% \Year{2004}
+%% \Submitdate{2004-09-29}
+%% \Acceptdate{2004-09-29}
+
+%% The address of (at least) one author should be given
+%% in the following format:
+\Address{
+  Drew Schmidt\\
+  E-mail: \email{schmidt@math.utk.edu}\\
+  URL: \url{http://r-pbd.org/}
+}
+%% It is also possible to add a telephone and fax number
+%% before the e-mail in the following format:
+%% Telephone: +43/1/31336-5053
+%% Fax: +43/1/31336-734
+
+%% for those who use Sweave please include the following line (with % symbols):
+%% need no \usepackage{Sweave.sty}
+
+%% end of declarations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\input{./pbdDEMO-include/00-preamble}
+
+\begin{document}
+
+\pagenumbering{roman}
+\tableofcontents
+
+%% include your article here, just as usual
+%% Note that you should use the \pkg{}, \proglang{} and \code{} commands.
+
+\newpage
+\input{./pbdDEMO-include/01-acknowledgement}
+
+\newpage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\input{./pbdDEMO-include/01-introduction}
+\input{./pbdDEMO-include/02-statistics}
+\input{./pbdDEMO-include/03-reader}
+
+\newpage
+\phantomsection
+\addcontentsline{toc}{section}{References}
+\bibliography{./pbdDEMO-include/pbdDEMO}
+
+\end{document}
+

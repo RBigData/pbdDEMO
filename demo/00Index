@@ -1,0 +1,6 @@
+sample_stat	pbdDEMO		Simple statistics.
+binning		pbdDEMO		Simple binning.
+quantil		pbdDEMO		Simple quantile.
+ols		pbdDEMO		Simple ordinary least square estimate.
+spmd2dmat	pbdDEMO		Simple convertion from SPMD to DMAT.
+testing		pbdDEMO		pbdDMAT.

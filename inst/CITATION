@@ -1,15 +1,29 @@
 citHeader("To cite pbdDEMO in a publication use:")
 
 citEntry(
-  entry = "Manual",
-  title = "pbd Demonstrations",
+  entry = "Misc",
+  title = "pbdDEMO: Programming with Big Data --
+           Demonstrations of pbd Packages",
   author = personList(as.person("Drew Schmidt"),
                       as.person("Wei-Chen Chen"),
                       as.person("George Ostrouchov"),
                       as.person("Pragneshkumar Patel")),
   year = "2012",
-  url = "http://r-pbd.org/",
-  textVersion = "Schmidt, D., Chen, W.-C., Ostrouchov, G., and Patel, P. (2012)
-                 Distributed Matrix Algebra Computation."
+  note = "R Package, URL http://cran.r-project.org/package=pbdDEMO",
+  textVersion = "Schmidt, D., Chen, W.-C., Ostrouchov, G., and Patel, P. (2012) pbdDEMO: Programming with Big Data -- Demonstrations of pbd Packages, URL http://cran.r-project.org/package=pbdDEMO",
+  key = "Schmidt2012pbdDEMOpackage"
+)
+
+citEntry(
+  entry = "Manual",
+  title = "A Quick Guide for the pbdDEMO Package",
+  author = personList(as.person("Drew Schmidt"),
+                      as.person("Wei-Chen Chen"),
+                      as.person("George Ostrouchov"),
+                      as.person("Pragneshkumar Patel")),
+  year = "2012",
+  note = "R Vignette, URL http://cran.r-project.org/package=pbdDEMO",
+  textVersion = "Schmidt, D., Chen, W.-C., Ostrouchov, G., and Patel, P. (2012) A Quick Guide for the pbdDEMO Package. R Vignette, URL http://cran.r-project.org/package=pbdDEMO",
+  key = "Schmidt2012pbdDEMOvignette"
 )
 
