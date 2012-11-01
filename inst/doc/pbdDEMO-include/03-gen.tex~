@@ -1,10 +1,10 @@
+\section{Generating Random Data}
+\label{sec:reader}
+\addcontentsline{toc}{section}{\thesection. Generating Random Data}
 
-\section[Reader Examples]{Reader Examples}
-\label{sec:reader_examples}
-\addcontentsline{toc}{section}{\thesection. Reader Examples}
 
 
-\subsection[SPMD to DMAT]{SPMD to DMAT}
+\subsection{SPMD to DMAT}
 \label{sec:spmd2dmat}
 \addcontentsline{toc}{subsection}{\thesubsection. SPMD to DMAT}
 
@@ -18,8 +18,4 @@ mpiexec -np 2 Rscript -e "demo(spmd2dmat,'pbdDEMO',ask=F,echo=F)"
 
 
 
-
-\subsection[csv File]{csv File}
-\label{sec:csv_files}
-\addcontentsline{toc}{subsection}{\thesubsection. csv File}
 

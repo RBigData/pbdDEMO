@@ -44,4 +44,4 @@ R CMD INSTALL pbdDEMO
 \label{sec:introduction}
 \addcontentsline{toc}{section}{\thesection. Timing}
 
-Throughout \dots
+Throughout ....

@@ -4,7 +4,7 @@
   # like it should look in the matrix.  Also assumes all 
   # columns are numeric since this is a distributed MATRIX, not
   # a distributed dataframe.
-read.ddmatrix.sql <- function(dbname, table, bldim=.BLDIM, num.rdrs=1, ICTXT=0)
+read.sql.ddmatrix <- function(dbname, table, bldim=.BLDIM, num.rdrs=1, ICTXT=0)
 {
   nprocs <- comm.size()
   
@@ -23,7 +23,7 @@ read.ddmatrix.sql <- function(dbname, table, bldim=.BLDIM, num.rdrs=1, ICTXT=0)
               ICTXT=as.integer(3), MYROW=as.integer(0), 
               MYCOL=as.integer(0) ),
        envir=.GlobalEnv )
-    MYCTXT <- 3
+    MYCTXT <- base.minctxt()
     newgrid <- TRUE
   }
   
@@ -69,7 +69,7 @@ read.ddmatrix.sql <- function(dbname, table, bldim=.BLDIM, num.rdrs=1, ICTXT=0)
   }
 
   out <- new("ddmatrix", Data=Data, dim=dim, ldim=dim(Data),
-              bldim=c(bldim[1], dim[2]), CTXT=MYCTXT)
+              bldim=c(bldim[1], dim[2]), CTXT=blacs_$ICTXT)
   if (ICTXT != MYCTXT)
     out <- reblock(out, bldim=bldim, ICTXT=ICTXT)
   
@@ -89,12 +89,12 @@ read.ddmatrix.sql <- function(dbname, table, bldim=.BLDIM, num.rdrs=1, ICTXT=0)
 
 
 # same as above but for csv
-read.ddmatrix.csv <- function(file, sep=",", nrows, ncols, bldim=4, num.rdrs=1, ICTXT=0)
+read.csv.ddmatrix <- function(file, sep=",", nrows, ncols, bldim=4, num.rdrs=1, ICTXT=0)
 {
   if (length(bldim)==1)
     bldim <- rep(bldim, 2)
   
-  msng <- FALSE
+  msng <- FALSE # for printing a warning if nrows or ncols is missing
   if (missing(ncols)){
     msng <- TRUE
     if (comm.rank()==0)
@@ -104,11 +104,11 @@ read.ddmatrix.csv <- function(file, sep=",", nrows, ncols, bldim=4, num.rdrs=1, 
   }
   ncols <- pbdMPI::allreduce(ncols, op='sum')
   
+  # estimate number of rows based on number columns and file size in bytes
+  # should be a slight overestimate
   if (missing(nrows)){
     msng <- TRUE
-#     size <- as.numeric(unlist(strsplit(x=system(paste("du -b", file), intern=T), split="\t"))[1])
     if (comm.rank()==0){
-#      nrows <- as.numeric(unlist(strsplit(x=system(paste("wc -l", file), intern=T), split=" "))[1])
       seps <- ncols * (length(unlist(strsplit(sep, split="")))) - 1
       x <- length(unlist(strsplit(scan(file=file, sep=sep, nlines=1L, quiet=T, what='character'), split="")))
       nrows <- ceiling( file.info(file)[1] / (x+seps) )#(ncols + seps) ) # adjust for sep character
@@ -137,7 +137,7 @@ read.ddmatrix.csv <- function(file, sep=",", nrows, ncols, bldim=4, num.rdrs=1, 
               ICTXT=as.integer(3), MYROW=as.integer(0), 
               MYCOL=as.integer(0) ),
        envir=.GlobalEnv )
-    MYCTXT <- 3
+    MYCTXT <- base.minctxt()
     newgrid <- TRUE
   }
   
@@ -153,21 +153,24 @@ read.ddmatrix.csv <- function(file, sep=",", nrows, ncols, bldim=4, num.rdrs=1, 
     x <- NULL
   }
   
-  ldim <- length(x) / ncols
-  
-  dim[1] <- pbdMPI::allreduce(ldim, op='sum')
-  
-  if (ldim==0){
-    ldim <- c(1,1)
-    Data <- matrix(0)
-  }
-  else {
-    ldim <- c(ldim, ncols)
-    Data <- matrix(x, nrow=ldim[1], ncol=ldim[2], byrow=T)
+  # determine true dimensions based on loaded data size --- recall
+  # that the original number of rows was overestimated
+  if (msng){
+    ldim <- length(x) / ncols
+    dim[1] <- pbdMPI::allreduce(ldim, op='sum')
+    
+    if (ldim==0){
+      ldim <- c(1,1)
+      Data <- matrix(0)
+    }
+    else {
+      ldim <- c(ldim, ncols)
+      Data <- matrix(x, nrow=ldim[1], ncol=ldim[2], byrow=T)
+    }
   }
   
   out <- new("ddmatrix", Data=Data, dim=dim, ldim=ldim,
-              bldim=tmpbl, CTXT=MYCTXT)
+              bldim=tmpbl, CTXT=blacs_$ICTXT)
   
   if (ICTXT != MYCTXT)
     out <- base.redistribute(dx=out, bldim=bldim, ICTXT=ICTXT)

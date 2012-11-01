@@ -6,5 +6,5 @@
 
 2012-09-11:
   * Package created
-  * DMAC - Added sql reader
-  * DMAC - Added huge random matrix generation
+  * DMAT - Added sql reader
+  * DMAT - Added huge random matrix generation

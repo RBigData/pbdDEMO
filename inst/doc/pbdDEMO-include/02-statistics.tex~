@@ -82,10 +82,10 @@ In SPMD case, it may be a redundant idea to invent a \code{spmd} S4 class
 or methods for this purpose. The S3 class and methods are sufficient
 and fast in most SPMD case.
 In contrast, it is a better idea to invent a \code{ddmatrix} class as in
-\pkg{pbdBASE}~\citep{Schmidt2012pbdBASEpackage} and
-\pkg{pbdDMAT}~\citep{Schmidt2012pbdDMATpackage}, then let efficient libraries
+pbdBASE~\citep{Schmidt2012pbdBASEpackage} and
+pbdDMAT~\citep{Schmidt2012pbdDMATpackage}, then let efficient libraries
 handle computing and avoid tedious coding.
-A silly example can be found in the Section~\ref{sec:ols}.
+A silly example can be found in the Section~{sec:ols}.
 
 
 

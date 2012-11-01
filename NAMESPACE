@@ -1,7 +1,7 @@
 
 import(methods, rlecuyer, pbdMPI, pbdSLAP, Rcpp, pbdBASE, pbdDMAT)
 
-exportPattern("^mpi\\.[[:alpha:]]+")
+exportPattern("^demo\\.[[:alpha:]]+")
 export(
   balance.info,
   load.balance,

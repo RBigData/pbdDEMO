@@ -1,3 +1,5 @@
+\part{Ad Hoc Methods}
+
 \section[Statistics Examples]{Statistics Examples}
 \label{sec:statistics_examples}
 \addcontentsline{toc}{section}{\thesection. Statistics Examples}
@@ -42,8 +44,7 @@ sample variance $s_x$ is based on the formulas:
 and
 \begin{align*}
 s_x     &= \frac{1}{N - 1} \sum_{n = 1}^N (x_n - \bar{x})^2 \\[.3cm]
-        &= \frac{1}{N - 1} \sum_{n = 1}^N x_n^2 - \frac{2\bar{x}}{N - 1}\sum_{n = 1}^N x_n +  \frac{1}{N - 1}\sum_{n = 1}^N\bar{x}^2 \\[.3cm]
-        &= \sum_{n = 1}^N \left(\frac{x^2_n}{N-1}\right) - \frac{N \bar{x}^2}{N-1}
+        &= \sum_{n = 1}^N \frac{x^2_n}{N-1} - \frac{N \bar{x}^2}{N-1}
 \end{align*}
 
 
@@ -56,7 +57,7 @@ mpiexec -np 2 Rscript -e "demo(sample_stat,'pbdDEMO',ask=F,echo=F)"
 
 The demo \code{sample_stat} generates fake data on 2 processors, then
 utilize \code{mpi.stat} function as
-\begin{lstlisting}[language=rr,title=R Code]
+\begin{Code}[title=R Code]
 mpi.stat <- function(x.spmd){
   ### For mean(x).
   N <- allreduce(length(x.spmd), op = "sum")
@@ -69,7 +70,7 @@ mpi.stat <- function(x.spmd){
 
   list(mean = bar.x, s = s.x)
 } # End of mpi.stat().
-\end{lstlisting}
+\end{Code}
 where \code{allreduce} in \pkg{pbdMPI}~\citep{Chen2012pbdMPIpackage} can
 be utilized in this examples to aggregate local information across
 all processors.
@@ -82,10 +83,10 @@ In SPMD case, it may be a redundant idea to invent a \code{spmd} S4 class
 or methods for this purpose. The S3 class and methods are sufficient
 and fast in most SPMD case.
 In contrast, it is a better idea to invent a \code{ddmatrix} class as in
-\pkg{pbdBASE}~\citep{Schmidt2012pbdBASEpackage} and
-\pkg{pbdDMAT}~\citep{Schmidt2012pbdDMATpackage}, then let efficient libraries
+pbdBASE~\citep{Schmidt2012pbdBASEpackage} and
+pbdDMAT~\citep{Schmidt2012pbdDMATpackage}, then let efficient libraries
 handle computing and avoid tedious coding.
-A silly example can be found in the Section~\ref{sec:ols}.
+A silly example can be found in the Section~{sec:ols}.
 
 
 
@@ -105,7 +106,7 @@ mpiexec -np 2 Rscript -e "demo(binning,'pbdDEMO',ask=F,echo=F)"
 
 The demo \code{binning} generates fake data on 2 processors, then
 utilize \code{mpi.bin} function as
-\begin{lstlisting}[language=rr,title=R Code]
+\begin{Code}[title=R Code]
 mpi.bin <- function(x.spmd, breaks = pi / 3 * (-3:3)){
   bin.spmd <- table(cut(x.spmd, breaks = breaks))
   bin <- as.array(allreduce(bin.spmd, op = "sum"))
@@ -113,7 +114,7 @@ mpi.bin <- function(x.spmd, breaks = pi / 3 * (-3:3)){
   class(bin) <- class(bin.spmd)
   bin
 } # End of mpi.bin().
-\end{lstlisting}
+\end{Code}
 An easy implementation is to utilize \code{table} function to obtain
 local counts, then call \code{allreduce} to obtain global counts.
 
@@ -137,7 +138,7 @@ and is not equivalent to the original \code{quantile} function in
 \proglang{R}. But in some sense, it should work well in large scale.
 The demo \code{quantile} generates fake data on 2 processors, then
 utilizes \code{mpi.quantile} function as
-\begin{lstlisting}[language=rr,title=R Code]
+\begin{Code}[title=R Code]
 mpi.quantile <- function(x.spmd, prob = 0.5){
   if(sum(prob < 0 | prob > 1) > 0){
     stop("prob should be in (0, 1)")
@@ -153,7 +154,7 @@ mpi.quantile <- function(x.spmd, prob = 0.5){
 
   uniroot(f.quantile, c(x.min, x.max), prob = prob[1])\$root
 } # End of mpi.quantile().
-\end{lstlisting}
+\end{Code}
 where a numerical function is solved by \code{uniroot} to find out
 the appropriate value such that cumulated probability is less than
 or equal to the specified quantile.
@@ -172,7 +173,7 @@ simulatinuously.
 \label{sec:ols}
 \addcontentsline{toc}{subsection}{\thesubsection. Ordinary Least Square}
 
-This is a fundamental tool to find a solution for
+This is a fundament tool to find a solution for
 $$\by = \bX\bbeta + \bepsilon$$
 where $\by$ is $N\times 1$ observed vector,
 $\bX$ is $N\times p$ designed matrix which is full rank and $N >> p$,
@@ -191,7 +192,7 @@ mpiexec -np 2 Rscript -e "demo(ols,'pbdDEMO',ask=F,echo=F)"
 \end{Command}
 
 The implementation is straight forward as
-\begin{lstlisting}[language=rr,title=R Code]
+\begin{Code}[title=R Code]
 mpi.ols <- function(y.spmd, X.spmd){
   if(length(y.spmd) != nrow(X.spmd)){
     stop("length(y.spmd) != nrow(X.spmd)")
@@ -204,11 +205,11 @@ mpi.ols <- function(y.spmd, X.spmd){
   solve(matrix(A, ncol = ncol(X.spmd))) %*% B
 } # End of mpi.ols().
 
-\end{lstlisting}
+\end{Code}
 Note that this is a silly implementation for demonstrations and
 explain fundamental idea of OLS.
 This is only efficient for small $N$ and small $p$. For larger scale,
 we suggest to simply convert \code{y.spmd} and \code{X.spmd} into
-block-cyclic format as in the Part~\ref{part:dmat} and
-to utilize \pkg{pbdBASE} and \pkg{pbdDMAT} for all matrix computation.
+block-cyclic format as in the Section~\ref{sec:spmd2dmat} and
+to utilize pbdBASE and pbdDMAT for all matrix computation.
 

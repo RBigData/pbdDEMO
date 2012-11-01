@@ -1,0 +1,20 @@
+\section{Reading Data}
+\label{sec:reader}
+\addcontentsline{toc}{section}{\thesection. Reading Data}
+
+
+
+\subsection{CSV Files}
+\label{sec:csv_files}
+\addcontentsline{toc}{subsection}{\thesubsection. CSV Files}
+
+It is simple enough to read in a csv file serially and then distribute the data out to the other processors.
+
+
+
+However, this is inefficient, especially if the user has access to a parallel file system.  In this case, several processes should be used to read parts of the file, and then distribute that data out to the larger process grid.  
+
+
+\subsection{SQL Databases}
+\label{sec:sql_db}
+\addcontentsline{toc}{subsection}{\thesubsection. SQL Databases}
