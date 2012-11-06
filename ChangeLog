@@ -1,8 +1,11 @@
 
 ======================= Log Before Release =====================================
-2012-10-30:
+2012-11-06:
   * Add pbdMPI and pbdSLAP examples.
-  * Add vignette.
+  * Add vignette with tons examples.
+  * Add demo functions.
+  * Add load.balance and unload.balance functions.
+  * Add spmd2dmat and dmat2spmd functions.
 
 2012-09-11:
   * Package created

@@ -27,9 +27,9 @@ You are very welcome to use these as templates and rewrite your own functions
 or packages.
 
 
-\subsection[Installation and Quick Start]{Installation and Quick Start}
+\subsection[Installation]{Installation}
 \label{sec:installation}
-\addcontentsline{toc}{subsection}{\thesubsection. Installation and Quick Start}
+\addcontentsline{toc}{subsection}{\thesubsection. Installation}
 
 One can download \pkg{pbdDEMO} from CRAN at
 \url{http://cran.r-project.org}, and
@@ -38,4 +38,47 @@ the intallation can be done with the following commands
 tar zxvf pbdDEMO_0.1-0.tar.gz
 R CMD INSTALL pbdDEMO
 \end{Command}
+Since \pkg{pbdEMO} depends on other \pkg{pbdR} packages,
+please read the corresponding vignettes if installations did
+not succeed.
+We also provide several demos for the capability of \pkg{pbdR}
+packages which are explained correspondingly in the next few sections.
+
+
+\subsection[Notation]{Notation}
+\label{sec:notation}
+\addcontentsline{toc}{subsection}{\thesubsection. Notation}
+
+We presume that readers already have idea about SPMD programming. If not,
+please read \pkg{pbdMPI}'s vignette~\cite{Chen2012pbdMPIvignette} first.
+If possible, readers are encouraged to run the demo of \pkg{pbdMPI} package
+and go through the code step by step.
+
+Note that we tend to use suffix \code{.spmd} to indicate a distributed
+local object which is a portion of big object.
+As the usual \proglang{R},
+Supposer $\bX$ is a very big matrix, then
+\code{X.spmd}'s could be R objects distributed on all processors,
+and usually they have the same data type.
+$\bX$ could be a result of \code{cbind} or \code{rbind} on all
+\code{X.spmd}'s.
+Examples can be found in the Section~\ref{sec:statistics_examples}.
+
+We also tend to assume common variables without suffix \code{.spmd}
+in SPMD programming.
+For instance, \code{y} could be an R object on all processors.
+Their dimension/attributes are allowed to be differed on some processors.
+In SPMD case, it may be a good idea to invent a \code{spmd} S4 class
+or methods for this purpose, but most S4 methods are sufficient
+and fast in most computation.
+
+While in distributed computing,
+in contrast, it is a better idea to invent a \code{ddmatrix} class as in
+\pkg{pbdBASE}~\citep{Schmidt2012pbdBASEpackage} and
+\pkg{pbdDMAT}~\citep{Schmidt2012pbdDMATpackage}, then let efficient libraries
+handle computing and avoid tedious coding.
+i.e. $\bX$ is a very big matrix, but \code{X.dmat} is
+in block-cyclic format where \code{X.dmat} can be utilized by most
+\pkg{pbdR} functions.
+Examples can be found in the Section~\ref{sec:data_input_examples}.
 

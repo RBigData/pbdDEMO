@@ -1,19 +1,58 @@
 
-\section[Statistics Examples]{Statistics Examples}
+\section[Basic Statistics Examples]{Basic Statistics Examples}
 \label{sec:statistics_examples}
-\addcontentsline{toc}{section}{\thesection. Statistics Examples}
+\addcontentsline{toc}{section}{\thesection. Basic Statistics Examples}
 
 This section introduces four simple examples and explains a little about
-distributed data computing. These implemented functions are
-selected from the Cookbook of HPSC website~\ref{hpsc2012} at
+distributed data computing. We skip tedious derivations of all formula,
+please see Wikipedia at \url{http://www.wikipedia.org} for better
+explanations if any statistical terminology were not familiar to you.
+These implemented examples/functions are partly
+selected from the Cookbook of HPSC website~\citep{hpsc2011} at
 \url{http://thirteen-01.stat.iastate.edu/snoweye/hpsc/?item=cookbook}.
 Please see more details there.
 
-{\color{red} \bf Warning:}
-We presume that readers have idea about SPMD programming. If not,
-please read pbdMPI's vignette~\cite{Chen2012pbdMPIvignette} first.
-If possible, readers are encouraged to run the demo of pbdMPI package
-and go through the code step by step.
+
+
+
+\subsection[Monte Carlo for $\pi$]{Monte Carlo for $\pi$}
+\label{sec:monte_carlo}
+\addcontentsline{toc}{subsection}{\thesubsection. Monte Carlo for $\pi$}
+
+The demo command is
+\begin{Command}
+### At the shell prompt, run the demo with 4 processors by
+### (Use Rscript.exe for windows system)
+mpiexec -np 4 Rscript -e "demo(monte_carlo,'pbdDEMO',ask=F,echo=F)"
+\end{Command}
+
+This is a simple Monte Carlo example for estimating $\pi$.
+Suppose we have $N$ uniform samples $(x_i, y_i)$ on $(0, 1)\times (0,1)$
+where $i = 1, 2, \ldots, N$, then
+the $\pi$ can be roughly approximated by
+\begin{equation}
+\pi \approx \frac{\# \mbox{ of } \sqrt{x_i^2+y_i^2} \leq 1}{N}.
+\label{eqn:pi}
+\end{equation}
+
+The key step of the demo code is in the next
+\begin{Code}[title=R Code,numbers=left]
+N.spmd <- 1000
+X.spmd <- matrix(runif(N.spmd * 2), ncol = 2)
+r.spmd <- sum(sqrt(rowSums(X.spmd^2)) <= 1)
+ret <- allreduce(c(N.spmd, r.spmd), op = "sum")
+PI <- 4 * ret[2] / ret[1]
+comm.print(PI)
+\end{Code}
+In line 1, we specify sample size in \code{N.spmd} for each processor,
+and $N=D\times\mbox{\code{N.spmd}}$ if $D$ processors are executed.
+In line 2, we generate samples in \code{X.spmd} for every processor.
+In line 3, we compute how many of radios are less than or equal to $1$
+for each processors.
+In line 4, we call \code{allreduce} to obtain total numbers across all
+processors.
+In line 5, we use the Equation~(\ref{eqn:pi}).
+Since SPMD, \code{ret} is common on all processors, and so is \code{PI}.
 
 
 
@@ -22,29 +61,37 @@ and go through the code step by step.
 \label{sec:sample_stat}
 \addcontentsline{toc}{subsection}{\thesubsection. Sample Mean and Sample Variance}
 
-Suppose $\bx = \{x_1, x_2, \ldots, x_N\}$
-are observed samples, and $N$ is very large.
-We can distribute $\bx$ in 2 processors, and each processor roughly
-takes half of data. One simple way to compute sample mean $\bar{x}$ and
-sample variance $s_x$ is based on the formula:
-$$
-\begin{array}{rcl}
-\bar{x} & = & \frac{1}{N} \sum_{n = 1}^N x_n \\
-        & = & \sum_{n = 1}^N \frac{x_n}{N} \\
-s_x     & = & \frac{1}{N - 1} \sum_{n = 1}^N (x_n - \bar{x})^2 \\
-        & = & \sum_{n = 1}^N \frac{x^2_n}{N-1} - \frac{N \bar{x}^2}{N-1} \\
-\end{array}
-$$
-
 The demo command is
 \begin{Command}
-### At the shell prompt, run the demo with 2 processors by
+### At the shell prompt, run the demo with 4 processors by
 ### (Use Rscript.exe for windows system)
-mpiexec -np 2 Rscript -e "demo(sample_stat,'pbdDEMO',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(sample_stat,'pbdDEMO',ask=F,echo=F)"
 \end{Command}
 
-The demo \code{sample_stat} generates fake data on 2 processors, then
-utilize \code{mpi.stat} function as
+Suppose $\bx = \{x_1, x_2, \ldots, x_N\}$
+are observed samples, and $N$ is potentially very large.
+We can distribute $\bx$ in 4 processors, and each processor roughly
+takes half of data. One simple way to compute sample mean $\bar{x}$ and
+sample variance $s_x$ is based on the formulas
+$$
+\begin{array}{rcl}
+\bar{x} & = & \displaystyle \frac{1}{N} \sum_{n = 1}^N x_n \\
+        & = & \displaystyle \sum_{n = 1}^N \frac{x_n}{N} \\
+s_x     & = & \displaystyle \frac{1}{N - 1} \sum_{n = 1}^N (x_n - \bar{x})^2 \\
+        & = & \displaystyle \left( \sum_{n = 1}^N \frac{x^2_n}{N-1} \right)
+                            - \frac{N}{N-1} \bar{x}^2 \\
+\end{array}
+$$
+where the second equations of $\bar{x}$ and $s_x$ are one-pass algorithms
+in terms of \proglang{C} language
+which are potentially more stable and faster than the first equations
+especially for large $N$.
+Here, only the first and second moments are implements while
+the extension of one-pass algorithms to higher order moments are also
+feasible.
+
+The demo \code{sample_stat} generates fake data on 4 processors, then
+utilizes \code{mpi.stat} function as
 \begin{Code}[title=R Code]
 mpi.stat <- function(x.spmd){
   ### For mean(x).
@@ -63,19 +110,6 @@ where \code{allreduce} in \pkg{pbdMPI}~\citep{Chen2012pbdMPIpackage} can
 be utilized in this examples to aggregate local information across
 all processors.
 
-Note that we tend to use suffix \code{.spmd} to indicate a distributed
-local object which is a portion of big object.
-We also tend to use common variables without subfix \code{.spmd}
-since SPMD programming.
-In SPMD case, it may be a redundant idea to invent a \code{spmd} S4 class
-or methods for this purpose. The S3 class and methods are sufficient
-and fast in most SPMD case.
-In contrast, it is a better idea to invent a \code{ddmatrix} class as in
-pbdBASE~\citep{Schmidt2012pbdBASEpackage} and
-pbdDMAT~\citep{Schmidt2012pbdDMATpackage}, then let efficient libraries
-handle computing and avoid tedious coding.
-A silly example can be found in the Section~{sec:ols}.
-
 
 
 
@@ -83,16 +117,19 @@ A silly example can be found in the Section~{sec:ols}.
 \label{sec:binning}
 \addcontentsline{toc}{subsection}{\thesubsection. Binning}
 
-Binning is a classical statistics and can quickly summarize
-the data structure by setting some breaks between max and min of data.
 The demo command is
 \begin{Command}
-### At the shell prompt, run the demo with 2 processors by
+### At the shell prompt, run the demo with 4 processors by
 ### (Use Rscript.exe for windows system)
-mpiexec -np 2 Rscript -e "demo(binning,'pbdDEMO',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(binning,'pbdDEMO',ask=F,echo=F)"
 \end{Command}
 
-The demo \code{binning} generates fake data on 2 processors, then
+Binning is a classical statistics and can quickly summarize
+the data structure by setting some breaks between max and min of data.
+This is particularly a useful tool for constructing histograms and
+categorical data analysis.
+
+The demo \code{binning} generates fake data on 4 processors, then
 utilize \code{mpi.bin} function as
 \begin{Code}[title=R Code]
 mpi.bin <- function(x.spmd, breaks = pi / 3 * (-3:3)){
@@ -112,19 +149,23 @@ local counts, then call \code{allreduce} to obtain global counts.
 \label{sec:quantile}
 \addcontentsline{toc}{subsection}{\thesubsection. Quantile}
 
-Quantile is the other useful tool from fundamental statistics
-which provides data distribution for given quantile.
-The demo code is
+The demo command is
 \begin{Command}
-### At the shell prompt, run the demo with 2 processors by
+### At the shell prompt, run the demo with 4 processors by
 ### (Use Rscript.exe for windows system)
-mpiexec -np 2 Rscript -e "demo(quantile,'pbdDEMO',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(quantile,'pbdDEMO',ask=F,echo=F)"
 \end{Command}
 
-This is only an implicit implementation to approximate a quantile
+Quantile is the other useful tool from fundamental statistics
+which provides data distribution for the desired value.
+This example can be extended to construct Q-Q plot,
+compute cumulative density function and nonparametric statistics,
+solve maximum likelihood estimators.
+
+This is only an inefficient implementation to approximate a quantile
 and is not equivalent to the original \code{quantile} function in
 \proglang{R}. But in some sense, it should work well in large scale.
-The demo \code{quantile} generates fake data on 2 processors, then
+The demo \code{quantile} generates fake data on 4 processors, then
 utilizes \code{mpi.quantile} function as
 \begin{Code}[title=R Code]
 mpi.quantile <- function(x.spmd, prob = 0.5){
@@ -140,7 +181,7 @@ mpi.quantile <- function(x.spmd, prob = 0.5){
     allreduce(sum(x.spmd <= x), op = "sum") / N - prob
   }
 
-  uniroot(f.quantile, c(x.min, x.max), prob = prob[1])\$root
+  uniroot(f.quantile, c(x.min, x.max), prob = prob[1])$root
 } # End of mpi.quantile().
 \end{Code}
 where a numerical function is solved by \code{uniroot} to find out
@@ -150,8 +191,9 @@ or equal to the specified quantile.
 This simple example shows that the SPMD is greatly applicable on large
 scale data analysis and likelihood computing.
 Note that the \code{uniroot} call is working in parallel and on distributed
-data, i.e. other optimization functions can work the same way,
-since SPMD simly assumes every processors do the same work
+data, i.e. other optimization functions such as \code{optim} and \code{nlm}
+can be utilized in the same way,
+since SPMD simply assumes every processors do the same work
 simulatinuously.
 
 
@@ -161,7 +203,15 @@ simulatinuously.
 \label{sec:ols}
 \addcontentsline{toc}{subsection}{\thesubsection. Ordinary Least Square}
 
-This is a fundament tool to find a solution for
+The demo command is
+\begin{Command}
+### At the shell prompt, run the demo with 4 processors by
+### (Use Rscript.exe for windows system)
+mpiexec -np 4 Rscript -e "demo(ols,'pbdDEMO',ask=F,echo=F)"
+\end{Command}
+
+Ordinary least square (OLS)
+is a fundament tool of linear models to find a solution for
 $$\by = \bX\bbeta + \bepsilon$$
 where $\by$ is $N\times 1$ observed vector,
 $\bX$ is $N\times p$ designed matrix which is full rank and $N >> p$,
@@ -171,13 +221,8 @@ A classical solution is to
 $$
 \hat{\bbeta} = (\bX^t\bX)^{-1}\bX^t\by
 $$
-
-The demo code is
-\begin{Command}
-### At the shell prompt, run the demo with 2 processors by
-### (Use Rscript.exe for windows system)
-mpiexec -np 2 Rscript -e "demo(ols,'pbdDEMO',ask=F,echo=F)"
-\end{Command}
+This example can be also generalized to weighted least square (WLS),
+and linear mixed effect models (LME).
 
 The implementation is straight forward as
 \begin{Code}[title=R Code]
@@ -199,5 +244,6 @@ explain fundamental idea of OLS.
 This is only efficient for small $N$ and small $p$. For larger scale,
 we suggest to simply convert \code{y.spmd} and \code{X.spmd} into
 block-cyclic format as in the Section~\ref{sec:spmd2dmat} and
-to utilize pbdBASE and pbdDMAT for all matrix computation.
+to utilize \pkg{pbdBASE} and \pkg{pbdDMAT} for all matrix computation
+via \pkg{pbdSLAP}~\citep{Chen2012pbdSLAPpackage}.
 

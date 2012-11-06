@@ -29,7 +29,15 @@
   Returns a distributed matrix.
 }
 \seealso{
-  \code{\link{Distribute}}
+  \code{Distribute}
+}
+\references{
+  Programming with Big Data in R Website:
+  \url{http://r-pbd.org/}
+}
+\author{
+  Drew Schmidt \email{schmidt AT math.utk.edu}, Wei-Chen Chen,
+  George Ostrouchov, and Pragneshkumar Patel.
 }
 \examples{
 \dontrun{
@@ -55,7 +63,8 @@ read.csv.sql("x.csv",
   header=FALSE, sep=" "
 )
 
-dx <- read.ddmatrix.sql(dbname="data", table="tabx", bldim=c(4,4), num.rdrs=2, CTXT=0)
+dx <- read.ddmatrix.sql(dbname="data", table="tabx", bldim=c(4,4),
+                        num.rdrs=2, CTXT=0)
 print(dx)
 
 finalize()

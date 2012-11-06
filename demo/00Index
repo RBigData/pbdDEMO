@@ -1,6 +1,8 @@
+monte_carlo	pbdDEMO		Simple Monte Carlo for pi.
 sample_stat	pbdDEMO		Simple statistics.
 binning		pbdDEMO		Simple binning.
-quantil		pbdDEMO		Simple quantile.
+quantile	pbdDEMO		Simple quantile.
 ols		pbdDEMO		Simple ordinary least square estimate.
-spmd2dmat	pbdDEMO		Simple convertion from SPMD to DMAT.
+balance		pbdDEMO		Simple load balance and unload balance.
+spmd_dmat	pbdDEMO		Simple convertion of SPMD and DMAT.
 testing		pbdDEMO		pbdDMAT.
