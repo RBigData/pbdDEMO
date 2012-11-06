@@ -16,7 +16,7 @@ SystemRequirements: OpenMPI (>= 1.5.4) on Linux and Mac, MPICH2 (>=
         1.4.1p1) on Windows
 License: GPL (>= 2)
 URL: http://r-pbd.org/
-Packaged: 2012-11-06 07:03:48 UTC; snoweye
+Packaged: 2012-11-06 07:18:15 UTC; snoweye
 Author: Drew Schmidt [aut, cre],
   Wei-Chen Chen [aut],
   George Ostrouchov [aut],
