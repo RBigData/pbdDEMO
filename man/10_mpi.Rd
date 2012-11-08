@@ -9,12 +9,14 @@
 }
 \usage{
   mpi.stat(x.spmd)
-  mpi.bin(x.spmd)
+  mpi.bin(x.spmd, breaks = pi/3 * (-3:3))
   mpi.quantile(x.spmd, prob = 0.5)
   mpi.ols(y.spmd, X.spmd)
 }
 \arguments{
   \item{x.spmd}{a SPMD vector.}
+  \item{breaks}{a set to break data in groups.}
+  \item{prob}{a desired probability for quantile.}
   \item{y.spmd}{a SPMD vector.}
   \item{X.spmd}{a SPMD matrix.}
 }
@@ -40,17 +42,19 @@
   \url{http://r-pbd.org/}
 }
 \author{
-  Drew Schmidt, Wei-Chen Chen \email{wccsnow@gmail.com},
-  George Ostrouchov, Pragneshkumar Patel.
+  Drew Schmidt \email{schmidt AT math.utk.edu}, Wei-Chen Chen,
+  George Ostrouchov, and Pragneshkumar Patel.
 }
 \examples{
 \dontrun{
-### Under command mode, run the demo with 2 processors by
+### Under command mode, run the demo with 4 processors by
 ### (Use Rscript.exe for windows system)
-mpiexec -np 2 Rscript -e "demo(mpi_stat,'pbdDEMO',ask=F,echo=F)"
-mpiexec -np 2 Rscript -e "demo(mpi_bin,'pbdDEMO',ask=F,echo=F)"
-mpiexec -np 2 Rscript -e "demo(mpi_quantile,'pbdDEMO',ask=F,echo=F)"
-mpiexec -np 2 Rscript -e "demo(mpi_ols,'pbdDEMO',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(sample_stat,'pbdDEMO',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(binning,'pbdDEMO',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(quantile,'pbdDEMO',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(ols,'pbdDEMO',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(spmd2dmat,'pbdDEMO',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(balance,'pbdDEMO',ask=F,echo=F)"
 }
 }
 \keyword{programming}

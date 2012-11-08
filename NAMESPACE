@@ -5,5 +5,7 @@ exportPattern("^demo\\.[[:alpha:]]+")
 export(
   balance.info,
   load.balance,
-  spmd2dmat
+  unload.balance,
+  spmd2dmat,
+  dmat2spmd
 )
