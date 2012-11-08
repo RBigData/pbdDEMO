@@ -1,3 +1,0 @@
-\part{Distributed Matrix Methods}
-
-The \pkg{pbdBASE} and \pkg{pbdDMAT} packages offer a distributed matrix class, \code{ddmatrix}, as well as a collection of high-level methods for performing common matrix operations.
