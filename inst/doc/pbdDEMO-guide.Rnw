@@ -125,7 +125,7 @@ Oak Ridge, TN, USA \\
 
 
 
-
+\newcommand{\ltwo}[1]{\left|\left| #1 \right|\right|_2}
 
 
 

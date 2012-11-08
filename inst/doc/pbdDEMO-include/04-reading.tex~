@@ -4,33 +4,6 @@
 
 
 
-
-
-\subsection{SPMD to DMAT}
-\label{sec:spmd2dmat}
-\addcontentsline{toc}{subsection}{\thesubsection. SPMD to DMAT}
-
-\pkg{pbdDEMO} also provides reader examples
-\begin{Command}
-### At the shell prompt, run the demo with 2 processors by
-### (Use Rscript.exe for windows system)
-mpiexec -np 2 Rscript -e "demo(spmd2dmat,'pbdDEMO',ask=F,echo=F)"
-\end{Command}
-
-
-
-
-
-
-\begin{Command}
-### At the shell prompt, run the demo with 4 processors by
-### (Use Rscript.exe for windows system)
-mpiexec -np 4 Rscript -e "demo(dmat_random,'pbdDEMO',ask=F,echo=F)"
-\end{Command}
-
-
-
-
 \subsection{CSV Files}
 \label{sec:csv_files}
 \addcontentsline{toc}{subsection}{\thesubsection. CSV Files}
