@@ -10,19 +10,6 @@ selected from the Cookbook of HPSC website~\citep{hpsc2011} at
 \url{http://thirteen-01.stat.iastate.edu/snoweye/hpsc/?item=cookbook}.
 Please see more details there.
 
-As a matter of convention, throughout we will use the suffix \code{.spmd} to indicate the local piece of a ``bigger'' distributed
-object.  
-% We also tend to use common variables without subfix \code{.spmd}
-% since SPMD programming.
-In SPMD case, it may be a redundant idea to invent a \code{spmd} S4 class
-or methods for this purpose. The S3 class and methods are sufficient
-and fast in most SPMD case.
-In contrast, it is a better idea to invent a \code{ddmatrix} class as in
-\pkg{pbdBASE}~\citep{Schmidt2012pbdBASEpackage} and
-\pkg{pbdDMAT}~\citep{Schmidt2012pbdDMATpackage}, then let efficient libraries
-handle computing and avoid tedious coding.
-A silly example can be found in the Section~\ref{sec:ols}.
-
 \subsection[Monte Carlo Simulation]{Monte Carlo Simulation}
 \label{sec:monte_carlo}
 \addcontentsline{toc}{subsection}{\thesubsection. Monte Carlo Simulation}
@@ -64,8 +51,8 @@ E[X] &= P( V_1 + V_2 \leq 1 )\\
      &= \frac{1}{2} \left[ 
 	V_1\left(\frac{1-V_1}{V_1}\right)^{1/2} 
 	 - \frac{1}{2} \arctan\left(\frac{\left(\frac{1-V_1}{V_1}\right)^{1/2} (2V_1-1)}{2(V_1-1)}\right) 
-	\right]_{V_1\rightarrow 0}^1\\
-     &= \frac{1}{2}\cdot\frac{\pi}{2}
+	\right]_{V_1\rightarrow 0}^{V_1\rightarrow 1}\\
+     &= \frac{1}{2}\left[ \frac{\pi}{4} +\frac{\pi}{4}  \right]
 \end{align*}
 and by sampling observations $X_i$ for $i=1,\dots,N$, by the Strong Law of Large Numbers
 \begin{align*}
@@ -90,7 +77,7 @@ But because no one is going to read that, and if they do they'll just call me a 
 
 
 
-The key step of the demo code is in the next
+The key step of the demo code is in the following block:
 \begin{lstlisting}[language=rr,title=R Code]
 N.spmd <- 1000
 X.spmd <- matrix(runif(N.spmd * 2), ncol = 2)
@@ -126,8 +113,7 @@ mpiexec -np 4 Rscript -e "demo(sample_stat,'pbdDEMO',ask=F,echo=F)"
 
 Suppose $\bx = \{x_1, x_2, \ldots, x_N\}$
 are observed samples, and $N$ is potentially very large.
-We can distribute $\bx$ in 4 processors, and each processor roughly
-takes half of data. One simple way to compute sample mean $\bar{x}$ and
+We can distribute $\bx$ in 4 processors, and each processor receives a proportional amount of data. One simple way to compute sample mean $\bar{x}$ and
 sample variance $s_x$ is based on the formulas:
 
 \begin{align}
@@ -140,9 +126,8 @@ s_x     &= \frac{1}{N - 1} \sum_{n = 1}^N (x_n - \bar{x})^2 \notag \\[.3cm]
         &= \frac{1}{N - 1} \sum_{n = 1}^N x_n^2 - \frac{2\bar{x}}{N - 1}\sum_{n = 1}^N x_n +  \frac{1}{N - 1}\sum_{n = 1}^N\bar{x}^2 \notag \\[.3cm]
         &= \sum_{n = 1}^N \left(\frac{x^2_n}{N-1}\right) - \frac{N \bar{x}^2}{N-1} \label{math:sd}
 \end{align}
-where expressions (\ref{math:mn}) and (\ref{math:sd}) are one-pass algorithms
-in terms of \proglang{C} language
-which are potentially more stable and faster than the first expressions
+where expressions (\ref{math:mn}) and (\ref{math:sd}) are one-pass algorithms,
+which are potentially faster and more stable than the first expressions,
 especially for large $N$. Here, only the first and second moments are implemented, while
 the extension of one-pass algorithms to higher order moments is also
 possible.
