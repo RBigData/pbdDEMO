@@ -277,7 +277,7 @@ A properly thorough treatment of the problems involved here go beyond the scope 
 
 The classical Maximum Likelihood solution is given by:
 \begin{align}
- \hat{\bbeta} = (\bX^t\bX)^{-1}\bX^t\by \label{math:ols}
+ \hat{\bbeta} = (\bX^T\bX)^{-1}\bX^T\by \label{math:ols}
 \end{align}
  
 This example can be also generalized to weighted least square (WLS),
@@ -301,7 +301,7 @@ mpi.ols <- function(y.spmd, X.spmd){
 
 While this is a fine demonstration of the power of ``getting your hands dirty'', this approach is only efficient for small $N$ and small $p$.  Worse, directly computing the product
 \begin{align*}
-\bX^t\bX
+\bX^T\bX
 \end{align*}
 is often numerically non-stable.  Instead, it is generally better (although much slower) to take an orthogonal factorization of the data matrix.  Typically, the QR-decomposition is used to this end.  Here $\bX=QR$, where $Q$ is orthogonal and $R$ is upper trapezoidal.  This is beneficial, because orthogonal matrices are norm-preserving, and whence
 \begin{align*}

@@ -51,6 +51,55 @@ We also provide several demos for the capability of \pkg{pbdR}
 packages which are explained correspondingly in the next few sections.
 
 
+\subsection{List of Demos}
+\addcontentsline{toc}{subsection}{\thesubsection. List of Demos}
+
+\begin{lstlisting}[title=Shell Script]
+### Under command mode, run the demo with 4 processors by
+### (Use Rscript.exe for windows system)
+
+# ----------------- #
+# II Ad Hoc Methods #
+# ----------------- #
+
+# Monte carlo simulation
+mpiexec -np 4 Rscript -e "demo(monte_carlo, package='pbdDMAT',ask=F,echo=F)"
+# Sample mean and variance
+mpiexec -np 4 Rscript -e "demo(sample_stat, package='pbdDMAT',ask=F,echo=F)"
+# Binning
+mpiexec -np 4 Rscript -e "demo(binning, package='pbdDMAT',ask=F,echo=F)"
+# Quantile
+mpiexec -np 4 Rscript -e "demo(quantile, package='pbdDMAT',ask=F,echo=F)"
+# OLS
+mpiexec -np 4 Rscript -e "demo(ols, package='pbdDMAT',ask=F,echo=F)"
+
+# -------------------- #
+# III ddmatrix Methods #
+# -------------------- #
+
+# Random matrix generation
+mpiexec -np 4 Rscript -e "demo(randmat_global, package='pbdDMAT',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(randmat_local, package='pbdDMAT',ask=F,echo=F)"
+# SPMD to DMAT
+mpiexec -np 4 Rscript -e "demo(spmd_dmat, package='pbdDMAT',ask=F,echo=F)"
+# Parallel CSV read
+mpiexec -np 4 Rscript -e "demo(read_csv, package='pbdDMAT',ask=F,echo=F)"
+# Parallel SQL read
+mpiexec -np 4 Rscript -e "demo(read_sql, package='pbdDMAT',ask=F,echo=F)"
+\end{lstlisting}
+
+
+
+
+
+
+
+
+
+
+
+
+
 \section{Background}
 \label{sec:bg}
 \addcontentsline{toc}{section}{\thesection. Background}

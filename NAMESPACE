@@ -7,5 +7,7 @@ export(
   load.balance,
   unload.balance,
   spmd2dmat,
-  dmat2spmd
+  dmat2spmd,
+  ###
+  read.csv.ddmatrix
 )

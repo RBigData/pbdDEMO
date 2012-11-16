@@ -88,8 +88,15 @@ read.sql.ddmatrix <- function(dbname, table, bldim=.BLDIM, num.rdrs=1, ICTXT=0)
 # ...
 
 
+
+
+
+
+
+
+
 # same as above but for csv
-read.csv.ddmatrix <- function(file, sep=",", nrows, ncols, bldim=4, num.rdrs=1, ICTXT=0)
+read.csv.ddmatrix <- function(file, sep=",", nrows, ncols, header=FALSE, bldim=4, num.rdrs=1, ICTXT=0)
 {
   if (length(bldim)==1)
     bldim <- rep(bldim, 2)
@@ -117,7 +124,6 @@ read.csv.ddmatrix <- function(file, sep=",", nrows, ncols, bldim=4, num.rdrs=1, 
     }
   }
   nrows <- pbdMPI::allreduce(nrows, op='sum')
-  comm.print(nrows)
   dim <- c(nrows, ncols)
   
   nprocs <- comm.size()
@@ -137,17 +143,23 @@ read.csv.ddmatrix <- function(file, sep=",", nrows, ncols, bldim=4, num.rdrs=1, 
               ICTXT=as.integer(3), MYROW=as.integer(0), 
               MYCOL=as.integer(0) ),
        envir=.GlobalEnv )
-    MYCTXT <- base.minctxt()
+    MYCTXT <- 3#base.minctxt()
     newgrid <- TRUE
   }
   
   blacs_ <- base.blacs(MYCTXT)
   
   # each process grabs its data
+  if (header)
+    start <- 1
+  else
+    start <- 0
+  
   nlines <- ceiling(dim[1] / num.rdrs)
   tmpbl <- c(nlines, ncols)
   if (blacs_$MYROW != -1){
-    skip <- comm.rank() * nlines
+    skip <- comm.rank() * nlines + start
+    print(skip)
     x <- scan(file=file, skip=skip, sep=sep, nlines=nlines, quiet=T)
   } else {
     x <- NULL
@@ -162,15 +174,20 @@ read.csv.ddmatrix <- function(file, sep=",", nrows, ncols, bldim=4, num.rdrs=1, 
     if (ldim==0){
       ldim <- c(1,1)
       Data <- matrix(0)
-    }
-    else {
+    } else {
       ldim <- c(ldim, ncols)
-      Data <- matrix(x, nrow=ldim[1], ncol=ldim[2], byrow=T)
+      Data <- matrix(x, nrow=ldim[1L], ncol=ldim[2L], byrow=T)
     }
+  } else {
+      ldim <- base.numroc(dim=dim, bldim=bldim, ICTXT=MYCTXT, fixme=FALSE)
+    if (is.null(x) || length(x)==0L)
+      Data <- matrix(0)
+    else 
+      Data <- matrix(x, nrow=ldim[1L], ncol=ldim[2L], byrow=T)
   }
-  
+#  comm.print(Data, all.rank=T)
   out <- new("ddmatrix", Data=Data, dim=dim, ldim=ldim,
-              bldim=tmpbl, CTXT=blacs_$ICTXT)
+              bldim=tmpbl, CTXT=MYCTXT)
   
   if (ICTXT != MYCTXT)
     out <- base.redistribute(dx=out, bldim=bldim, ICTXT=ICTXT)

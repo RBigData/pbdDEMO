@@ -12,21 +12,13 @@
 
 \pkg{pbdDEMO} also provides reader examples
 \begin{Command}
-### At the shell prompt, run the demo with 2 processors by
-### (Use Rscript.exe for windows system)
-mpiexec -np 2 Rscript -e "demo(spmd2dmat,'pbdDEMO',ask=F,echo=F)"
-\end{Command}
-
-
-
-
-
-
-\begin{Command}
 ### At the shell prompt, run the demo with 4 processors by
 ### (Use Rscript.exe for windows system)
-mpiexec -np 4 Rscript -e "demo(dmat_random,'pbdDEMO',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(spmd_dmat,'pbdDEMO',ask=F,echo=F)"
 \end{Command}
+
+
+
 
 
 
@@ -35,13 +27,36 @@ mpiexec -np 4 Rscript -e "demo(dmat_random,'pbdDEMO',ask=F,echo=F)"
 \label{sec:csv_files}
 \addcontentsline{toc}{subsection}{\thesubsection. CSV Files}
 
-It is simple enough to read in a csv file serially and then distribute the data out to the other processors.
+The demo command is
+\begin{Command}
+### At the shell prompt, run the demo with 4 processors by
+### (Use Rscript.exe for windows system)
+mpiexec -np 4 Rscript -e "demo(read_csv,'pbdDEMO',ask=F,echo=F)"
+\end{Command}
 
+It is simple enough to read in a csv file serially and then distribute the data out to the other processors.  This essentially consists of the commands
 
+\begin{lstlisting}[language=rr]
+if (comm.rank()==0){ # only read on process 0
+  x <- read.csv("myfile.csv")
+} else {
+  x <- NULL
+}
 
-However, this is inefficient, especially if the user has access to a parallel file system.  In this case, several processes should be used to read parts of the file, and then distribute that data out to the larger process grid.  
+dx <- as.ddmatrix(x)
+\end{lstlisting}
+
+However, this is inefficient, especially if the user has access to a parallel file system.  In this case, several processes should be used to read parts of the file, and then distribute that data out to the larger process grid.  Although really, in an ideal scenario, the user should not be using csv to store large amounts of data.  Regardless, a demonstration of how this is done is useful.
 
 
 \subsection{SQL Databases}
 \label{sec:sql_db}
 \addcontentsline{toc}{subsection}{\thesubsection. SQL Databases}
+
+
+The demo command is
+\begin{Command}
+### At the shell prompt, run the demo with 4 processors by
+### (Use Rscript.exe for windows system)
+mpiexec -np 4 Rscript -e "demo(read_sql,'pbdDEMO',ask=F,echo=F)"
+\end{Command}
