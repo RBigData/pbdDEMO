@@ -17,13 +17,13 @@ read.sql.ddmatrix <- function(dbname, table, bldim=.BLDIM, num.rdrs=1, ICTXT=0)
   if (num.rdrs == nprocs){
     MYCTXT <- 2
   } else {
-    assign(x=".__blacs_gridinfo_3", 
+    MYCTXT <- base.minctxt()
+    assign(x=paste(".__blacs_gridinfo_", MYCTXT, sep=""),
        value=.Fortran("mpi_blacs_initialize", 
               NPROW=as.integer(num.rdrs), NPCOL=as.integer(1), 
-              ICTXT=as.integer(3), MYROW=as.integer(0), 
+              ICTXT=as.integer(MYCTXT), MYROW=as.integer(0), 
               MYCOL=as.integer(0) ),
        envir=.GlobalEnv )
-    MYCTXT <- base.minctxt()
     newgrid <- TRUE
   }
   
@@ -67,25 +67,22 @@ read.sql.ddmatrix <- function(dbname, table, bldim=.BLDIM, num.rdrs=1, ICTXT=0)
   } else {
     Data <- matrix(0)
   }
-
+  
   out <- new("ddmatrix", Data=Data, dim=dim, ldim=dim(Data),
-              bldim=c(bldim[1], dim[2]), CTXT=blacs_$ICTXT)
-  if (ICTXT != MYCTXT)
-    out <- reblock(out, bldim=bldim, ICTXT=ICTXT)
+              bldim=c(bldim[1], dim[2]), CTXT=MYCTXT)
+  
+  if (ICTXT != MYCTXT || any(tmpbl != bldim) )
+    out <- base.reblock(out, bldim=bldim, ICTXT=ICTXT)
   
   if (newgrid)
-    gridexit(3)
+    base.gridexit(MYCTXT)
   
   return(out)
 }
 
 
 
-# 4 readers
-# bldim = (1/4, ncol)
-# scan(n= first 1/4, skip = 0)
-# scan(n= 2nd 1/4, skip = 1/4)
-# ...
+
 
 
 
@@ -101,15 +98,20 @@ read.csv.ddmatrix <- function(file, sep=",", nrows, ncols, header=FALSE, bldim=4
   if (length(bldim)==1)
     bldim <- rep(bldim, 2)
   
+  if (header)
+    start <- 1
+  else
+    start <- 0
+  
   msng <- FALSE # for printing a warning if nrows or ncols is missing
   if (missing(ncols)){
     msng <- TRUE
     if (comm.rank()==0)
-      ncols <- length(scan(file=file, sep=sep, nlines=1L, quiet=T))
+      ncols <- length(scan(file=file, skip=start, sep=sep, nlines=1L, quiet=T))
     else 
       ncols <- 0L
+    ncols <- pbdMPI::allreduce(ncols, op='sum')
   }
-  ncols <- pbdMPI::allreduce(ncols, op='sum')
   
   # estimate number of rows based on number columns and file size in bytes
   # should be a slight overestimate
@@ -122,44 +124,61 @@ read.csv.ddmatrix <- function(file, sep=",", nrows, ncols, header=FALSE, bldim=4
     } else {
       nrows <- 0L
     }
+    nrows <- pbdMPI::allreduce(nrows, op='sum')
   }
-  nrows <- pbdMPI::allreduce(nrows, op='sum')
+  
   dim <- c(nrows, ncols)
   
   nprocs <- comm.size()
   
-  newgrid <- FALSE # flag for 'did we create a new grid' in ICTXT 3
+  newgrid <- FALSE # flag for 'did we create a new grid'
   if (num.rdrs > nprocs){
     warning("Number of readers supplied is less than number requested; defaulting to", nprocs, "readers")
     num.rdrs <- nprocs
   }
   
-  if (num.rdrs == nprocs){
+  # special case of 1 reader; just read on process 0
+  if (num.rdrs == 1){
+    if (comm.rank()==0){
+      Data <- as.matrix(read.csv(file=file, sep=sep))
+      dim <- dim(Data)
+    } else {
+      Data <- matrix(0)
+      dim <- c(0, 0)
+    }
+    
+    dim <- allreduce(dim, op='sum')
+    ldim <- dim(Data)
+    tmpbl <- dim
+    
+    out <- new("ddmatrix", Data=Data, dim=dim, ldim=ldim,
+              bldim=tmpbl, CTXT=0)
+  
+    if (ICTXT != 0 || any(tmpbl != bldim) )
+      out <- base.redistribute(dx=out, bldim=bldim, ICTXT=ICTXT)
+    
+    return(out)
+    
+  } else if (num.rdrs == nprocs){
     MYCTXT <- 2
   } else {
-    assign(x=".__blacs_gridinfo_3", 
+    MYCTXT <- base.minctxt()
+    assign(x=paste(".__blacs_gridinfo_", MYCTXT, sep=""), 
        value=.Fortran("mpi_blacs_initialize", 
               NPROW=as.integer(num.rdrs), NPCOL=as.integer(1), 
-              ICTXT=as.integer(3), MYROW=as.integer(0), 
+              ICTXT=as.integer(MYCTXT), MYROW=as.integer(0), 
               MYCOL=as.integer(0) ),
        envir=.GlobalEnv )
-    MYCTXT <- 3#base.minctxt()
     newgrid <- TRUE
   }
   
   blacs_ <- base.blacs(MYCTXT)
   
   # each process grabs its data
-  if (header)
-    start <- 1
-  else
-    start <- 0
-  
   nlines <- ceiling(dim[1] / num.rdrs)
   tmpbl <- c(nlines, ncols)
   if (blacs_$MYROW != -1){
     skip <- comm.rank() * nlines + start
-    print(skip)
     x <- scan(file=file, skip=skip, sep=sep, nlines=nlines, quiet=T)
   } else {
     x <- NULL
@@ -179,21 +198,22 @@ read.csv.ddmatrix <- function(file, sep=",", nrows, ncols, header=FALSE, bldim=4
       Data <- matrix(x, nrow=ldim[1L], ncol=ldim[2L], byrow=T)
     }
   } else {
-      ldim <- base.numroc(dim=dim, bldim=bldim, ICTXT=MYCTXT, fixme=FALSE)
     if (is.null(x) || length(x)==0L)
       Data <- matrix(0)
     else 
-      Data <- matrix(x, nrow=ldim[1L], ncol=ldim[2L], byrow=T)
+      Data <- matrix(x, ncol=dim[2L], byrow=T)
+    
+    ldim <- dim(Data)
   }
-#  comm.print(Data, all.rank=T)
+  
   out <- new("ddmatrix", Data=Data, dim=dim, ldim=ldim,
               bldim=tmpbl, CTXT=MYCTXT)
   
-  if (ICTXT != MYCTXT)
+  if (ICTXT != MYCTXT || any(tmpbl != bldim) )
     out <- base.redistribute(dx=out, bldim=bldim, ICTXT=ICTXT)
   
   if (newgrid)
-    gridexit(3)
+    gridexit(MYCTXT)
   
   if (msng)
     warning(paste("Failing to supply nrows= and ncols= will dramatically impact performance.\nFor future reference, this file is ", dim[1], "x", dim[2], sep=""))
