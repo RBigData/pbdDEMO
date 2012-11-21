@@ -4,7 +4,7 @@
 
 # Generate large matrices which are constant by column
 # Somewhat equivalent to doing matrix(0, nrow=huge, ncol=huge)
-demo.Hconst <- function(dim, bldim, const=0, ICTXT=0)
+Hconst <- function(dim, bldim, const=0, ICTXT=0)
 {
   if (length(bldim)==1L)
     bldim <- rep(bldim, 2L)
@@ -24,12 +24,11 @@ demo.Hconst <- function(dim, bldim, const=0, ICTXT=0)
   return(dx)
 }
 
-Hconst <- demo.Hconst
 
 # Generate Huge matrices of distributional data in parallel
 # Each process determines how much it needs to generate and does so,
 # no redistribution necessary.
-demo.Hunif <- function(dim, bldim, min=0, max=1, ICTXT=0)
+Hunif <- function(dim, bldim, min=0, max=1, ICTXT=0)
 {
   if (length(bldim)==1L)
     bldim <- rep(bldim, 2L)
@@ -49,9 +48,8 @@ demo.Hunif <- function(dim, bldim, min=0, max=1, ICTXT=0)
   return(dx)
 }
 
-Hunif <- demo.Hunif
 
-demo.Hnorm <- function(dim, bldim, mean=0, sd=1, ICTXT=0)
+Hnorm <- function(dim, bldim, mean=0, sd=1, ICTXT=0)
 {
   if (length(bldim)==1L)
     bldim <- rep(bldim, 2L)
@@ -71,14 +69,29 @@ demo.Hnorm <- function(dim, bldim, mean=0, sd=1, ICTXT=0)
   return(dx)
 }
 
-Hnorm <- demo.Hnorm
 
 
 # ------------------------------------
 # Fixed local dimension
 # ------------------------------------
 
-demo.Hconst.local <- function(ldim, bldim, const=0, ICTXT=0)
+# Find "next best divisor"; used in the weak-scaling generation 
+# functions below
+nbd <- function(n, d)
+{
+  if (n < d)
+    stop("'n' may not be smaller than 'd'")
+  
+  ret <- .Fortran("NBD", 
+                  as.integer(n), as.integer(d),
+                  PACKAGE="pbdDEMO")$D
+  
+  return( ret )
+}
+
+
+
+Hconst.local <- function(ldim, bldim, const=0, ICTXT=0)
 {
   if (length(bldim)==1L)
     bldim <- rep(bldim, 2L)
@@ -92,8 +105,8 @@ demo.Hconst.local <- function(ldim, bldim, const=0, ICTXT=0)
   if (any( (dim %% bldim) != 0 )){
     comm.cat("WARNING : at least one margin of 'bldim' does not divide the global dimension.\n", quiet=T)
     
-    bldim[1L] <- .Fortran("NBD", as.integer(dim[1L]), D=as.integer(bldim[1L]))$D
-    bldim[2L] <- .Fortran("NBD", as.integer(dim[2L]), D=as.integer(bldim[2L]))$D
+    bldim[1L] <- nbd(dim[1L], bldim[1L])
+    bldim[2L] <- nbd(dim[2L], bldim[2L])
     comm.cat(paste("Using bldim of ", bldim[1L], "x", bldim[2L], "\n\n", sep=""), quiet=T)
   }
   
@@ -105,12 +118,9 @@ demo.Hconst.local <- function(ldim, bldim, const=0, ICTXT=0)
   return(dx)
 }
 
-Hconst.local <- demo.Hconst.local
 
 
-
-
-demo.Hunif.local <- function(ldim, bldim, min=0, max=1, ICTXT=0)
+Hunif.local <- function(ldim, bldim, min=0, max=1, ICTXT=0)
 {
   if (length(bldim)==1L)
     bldim <- rep(bldim, 2L)
@@ -124,8 +134,8 @@ demo.Hunif.local <- function(ldim, bldim, min=0, max=1, ICTXT=0)
   if (any( (dim %% bldim) != 0 )){
     comm.cat("WARNING : at least one margin of 'bldim' does not divide the global dimension.\n", quiet=T)
     
-    bldim[1L] <- .Fortran("NBD", as.integer(dim[1L]), D=as.integer(bldim[1L]))$D
-    bldim[2L] <- .Fortran("NBD", as.integer(dim[2L]), D=as.integer(bldim[2L]))$D
+    bldim[1L] <- nbd(dim[1L], bldim[1L])
+    bldim[2L] <- nbd(dim[2L], bldim[2L])
     comm.cat(paste("Using bldim of ", bldim[1L], "x", bldim[2L], "\n\n", sep=""), quiet=T)
   }
   
@@ -137,11 +147,9 @@ demo.Hunif.local <- function(ldim, bldim, min=0, max=1, ICTXT=0)
   return(dx)
 }
 
-Hunif.local <- demo.Hunif.local
 
 
-
-demo.Hnorm.local <- function(ldim, bldim, mean=0, sd=1, ICTXT=0)
+Hnorm.local <- function(ldim, bldim, mean=0, sd=1, ICTXT=0)
 {
   if (length(bldim)==1L)
     bldim <- rep(bldim, 2L)
@@ -155,8 +163,8 @@ demo.Hnorm.local <- function(ldim, bldim, mean=0, sd=1, ICTXT=0)
   if (any( (dim %% bldim) != 0 )){
     comm.cat("WARNING : at least one margin of 'bldim' does not divide the global dimension.\n", quiet=T)
     
-    bldim[1L] <- .Fortran("NBD", as.integer(dim[1L]), D=as.integer(bldim[1L]))$D
-    bldim[2L] <- .Fortran("NBD", as.integer(dim[2L]), D=as.integer(bldim[2L]))$D
+    bldim[1L] <- nbd(dim[1L], bldim[1L])
+    bldim[2L] <- nbd(dim[2L], bldim[2L])
     comm.cat(paste("Using bldim of ", bldim[1L], "x", bldim[2L], "\n\n", sep=""), quiet=T)
   }
   
@@ -167,5 +175,3 @@ demo.Hnorm.local <- function(ldim, bldim, mean=0, sd=1, ICTXT=0)
   
   return(dx)
 }
-
-Hnorm.local <- demo.Hnorm.local
