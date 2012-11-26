@@ -123,7 +123,13 @@ Oak Ridge, TN, USA \\
 } 
 
 
-
+\lstdefinelanguage{ft}{
+  language=[90]Fortran,
+  basicstyle=\ttfamily,
+                      keywordstyle=\color{blue},
+		      commentstyle=\color{dkgreen},
+  morecomment=[l]{!\ }
+}
 
 \newcommand{\ltwo}[1]{\left|\left| #1 \right|\right|_2}
 

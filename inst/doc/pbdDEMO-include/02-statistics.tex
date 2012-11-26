@@ -32,7 +32,7 @@ where $0\leq L\leq N$ is the number of observations sampled satisfying
 \begin{align*}
 x_i^2+y_i^2 \leq 1
 \end{align*}
-The intuitive explanation for this is strategy which is sometimes given belies a misunderstanding of infinite cardinalities, and infinite processes in general.  We are not \emph{approximating} an area, because to do so with points would be madness requiring a transfinite process.  
+The intuitive explanation for this is strategy which is sometimes given belies a misunderstanding of infinite cardinalities, and infinite processes in general.  We are not \emph{approximating} an area, because to do so with points would be madness requiring a transfinite process.  Yes, indeed, something with areas is involved, but some care should be taken in the discussion as to what exactly is going on.
 
 In reality, we are evaluating the probability that someone throwing a 0-dimensional ``dart'' at the unit square will have that ``dart'' also land below the arc of the unit circle contained within the unit square.  Formally, let $U_1$ and $U_2$ be random uniform variables, each from the closed unit interval $[0, 1]$.  Define the random variable
 \begin{align*}
@@ -73,8 +73,7 @@ But because no one is going to read that, and if they do they'll just call me a 
  \includegraphics[height=8.5cm, width=8.5cm]{pbdDEMO-include/pics/misleading}
  \caption{Approximating $\pi$ by Monte Carlo methods}\label{pic:dumb}
 \end{figure}
- the misleading picture you desire can be found in Figure~\ref{pic:dumb}.
-
+ the misleading picture you desire can be found in Figure~\ref{pic:dumb}.  And to everyone who found this looking for a homework solution, you're welcome.
 
 
 The key step of the demo code is in the following block:

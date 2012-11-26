@@ -2,8 +2,9 @@
 \label{sec:reader}
 \addcontentsline{toc}{section}{\thesection. Random Distributed Matrices}
 
+For testing, or sometimes even real work, ``non-data'' matrices --- those with entries which are constant or are sampled from a probability distribution --- can be very useful.  We present several ways in which one can create such matrices, based on differing sets of input parameters.
 
-\subsection{Fixed Global Dimension}
+\subsection{Fixed Global Dimension}\label{subsec:rng.gl}
 \addcontentsline{toc}{subsection}{\thesubsection. Fixed Global Dimension}
 
 The demo command is
@@ -13,11 +14,60 @@ The demo command is
 mpiexec -np 4 Rscript -e "demo(randmat_global,'pbdDEMO',ask=F,echo=F)"
 \end{Command}
 
+This demo shows 3 separate ways that one can generate a random normal matrix with specified global dimension.  The first two generate the matrix in full on at least one processor and distributes the data, while the last method generates locally only what is needed.  As such, the first two can be considered demonstrations with what to do when you have data read in on one processor and need to distribute it out to the remaining processors, but for the purposes of using a randomly generated distributed matrix, they are not particularly efficient strategies.
 
+The basic idea is as follows.  If I have a matrix \code{x} stored on processor 0 and \code{NULL} on the others, then I can distribute it out as an object of class \code{ddmatrix} via the command \code{as.ddmatrix()}.  For example
+\begin{lstlisting}[language=rr]
+if (comm.rank()==0){
+  x <- matrix(rnorm(100), nrow=10, ncol=10)
+} else {
+  x <- NULL
+}
 
+dx <- as.ddmatrix(x)
+\end{lstlisting}
 
+will distribute the required data to the remaining processors.  We note for clarity that this is not equivalent to sending the full matrix to all processors and then throwing away all but what is needed.  Only the required data is communicated to the processors.
 
+That said, having all of the data on all processors can be convenient while testing, if only for being more minimalistic in the amount of code/thinking required.  To do this, one need only do the following:
 
+\begin{lstlisting}[language=rr]
+x <- matrix(rnorm(100), nrow=10, ncol=10)
+
+dx <- as.ddmatrix(x)
+\end{lstlisting}
+
+Now, this assumes you are using the same seed on each processor.  This can be managed using the \pkg{pbdMPI} function \code{comm.set.seed()}, as in the demo script.  For more information, see that package's documentation.
+
+Finally, you can generate locally only what you need.  The demo script does this via the \pkg{pbdDEMO} package's \code{Hnorm()} or ``huge normal'' function.  There are two others provided, namely \code{Hconst()} and \code{Hunif()}.  The naming convention was chosen because the latter most function name makes me laugh.
+
+Internally, these ``huge'' functions rely on a much stronger working knowledge of the underlying data structure than most will be comfortable with.  However, for the sake of completeness, we will briefly examine \code{Hnorm()}.
+
+\begin{lstlisting}[language=rr,title=Hnrom()]
+Hnorm <- function(dim, bldim, mean=0, sd=1, ICTXT=0)
+{
+  if (length(bldim)==1L)
+    bldim <- rep(bldim, 2L)
+  
+  ldim <- base.numroc(dim=dim, bldim=bldim, ICTXT=ICTXT, fixme=FALSE)
+    
+  if (any(ldim < 1L)){
+    xmat <- matrix(0)
+    ldim <- c(1, 1)
+  }
+  else
+    xmat <- matrix(rnorm(prod(ldim), mean=mean, sd=sd), nrow=ldim[1L], ncol=ldim[2L])
+              
+  dx <- new("ddmatrix", Data=xmat,
+            dim=dim, ldim=ldim, bldim=bldim, CTXT=ICTXT)
+            
+  return(dx)
+}
+\end{lstlisting}
+
+The concise explanation is that the \code{base.numroc()} utility determines the size of the local storage.  This is all very well documented in the \pkg{pbdBASE} documentation, but since no one even pretends to read that stuff, \texttt{NUMROC} is a ScaLAPACK tool, which means ``\texttt{NUM}ber of \texttt{R}ows \texttt{O}r \texttt{C}olumns.''  The function \code{base.numroc()} is an implementation in \proglang{R} which calculates the number of rows \emph{and} columns at the same time (so it is a bit of a misnomer, but preserved for historical reasons).  
+
+More precisely, it calculates the local storage requirements given a global dimension \code{dim}, a blocking factor \code{bldim}, and a BLACS context number \code{ICTXT}.  The extra argument \code{fixme} determines whether or not the lowest value returned should be 1.  If \code{fixme==FALSE} and any of the returned local dimensions are less than 1, then that processor does not actually own any of the global matrix --- it has no local storage.  But something must be stored, and so we default this to \code{matrix(0)}, the $1\times 1$ matrix with single entry 0.
 
 
 \subsection{Fixed Local Dimension}
@@ -30,5 +80,75 @@ The demo command is
 mpiexec -np 4 Rscript -e "demo(randmat_local,'pbdDEMO',ask=F,echo=F)"
 \end{Command}
 
+This is similar to the above, but with a critical difference.  Instead of specifying a fixed \emph{global} dimension and then go determine what the local storage space is, instead we specify a fixed \emph{local} dimension and then go figure out what the global dimension should be.  This can be useful for testing for weak scaling of an algorithm, where different numbers of cores are compared but with similar ram usage.
 
+To this end, the demo script utilizes the \code{Hnorm.local()} function, which has the user specify a local dimension size that all the processors should use, as well as a blocking factor and BLACS context value.  
 
+\begin{lstlisting}[language=rr,title=Hnrom.local()]
+Hnorm.local <- function(ldim, bldim, mean=0, sd=1, ICTXT=0)
+{
+  if (length(bldim)==1L)
+    bldim <- rep(bldim, 2L)
+  
+  blacs_ <- base.blacs(ICTXT=ICTXT)
+  nprows <- blacs_$NPROW
+  npcols <- blacs_$NPCOL
+  
+  dim <- c(nprows*ldim[1L], npcols*ldim[2L])
+  
+  if (any( (dim %% bldim) != 0 )){
+    comm.cat("WARNING : at least one margin of 'bldim' does not divide the global dimension.\n", quiet=T)
+    
+    bldim[1L] <- nbd(dim[1L], bldim[1L])
+    bldim[2L] <- nbd(dim[2L], bldim[2L])
+    comm.cat(paste("Using bldim of ", bldim[1L], "x", bldim[2L], "\n\n", sep=""), quiet=T)
+  }
+  
+  Data <- matrix(rnorm(prod(ldim), mean=mean, sd=sd), nrow=ldim[1L], ncol=ldim[2L])
+  
+  dx <- new("ddmatrix", Data=Data,
+            dim=dim, ldim=ldim, bldim=bldim, CTXT=ICTXT)
+  
+  return(dx)
+}
+\end{lstlisting}
+
+Now here things get somewhat tricky, because in order for this matrix to exist at all, each margin of the blocking factor must divide (as an integer) the corresponding margin of the global dimension.  To better understand why this is so, the reader is suggested to read the \pkg{pbdBASE} vignette.  But if you already understand or are merely willing to take it on faith, then you surely grant that this is a problem.
+
+So here, we assume that the local dimension is chosen appropriately, but it is possible that a bad blocking factor is supplied by the user.  Rather than halt with a stop error, we attempt to find the next best blocking factor possible.  We do this with a simple ``next best divisor'' function:
+
+\begin{lstlisting}[language=rr,title=nbd()]
+nbd <- function(n, d)
+{
+  if (n < d)
+    stop("'n' may not be smaller than 'd'")
+  
+  ret <- .Fortran("NBD", 
+                  as.integer(n), as.integer(d),
+                  PACKAGE="pbdDEMO")$D
+  
+  return( ret )
+}
+\end{lstlisting}
+
+which is just a shallow wrapper on the \proglang{Fortran} code:
+
+\begin{lstlisting}[language=ft,title=NBD]
+      SUBROUTINE NBD(N, D)
+      INTEGER N, D, I, TEST
+      
+      DO 10 I = D+1, N, 1
+        TEST = MOD(N, I)
+        IF (TEST.EQ.0) THEN
+          D = I
+          RETURN
+        END IF
+   10 CONTINUE
+      
+      RETURN
+      END
+\end{lstlisting}
+
+Even those who don't know \proglang{Fortran} should easily be able to see what is going on here.  We are given integers \code{N} and \code{D}, and we loop over the integers inbetween these two until we find one which divides \code{N}.
+
+So going back to the \code{Hnorm.local()} function, the second \code{if} block contains the readjusting (as necessary) of the blocking factors.  Then the local data matrix is generated and wrapped up in its class before being returned --- everything else is just sugar.

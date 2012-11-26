@@ -2,15 +2,13 @@
 \label{sec:reader}
 \addcontentsline{toc}{section}{\thesection. Reading Data}
 
-
-
-
+As we mentioned at the beginning of the discussion on distributed matrix methods, most of the hard work in using these tools is getting the data into the right format.  Once this hurdle has been overcome, the syntax will magically begin to look like native \proglang{R} syntax.  Some insights into this difficulty can be seen in the previous section, but now we tackle the problem head on:  how do you get real data into the distributed matrix format?
 
 \subsection{SPMD to DMAT}
 \label{sec:spmd2dmat}
 \addcontentsline{toc}{subsection}{\thesubsection. SPMD to DMAT}
 
-\pkg{pbdDEMO} also provides reader examples
+The demo command is
 \begin{Command}
 ### At the shell prompt, run the demo with 4 processors by
 ### (Use Rscript.exe for windows system)
@@ -34,7 +32,7 @@ The demo command is
 mpiexec -np 4 Rscript -e "demo(read_csv,'pbdDEMO',ask=F,echo=F)"
 \end{Command}
 
-It is simple enough to read in a csv file serially and then distribute the data out to the other processors.  This essentially consists of the commands
+It is simple enough to read in a csv file serially and then distribute the data out to the other processors.  This process is essentially identical to one of the random generation methods in Section~\ref{subsec:rng.gl}.  For the sake of completeness, we present a simple example here:
 
 \begin{lstlisting}[language=rr]
 if (comm.rank()==0){ # only read on process 0
@@ -46,7 +44,7 @@ if (comm.rank()==0){ # only read on process 0
 dx <- as.ddmatrix(x)
 \end{lstlisting}
 
-However, this is inefficient, especially if the user has access to a parallel file system.  In this case, several processes should be used to read parts of the file, and then distribute that data out to the larger process grid.  Although really, in an ideal scenario, the user should not be using csv to store large amounts of data.  Regardless, a demonstration of how this is done is useful.
+However, this is inefficient, especially if the user has access to a parallel file system.  In this case, several processes should be used to read parts of the file, and then distribute that data out to the larger process grid.  Although really, the user should not be using csv to store large amounts of data because it always requires a sort of inherent ``serialness''.  Regardless, a demonstration of how this is done is useful.
 
 
 \subsection{SQL Databases}
