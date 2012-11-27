@@ -7,6 +7,8 @@ For testing, or sometimes even real work, ``non-data'' matrices --- those with e
 \subsection{Fixed Global Dimension}\label{subsec:rng.gl}
 \addcontentsline{toc}{subsection}{\thesubsection. Fixed Global Dimension}
 
+\emph{Example:  randomly generate distributed matrices with random normal data of specificed global dimension.}
+
 The demo command is
 \begin{Command}
 ### At the shell prompt, run the demo with 4 processors by
@@ -43,7 +45,7 @@ Finally, you can generate locally only what you need.  The demo script does this
 
 Internally, these ``huge'' functions rely on a much stronger working knowledge of the underlying data structure than most will be comfortable with.  However, for the sake of completeness, we will briefly examine \code{Hnorm()}.
 
-\begin{lstlisting}[language=rr,title=Hnrom()]
+\begin{lstlisting}[language=rr,title=Hnorm()]
 Hnorm <- function(dim, bldim, mean=0, sd=1, ICTXT=0)
 {
   if (length(bldim)==1L)
@@ -73,6 +75,8 @@ More precisely, it calculates the local storage requirements given a global dime
 \subsection{Fixed Local Dimension}
 \addcontentsline{toc}{subsection}{\thesubsection. Fixed Local Dimension}
 
+\emph{Example:  randomly generate distributed matrices with random normal data of specificed local dimension.}
+
 The demo command is
 \begin{Command}
 ### At the shell prompt, run the demo with 4 processors by
@@ -84,7 +88,7 @@ This is similar to the above, but with a critical difference.  Instead of specif
 
 To this end, the demo script utilizes the \code{Hnorm.local()} function, which has the user specify a local dimension size that all the processors should use, as well as a blocking factor and BLACS context value.  
 
-\begin{lstlisting}[language=rr,title=Hnrom.local()]
+\begin{lstlisting}[language=rr,title=Hnorm.local()]
 Hnorm.local <- function(ldim, bldim, mean=0, sd=1, ICTXT=0)
 {
   if (length(bldim)==1L)
@@ -137,7 +141,7 @@ which is just a shallow wrapper on the \proglang{Fortran} code:
       SUBROUTINE NBD(N, D)
       INTEGER N, D, I, TEST
       
-      DO 10 I = D+1, N, 1
+      DO 10 I = D+1, N-1, 1
         TEST = MOD(N, I)
         IF (TEST.EQ.0) THEN
           D = I
@@ -145,6 +149,7 @@ which is just a shallow wrapper on the \proglang{Fortran} code:
         END IF
    10 CONTINUE
       
+      D = N
       RETURN
       END
 \end{lstlisting}

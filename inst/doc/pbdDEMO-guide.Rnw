@@ -58,16 +58,6 @@ Oak Ridge, TN, USA \\
   E-mail: \email{schmidt@math.utk.edu}\\
   URL: \url{http://r-pbd.org/}
 }
-%% It is also possible to add a telephone and fax number
-%% before the e-mail in the following format:
-%% Telephone: +43/1/31336-5053
-%% Fax: +43/1/31336-734
-
-%% for those who use Sweave please include the following line (with % symbols):
-%% need no \usepackage{Sweave.sty}
-
-%% end of declarations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
 \input{./pbdDEMO-include/00-preamble}
 
@@ -133,8 +123,6 @@ Oak Ridge, TN, USA \\
 
 \newcommand{\ltwo}[1]{\left|\left| #1 \right|\right|_2}
 
-
-
 \begin{document}
 
 \pagenumbering{roman}
@@ -150,12 +138,20 @@ Oak Ridge, TN, USA \\
 \pagenumbering{arabic}
 \setcounter{page}{1}
 
+% ----------------------
+% Body
+% ----------------------
 \input{./pbdDEMO-include/01-introduction}
+% spmd methods
 \input{./pbdDEMO-include/part_1}
 \input{./pbdDEMO-include/02-statistics}
+% ddmatrix methods
 \input{./pbdDEMO-include/part_2}
 \input{./pbdDEMO-include/03-gen}
 \input{./pbdDEMO-include/04-reading}
+\input{./pbdDEMO-include/05-dmat_stats}
+% appendices
+
 
 \newpage
 \phantomsection

@@ -8,7 +8,7 @@
       ! Local
       INTEGER I, TEST
       
-      DO 10 I = D+1, N, 1
+      DO 10 I = D+1, N-1, 1
         TEST = MOD(N, I)
         IF (TEST.EQ.0) THEN
           D = I
@@ -16,6 +16,7 @@
         END IF
    10 CONTINUE
       
+      D = N
       RETURN
       END
 

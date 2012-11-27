@@ -4,26 +4,11 @@
 
 As we mentioned at the beginning of the discussion on distributed matrix methods, most of the hard work in using these tools is getting the data into the right format.  Once this hurdle has been overcome, the syntax will magically begin to look like native \proglang{R} syntax.  Some insights into this difficulty can be seen in the previous section, but now we tackle the problem head on:  how do you get real data into the distributed matrix format?
 
-\subsection{SPMD to DMAT}
-\label{sec:spmd2dmat}
-\addcontentsline{toc}{subsection}{\thesubsection. SPMD to DMAT}
-
-The demo command is
-\begin{Command}
-### At the shell prompt, run the demo with 4 processors by
-### (Use Rscript.exe for windows system)
-mpiexec -np 4 Rscript -e "demo(spmd_dmat,'pbdDEMO',ask=F,echo=F)"
-\end{Command}
-
-
-
-
-
-
-
 \subsection{CSV Files}
 \label{sec:csv_files}
 \addcontentsline{toc}{subsection}{\thesubsection. CSV Files}
+
+\emph{Example:  read data from a csv directly into a distributed matrix.}
 
 The demo command is
 \begin{Command}
@@ -44,13 +29,24 @@ if (comm.rank()==0){ # only read on process 0
 dx <- as.ddmatrix(x)
 \end{lstlisting}
 
-However, this is inefficient, especially if the user has access to a parallel file system.  In this case, several processes should be used to read parts of the file, and then distribute that data out to the larger process grid.  Although really, the user should not be using csv to store large amounts of data because it always requires a sort of inherent ``serialness''.  Regardless, a demonstration of how this is done is useful.
+However, this is inefficient, especially if the user has access to a parallel file system.  In this case, several processes should be used to read parts of the file, and then distribute that data out to the larger process grid.  Although really, the user should not be using csv to store large amounts of data because it always requires a sort of inherent ``serialness''.  Regardless, a demonstration of how this is done is useful.  We can do so via the \pkg{pbdDEMO} package's function \code{read.csv.ddmatrix} on an included dataset:
 
+\begin{lstlisting}[language=rr,title=Reading a CSV with Multiple Readers]
+dx <- read.csv.ddmatrix("../inst/data/x.csv", 
+                        sep=",", nrows=10, ncols=10, 
+                        header=TRUE, bldim=4, 
+                        num.rdrs=2, ICTXT=0)
+
+print(dx)
+\end{lstlisting}
+
+The code powering the function itself is quite complicated, going well beyond the scope of this document.  To understand it, the reader should see the advanced sections of the \pkg{pbdBASE} vignette.
 
 \subsection{SQL Databases}
 \label{sec:sql_db}
 \addcontentsline{toc}{subsection}{\thesubsection. SQL Databases}
 
+\emph{Example:  Read data from a sql database directly into a distributed matrix.}
 
 The demo command is
 \begin{Command}
@@ -58,3 +54,32 @@ The demo command is
 ### (Use Rscript.exe for windows system)
 mpiexec -np 4 Rscript -e "demo(read_sql,'pbdDEMO',ask=F,echo=F)"
 \end{Command}
+
+Just as above, we can use a SQL database to read in our data, powered by the \pkg{sqldf} package \cite{sqldf}.  Here it is assumed that the data is stored in the database in a structure that is much the same as a csv is stored on disk.  Internally, the query performed is:
+
+\begin{lstlisting}[language=rr]
+sqldf(paste("SELECT * FROM ", table, " WHERE rowid  = 1"), dbname=dbname)
+\end{lstlisting}
+
+To use a more complicated query for a database with differing structure, it should be possible (no promises) to substitute this line of the \code{read.sql.ddmatrix()} function for the desired query.  However, as before, much of the rest of the tasks performed by this function go beyond the scope of this document.  However, they are described in the \pkg{pbdBASE} package vignette.
+
+\subsection{SPMD to DMAT}
+\label{sec:spmd2dmat}
+\addcontentsline{toc}{subsection}{\thesubsection. SPMD to DMAT}
+
+\emph{Example:  convert SPMD distributed data into a distributed matrix.}
+
+The demo command is
+\begin{Command}
+### At the shell prompt, run the demo with 4 processors by
+### (Use Rscript.exe for windows system)
+mpiexec -np 4 Rscript -e "demo(spmd_dmat,'pbdDEMO',ask=F,echo=F)"
+\end{Command}
+
+Suppose you have read data into the processors, by some means, into the SPMD format.  Specifically, each processor owns contiguous blocks of rows (a set of rows of the data set), but that the data is not block-cyclically distributed.  Then using the \pkg{pbdDEMO} package's function \code{spmd2dmat()}, this conversion is trivial:
+
+\begin{lstlisting}[language=rr]
+X.dmat <- spmd2dmat(X.spmd)
+\end{lstlisting}
+
+Unfortunately, once again the ideas driving this routine are somewhat beyond the scope of this document.  They are discussed at length in the \pkg{pbdBASE} vignette.
