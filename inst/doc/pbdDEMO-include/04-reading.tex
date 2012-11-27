@@ -32,7 +32,7 @@ dx <- as.ddmatrix(x)
 However, this is inefficient, especially if the user has access to a parallel file system.  In this case, several processes should be used to read parts of the file, and then distribute that data out to the larger process grid.  Although really, the user should not be using csv to store large amounts of data because it always requires a sort of inherent ``serialness''.  Regardless, a demonstration of how this is done is useful.  We can do so via the \pkg{pbdDEMO} package's function \code{read.csv.ddmatrix} on an included dataset:
 
 \begin{lstlisting}[language=rr,title=Reading a CSV with Multiple Readers]
-dx <- read.csv.ddmatrix("../inst/data/x.csv", 
+dx <- read.csv.ddmatrix("../extra/data/x.csv", 
                         sep=",", nrows=10, ncols=10, 
                         header=TRUE, bldim=4, 
                         num.rdrs=2, ICTXT=0)

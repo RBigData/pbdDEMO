@@ -5,7 +5,7 @@ library(pbdDEMO, quiet = TRUE)
 init.grid()
 
 # Read in example csv file
-dx <- read.sql.ddmatrix(dbname="../inst/data/data", table="tabx", 
+dx <- read.sql.ddmatrix(dbname="../extra/data/data", table="tabx", 
                         bldim=4, num.rdrs=1, ICTXT=0)
 
 print(dx)
