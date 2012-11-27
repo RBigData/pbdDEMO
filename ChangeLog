@@ -1,5 +1,9 @@
 
 ======================= Log Before Release =====================================
+2012-11-27:
+  * Added pbdBASE and pbdDMAT examples.
+  * Added numerous functions.
+
 2012-11-06:
   * Add pbdMPI and pbdSLAP examples.
   * Add vignette with tons examples.
