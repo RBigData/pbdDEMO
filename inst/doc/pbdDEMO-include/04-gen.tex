@@ -4,23 +4,18 @@
 %%% ----------------------------------------------------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\chapter{Random Distributed Matrices}
+\label{sec:reader}
+
 The \pkg{pbdBASE} and \pkg{pbdDMAT} packages offer a distributed matrix class, \code{ddmatrix}, as well as a collection of high-level methods for performing common matrix operations.  For example, if you want to compute the mean of an \proglang{R} matrix \code{x}, you would call 
 \begin{lstlisting}[language=rr]
 mean(x)
 \end{lstlisting}
 That's exactly the same command you would issue if \code{x} is no longer an ordinary \proglang{R} matrix, but a distributed matrix.  These methods range from simple, embarrassingly parallel operations like sums and means, to tightly coupled linear algebra operations like matrix-matrix multiply and singular value decomposition.
 
-Unfortunately, using these higher methods comes with a different cost:  getting the data into the distributed matrix class.  This can be especially frustrating because we assume that the any object of class \code{ddmatrix} is \emph{block cyclically distributed}.  This concept is discussed at length in the \pkg{pbdBASE} vignette \citep{Schmidt2012pbdBASEvignette}, and we do not intend to discuss the concept of a block cyclic data distribution at length herein.  However, we will demonstrate several examples of getting data into and out of the distributed block cyclic matrix format.
+Unfortunately, these higher methods come with a different cost:  getting the data into the right format, namely the distributed matrix class.  This can be especially frustrating because we assume that the any object of class \code{ddmatrix} is \emph{block cyclically distributed}.  This concept is discussed at length in the \pkg{pbdBASE} vignette \citep{Schmidt2012pbdBASEvignette}, and we do not intend to discuss the concept of a block cyclic data distribution at length herein.  However, we will demonstrate several examples of getting data into and out of the distributed block cyclic matrix format.
 
-In short, once the hurdle of getting the data into the ``right format'' is out of the way, these methods offer very simple syntax (designed to mimic \proglang{R} as closely as possible) with the ability to scale computations on very large distributed machines.
-
-%%% ----------------------------------------------------------------------
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\chapter{Random Distributed Matrices}
-\label{sec:reader}
-
-For testing, or sometimes even real work, ``non-data'' matrices --- those with entries which are constant or are sampled from a probability distribution --- can be very useful.  We present several ways in which one can create such matrices, based on differing sets of input parameters.
+However, once the hurdle of getting the data into the ``right format'' is out of the way, these methods offer very simple syntax (designed to mimic \proglang{R} as closely as possible) with the ability to scale computations on very large distributed machines.  So the process of getting the data into the correct format must be addressed.  We begin dealing with this issue in the simplest way possible, namely by using randomly generated data.  
 
 \section{Fixed Global Dimension}\label{subsec:rng.gl}
 
