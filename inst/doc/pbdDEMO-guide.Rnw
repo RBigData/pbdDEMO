@@ -4,8 +4,8 @@
 % Style and settings
 \input{style.tex}
 
-\title{Programming with Big Data in \proglang{R}}
-% \subtitle{Examples and Demonstrations}
+\title{\Huge Programming with Big Data in \proglang{R}\\[.3cm]
+{\LARGE Package Examples and Demonstrations}}
 
 \author{
 \begin{minipage}{\textwidth}
