@@ -131,10 +131,10 @@
   \fancyfoot[C]{ \thepage}
   \renewcommand{\headrulewidth}{0pt}
   \renewcommand{\footrulewidth}{0pt}
+  
   % redefinition of the plain style:
   \fancypagestyle{plain}{%
   \fancyhf{} % clear all header and footer fields
-  % \fancyfoot[R]{\footnotesize }
   \renewcommand{\headrulewidth}{0pt}
   \renewcommand{\footrulewidth}{0pt}}
 }
@@ -146,10 +146,10 @@
   \fancyhead[R]{ \thepage\ of\ \pageref{LastPage}}
   \renewcommand{\headrulewidth}{1pt}
   \renewcommand{\footrulewidth}{0pt}
+  
   % redefinition of the plain style:
   \fancypagestyle{plain}{%
   \fancyhf{} % clear all header and footer fields
-  % \fancyfoot[R]{\footnotesize }
   \renewcommand{\headrulewidth}{0pt}
   \renewcommand{\footrulewidth}{0pt}}
 }
@@ -230,11 +230,22 @@
 %%%%% misc.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\usepackage{url}
+% \usepackage{url}
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{amssymb}
 
+
+\usepackage{hyperref}
+
+\hypersetup{
+    pdfnewwindow=true,    
+    colorlinks=true,      
+    linkcolor=blue,      
+    citecolor=blue,      
+    filecolor=magenta,   
+    urlcolor=blue      
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%% Bibliography

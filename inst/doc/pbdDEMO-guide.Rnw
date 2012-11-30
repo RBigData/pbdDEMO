@@ -10,16 +10,16 @@
 \author{
 \begin{minipage}{\textwidth}
 \centering
-Drew Schmidt\\
+Drew Schmidt, M.Sc.\\
 {\small\emph{Remote Data Analysis and Visualization Center,\\
 University of Tennessee, Knoxville}}\\[.4cm]
-Wei-Chen Chen, PhD\\
+Wei-Chen Chen, Ph.D.\\
 {\small\emph{Computer Science and Mathematics Division, \\
 Oak Ridge National Laboratory}}\\[.4cm]
-George Ostrouchov, PhD\\
+George Ostrouchov, Ph.D.\\
 {\small\emph{Computer Science and Mathematics Division, \\
 Oak Ridge National Laboratory}}\\[.4cm]
-Pragneskumar Patel\\
+Pragneskumar Patel, M.Sc.\\
 {\small\emph{Remote Data Analysis and Visualization Center,\\
 University of Tennessee, Knoxville}}
 \end{minipage}
