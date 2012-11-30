@@ -1,0 +1,264 @@
+\chapter{Redistribution Methods}
+\label{sec:redist}
+
+One final challenge similar to, but distinct from reading in data is managing data which has already been read into the R processes.
+
+\section[Load Balance and Unload Balance]{Load Balance and Unload Balance}
+\label{sec:lb_ub}
+
+The demo command is
+\begin{Command}
+### At the shell prompt, run the demo with 4 processors by
+### (Use Rscript.exe for windows system)
+mpiexec -np 4 Rscript -e "demo(balance,'pbdDEMO',ask=F,echo=F)"
+\end{Command}
+In this example, suppose we have an unbalanced input \code{X.spmd},
+then we call \code{balance.info} on it to save some information for later uses.
+Then, we call \code{load.balance} to obtain balanced matrix
+\code{new.X.spmd}.
+Then, we call \code{unload.balance} to obtain original matrix
+\code{org.X.spmd} which should be exactly the same as \code{X.spmd}.
+We list the key steps in the next.
+\begin{Code}[title=R Code]
+bal.info <- balance.info(X.spmd)
+new.X.spmd <- load.balance(X.spmd, bal.info)
+org.X.spmd <- unload.balance(new.X.spmd, bal.info)
+\end{Code}
+The details are depicted in the Figure~\ref{fig:load_balnace}
+where we distributed a matrix in two ways:
+\code{X.spmd} is unbalanced and is usually filtered or
+selected from other matrics,
+\code{new.X.spmd} is a balanced version of \code{X.spmd}.
+
+\begin{figure}[h]
+\label{fig:load_balnace}
+\begin{center}
+\begin{tabular}{ccc}
+\code{X.spmd}(\code{org.X.spmd}) & & \code{new.X.spmd} \\
+
+$
+\left[
+\begin{array}{ccc}
+\color{p0}x_{1,1} & \color{p0}x_{1,2} & \color{p0}x_{1,3} \\ \hline
+\color{p1}x_{2,1} & \color{p1}x_{2,2} & \color{p1}x_{2,3} \\
+\color{p1}x_{3,1} & \color{p1}x_{3,2} & \color{p1}x_{3,3} \\ \hline
+\color{p2}x_{4,1} & \color{p2}x_{4,2} & \color{p2}x_{4,3} \\
+\color{p2}x_{5,1} & \color{p2}x_{5,2} & \color{p2}x_{5,3} \\
+\color{p2}x_{6,1} & \color{p2}x_{6,2} & \color{p2}x_{6,3} \\ \hline
+\color{p3}x_{7,1} & \color{p3}x_{7,2} & \color{p3}x_{7,3} \\
+\color{p3}x_{8,1} & \color{p3}x_{8,2} & \color{p3}x_{8,3} \\
+\color{p3}x_{9,1} & \color{p3}x_{9,2} & \color{p3}x_{9,3} \\
+\color{p3}x_{10,1} & \color{p3}x_{10,2} & \color{p3}x_{10,3} \\
+\end{array}
+\right]
+$
+
+&
+
+$
+\begin{array}{c}
+\mbox{\code{load.balance}} \\
+\longrightarrow \\
+\hspace{0.5cm}\\
+\longleftarrow \\
+\mbox{\code{unload.balance}} \\
+\end{array}
+$
+
+&
+
+$
+\left[
+\begin{array}{ccc}
+\color{p0}x_{1,1} & \color{p0}x_{1,2} & \color{p0}x_{1,3} \\
+\color{p0}x_{2,1} & \color{p0}x_{2,2} & \color{p0}x_{2,3} \\
+\color{p0}x_{3,1} & \color{p0}x_{3,2} & \color{p0}x_{3,3} \\ \hline
+\color{p1}x_{4,1} & \color{p1}x_{4,2} & \color{p1}x_{4,3} \\
+\color{p1}x_{5,1} & \color{p1}x_{5,2} & \color{p1}x_{5,3} \\
+\color{p1}x_{6,1} & \color{p1}x_{6,2} & \color{p1}x_{6,3} \\ \hline
+\color{p2}x_{7,1} & \color{p2}x_{7,2} & \color{p2}x_{7,3} \\
+\color{p2}x_{8,1} & \color{p2}x_{8,2} & \color{p2}x_{8,3} \\
+\color{p2}x_{9,1} & \color{p2}x_{9,2} & \color{p2}x_{9,3} \\ \hline
+\color{p3}x_{10,1} & \color{p3}x_{10,2} & \color{p3}x_{10,3} \\
+\end{array}
+\right]
+$
+\end{tabular}
+\end{center}
+\caption{
+$\bX$ is distributed in
+\code{X.spmd}(\code{org.X.spmd}) and \code{new.X.spmd}.
+Both are distributed by row in 4 processors
+where colors represents processor {\color{p0}0},
+{\color{p1}1}, {\color{p2}2}, and {\color{p3}3}.
+}
+\end{figure}
+ 
+
+The useful function \code{balance.info} will returns information, says
+\code{bal.info},
+how to load balance the given data matrix \code{X.spmd}.
+The return of \code{balance.info} is a list containing
+two \code{data.frame}'s (\code{send} and \code{recv}
+and two \code{vector}'s (\code{N.allspmd} and \code{new.N.allspmd}).
+
+The \code{send} records the original rank and the belonging rank of
+``unbalanced'' data matrix.
+The \code{load.balance} uses this table to \code{isend} data.
+If any belonging rank is not the original rank, then the corresponding
+entire rows will be sent to where they should belong.
+
+The \code{recv} also records the original rank and the belonging rank of
+``balanced'' data matrix.
+The \code{load.balance} uses this table to \code{recv} data.
+If any original rank is not the current rank, then the corresponding
+entire rows will be received from where they original rank.
+
+The \code{N.allspmd} and \code{new.N.allspmd} both have length equals to
+\code{comm.rank(comm)} containing all numbers of rows of \code{X.spmd}
+before and after balanced. This is for double checking and avoiding 0-row
+matrix issue.
+
+For \code{unload.balance}, the process is just a little bit tricky by reversing
+\code{bal.info} and passing it to \code{load.balance}.
+
+
+
+
+
+
+\section[Convert of SPMD and DMAT]{Conver SPMD and DMAT}
+\label{sec:spmd_dmat}
+
+The demo command is
+\begin{Command}
+### At the shell prompt, run the demo with 4 processors by
+### (Use Rscript.exe for windows system)
+mpiexec -np 4 Rscript -e "demo(spmd_dmat,'pbdDEMO',ask=F,echo=F)"
+\end{Command}
+
+As usual serial \proglang{R}, it is intuitively to read data in parallel
+for each processor. We assume the input method is in SPMD to yield
+data in \code{X.spmd}, and convert it into \code{ddmatrix}
+format in \code{X.dmat}, then convert again to a \proglang{R}
+object in \code{X} which is common on all processors, as in the next.
+The Figure~\ref{fig:spmd_dmat} illustates \code{X.spmd} and \code{X.dmat}.
+\begin{Code}[title=R Code]
+X.dmat <- spmd2dmat(X.spmd)
+X <- as.matrix(X.dmat)
+new.X.spmd <- dmat2spmd(X.dmat)
+\end{Code}
+Note that we also provide a reversed function \code{dmat2spmd} for
+\code{spmd2dmat}.
+
+Here, the \code{spmd2dmat} function does the following:
+\begin{enumerate}
+\item Check numbers of columns of \code{X.spmd}, all
+      processors should be the same.
+\item Row balance the SPMD matrix, since number of rows of
+      \code{X.spmd} may vary in different processors.
+\item Call \code{new} on the balanced matrix to yield a \code{ddmatrix} object,
+      says \code{X.dmat}, in block context 2 (\code{ICTXT = 2}).
+\item Convert the \code{X.dmat} to other block contexts
+      (default\code{ICTXT = 0}) via \code{base.reblock}.
+\end{enumerate}
+Note that the first step is done by the \code{load.balance} function
+(Section~\ref{sec:lb_ub})
+which is particular useful to balance SPMD matrix and yield performance
+even the matrix is not in block-cyclic format.
+
+\begin{figure}
+\label{fig:spmd_dmat}
+\begin{center}
+\begin{tabular}{ccc}
+\code{X.spmd} & & \code{X.dmat} \\
+
+$
+\left[
+\begin{array}{ccc}
+\color{p0}x_{1,1} & \color{p0}x_{1,2} & \color{p0}x_{1,3} \\ \hline
+\color{p1}x_{2,1} & \color{p1}x_{2,2} & \color{p1}x_{2,3} \\
+\color{p1}x_{3,1} & \color{p1}x_{3,2} & \color{p1}x_{3,3} \\ \hline
+\color{p2}x_{4,1} & \color{p2}x_{4,2} & \color{p2}x_{4,3} \\
+\color{p2}x_{5,1} & \color{p2}x_{5,2} & \color{p2}x_{5,3} \\
+\color{p2}x_{6,1} & \color{p2}x_{6,2} & \color{p2}x_{6,3} \\ \hline
+\color{p3}x_{7,1} & \color{p3}x_{7,2} & \color{p3}x_{7,3} \\
+\color{p3}x_{8,1} & \color{p3}x_{8,2} & \color{p3}x_{8,3} \\
+\color{p3}x_{9,1} & \color{p3}x_{9,2} & \color{p3}x_{9,3} \\
+\color{p3}x_{10,1} & \color{p3}x_{10,2} & \color{p3}x_{10,3} \\
+\end{array}
+\right]
+$
+
+&
+
+$
+\begin{array}{c}
+\mbox{\code{spmd2dmat}} \\
+\longrightarrow \\
+\hspace{0.5cm}\\
+\longleftarrow \\
+\mbox{\code{dmat2spmd}} \\
+\end{array}
+$
+
+&
+
+$
+\left[
+\begin{array}{cc|c}
+\color{p0}x_{1,1} & \color{p0}x_{1,2} & \color{p1}x_{1,3} \\
+\color{p0}x_{2,1} & \color{p0}x_{2,2} & \color{p1}x_{2,3} \\ \hline
+\color{p2}x_{3,1} & \color{p2}x_{3,2} & \color{p3}x_{3,3} \\
+\color{p2}x_{4,1} & \color{p2}x_{4,2} & \color{p3}x_{4,3} \\ \hline
+\color{p0}x_{5,1} & \color{p0}x_{5,2} & \color{p1}x_{5,3} \\
+\color{p0}x_{6,1} & \color{p0}x_{6,2} & \color{p1}x_{6,3} \\ \hline
+\color{p2}x_{7,1} & \color{p2}x_{7,2} & \color{p3}x_{7,3} \\
+\color{p2}x_{8,1} & \color{p2}x_{8,2} & \color{p3}x_{8,3} \\ \hline
+\color{p0}x_{9,1} & \color{p0}x_{9,2} & \color{p1}x_{9,3} \\
+\color{p0}x_{10,1} & \color{p0}x_{10,2} & \color{p1}x_{10,3} \\
+\end{array}
+\right]
+$
+\end{tabular}
+\end{center}
+\caption{
+$\bX$ is distributed in
+\code{X.spmd} and \code{X.dmat}.
+Both are distributed in 4 processors
+where colors represents processor {\color{p0}0},
+{\color{p1}1}, {\color{p2}2}, and {\color{p3}3}.
+Note that \code{X.dmat} is in block-cyclic format of
+$2\times 2$ grid with $2\times 2$ block dimension.
+}
+\end{figure}
+
+
+
+
+
+
+
+
+
+
+
+\section{SPMD to DMAT}
+\label{sec:spmd2dmat}
+
+\emph{Example:  convert SPMD distributed data into a distributed matrix.}
+
+The demo command is
+\begin{Command}
+### At the shell prompt, run the demo with 4 processors by
+### (Use Rscript.exe for windows system)
+mpiexec -np 4 Rscript -e "demo(spmd_dmat,'pbdDEMO',ask=F,echo=F)"
+\end{Command}
+
+Suppose you have read data into the processors, by some means, into the SPMD format.  Specifically, each processor owns contiguous blocks of rows (a set of rows of the data set), but that the data is not block-cyclically distributed.  Then using the \pkg{pbdDEMO} package's function \code{spmd2dmat()}, this conversion is trivial:
+
+\begin{lstlisting}[language=rr]
+X.dmat <- spmd2dmat(X.spmd)
+\end{lstlisting}
+
+Unfortunately, once again the ideas driving this routine are somewhat beyond the scope of this document.  They are discussed at length in the \pkg{pbdBASE} vignette.

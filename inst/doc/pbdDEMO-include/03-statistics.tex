@@ -1,7 +1,10 @@
-\section[Basic Statistics Examples]{Basic Statistics Examples}
+\part{Direct MPI Methods}
+%%% ----------------------------------------------------------------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+\chapter[Basic Statistics Examples]{Basic Statistics Examples}
 \label{sec:statistics_examples}
-\addcontentsline{toc}{section}{\thesection. Basic Statistics Examples}
 
 This section introduces four simple examples and explains a little about computing with 
 distributed data. 
@@ -10,18 +13,17 @@ selected from the Cookbook of HPSC website~\citep{hpsc2011} at
 \url{http://thirteen-01.stat.iastate.edu/snoweye/hpsc/?item=cookbook}.
 Please see more details there.
 
-\subsection[Monte Carlo Simulation]{Monte Carlo Simulation}
+\section[Monte Carlo Simulation]{Monte Carlo Simulation}
 \label{sec:monte_carlo}
-\addcontentsline{toc}{subsection}{\thesubsection. Monte Carlo Simulation}
 
 \emph{Example:  compute a numerical approximation for $\pi$.}
 
 The demo command is
-\begin{Command}
+\begin{lstlisting}
 ### At the shell prompt, run the demo with 4 processors by
 ### (Use Rscript.exe for windows system)
 mpiexec -np 4 Rscript -e "demo(monte_carlo,'pbdDEMO',ask=F,echo=F)"
-\end{Command}
+\end{lstlisting}
 
 This is a simple Monte Carlo simulation example for numerically estimating $\pi$.
 Suppose we sample $N$ uniform observations $(x_i, y_i)$ inside (or perhaps on the border of) the unit square $(0, 1)\times (0,1)$,
@@ -101,18 +103,17 @@ Since SPMD, \code{ret} is common on all processors, and so is \code{PI}.
 
 
 
-\subsection[Sample Mean and Sample Variance]{Sample Mean and Sample Variance}
+\section[Sample Mean and Sample Variance]{Sample Mean and Sample Variance}
 \label{sec:sample_stat}
-\addcontentsline{toc}{subsection}{\thesubsection. Sample Mean and Sample Variance}
 
 \emph{Example:  compute sample mean/variance for distributed data.}
 
 The demo command is
-\begin{Command}
+\begin{lstlisting}
 ### At the shell prompt, run the demo with 4 processors by
 ### (Use Rscript.exe for windows system)
 mpiexec -np 4 Rscript -e "demo(sample_stat,'pbdDEMO',ask=F,echo=F)"
-\end{Command}
+\end{lstlisting}
 
 Suppose $\bx = \{x_1, x_2, \ldots, x_N\}$
 are observed samples, and $N$ is potentially very large.
@@ -136,11 +137,11 @@ the extension of one-pass algorithms to higher order moments is also
 possible.
 
 The demo command is
-\begin{Command}
+\begin{lstlisting}
 ### At the shell prompt, run the demo with 2 processors by
 ### (Use Rscript.exe for windows system)
 mpiexec -np 2 Rscript -e "demo(sample_stat,'pbdDEMO',ask=F,echo=F)"
-\end{Command}
+\end{lstlisting}
 
 The demo \code{sample_stat} generates fake data on 2 processors, then
 utilize \code{mpi.stat} function as
@@ -165,16 +166,15 @@ where \code{allreduce} in \pkg{pbdMPI}~\citep{Chen2012pbdMPIpackage} can
 be utilized in this examples to aggregate local information across
 all processors.
 
-\subsection[Binning]{Binning}
+\section[Binning]{Binning}
 \label{sec:binning}
-\addcontentsline{toc}{subsection}{\thesubsection. Binning}
 
 The demo command is
-\begin{Command}
+\begin{lstlisting}
 ### At the shell prompt, run the demo with 4 processors by
 ### (Use Rscript.exe for windows system)
 mpiexec -np 4 Rscript -e "demo(binning,'pbdDEMO',ask=F,echo=F)"
-\end{Command}
+\end{lstlisting}
 
 Binning is a classical statistics and can quickly summarize
 the data structure by setting some breaks between max and min of data.
@@ -197,18 +197,17 @@ local counts, then call \code{allreduce} to obtain global counts.
 
 
 
-\subsection[Quantile]{Quantile}
+\section[Quantile]{Quantile}
 \label{sec:quantile}
-\addcontentsline{toc}{subsection}{\thesubsection. Quantile}
 
 \emph{Example:  compute sample quantile order statistics for distributed data.}
 
 The demo command is
-\begin{Command}
+\begin{lstlisting}
 ### At the shell prompt, run the demo with 4 processors by
 ### (Use Rscript.exe for windows system)
 mpiexec -np 4 Rscript -e "demo(quantile,'pbdDEMO',ask=F,echo=F)"
-\end{Command}
+\end{lstlisting}
 
 Quantile is the other useful tool from fundamental statistics
 which provides data distribution for the desired value.
@@ -253,18 +252,17 @@ simulatinuously.
 
 
 
-\subsection[Ordinary Least Squares]{Ordinary Least Squares}
+\section[Ordinary Least Squares]{Ordinary Least Squares}
 \label{sec:ols}
-\addcontentsline{toc}{subsection}{\thesubsection. Ordinary Least Squares}
 
 \emph{Example:  compute ordinary least square solutions for SPMD distributed data.}
 
 The demo command is
-\begin{Command}
+\begin{lstlisting}
 ### At the shell prompt, run the demo with 4 processors by
 ### (Use Rscript.exe for windows system)
 mpiexec -np 4 Rscript -e "demo(ols,'pbdDEMO',ask=F,echo=F)"
-\end{Command}
+\end{lstlisting}
 
 Ordinary least squares (OLS)
 is perhaps \emph{the} fundamental tool of the statistician.  The goal is to find a solution $\bbeta$ such that

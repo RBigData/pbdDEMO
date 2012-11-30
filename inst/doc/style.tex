@@ -1,0 +1,246 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% definitions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\makeatletter
+\newcommand\code{\bgroup\@makeother\_\@makeother\~\@makeother\$\@codex}
+\def\@codex#1{{\normalfont\ttfamily\hyphenchar\font=-1 #1}\egroup}
+\makeatother
+%%\let\code=\texttt
+\let\proglang=\textsf
+
+\newcommand{\pkg}[1]{{\fontseries{b}\selectfont #1}}
+
+\newcommand{\bX}{\boldsymbol{X}}
+\newcommand{\bx}{\boldsymbol{x}}
+\newcommand{\by}{\boldsymbol{y}}
+\newcommand{\bbeta}{\boldsymbol{\beta}}
+\newcommand{\bepsilon}{\boldsymbol{\epsilon}}
+
+
+\newcommand{\ltwo}[1]{\left|\left| #1 \right|\right|_2}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% paragraph spacing
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{parskip}
+\setlength{\parskip}{.3cm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% colors
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{xcolor}
+\usepackage{color}
+
+\definecolor{mygreen}{RGB}{0,150,0}
+
+\definecolor{gray}{rgb}{.6,.6,.6}
+\definecolor{orange}{rgb}{1,0.5,0}
+\definecolor{grayish}{rgb}{.85, .85, .85}
+
+\definecolor{g11}{rgb}{0, 0, 1}
+\definecolor{g12}{rgb}{0, .4, 1}
+\definecolor{g13}{rgb}{0, .8, 1}
+
+\definecolor{g21}{rgb}{0, .5, .3}
+\definecolor{g22}{rgb}{.4, .5, .3}
+\definecolor{g23}{rgb}{.8, .5, .3}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\definecolor{p0}{RGB}{150,0,0}
+\definecolor{p1}{RGB}{0,150,0}
+\definecolor{p2}{RGB}{0,0,150}
+\definecolor{p3}{RGB}{150,75,0}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% lstlisting
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{listings}
+
+\lstdefinelanguage{rr}{language=R, 
+                       basicstyle=\ttfamily\color{black}, 
+% 		       backgroundcolor=\color{grayish}, 
+		       frame=single, 
+		       breaklines=true, 
+                      keywordstyle=\color{blue},
+		      commentstyle=\color{dkgreen},
+		      stringstyle=\color{mauve},
+		      numbers=none,
+		      stepnumber=1,       
+		      numbersep=6pt,      
+		      showspaces=false,      
+		      showstringspaces=false,  
+		      showtabs=false,     
+		      rulecolor=\color{gray},   
+		      tabsize=4,     
+		      captionpos=t,
+		      title=\lstname
+} 
+
+
+\lstdefinelanguage{ft}{
+  language=[90]Fortran,
+  basicstyle=\ttfamily,
+                      keywordstyle=\color{blue},
+		      commentstyle=\color{dkgreen},
+  morecomment=[l]{!\ }
+}
+
+
+
+\lstset{numbers=none,numberstyle=\footnotesize\ttfamily,
+        frame=single,frameround=tttt,language=R,
+        showspaces=false,showstringspaces=false,
+        breaklines=true,breakatwhitespace=true,
+        basicstyle=\small\ttfamily}
+%\lstset{literate={<-}{{$\leftarrow$}}1}
+\makeatletter
+\let\Code\@undefined
+\let\CodeInput\@undefined
+\let\CodeOutput\@undefined
+\makeatother
+\lstnewenvironment{Command}[1][title=Shell Command]{\lstset{#1}}{}
+\lstnewenvironment{Code}[1][title=R Script]{\lstset{#1}}{}
+\lstnewenvironment{CodeOutput}[1][title=R Output]{\lstset{#1}}{}
+\lstnewenvironment{Error}[1][]{
+  \lstset{title=Error Message,basicstyle=\small\ttfamily}\color{Red}}{}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% Chapter headings
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[Bjornstrup]{fncychap}
+% \usepackage[Lenny]{fncychap}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% Headers/footers
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{lastpage}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+
+\newcommand{\prebodyheadfoot}{
+  \fancyhf{} % clear all header and footer fields
+  \fancyfoot[C]{ \thepage}
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0pt}
+  % redefinition of the plain style:
+  \fancypagestyle{plain}{%
+  \fancyhf{} % clear all header and footer fields
+  % \fancyfoot[R]{\footnotesize }
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0pt}}
+}
+
+\newcommand{\bodyheadfoot}{
+  \fancyhf{} % clear all header and footer fields
+%   \fancyhead[L]{\slshape \rightmark}
+  \fancyhead[L]{\slshape \leftmark}
+  \fancyhead[R]{ \thepage\ of\ \pageref{LastPage}}
+  \renewcommand{\headrulewidth}{1pt}
+  \renewcommand{\footrulewidth}{0pt}
+  % redefinition of the plain style:
+  \fancypagestyle{plain}{%
+  \fancyhf{} % clear all header and footer fields
+  % \fancyfoot[R]{\footnotesize }
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0pt}}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% Fancy toc originally from http://tex.stackexchange.com/questions/35825/pretty-table-of-contents?lq=1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{xcolor}
+\usepackage{framed}
+\usepackage{tikz}
+\usepackage{titletoc}
+\usepackage{etoolbox}
+\usepackage{lmodern}
+
+% % definition of some personal colors
+% \definecolor{myred}{RGB}{127,0,0}
+% \definecolor{myyellow}{RGB}{169,121,69}
+% 
+% % command for the circle for the number of part entries
+% \newcommand\Circle[1]{\tikz[overlay,remember picture] 
+%   \node[draw,circle, text width=18pt,line width=1pt] {#1};}
+% 
+% % patching of \tableofcontents to use sans serif font for the tile
+% \patchcmd{\tableofcontents}{\contentsname}{\sffamily\contentsname}{}{}
+% % patching of \@part to typeset the part number inside a framed box in its own line
+% % and to add color
+% \makeatletter
+% \patchcmd{\@part}
+%   {\addcontentsline{toc}{part}{\thepart\hspace{1em}#1}}
+%   {\addtocontents{toc}{\protect\addvspace{20pt}}
+%     \addcontentsline{toc}{part}{\huge{\protect\color{myyellow}%
+%       \setlength\fboxrule{2pt}\protect\Circle{%
+%         \hfil\thepart\hfil%
+%       }%
+%     }\\[2ex]\color{myred}\sffamily#1}}{}{}
+% 
+% %\patchcmd{\@part}
+% %  {\addcontentsline{toc}{part}{\thepart\hspace{1em}#1}}
+% %  {\addtocontents{toc}{\protect\addvspace{20pt}}
+% %    \addcontentsline{toc}{part}{\huge{\protect\color{myyellow}%
+% %      \setlength\fboxrule{2pt}\protect\fbox{\protect\parbox[c][1em][c]{1.5em}{%
+% %        \hfil\thepart\hfil%
+% %      }}%
+% %    }\\[2ex]\color{myred}\sffamily#1}}{}{}
+% \makeatother
+% 
+% % this is the environment used to typeset the chapter entries in the ToC
+% % it is a modification of the leftbar environment of the framed package
+% \renewenvironment{leftbar}
+%   {\def\FrameCommand{\hspace{6em}%
+%     {\color{myyellow}\vrule width 2pt depth 6pt}\hspace{1em}}%
+%     \MakeFramed{\parshape 1 0cm \dimexpr\textwidth-6em\relax\FrameRestore}\vskip2pt%
+%   }
+%  {\endMakeFramed}
+% 
+% % using titletoc we redefine the ToC entries for parts, chapters, sections, and subsections
+% \titlecontents{part}
+%   [0em]{\centering}
+%   {\contentslabel}
+%   {}{}
+% \titlecontents{chapter}
+%   [0em]{\vspace*{2\baselineskip}}
+%   {\parbox{4.5em}{%
+%     \hfill\Huge\sffamily\bfseries\color{myred}\thecontentspage}%
+%    \vspace*{-2.3\baselineskip}\leftbar\textsc{\small\chaptername~\thecontentslabel}\\\sffamily}
+%   {}{\endleftbar}
+% \titlecontents{section}
+%   [8.4em]
+%   {\sffamily\contentslabel{3em}}{}{}
+%   {\hspace{0.5em}\nobreak\itshape\color{myred}\contentspage}
+% \titlecontents{subsection}
+%   [8.4em]
+%   {\sffamily\contentslabel{3em}}{}{}  
+%   {\hspace{0.5em}\nobreak\itshape\color{myred}\contentspage}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% misc.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% Bibliography
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[nottoc,numbib]{tocbibind}
+
+\usepackage[authoryear,round]{natbib}
+\bibliographystyle{pbdDEMO-include/jss}

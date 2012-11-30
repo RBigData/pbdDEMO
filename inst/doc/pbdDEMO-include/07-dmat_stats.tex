@@ -1,12 +1,16 @@
-\section{Advanced Statistics Examples}
-\addcontentsline{toc}{section}{\thesection. Advanced Statistics Examples}
+\part{Distributed Matrix Methods}
+\label{part:dmat}
+
+%%% ----------------------------------------------------------------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Advanced Statistics Examples}
 
 The \pkg{pbdDMAT} package contains many useful methods for doing computations with distributed matrices.  For comprehensive (but shallow) demonstrations of the distributed matrix methods available, see the \pkg{pbdDMAT} package's vignette and demos.
 
 Here we showcase a few more advanced things that can be done by chaining together \proglang{R} and pbdR code seamlessly.
 
-\subsection{Verification of Distributed System Solving}
-\addcontentsline{toc}{subsection}{\thesubsection. Verification of Distributed System Solving}
+\section{Verification of Distributed System Solving}
 
 \emph{Example:  solve a system of equations and verify that the solution is correct.}
 
@@ -91,8 +95,7 @@ verify.solve <- function(nrows=1e3, mean=0, sd=1, const=1, bldim=8, tol=1e-7)
 
 
 
-\subsection{Principal Components Analysis}
-\addcontentsline{toc}{subsection}{\thesubsection. Principal Components Analysis}
+\section{Principal Components Analysis}
 
 \emph{Example:  take PCA and retain only a subset of the rotated data.}
 
