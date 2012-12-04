@@ -57,7 +57,9 @@ University of Tennessee, Knoxville}}
 % intro
 \input{./pbdDEMO-include/01-introduction}
 \input{./pbdDEMO-include/02-background}
+\input{./pbdDEMO-include/02.25-batch}
 % spmd methods
+\input{./pbdDEMO-include/02.5-mpi}
 \input{./pbdDEMO-include/03-statistics}
 % ddmatrix methods
 \input{./pbdDEMO-include/04-gen}

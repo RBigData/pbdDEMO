@@ -1,13 +1,8 @@
-\part{Direct MPI Methods}
-%%% ----------------------------------------------------------------------
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 \chapter[Basic Statistics Examples]{Basic Statistics Examples}
 \label{sec:statistics_examples}
 
-This section introduces four simple examples and explains a little about computing with 
-distributed data. 
+This section introduces five simple examples and explains a little about computing with 
+distributed data directly over MPI. 
 These implemented examples/functions are partly
 selected from the Cookbook of HPSC website~\citep{hpsc2011} at
 \url{http://thirteen-01.stat.iastate.edu/snoweye/hpsc/?item=cookbook}.
@@ -26,17 +21,23 @@ mpiexec -np 4 Rscript -e "demo(monte_carlo,'pbdDEMO',ask=F,echo=F)"
 \end{lstlisting}
 
 This is a simple Monte Carlo simulation example for numerically estimating $\pi$.
-Suppose we sample $N$ uniform observations $(x_i, y_i)$ inside (or perhaps on the border of) the unit square $(0, 1)\times (0,1)$,
+Suppose we sample $N$ uniform observations $(x_i, y_i)$ inside (or perhaps on the border of) the unit square $[0, 1]\times [0,1]$,
 where $i = 1, 2, \ldots, N$.  Then
 \begin{equation}
 \pi \approx 4\frac{L}{N}
 \label{eqn:pi}
 \end{equation}
 where $0\leq L\leq N$ is the number of observations sampled satisfying
+\begin{align}
+x_i^2+y_i^2 \leq 1\label{math:circle}
+\end{align}
+The intuitive explanation for this is strategy which is sometimes given belies a misunderstanding of infinite cardinalities, and infinite processes in general.  We are not \emph{directly} approximating an area through this sampling scheme, because to do so with points would be madness requiring a transfinite process.  Indeed, let $S_N$ be the collection of elements satisfying (\ref{math:circle}).  Then note that for each $N\in\mathbb{N}$ that the area of $S_N$ is precisely 0.  Whence,
 \begin{align*}
-x_i^2+y_i^2 \leq 1
+\lim_{N\rightarrow\infty} Area(S_N) = 0
 \end{align*}
-The intuitive explanation for this is strategy which is sometimes given belies a misunderstanding of infinite cardinalities, and infinite processes in general.  We are not \emph{approximating} an area, because to do so with points would be madness requiring a transfinite process.  Yes, indeed, something with areas is involved, but some care should be taken in the discussion as to what exactly is going on.
+This bears repeating.  Finite sampling of an uncountable space requires uncountably many such sampling operations to ``fill'' the infinite space.  For a proper treatment of set theoretic constructions, including infinite cardinals, see \citep{kunen}.
+
+One could argue that we are evaluating a ratio of integrals with each using the counting measure, which satisfies technical correctness but is far from clear.  Now yes, indeed, certain facts of area are involved here, but some care should be taken in the discussion as to what exactly justifies our claim in (\ref{eqn:pi}).
 
 In reality, we are evaluating the probability that someone throwing a 0-dimensional ``dart'' at the unit square will have that ``dart'' also land below the arc of the unit circle contained within the unit square.  Formally, let $U_1$ and $U_2$ be random uniform variables, each from the closed unit interval $[0, 1]$.  Define the random variable
 \begin{align*}
@@ -73,12 +74,11 @@ Whence,
 
 But because no one is going to read that, and if they do they'll just call me a grumpy old man,
 \begin{figure}[h]
- \centering
+\centering
  \includegraphics[height=8.5cm, width=8.5cm]{pbdDEMO-include/pics/misleading}
  \caption{Approximating $\pi$ by Monte Carlo methods}\label{pic:dumb}
 \end{figure}
- the misleading picture you desire can be found in Figure~\ref{pic:dumb}.  And to everyone who found this looking for a homework solution, you're welcome.
-
+the misleading picture you desire can be found in Figure~\ref{pic:dumb}.  And to everyone who found this looking for a homework solution, you're welcome.
 
 The key step of the demo code is in the following block:
 \begin{lstlisting}[language=rr,title=R Code]

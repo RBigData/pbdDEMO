@@ -1,0 +1,75 @@
+\part{Direct MPI Methods}
+%%% ----------------------------------------------------------------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\chapter{MPI for the R User}
+
+Cicero once said that ``If you have a garden and a library, you have everything you need.''  So in that spirit, for the next two chapters we will use the MPI library to get our hands dirty and root around in the dirt of low-level MPI programming.
+
+\section{MPI Basics}
+
+In a sense, Cicero (in the above tortured metaphor) was quite right.  MPI is all that we \emph{need} in the same way that I might only \emph{need} bread and cheese, but really what I \emph{want} is a pizza.  MPI is somewhat low-level and can be quite fiddley, but mastering it adds a very powerful tool to the repertoire of the parallel \proglang{R} programmer, and is essential for anyone who wants to do large scale development of parallel codes.  
+
+``MPI'' stands for ``Message Passing Interface''.  How it really works goes \emph{well} beyond the scope of this document.  But at a basic level, the idea is that the user is running a code on different compute nodes that (usually) can not directly modify objects in each others' memory.  In order to have all of the nodes working together on a common problem, data and computation directives are passed around over the network (often over a specialized link called infiniband).  
+
+The general process for directly --- or indirectly --- utilizing MPI goes something like this:
+
+\begin{enumerate}
+ \item Initialize communiator(s).
+ \item Have each process read in its portion of the data.
+ \item Perform computations.
+ \item Communicate results.
+ \item Shut down the communicator(s).
+\end{enumerate}
+
+Some of the above steps may be swept away under a layer of abstraction for the user, but the need may arise where directly interfacing with MPI is not only beneficial, but necessary.
+
+For more details and a plethora of examples using MPI with \proglang{R}, see the \pkg{pbdMPI} vignette.
+
+\section{pbdMPI vs Rmpi}
+
+There is another package on the CRAN which the \proglang{R} programmer may use to interface with MPI, namely \pkg{Rmpi} \citep{Rmpi}.  There are several issues one must consider when choosing which package to use if one were to only use one of them.
+\begin{enumerate}
+ \item $(+)$ \pkg{pbdMPI} is easier to install than \pkg{Rmpi}
+ \item $(+)$ \pkg{pbdMPI} is easier to use than \pkg{Rmpi}
+ \item\label{enum:perf} $(+)$ \pkg{pbdMPI} can often outperform \pkg{Rmpi}
+ \item\label{enum:integrate} $(+)$ \pkg{pbdMPI} integrates with the rest of pbd
+ %
+ \item\label{enum:dompi} $(-)$ \pkg{Rmpi} can be used with \pkg{foreach} \citep{foreach} via \pkg{doMPI} \citep{dompi}
+ \item $(-)$ \pkg{Rmpi} can be used in the master/worker paradigm
+\end{enumerate}
+
+We do not believe that the above can be reduced to a zero-sum game with unambiguous winner and loser.  Ultimately the needs of the user (or developer) are paramount.  We believe that pbd makes a very good case for itself, but it can not satisfy everyone.  However, for the remainder of this section, we will present the case for several of the, as yet, unsubstantiated pluses above.
+
+In the case of ease of use, \pkg{Rmpi} uses bindings very close to the level as they are used in C's MPI API.  Specifically, whenever performing, for example, a reduction such as allreduce, you must specify the type of your data.  For example, using \pkg{Rmpi}'s API
+\begin{lstlisting}[language=rr]
+mpi.allreduce(x, type = 1)
+\end{lstlisting}
+would perform the sum allreduce if the object \code{x} consists of integer data, while
+\begin{lstlisting}[language=rr]
+mpi.allreduce(x, type = 2)
+\end{lstlisting}
+would be used if \code{x} consists of doubles.  However, with \pkg{pbdMPI}
+\begin{lstlisting}[language=rr]
+allreduce(x)
+\end{lstlisting}
+is used for both by making use of \proglang{R}'s S4 system of object oriented programming.  This is not mere code golfing\footnote{See \url{https://en.wikipedia.org/wiki/Code_golf}} that we are engaging in.  The concept of what ``type'' your data is in \proglang{R} is fairly foreign to most \proglang{R} users, and misusing the \code{type} argument in \pkg{Rmpi} is a very easy way to crash your program.  Instead, we take the approach of adding a small abstraction layer on top (which we intend to show does not negatively impact performance in general) so that the user need not worry about such details.
+
+In terms of performance, \pkg{pbdMPI} can greatly outperform \pkg{Rmpi}.  We present here the results of a benchmark we performed comparing the allgather operation between the two packages \citep{pdac}.  The benchmark consisted of calling the respective allgather
+function from each package on a randomly generated $10,000 \times 10,000$ distributed matrix with entries coming from the standard normal distribution, using different numbers of processors.  
+\begin{table}[h]
+ \centering
+ \caption{Runtimes (seconds) for \pkg{Rmpi} and \pkg{pbdMPI}.}
+ \label{tab:allgather}
+ \begin{tabular}{rrrr}\hline\hline
+  Cores & \pkg{Rmpi} & \pkg{pbdMPI} & Speedup \\\hline
+  32    & 24.6       & 6.7          & 3.67 \\
+  64    & 25.2       & 7.1          & 3.55 \\
+  128   & 22.3       & 7.2          & 3.10 \\
+  256   & 22.4       & 7.1          & 3.15 \\\hline\hline
+ \end{tabular}
+\end{table}
+Table~\ref{tab:allgather} shows the results for this test, and in each case, \pkg{pbdMPI} is the clear victor.
+
+Whichever package you choose, whichever your favorite, for the remainder of this document we will be using (either implicitly or explicitly) \pkg{pbdMPI}.  
