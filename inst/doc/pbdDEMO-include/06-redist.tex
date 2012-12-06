@@ -1,10 +1,37 @@
 \chapter{Redistribution Methods}
 \label{sec:redist}
 
-One final challenge similar to, but distinct from reading in data is managing data which has already been read into the R processes.
+One final challenge similar to, but distinct from reading in data is managing data which has already been read into the R processes.  Throughout this chapter, we will be making reference to several particulars to the block-cyclic data type used for objects of class \code{ddmatrix}.  As such, the reader is \emph{strongly} encouraged to be familiar with the content of the \pkg{pbdBASE} vignette before proceeding.
+
+\section{Distributed Matrix Redistributions}
+
+\emph{Example:  Convert between different distributed matrix distributions.}
+
+The demo command is
+\begin{Command}
+### At the shell prompt, run the demo with 4 processors by
+### (Use Rscript.exe for windows system)
+mpiexec -np 4 Rscript -e "demo(reblock,'pbdDEMO',ask=F,echo=F)"
+\end{Command}
+
+The distributed matrix class \code{ddmatrix} has two components which can be specified, and modified, by the user to drastically affect the composition of the distributed matrix.  In particular, these are the object's block-cyclic blocking factor \code{bldim}, and the BLACS communicator number \code{CTXT} which controls how the data is block-cycled across the 2-dimensional processor grid.  
+
+Thankfully, redistributing is a fairly simple process; though we would emphasize that \textbf{this is not free of cost}.  Reshaping data, especially at scale, can be much more expensive in total than even computation time.  That said, sometimes data must move.  It is better to get the job done slowly than to ``take your ball and go home'' with no results.  But we caution that if redistribution can be avoided, then it should, at all costs.
+
+The demo relies on a utility from the \pkg{pbdBASE} package, namely \code{redistribute()}.  As the name implies, this method is for ``reshaping'' a block-cyclically distributed matrix of one kind to another.  Specifically, this takes an object of class \code{ddmatrix} as both an input and an output; i.e., and to emphasize the title of the chapter, this is not a method of \emph{distribution} but \emph{redistribution}.
+
+For example, if I have a distributed matrix \code{dx} and I wish to reshape the distributed matrix so that it now has blocking dimension \code{newbldim} and is distributed across BLACS context \code{newCTXT}, then I need merely call:
+
+\begin{lstlisting}[language=rr]
+dy <- redistribute(dx, bldim=newbldim, ICTXT=newCTXT)
+\end{lstlisting}
+
+
 
 \section[Load Balance and Unload Balance]{Load Balance and Unload Balance}
 \label{sec:lb_ub}
+
+\emph{Example:  Load balancing (and unbalancing) distributed data.}
 
 The demo command is
 \begin{Command}
@@ -12,11 +39,13 @@ The demo command is
 ### (Use Rscript.exe for windows system)
 mpiexec -np 4 Rscript -e "demo(balance,'pbdDEMO',ask=F,echo=F)"
 \end{Command}
-In this example, suppose we have an unbalanced input \code{X.spmd},
-then we call \code{balance.info} on it to save some information for later uses.
-Then, we call \code{load.balance} to obtain balanced matrix
+
+Suppose we have an unbalanced, distributed input \code{X.spmd}.
+
+then we call \code{balance.info()} on it to save some information for later uses.
+Then, we call \code{load.balance()} to obtain balanced matrix
 \code{new.X.spmd}.
-Then, we call \code{unload.balance} to obtain original matrix
+Then, we call \code{unload.balance()} to obtain original matrix
 \code{org.X.spmd} which should be exactly the same as \code{X.spmd}.
 We list the key steps in the next.
 \begin{Code}[title=R Code]
@@ -24,10 +53,11 @@ bal.info <- balance.info(X.spmd)
 new.X.spmd <- load.balance(X.spmd, bal.info)
 org.X.spmd <- unload.balance(new.X.spmd, bal.info)
 \end{Code}
-The details are depicted in the Figure~\ref{fig:load_balnace}
+
+The details of this exchange are depicted in the example sin Figure~\ref{fig:load_balnace}
 where we distributed a matrix in two ways:
 \code{X.spmd} is unbalanced and is usually filtered or
-selected from other matrics,
+selected from other matrix,
 \code{new.X.spmd} is a balanced version of \code{X.spmd}.
 
 \begin{figure}[h]
@@ -57,11 +87,11 @@ $
 
 $
 \begin{array}{c}
-\mbox{\code{load.balance}} \\
+\mbox{\code{load.balance()}} \\
 \longrightarrow \\
 \hspace{0.5cm}\\
 \longleftarrow \\
-\mbox{\code{unload.balance}} \\
+\mbox{\code{unload.balance()}} \\
 \end{array}
 $
 
@@ -95,22 +125,22 @@ where colors represents processor {\color{p0}0},
 \end{figure}
  
 
-The useful function \code{balance.info} will returns information, says
+The useful function \code{balance.info()} will returns information, says
 \code{bal.info},
 how to load balance the given data matrix \code{X.spmd}.
-The return of \code{balance.info} is a list containing
+The return of \code{balance.info()} is a list containing
 two \code{data.frame}'s (\code{send} and \code{recv}
 and two \code{vector}'s (\code{N.allspmd} and \code{new.N.allspmd}).
 
 The \code{send} records the original rank and the belonging rank of
 ``unbalanced'' data matrix.
-The \code{load.balance} uses this table to \code{isend} data.
+The \code{load.balance()} uses this table to \code{isend} data.
 If any belonging rank is not the original rank, then the corresponding
 entire rows will be sent to where they should belong.
 
 The \code{recv} also records the original rank and the belonging rank of
 ``balanced'' data matrix.
-The \code{load.balance} uses this table to \code{recv} data.
+The \code{load.balance()} uses this table to \code{recv} data.
 If any original rank is not the current rank, then the corresponding
 entire rows will be received from where they original rank.
 
@@ -127,8 +157,10 @@ For \code{unload.balance}, the process is just a little bit tricky by reversing
 
 
 
-\section[Convert of SPMD and DMAT]{Conver SPMD and DMAT}
+\section{Convert Between SPMD and DMAT}
 \label{sec:spmd_dmat}
+
+\emph{Example:  Convert between SPMD and DMAT formats.}
 
 The demo command is
 \begin{Command}
@@ -142,7 +174,7 @@ for each processor. We assume the input method is in SPMD to yield
 data in \code{X.spmd}, and convert it into \code{ddmatrix}
 format in \code{X.dmat}, then convert again to a \proglang{R}
 object in \code{X} which is common on all processors, as in the next.
-The Figure~\ref{fig:spmd_dmat} illustates \code{X.spmd} and \code{X.dmat}.
+The Figure~\ref{fig:spmd_dmat} illustates an \code{X.spmd} and \code{X.dmat} conversion.  For more details about the block-cyclic data format used for class \code{ddmatrix}, see the \pkg{pbdBASE} vignette.
 \begin{Code}[title=R Code]
 X.dmat <- spmd2dmat(X.spmd)
 X <- as.matrix(X.dmat)
@@ -232,33 +264,3 @@ Note that \code{X.dmat} is in block-cyclic format of
 $2\times 2$ grid with $2\times 2$ block dimension.
 }
 \end{figure}
-
-
-
-
-
-
-
-
-
-
-
-\section{SPMD to DMAT}
-\label{sec:spmd2dmat}
-
-\emph{Example:  convert SPMD distributed data into a distributed matrix.}
-
-The demo command is
-\begin{Command}
-### At the shell prompt, run the demo with 4 processors by
-### (Use Rscript.exe for windows system)
-mpiexec -np 4 Rscript -e "demo(spmd_dmat,'pbdDEMO',ask=F,echo=F)"
-\end{Command}
-
-Suppose you have read data into the processors, by some means, into the SPMD format.  Specifically, each processor owns contiguous blocks of rows (a set of rows of the data set), but that the data is not block-cyclically distributed.  Then using the \pkg{pbdDEMO} package's function \code{spmd2dmat()}, this conversion is trivial:
-
-\begin{lstlisting}[language=rr]
-X.dmat <- spmd2dmat(X.spmd)
-\end{lstlisting}
-
-Unfortunately, once again the ideas driving this routine are somewhat beyond the scope of this document.  They are discussed at length in the \pkg{pbdBASE} vignette.

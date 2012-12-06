@@ -11,7 +11,7 @@ Please see more details there.
 \section[Monte Carlo Simulation]{Monte Carlo Simulation}
 \label{sec:monte_carlo}
 
-\emph{Example:  compute a numerical approximation for $\pi$.}
+\emph{Example:  Compute a numerical approximation for $\pi$.}
 
 The demo command is
 \begin{lstlisting}
@@ -95,7 +95,7 @@ and $N=D\times\mbox{\code{N.spmd}}$ if $D$ processors are executed.
 In line 2, we generate samples in \code{X.spmd} for every processor.
 In line 3, we compute how many of radios are less than or equal to $1$
 for each processors.
-In line 4, we call \code{allreduce} to obtain total numbers across all
+In line 4, we call \code{allreduce()} to obtain total numbers across all
 processors.
 In line 5, we use the Equation~(\ref{eqn:pi}).
 Since SPMD, \code{ret} is common on all processors, and so is \code{PI}.
@@ -106,7 +106,7 @@ Since SPMD, \code{ret} is common on all processors, and so is \code{PI}.
 \section[Sample Mean and Sample Variance]{Sample Mean and Sample Variance}
 \label{sec:sample_stat}
 
-\emph{Example:  compute sample mean/variance for distributed data.}
+\emph{Example:  Compute sample mean/variance for distributed data.}
 
 The demo command is
 \begin{lstlisting}
@@ -131,23 +131,13 @@ s_x     &= \frac{1}{N - 1} \sum_{n = 1}^N (x_n - \bar{x})^2 \notag \\[.3cm]
         &= \sum_{n = 1}^N \left(\frac{x^2_n}{N-1}\right) - \frac{N \bar{x}^2}{N-1} \label{math:sd}
 \end{align}
 where expressions (\ref{math:mn}) and (\ref{math:sd}) are one-pass algorithms,
-which are potentially faster and more stable than the first expressions,
+which are potentially faster than the first expressions,
 especially for large $N$. Here, only the first and second moments are implemented, while
 the extension of one-pass algorithms to higher order moments is also
 possible.
 
-The demo command is
-\begin{lstlisting}
-### At the shell prompt, run the demo with 2 processors by
-### (Use Rscript.exe for windows system)
-mpiexec -np 2 Rscript -e "demo(sample_stat,'pbdDEMO',ask=F,echo=F)"
-\end{lstlisting}
-
-The demo \code{sample_stat} generates fake data on 2 processors, then
-utilize \code{mpi.stat} function as
-
-The demo \code{sample_stat} generates fake data on 4 processors, then
-utilizes \code{mpi.stat} function as
+The demo generates random data on 4 processors, then
+utilizes the \code{mpi.stat()} function:
 \begin{lstlisting}[language=rr,title=R Code]
 mpi.stat <- function(x.spmd){
   ### For mean(x).
@@ -162,12 +152,14 @@ mpi.stat <- function(x.spmd){
   list(mean = bar.x, s = s.x)
 } # End of mpi.stat().
 \end{lstlisting}
-where \code{allreduce} in \pkg{pbdMPI}~\citep{Chen2012pbdMPIpackage} can
+where \code{allreduce()} in \pkg{pbdMPI}~\citep{Chen2012pbdMPIpackage} can
 be utilized in this examples to aggregate local information across
 all processors.
 
 \section[Binning]{Binning}
 \label{sec:binning}
+
+\emph{Example:  Find binning counts for distributed data.}
 
 The demo command is
 \begin{lstlisting}
@@ -176,13 +168,12 @@ The demo command is
 mpiexec -np 4 Rscript -e "demo(binning,'pbdDEMO',ask=F,echo=F)"
 \end{lstlisting}
 
-Binning is a classical statistics and can quickly summarize
-the data structure by setting some breaks between max and min of data.
-This is particularly a useful tool for constructing histograms and
-categorical data analysis.
+Binning is a classical problem in statistics which helps to quickly summarize
+the data structure by setting some ``breaks'' between the minimum and maximum values.
+This is a particularly useful tool for constructing histograms, as well as categorical data analysis.
 
-The demo \code{binning} generates fake data on 4 processors, then
-utilize \code{mpi.bin} function as
+The demo generates random data on 4 processors, then
+utilizes the \code{mpi.bin()} function:
 \begin{lstlisting}[language=rr,title=R Code]
 mpi.bin <- function(x.spmd, breaks = pi / 3 * (-3:3)){
   bin.spmd <- table(cut(x.spmd, breaks = breaks))
@@ -192,15 +183,14 @@ mpi.bin <- function(x.spmd, breaks = pi / 3 * (-3:3)){
   bin
 } # End of mpi.bin().
 \end{lstlisting}
-An easy implementation is to utilize \code{table} function to obtain
-local counts, then call \code{allreduce} to obtain global counts.
-
+This simple implementation utilizes \proglang{R}'s own \code{table()} function to obtain
+local counts, then calls \code{allreduce()} to obtain global counts.
 
 
 \section[Quantile]{Quantile}
 \label{sec:quantile}
 
-\emph{Example:  compute sample quantile order statistics for distributed data.}
+\emph{Example:  Compute sample quantile order statistics for distributed data.}
 
 The demo command is
 \begin{lstlisting}
@@ -209,17 +199,14 @@ The demo command is
 mpiexec -np 4 Rscript -e "demo(quantile,'pbdDEMO',ask=F,echo=F)"
 \end{lstlisting}
 
-Quantile is the other useful tool from fundamental statistics
-which provides data distribution for the desired value.
-This example can be extended to construct Q-Q plot,
-compute cumulative density function and nonparametric statistics,
-solve maximum likelihood estimators.
+Another fundamental tool in the statistician's toolbox is finding quantiles.  Quantiles are points taken from the cumulative distribution function which are taken in evenly-spaced periods.  The most common usage is the ``2-quantile'', or the median, though others are of course many others which are useful in summarizing distributions.
 
-This is only an inefficient implementation to approximate a quantile
-and is not equivalent to the original \code{quantile} function in
-\proglang{R}. But in some sense, it should work well in large scale.
-The demo \code{quantile} generates fake data on 4 processors, then
-utilizes \code{mpi.quantile} function as
+This example can be extended to construct Q-Q plots, compute cumulative density function estimates and nonparametric statistics, as well as solve maximum likelihood estimators.
+
+This is perhaps an inefficient implementation to approximate a quantile and is not equivalent to the original \code{quantile()} function in
+\proglang{R}. But in some sense, it should work well at a large scale.
+The demo generates random data on 4 processors, then
+utilizes the \code{mpi.quantile()}:
 \begin{lstlisting}[language=rr,title=R Code]
 mpi.quantile <- function(x.spmd, prob = 0.5){
   if(sum(prob < 0 | prob > 1) > 0){
@@ -237,25 +224,19 @@ mpi.quantile <- function(x.spmd, prob = 0.5){
   uniroot(f.quantile, c(x.min, x.max), prob = prob[1])$root
 } # End of mpi.quantile().
 \end{lstlisting}
-where a numerical function is solved by \code{uniroot} to find out
-the appropriate value such that cumulated probability is less than
-or equal to the specified quantile.
+Here, a numerical function is solved by using \code{uniroot()} to find out
+the appropriate value where the cumulative probability is less than
+or equal to the specified quantile.  This simple example shows that with just a little effort, direct MPI methods are greatly applicable on large scale data analysis and likelihood computing.
 
-This simple example shows that the SPMD is greatly applicable on large
-scale data analysis and likelihood computing.
-Note that the \code{uniroot} call is working in parallel and on distributed
-data, i.e. other optimization functions such as \code{optim} and \code{nlm}
-can be utilized in the same way,
-since SPMD simply assumes every processors do the same work
-simulatinuously.
-
-
+Note that in the way that the \code{uniroot()} call is used above, we are legitimately operating in parallel and on distributed
+data.  Other optimization functions such as \code{optim()} and \code{nlm()}
+can be utilized in the same way.
 
 
 \section[Ordinary Least Squares]{Ordinary Least Squares}
 \label{sec:ols}
 
-\emph{Example:  compute ordinary least square solutions for SPMD distributed data.}
+\emph{Example:  Compute ordinary least square solutions for SPMD distributed data.}
 
 The demo command is
 \begin{lstlisting}

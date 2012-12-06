@@ -3,7 +3,8 @@ Title: Programming with Big Data -- Demonstrations of pbd Packages
 Version: 0.1-0
 Date: 2012-10-30
 Depends: R (>= 2.15.1), methods, rlecuyer, pbdMPI (>= 0.1-1), pbdSLAP, 
-        Rcpp (>=0.9.10), pbdBASE (>= 0.1-1), pbdDMAT(>= 0.1-1), sqldf
+        Rcpp (>= 0.9.10), pbdBASE (>= 0.1-1), pbdDMAT(>= 0.1-1), 
+        pbdNCDF4 (>= 0.1-0), sqldf
 LazyLoad: yes
 LazyData: yes
 Authors@R: c(person("Drew", "Schmidt", role = c("aut", "cre"), email =

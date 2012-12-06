@@ -3,11 +3,17 @@ sample_stat		pbdDEMO		Simple statistics.
 binning			pbdDEMO		Simple binning.
 quantile		pbdDEMO		Simple quantile.
 ols				pbdDEMO		Simple ordinary least square estimate.
-balance			pbdDEMO		Simple load balance and unload balance.
-spmd_dmat		pbdDEMO		Simple convertion of SPMD and DMAT.
+
 randmat_global	pbdDEMO		Generate random matrices by global dimension.
 randmat_local	pbdDEMO		Generate random matrices by local dimension.
+
 read_csv		pbdDEMO		Read a csv into ddmatrix format.
 read_sql		pbdDEMO		Read a database into ddmatrix format.
+read_ncdf		pbdDEMO		Read and write ddmatrix to netcdf4 format.
+
+balance			pbdDEMO		Simple load balance and unload balance.
+spmd_dmat		pbdDEMO		Simple convertion of SPMD and DMAT.
+reblock			pbdDEMO		Fiddle with ddmatrix blocking parameters.
+
 verify			pbdDEMO		Solve a large system and verify the solution.
 pca				pbdDEMO		Principal Components Analysis
