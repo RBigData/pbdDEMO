@@ -251,7 +251,9 @@ is perhaps \emph{the} fundamental tool of the statistician.  The goal is to find
 \ltwo{ \bX\bbeta - \by }^2 \label{math:lls}
 \end{align}
 which is minimized.  In statistics, we tend to prefer to think of the problem as being of the form
-$$\by = \bX\bbeta + \bepsilon$$
+\begin{align}
+\by = \bX\bbeta + \bepsilon \label{math:statslls}
+\end{align}
 where $\by$ is $N\times 1$ observed vector,
 $\bX$ is $N\times p$ designed matrix which is full rank and $N >> p$,
 $\bbeta$ is the insterested parameters and unknown to be estimated,

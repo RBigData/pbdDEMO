@@ -28,6 +28,11 @@ dy <- redistribute(dx, bldim=newbldim, ICTXT=newCTXT)
 
 
 
+
+
+
+
+
 \section[Load Balance and Unload Balance]{Load Balance and Unload Balance}
 \label{sec:lb_ub}
 
@@ -40,25 +45,17 @@ The demo command is
 mpiexec -np 4 Rscript -e "demo(balance,'pbdDEMO',ask=F,echo=F)"
 \end{Command}
 
-Suppose we have an unbalanced, distributed input \code{X.spmd}.
+Suppose we have an unbalanced, distributed input matrix \code{X.spmd}.  We can call \code{balance.info()} on this object to store some information about how to balance the data load across all processors.  This can be useful for tracking data movement, as well as for ``unbalancing'' later, if we so choose.  Next, we call \code{load.balance()} to obtain a load-balanced object \code{new.X.spmd}.  We can also now undo this entire process and get back to \code{X.spmd} by calling \code{unload.balance()} on \code{new.X.spmd}.
 
-then we call \code{balance.info()} on it to save some information for later uses.
-Then, we call \code{load.balance()} to obtain balanced matrix
-\code{new.X.spmd}.
-Then, we call \code{unload.balance()} to obtain original matrix
-\code{org.X.spmd} which should be exactly the same as \code{X.spmd}.
-We list the key steps in the next.
+All together, the code looks something like:
 \begin{Code}[title=R Code]
 bal.info <- balance.info(X.spmd)
 new.X.spmd <- load.balance(X.spmd, bal.info)
 org.X.spmd <- unload.balance(new.X.spmd, bal.info)
 \end{Code}
 
-The details of this exchange are depicted in the example sin Figure~\ref{fig:load_balnace}
-where we distributed a matrix in two ways:
-\code{X.spmd} is unbalanced and is usually filtered or
-selected from other matrix,
-\code{new.X.spmd} is a balanced version of \code{X.spmd}.
+The details of this exchange are depicted in the example in Figure~\ref{fig:load_balnace}.  Here, 
+\code{X.spmd} is unbalanced, and \code{new.X.spmd} is a balanced version of \code{X.spmd}.
 
 \begin{figure}[h]
 \label{fig:load_balnace}
@@ -125,32 +122,15 @@ where colors represents processor {\color{p0}0},
 \end{figure}
  
 
-The useful function \code{balance.info()} will returns information, says
-\code{bal.info},
-how to load balance the given data matrix \code{X.spmd}.
-The return of \code{balance.info()} is a list containing
-two \code{data.frame}'s (\code{send} and \code{recv}
-and two \code{vector}'s (\code{N.allspmd} and \code{new.N.allspmd}).
+The function \code{balance.info()} is extremely useful, because it will return the information used to load balance the given data \code{X.spmd}.  The return of \code{balance.info()} is a list consisting of two dataframes, \code{send} and \code{recv}, as well as two vectors, \code{N.allspmd} and \code{new.N.allspmd}.  
 
-The \code{send} records the original rank and the belonging rank of
-``unbalanced'' data matrix.
-The \code{load.balance()} uses this table to \code{isend} data.
-If any belonging rank is not the original rank, then the corresponding
-entire rows will be sent to where they should belong.
+Here, \code{send} records the original processor rank and the destination processor rank of the unbalanced data (that which is to be transmitted by that processor).
+The \code{load.balance()} function uses this table to move the data via \pkg{pbdMPI}'s \code{isend()} function.
+If any ``destination rank'' is not the ``original rank'', then the corresponding data row will be moved to the appropriate processor.  On the other hand, \code{recv} records the original processor rank and the destination rank of balanced data (that which is received by that processor).
 
-The \code{recv} also records the original rank and the belonging rank of
-``balanced'' data matrix.
-The \code{load.balance()} uses this table to \code{recv} data.
-If any original rank is not the current rank, then the corresponding
-entire rows will be received from where they original rank.
+The \code{N.allspmd} and \code{new.N.allspmd} objects both have length equal to the communicator containing all numbers of rows of \code{X.spmd} before and after the balancing. This is for double checking and avoiding a 0-row matrix issue.
 
-The \code{N.allspmd} and \code{new.N.allspmd} both have length equals to
-\code{comm.rank(comm)} containing all numbers of rows of \code{X.spmd}
-before and after balanced. This is for double checking and avoiding 0-row
-matrix issue.
-
-For \code{unload.balance}, the process is just a little bit tricky by reversing
-\code{bal.info} and passing it to \code{load.balance}.
+For \code{unload.balance}, the process amounts to reversing \code{bal.info} and passing it to \code{load.balance}.
 
 
 
