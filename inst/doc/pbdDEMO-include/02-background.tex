@@ -16,7 +16,7 @@ We will not use this suffix to denote a global object common to all processors. 
 
 On that note, depending on your requirements in distributed computing with \proglang{R}, it may be beneficial to you to use higher pbdR toolchain.  If you need to perform dense matrix operations, or statistical analyses which depend heavily on matrix algebra (linear modeling, principal components analysis, \dots), then the \pkg{pbdBASE} and \pkg{pbdDMAT} packages are a natural choice.  The major hurdle to using these tools is getting the data into the appropriate \code{ddmatrix} format, although we provide many tools to ease the pains of doing so.  Learning how to use these packages can greatly improve code performance, and take your statistical modeling in \proglang{R} to previously unimaginable scales.
 
-Again for the sake of understanding, we will at times append the suffix \code{.dmat} to objects of class \code{ddmatrix}.  As with \code{.spmd}, this carries no semantic meaning, and is merely used to improve the readability of example code (especially when managing both ``\code{.spmd}'' and \code{ddmatrix} objects).
+Again for the sake of understanding, we will at times append the suffix \code{.dmat} to objects of class \code{ddmatrix} to differentiate them from the more general \code{.spmd} object.  As with \code{.spmd}, this carries no semantic meaning, and is merely used to improve the readability of example code (especially when managing both ``\code{.spmd}'' and \code{ddmatrix} objects).
 
 
 

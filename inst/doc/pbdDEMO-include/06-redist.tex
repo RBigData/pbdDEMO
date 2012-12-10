@@ -4,6 +4,7 @@
 One final challenge similar to, but distinct from reading in data is managing data which has already been read into the R processes.  Throughout this chapter, we will be making reference to several particulars to the block-cyclic data type used for objects of class \code{ddmatrix}.  As such, the reader is \emph{strongly} encouraged to be familiar with the content of the \pkg{pbdBASE} vignette before proceeding.
 
 \section{Distributed Matrix Redistributions}
+\label{sec:dmatredist}
 
 \emph{Example:  Convert between different distributed matrix distributions.}
 
@@ -26,7 +27,7 @@ For example, if I have a distributed matrix \code{dx} and I wish to reshape the 
 dy <- redistribute(dx, bldim=newbldim, ICTXT=newCTXT)
 \end{lstlisting}
 
-
+Assuming the data is block cyclic of \emph{any} kind, including degenerate cases, we can convert it to a block cyclic format of any other kind we wish via this \code{redistribute()} function.  The only requirement is that the two different distributions have at least 1 processor in common, and so using the default BLACS contexts (0, 1, and 2) is always acceptable.
 
 
 
@@ -115,9 +116,8 @@ $
 \caption{
 $\bX$ is distributed in
 \code{X.spmd}(\code{org.X.spmd}) and \code{new.X.spmd}.
-Both are distributed by row in 4 processors
-where colors represents processor {\color{p0}0},
-{\color{p1}1}, {\color{p2}2}, and {\color{p3}3}.
+Both are distributed row-wise in 4 processors.  The colors represent processors {\color{p0}0},
+{\color{p1}1}, {\color{p2}2}, and {\color{p3}3}, respectively.
 }
 \end{figure}
  
@@ -128,7 +128,7 @@ Here, \code{send} records the original processor rank and the destination proces
 The \code{load.balance()} function uses this table to move the data via \pkg{pbdMPI}'s \code{isend()} function.
 If any ``destination rank'' is not the ``original rank'', then the corresponding data row will be moved to the appropriate processor.  On the other hand, \code{recv} records the original processor rank and the destination rank of balanced data (that which is received by that processor).
 
-The \code{N.allspmd} and \code{new.N.allspmd} objects both have length equal to the communicator containing all numbers of rows of \code{X.spmd} before and after the balancing. This is for double checking and avoiding a 0-row matrix issue.
+The \code{N.allspmd} and \code{new.N.allspmd} objects both have length equal to the communicator containing all numbers of rows of \code{X.spmd} before and after the balancing, respectively. This is for double checking and avoiding a 0-row matrix issue.
 
 For \code{unload.balance}, the process amounts to reversing \code{bal.info} and passing it to \code{load.balance}.
 
@@ -149,35 +149,34 @@ The demo command is
 mpiexec -np 4 Rscript -e "demo(spmd_dmat,'pbdDEMO',ask=F,echo=F)"
 \end{Command}
 
-As usual serial \proglang{R}, it is intuitively to read data in parallel
-for each processor. We assume the input method is in SPMD to yield
-data in \code{X.spmd}, and convert it into \code{ddmatrix}
-format in \code{X.dmat}, then convert again to a \proglang{R}
+The final redistribution challenge we will present is taking an object in SPMD format and putting it in the DMAT format.  More precisely, we assume the input object \code{X.spmd} is in SPMD and transfer the convert the object into an object of class \code{ddmatrix} which we will call \code{X.dmat}.  
+
+, then convert again to a \proglang{R}
 object in \code{X} which is common on all processors, as in the next.
-The Figure~\ref{fig:spmd_dmat} illustates an \code{X.spmd} and \code{X.dmat} conversion.  For more details about the block-cyclic data format used for class \code{ddmatrix}, see the \pkg{pbdBASE} vignette.
+
+
+
+The Figure~\ref{fig:spmd_dmat} illustates an example \code{X.spmd} and \code{X.dmat} conversion.  For full details about the block-cyclic data format used for class \code{ddmatrix}, see the \pkg{pbdBASE} vignette.  
+
+To perform such a redistribution, one simply needs to call:
 \begin{Code}[title=R Code]
 X.dmat <- spmd2dmat(X.spmd)
-X <- as.matrix(X.dmat)
-new.X.spmd <- dmat2spmd(X.dmat)
 \end{Code}
-Note that we also provide a reversed function \code{dmat2spmd} for
-\code{spmd2dmat}.
-
+or
+\begin{Code}[title=R Code]
+X.spmd <- dmat2spmd(X.dmat)
+\end{Code}
 Here, the \code{spmd2dmat} function does the following:
 \begin{enumerate}
-\item Check numbers of columns of \code{X.spmd}, all
-      processors should be the same.
-\item Row balance the SPMD matrix, since number of rows of
-      \code{X.spmd} may vary in different processors.
-\item Call \code{new} on the balanced matrix to yield a \code{ddmatrix} object,
-      says \code{X.dmat}, in block context 2 (\code{ICTXT = 2}).
-\item Convert the \code{X.dmat} to other block contexts
-      (default\code{ICTXT = 0}) via \code{base.reblock}.
+\item Check numbers of columns of \code{X.spmd}.  All
+      processors should be roughly the same.
+\item Row balance the SPMD matrix as necessary via \code{load.balance()} as in Section~\ref{sec:lb_ub}.
+\item Call construct a new ddmatrix object (via the \code{new()} constructor) on the balanced matrix,
+      say \code{X.dmat}, in BLACS context 2 (\code{ICTXT = 2}).
+\item Redistribute \code{X.dmat} to another BLACS context as needed 
+      (default \code{ICTXT = 0}) via \code{base.reblock()} as in Section~\ref{sec:dmatredist}.
 \end{enumerate}
-Note that the first step is done by the \code{load.balance} function
-(Section~\ref{sec:lb_ub})
-which is particular useful to balance SPMD matrix and yield performance
-even the matrix is not in block-cyclic format.
+Note that the \code{load.balance()} function, as used above, is legitimately necessary here.  Indeed, this function takes a collection of distributed data and converts it into a degenerate block cyclic distribution; namely, this places the data in block ``1-cycle'' format, distributed across an $n\times 1$ processor grid.  In the context of Figure~\ref{fig:spmd_dmat} (where the aforementioned process is implicit), this is akin to first moving the data into a distributed matrix format with \code{bldim=c(3,3)} and \code{CTXT=2}.  Finally, we can take this degenerate block-cyclic distribution and again to Figure~\ref{fig:spmd_dmat} as our motivating example, we convert the data balanced data so that it has \code{bldim=c(2,2)} and \code{CTXT=0}.
 
 \begin{figure}
 \label{fig:spmd_dmat}
