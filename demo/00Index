@@ -17,3 +17,4 @@ reblock			pbdDEMO		Fiddle with ddmatrix blocking parameters.
 
 verify			pbdDEMO		Solve a large system and verify the solution.
 pca				pbdDEMO		Principal Components Analysis
+ols_dmat	pbdDEMO		Ordinary least squares with pbdDMAT.

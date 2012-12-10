@@ -31,7 +31,7 @@ where $0\leq L\leq N$ is the number of observations sampled satisfying
 \begin{align}
 x_i^2+y_i^2 \leq 1\label{math:circle}
 \end{align}
-The intuitive explanation for this is strategy which is sometimes given belies a misunderstanding of infinite cardinalities, and infinite processes in general.  We are not \emph{directly} approximating an area through this sampling scheme, because to do so with points would be madness requiring a transfinite process.  Indeed, let $S_N$ be the collection of elements satisfying (\ref{math:circle}).  Then note that for each $N\in\mathbb{N}$ that the area of $S_N$ is precisely 0.  Whence,
+The intuitive explanation for this is strategy which is sometimes given belies a misunderstanding of infinite cardinalities, and infinite processes in general.  We are not \emph{directly} approximating an area through this sampling scheme, because to do so with a finite-point sampling scheme would be madness requiring a transfinite process.  Indeed, let $S_N$ be the collection of elements satisfying inequality~(\ref{math:circle}).  Then note that for each $N\in\mathbb{N}$ that the area of $S_N$ is precisely 0.  Whence,
 \begin{align*}
 \lim_{N\rightarrow\infty} Area(S_N) = 0
 \end{align*}
@@ -271,7 +271,7 @@ The classical Maximum Likelihood solution is given by:
 This example can be also generalized to weighted least square (WLS),
 and linear mixed effect models (LME).
 
-The implementation is straight forward as
+The implementation is straight forward:
 \begin{lstlisting}[language=rr,title=R Code]
 mpi.ols <- function(y.spmd, X.spmd){
   if(length(y.spmd) != nrow(X.spmd)){

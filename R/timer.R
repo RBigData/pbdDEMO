@@ -1,4 +1,4 @@
-demo.timer <- function(timed)
+timer <- function(timed)
 {
   ltime <- system.time(timed)[3]
   barrier()
@@ -10,5 +10,3 @@ demo.timer <- function(timed)
   
   return( c(min=mintime, mean=meantime, max=maxtime) )
 }
-
-timer <- demo.timer

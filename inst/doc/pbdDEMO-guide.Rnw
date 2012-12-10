@@ -2,7 +2,10 @@
 \usepackage[margin=1.1in]{geometry}
 
 % Style and settings
-\input{style.tex}
+\input{pbdDEMO-include/style.tex}
+
+%%% Required by R CMD check
+%\VignetteIndexEntry{pbdDEMO-Guide}
 
 \title{\Huge Programming with Big Data in \proglang{R}\\[.3cm]
 {\LARGE Package Examples and Demonstrations}}

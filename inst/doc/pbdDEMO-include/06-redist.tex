@@ -174,7 +174,7 @@ Here, the \code{spmd2dmat} function does the following:
 \item Call construct a new ddmatrix object (via the \code{new()} constructor) on the balanced matrix,
       say \code{X.dmat}, in BLACS context 2 (\code{ICTXT = 2}).
 \item Redistribute \code{X.dmat} to another BLACS context as needed 
-      (default \code{ICTXT = 0}) via \code{base.reblock()} as in Section~\ref{sec:dmatredist}.
+      (default \code{ICTXT = 0}) via the \code{base.reblock()} function as in Section~\ref{sec:dmatredist}.
 \end{enumerate}
 Note that the \code{load.balance()} function, as used above, is legitimately necessary here.  Indeed, this function takes a collection of distributed data and converts it into a degenerate block cyclic distribution; namely, this places the data in block ``1-cycle'' format, distributed across an $n\times 1$ processor grid.  In the context of Figure~\ref{fig:spmd_dmat} (where the aforementioned process is implicit), this is akin to first moving the data into a distributed matrix format with \code{bldim=c(3,3)} and \code{CTXT=2}.  Finally, we can take this degenerate block-cyclic distribution and again to Figure~\ref{fig:spmd_dmat} as our motivating example, we convert the data balanced data so that it has \code{bldim=c(2,2)} and \code{CTXT=0}.
 
