@@ -306,3 +306,78 @@ where $\Sigma^+$ is the Moore-Penrose pseudoinverse of $\Sigma$.  However, this 
 The method utilizing QR to find a minimum norm solution has been implemented in \pkg{pbdDMAT} for objects of class \code{ddmatrix}.  For larger problems, and especially those where numerical accuracy is important, it may be more convenient to simply convert \code{y.spmd} and \code{X.spmd} into block-cyclic format as in the Part~\ref{part:dmat} and
 to utilize \pkg{pbdBASE} and \pkg{pbdDMAT} for all matrix computation.
 
+
+\section{Distributed Logic}
+
+\emph{Example:  Manage comparisons across all MPI processes.}
+
+The demo command is
+\begin{lstlisting}
+### At the shell prompt, run the demo with 4 processors by
+### (Use Rscript.exe for windows system)
+mpiexec -np 4 Rscript -e "demo(comparators,'pbdDEMO',ask=F,echo=F)"
+\end{lstlisting}
+
+This final MPI example is not statistical in nature, but is very useful all the same, and so we include it here.  The case frequently arises where the MPI programmer will need to do logical comparisons across all processes.  The idea is to extend the very handy \code{all()} and \code{any()} base \proglang{R} functions to operate similarly on distributed logicals.
+
+You could do this directly.  Say you want to see if any processes have \code{TRUE} stored in the variable \code{localLogical}.  This amounts to something on the order of:
+\begin{lstlisting}[language=rr,title=R Code]
+globalLogical <- as.logical(allreduce(localLogical, op='max')
+\end{lstlisting}
+Or you can use the function \code{comm.any()} from \pkg{pbdMPI}:
+\begin{lstlisting}[language=rr,title=R Code]
+globalLogical <- comm.any(localLogical)
+\end{lstlisting}
+which essentially does the same thing, but is more concise.  Likewise, there is a \code{comm.all()} function, which in the equivalent ``long-form'' above would use \code{op='min'}.	
+
+The demo for these functions consists of two parts.  For the first, we do a simple demonstration of how these functions behave:
+\begin{lstlisting}[language=rr,title=R Code]
+rank <- comm.rank()
+
+comm.cat("\ntest value:\n", quiet=T)
+test <- (rank > 0)
+comm.print(test, all.rank=T, quiet=T)
+
+comm.cat("\ncomm.all:\n", quiet=T)
+test.all <- comm.all(test)
+comm.print(test.all, all.rank=T, quiet=T)
+
+comm.cat("\ncomm.any:\n", quiet=T)
+test.any <- comm.any(test)
+comm.print(test.any, all.rank=T, quiet=T)
+\end{lstlisting}
+which should have the output:
+\begin{lstlisting}[language=sh]
+test value:
+[1] FALSE
+[1] TRUE
+[1] TRUE
+[1] TRUE
+
+comm.all:
+[1] FALSE
+[1] FALSE
+[1] FALSE
+[1] FALSE
+
+comm.any:
+[1] TRUE
+[1] TRUE
+[1] TRUE
+[1] TRUE
+\end{lstlisting}
+
+The demo also has another use case which could be very useful to a developer.  You may be interested in trying something on only one processor and then shutting down all MPI processes if problems are encountered.  To do this in SPMD style, you can create a variable on all processes to track whether a problem has been encountered.  Then after critical code sections, use \code{comm.any()} to update and act appropriately.  A very simple example is provided below.
+
+\begin{lstlisting}[language=rr,title=R Code]
+need2stop <- FALSE
+
+if (rank==0){
+  need2stop <- TRUE
+}
+
+need2stop <- comm.any(need2stop)
+
+if (need2stop)
+  stop("Problem :[") 
+\end{lstlisting}
