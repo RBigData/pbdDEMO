@@ -2,7 +2,8 @@ monte_carlo		pbdDEMO		Simple Monte Carlo for pi.
 sample_stat		pbdDEMO		Simple statistics.
 binning			pbdDEMO		Simple binning.
 quantile		pbdDEMO		Simple quantile.
-ols				pbdDEMO		Simple ordinary least square estimate.
+ols					pbdDEMO		Simple ordinary least square estimate.
+comparators	pbdDEMO		Example of comm.any() and comm.all().
 
 randmat_global	pbdDEMO		Generate random matrices by global dimension.
 randmat_local	pbdDEMO		Generate random matrices by local dimension.
