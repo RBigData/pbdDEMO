@@ -25,8 +25,25 @@ The demo command is
 mpiexec -np 4 Rscript -e "demo(sample_stat_dmat,'pbdDEMO',ask=F,echo=F)"
 \end{Command}
 
-Returning to the sample statistics problem from Section~\ref{sec:sample_stat}, we can solve these same problems~--- and then some~--- using distributed matrices.
+Returning to the sample statistics problem from Section~\ref{sec:sample_stat}, we can solve these same problems~--- and then some~--- using distributed matrices.  For the remainder, suppose we have a distributed matrix \code{dx}.
 
+Computing a mean is simple enough.  We need only call
+\begin{lstlisting}[language=rr,title=Summary Statistics]
+mean(dx)
+\end{lstlisting}
+We also have access to the other summary statistics methods for matrices, however, such as \code{rowSums()}, \code{rowMeans()}, etc.  Furthermore, we can calculate variances for distributed matrices.  Constructing the variance-covariance matrix is as simple as calling
+\begin{lstlisting}[language=rr,title=Summary Statistics]
+cov(dx)
+\end{lstlisting}
+Or we could generate standard deviations column-wise, using the method \proglang{R} suggests for ordinary matrices using \code{apply()}
+\begin{lstlisting}[language=rr,title=Summary Statistics]
+apply(dx, MARGIN=2, FUN=sd)
+\end{lstlisting}
+or we could simply call
+\begin{lstlisting}[language=rr,title=Summary Statistics]
+sd(dx)
+\end{lstlisting}
+In \proglang{R}, calling \code{sd()} on a matrix issues a warning, telling the user to instead use \code{apply()}.  Either of these approaches works with a distributed matrix (with the code as above), but for us, using \code{sd()} is preferred.  This is because, as outlined in Section~\ref{sec:implicitredist}, our \code{apply()} method carries an implicit data redistribution with it, while the \code{sd()} method is fast, ad-hoc code which requires no redistribution of the data.
 
 
 

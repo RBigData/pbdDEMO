@@ -13,18 +13,28 @@
 \author{
 \begin{minipage}{\textwidth}
 \centering
+%
+Team pbdR\\[.8cm]
+%
 Drew Schmidt, M.Sc.\\
 {\small\emph{Remote Data Analysis and Visualization Center,\\
 University of Tennessee, Knoxville}}\\[.4cm]
+%%%
 Wei-Chen Chen, Ph.D.\\
 {\small\emph{Computer Science and Mathematics Division, \\
 Oak Ridge National Laboratory}}\\[.4cm]
+%%%
 George Ostrouchov, Ph.D.\\
 {\small\emph{Computer Science and Mathematics Division, \\
 Oak Ridge National Laboratory}}\\[.4cm]
+%%%
 Pragneskumar Patel, M.Sc.\\
 {\small\emph{Remote Data Analysis and Visualization Center,\\
 University of Tennessee, Knoxville}}
+%
+\\[2.5in]
+Version 1.0
+%
 \end{minipage}
 }
 
@@ -36,10 +46,26 @@ University of Tennessee, Knoxville}}
 \date{}
 \maketitle
 
+%%%%%%%%%%%%%%%%%
+\ \vfill
+
+\copyright\ 2012 Team pbdR.
+
+Permission is granted to make and distribute verbatim copies of this vignette and its source provided the copyright notice and this permission notice are preserved on all copies.
+
+This publication was typeset using \LaTeX.  The illustrations were created using the \pkg{ggplot2} package \citep{ggplot2}, except for Figure~\ref{fig:pbdrpackages}, which was created in Microsoft Powerpoint.
+
+%%%%%%%%%%%%%%%%%
+
 \pagenumbering{roman}
+\newpage
+\fancyhf[C]{CONTENTS}
+\fancyhf[R]{\thepage }
+\fancyfoot{}
 \tableofcontents
 
 \newpage
+\fancyhf[C]{}
 \input{./pbdDEMO-include/00-acknowledgement}
 
 \newpage
