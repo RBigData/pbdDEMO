@@ -10,6 +10,28 @@ The \pkg{pbdDMAT} package contains many useful methods for doing computations wi
 
 Here we showcase a few more advanced things that can be done by chaining together \proglang{R} and pbdR code seamlessly.
 
+
+
+
+
+\section{Sample Mean and Variance Revisited}
+
+\emph{Example:  Get summary statistics from a distributed matrix.}
+
+The demo command is
+\begin{Command}
+### At the shell prompt, run the demo with 4 processors by
+### (Use Rscript.exe for windows system)
+mpiexec -np 4 Rscript -e "demo(sample_stat_dmat,'pbdDEMO',ask=F,echo=F)"
+\end{Command}
+
+Returning to the sample statistics problem from Section~\ref{sec:sample_stat}, we can solve these same problems~--- and then some~--- using distributed matrices.
+
+
+
+
+
+
 \section{Verification of Distributed System Solving}
 
 \emph{Example:  Solve a system of equations and verify that the solution is correct.}

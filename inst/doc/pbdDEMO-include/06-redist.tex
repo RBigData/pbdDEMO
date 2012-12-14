@@ -33,6 +33,75 @@ Assuming the data is block cyclic of \emph{any} kind, including degenerate cases
 
 
 
+\section{Implicit Redistributions}
+
+There are several useful functions which apply to distributed matrices, but require a data redistribution as in Section~\ref{sec:redist}, whether the user realizes it or not.
+\begin{table}[h]
+\centering
+\begin{tabular}{llll}\hline\hline
+\textbf{Function} & \textbf{Example} & \textbf{Package} & \textbf{Effect}\\\hline
+\code{`[`} & \code{dx[, -1]} & \pkg{pbdBASE} & Row/Column extraction and subsetting\\
+\code{na.exclude()} & \code{na.exclude(dx)} & \pkg{pbdBASE} & Drop rows with \code{NA}'s\\
+\code{apply()} & \code{apply(dx, 2, sd)} & \pkg{pbdDMAT} & Applies function to margin\\ \hline\hline
+\end{tabular}
+\caption{Distributed Matrix Methods with Implicit Data Redistributions}
+\label{tab:implicitredist}
+\end{table}
+These functions are listed in Table~\ref{tab:implicitredist}.  By default, these functions will re-distribute back to the original data distribution after having performed the initial (necessary) re-distribution and performed the requested operations.  That is, by default, the problem of managing different data distributions is hidden from the user and entirely implicit.  However, there are advantages to becoming familiar with managing these data distributions, because each of these functions has the option to have redistribution directly managed.  Now, a data re-distribution must occur to use these functions, but understanding which and why can help minimize the number of re-distributions performed.
+
+Many of the full details, such as \emph{why} the re-distributions need occur in the first place, are outlined in the \pkg{pbdBASE} vignette, but we provide a simple example here.  Suppose we have a distributed matrix \code{dx} distributed on the default grid (i.e., BLACS context 0) and we wish to drop the first column and then use the \code{apply()} function to extract the p-values, column-wise, of the result of running the Shapiro-Wilk normality test independently on the columns.  No one is claiming that this is a wise thing to do, but it is useful for the purpose of demonstration.
+
+To achieve this, we could execute the following:
+
+\begin{lstlisting}[language=rr,title=Implicit Redistributions]
+dx <- dx[-1, ]
+
+result <- apply(dx, MARGIN=2, FUN=function(col) shapiro.test(col)$p, reduce=TRUE)
+\end{lstlisting}
+
+In reality, underneath this is actually performing the following sequence of operations:
+
+\begin{lstlisting}[language=rr,title=Implicit Redistributions]
+dx <- redistribute(dx, ICTXT=2)
+dx <- dx[, -1]
+dx <- redistribute(dx, ICTXT=0)
+
+dx <- redistribute(dx, ICTXT=2)
+result <- apply(dx, MARGIN=2, FUN=function(col) shapiro.test(col)$p, reduce=TRUE)
+\end{lstlisting}
+
+Or suppose we wanted instead to drop the first column; then this is equivalent to
+
+\begin{lstlisting}[language=rr,title=Implicit Redistributions]
+dx <- redistribute(dx, ICTXT=1)
+dx <- dx[, -1]
+dx <- redistribute(dx, ICTXT=0)
+
+dx <- redistribute(dx, ICTXT=2)
+result <- apply(dx, MARGIN=2, FUN=function(col) shapiro.test(col)$p, reduce=TRUE)
+\end{lstlisting}
+
+The problem should be obvious.  However, thoroughly understanding the problem, we can easily manage the data re-distributions using the \code{ICTXT=} option in these function.  So for example, we can minimize the re-distributions to only the minimal necessary amount with the following:
+
+\begin{lstlisting}[language=rr,title=Implicit Redistributions]
+dx <- dx[, -1, ICTXT=2]
+
+result <- apply(dx, MARGIN=2, FUN=function(col) shapiro.test(col)$p, reduce=TRUE)
+\end{lstlisting}
+
+This is equvalent to explicitly calling:
+
+\begin{lstlisting}[language=rr,title=Implicit Redistributions]
+dx <- redistribute(dx, ICTXT=2)
+dx <- dx[, -1, ICTXT=2]
+
+result <- apply(dx, MARGIN=2, FUN=function(col) shapiro.test(col)$p, reduce=TRUE)
+\end{lstlisting}
+
+This is clearly preferred.  For more details, see the relevant function documentation.
+
+
+
 
 \section[Load Balance and Unload Balance]{Load Balance and Unload Balance}
 \label{sec:lb_ub}

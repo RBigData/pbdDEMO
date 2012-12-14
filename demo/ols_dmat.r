@@ -1,4 +1,12 @@
-library(pbdDEMO, quiet=TRUE)
+### SHELL> mpiexec -np 4 Rscript --vanilla [...].r
+
+### Initial MPI.
+library(pbdDEMO, quiet = TRUE)
+init.grid()
+if(comm.size() != 4){
+  stop("This example requries 4 processors.")
+}
+
 
 init.grid()
 

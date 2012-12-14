@@ -30,7 +30,7 @@ Figure~\ref{fig:pbdrpackages} shows the current state of pbdR packages and how t
 In this vignette, we offer many examples using the above pbdR packages.  Many of the examples are high-level
 applications and may be commonly found in basic Statistics.  The purpose is to show how to reuse the pre-existing functions and utilities of pbdR to create minor extensions which can quickly solve problems in an efficient way.  The reader is encouraged to reuse and repurpose these functions.
 
-The \pkg{pbdDEMO} package consists of two main parts.  The first is a collection of roughly 15 package demos.  These offer example uses of the various pbdR packages.  The second is this vignette, which attempts to offer detailed explanations for the demos, as well as sometimes providing some mathematical or statistical insight.  A list of all of the package demos can be found in Section~\ref{sec:demolist}.
+The \pkg{pbdDEMO} package consists of two main parts.  The first is a collection of roughly 20 package demos.  These offer example uses of the various pbdR packages.  The second is this vignette, which attempts to offer detailed explanations for the demos, as well as sometimes providing some mathematical or statistical insight.  A list of all of the package demos can be found in Section~\ref{sec:demolist}.
 
 
 
@@ -120,6 +120,8 @@ mpiexec -np 4 Rscript -e "demo(reblock, package='pbdDMAT', ask=F, echo=F)"
 		  # ----------------------------- #
 
 ### Chapter 9
+# Sample statistics revisited
+mpiexec -np 4 Rscript -e "demo(sample_stat_dmat, package='pbdDMAT', ask=F, echo=F)"
 # Verify solveing Ax=b at scale
 mpiexec -np 4 Rscript -e "demo(verify, package='pbdDMAT', ask=F, echo=F)"
 # PCA compression
