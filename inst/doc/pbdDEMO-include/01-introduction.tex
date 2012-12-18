@@ -9,14 +9,15 @@
 
 \section{What is pbd?}
 
-The ``Programming with Big Data in R'' project~\citep{pbdR2012} (pbd or pbdR for short) is a project that aims to elevate the statistical programming language \proglang{R}~\citep{Rcore} to leadership-class computing platforms.  
+The ``Programming with Big Data in R'' project~\citep{pbdR2012} (pbd or pbdR for short) is a project that aims to elevate the statistical programming language \proglang{R}~\citep{Rcore} to leadership-class computing platforms.  The main goal is empower data scientists by bringing flexibility and a big analytics toolbox to big data challenges, with an emphasis on productivity, portability, and performance.  We achieve this in part by mapping high-level programming syntax to portable, high-performance, scalable, parallel libraries.
+
 \begin{figure}[t]
  \centering
  \includegraphics[scale=.45]{pbdDEMO-include/pics/pbdR}
  \caption{pbdR Packages and Their Relationships with Scalable Libraries}
  \label{fig:pbdrpackages}
 \end{figure}
-Figure~\ref{fig:pbdrpackages} shows the current state of pbdR packages and how they utilize proven, high-performance, scalable libraries and visualization tools.  More explicitly, the current pbdR packages are:
+Figure~\ref{fig:pbdrpackages} shows the current state of pbdR packages and how they utilize high-performance libraries.  More explicitly, the current pbdR packages are:
 
 \begin{itemize}
  \item \pkg{pbdMPI} --- an efficient interface to MPI with a focus on Single Program/Multiple Data (SPMD) parallel programming style.
@@ -122,7 +123,7 @@ mpiexec -np 4 Rscript -e "demo(reblock, package='pbdDMAT', ask=F, echo=F)"
 ### Chapter 9
 # Sample statistics revisited
 mpiexec -np 4 Rscript -e "demo(sample_stat_dmat, package='pbdDMAT', ask=F, echo=F)"
-# Verify solveing Ax=b at scale
+# Verify solving Ax=b at scale
 mpiexec -np 4 Rscript -e "demo(verify, package='pbdDMAT', ask=F, echo=F)"
 # PCA compression
 mpiexec -np 4 Rscript -e "demo(pca, package='pbdDMAT', ask=F, echo=F)"

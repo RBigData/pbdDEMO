@@ -1,7 +1,7 @@
 \chapter{Redistribution Methods}
 \label{sec:redist}
 
-One final challenge similar to, but distinct from reading in data is managing data which has already been read into the R processes.  Throughout this chapter, we will be making reference to several particulars to the block-cyclic data type used for objects of class \code{ddmatrix}.  As such, the reader is \emph{strongly} encouraged to be familiar with the content of the \pkg{pbdBASE} vignette before proceeding.
+One final challenge similar to, but distinct from reading in data is managing data which has already been read into the R processes.  Throughout this chapter, we will be making reference to several particulars to the block-cyclic data type used for objects of class \code{ddmatrix}.  In particular, a working knowledge of the block-cyclic data structure and their relationship with BLACS contexts is most useful for the content to follow.  As such, the reader is \emph{strongly} encouraged to be familiar with the content of the \pkg{pbdBASE} vignette before proceeding.
 
 \section{Distributed Matrix Redistributions}
 \label{sec:dmatredist}
@@ -15,7 +15,7 @@ The demo command is
 mpiexec -np 4 Rscript -e "demo(reblock,'pbdDEMO',ask=F,echo=F)"
 \end{Command}
 
-The distributed matrix class \code{ddmatrix} has two components which can be specified, and modified, by the user to drastically affect the composition of the distributed matrix.  In particular, these are the object's block-cyclic blocking factor \code{bldim}, and the BLACS communicator number \code{CTXT} which controls how the data is block-cycled across the 2-dimensional processor grid.  
+The distributed matrix class \code{ddmatrix} has two components which can be specified, and modified, by the user to drastically affect the composition of the distributed matrix.  In particular, these are the object's block-cyclic blocking factor \code{bldim}, and the BLACS communicator number \code{CTXT} which sets the 2-dimensional processor grid.  
 
 Thankfully, redistributing is a fairly simple process; though we would emphasize that \textbf{this is not free of cost}.  Reshaping data, especially at scale, can be much more expensive in total than even computation time.  That said, sometimes data must move.  It is better to get the job done slowly than to ``take your ball and go home'' with no results.  But we caution that if redistribution can be avoided, then it should, at all costs.
 
@@ -202,7 +202,7 @@ The \code{N.allspmd} and \code{new.N.allspmd} objects both have length equal to 
 
 For \code{unload.balance}, the process amounts to reversing \code{bal.info} and passing it to \code{load.balance}.
 
-
+Finally, note that the ``balanced'' data is chosen to be balanced in a very particular way; it is arguably not ``balanced'', since 3 processors own 3 rows while 1 owns 1 row, and it is perhaps more balanced to have 2 processors own 3 rows and 2 own 2.  However, we make this choice for the reason that our ``balanced'' data will always be a certain kind of degenerate block-cyclic structure.  We will discuss this at length in the following section.
 
 
 
@@ -238,8 +238,8 @@ X.spmd <- dmat2spmd(X.dmat)
 \end{Code}
 Here, the \code{spmd2dmat} function does the following:
 \begin{enumerate}
-\item Check numbers of columns of \code{X.spmd}.  All
-      processors should be roughly the same.
+\item Check number of columns of \code{X.spmd}.  All
+      processors should be the same.
 \item Row balance the SPMD matrix as necessary via \code{load.balance()} as in Section~\ref{sec:lb_ub}.
 \item Call construct a new ddmatrix object (via the \code{new()} constructor) on the balanced matrix,
       say \code{X.dmat}, in BLACS context 2 (\code{ICTXT = 2}).

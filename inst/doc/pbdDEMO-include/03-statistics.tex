@@ -37,7 +37,7 @@ The intuitive explanation for this is strategy which is sometimes given belies a
 \end{align*}
 This bears repeating.  Finite sampling of an uncountable space requires uncountably many such sampling operations to ``fill'' the infinite space.  For a proper treatment of set theoretic constructions, including infinite cardinals, see \citep{kunen}.
 
-One could argue that we are evaluating a ratio of integrals with each using the counting measure, which satisfies technical correctness but is far from clear.  Now yes, indeed, certain facts of area are involved here, but some care should be taken in the discussion as to what exactly justifies our claim in (\ref{eqn:pi}).
+One could argue that we are evaluating a ratio of integrals with each using the counting measure, which satisfies technical correctness but is far from clear.  Now indeed, certain facts of area are vital here, but some care should be taken in the discussion as to what exactly justifies our claim in (\ref{eqn:pi}).
 
 In reality, we are evaluating the probability that someone throwing a 0-dimensional ``dart'' at the unit square will have that ``dart'' also land below the arc of the unit circle contained within the unit square.  Formally, let $U_1$ and $U_2$ be random uniform variables, each from the closed unit interval $[0, 1]$.  Define the random variable
 \begin{align*}
@@ -72,7 +72,7 @@ Whence,
 \frac{L}{N}  \longrightarrow^{\hspace{-.55cm} a.s.} \hspace{.1cm} \frac{\pi}{4} \hspace{.4cm} \text{ as } N\rightarrow \infty
 \end{align*}
 
-But because no one is going to read that, and if they do they'll just call me a grumpy old man,
+But because no one is going to read that, and if they do they'll just call the author a grumpy old man,
 \begin{figure}[h]
 \centering
  \includegraphics[height=8.5cm, width=8.5cm]{pbdDEMO-include/pics/misleading}
@@ -93,7 +93,7 @@ comm.print(PI)
 In line 1, we specify sample size in \code{N.spmd} for each processor,
 and $N=D\times\mbox{\code{N.spmd}}$ if $D$ processors are executed.
 In line 2, we generate samples in \code{X.spmd} for every processor.
-In line 3, we compute how many of radios are less than or equal to $1$
+In line 3, we compute how many of the ``radii'' are less than or equal to $1$
 for each processors.
 In line 4, we call \code{allreduce()} to obtain total numbers across all
 processors.
@@ -132,7 +132,7 @@ s_x     &= \frac{1}{N - 1} \sum_{n = 1}^N (x_n - \bar{x})^2 \notag \\[.3cm]
 \end{align}
 where expressions (\ref{math:mn}) and (\ref{math:sd}) are one-pass algorithms,
 which are potentially faster than the first expressions,
-especially for large $N$. Here, only the first and second moments are implemented, while
+especially for large $N$.  However, this method of computing the variance in one pass can suffer from round-off errors, and so in general is not numerically stable.  We provide this here for demonstration purposes only.  Additionally, only the first and second moments are implemented, while
 the extension of one-pass algorithms to higher order moments is also
 possible.
 
@@ -184,7 +184,7 @@ mpi.bin <- function(x.spmd, breaks = pi / 3 * (-3:3)){
 } # End of mpi.bin().
 \end{lstlisting}
 This simple implementation utilizes \proglang{R}'s own \code{table()} function to obtain
-local counts, then calls \code{allreduce()} to obtain global counts.
+local counts, then calls \code{allreduce()} to obtain global counts on all processors.
 
 
 \section[Quantile]{Quantile}
@@ -199,11 +199,13 @@ The demo command is
 mpiexec -np 4 Rscript -e "demo(quantile,'pbdDEMO',ask=F,echo=F)"
 \end{lstlisting}
 
-Another fundamental tool in the statistician's toolbox is finding quantiles.  Quantiles are points taken from the cumulative distribution function which are taken in evenly-spaced periods.  The most common usage is the ``2-quantile'', or the median, though others are of course many others which are useful in summarizing distributions.
+Another fundamental tool in the statistician's toolbox is finding quantiles.  Quantiles are points taken from the cumulative distribution function.  Formally, a $q$-quantile (or ``$q$-tile'') with $q \in [0, 1]$ of a random variable $X$ is any value $\theta_q$ such that
+\begin{align*}
+P(X\leq \theta_q) = q
+\end{align*}
+In the case of a continuous random variable, this value exists and is unique.  Often, we define the $k$'th $q$-quantile, which we take as above, with the modification that $P(X\leq \theta_q) = kq$, where we think of sub-dividing the interval $[0,1]$ into $q-1$ almost-evenly spaced subsets.  The likely the reason for this more general definition is that arguably the most common use of quantiles is in constructing Q-Q plots, where this scheme is necessary.  Additionally, some authors instead take $q\in(0, \infty)$, so that, for example, in the above notation the $0.5$-quantile (the median) becomes the ``2-quantile.''
 
-This example can be extended to construct Q-Q plots, compute cumulative density function estimates and nonparametric statistics, as well as solve maximum likelihood estimators.
-
-This is perhaps an inefficient implementation to approximate a quantile and is not equivalent to the original \code{quantile()} function in
+This example can be extended to construct Q-Q plots, compute cumulative density function estimates and nonparametric statistics, as well as solve maximum likelihood estimators.  This is perhaps an inefficient implementation to approximate a quantile and is not equivalent to the original \code{quantile()} function in
 \proglang{R}. But in some sense, it should work well at a large scale.
 The demo generates random data on 4 processors, then
 utilizes the \code{mpi.quantile()}:
@@ -226,7 +228,7 @@ mpi.quantile <- function(x.spmd, prob = 0.5){
 \end{lstlisting}
 Here, a numerical function is solved by using \code{uniroot()} to find out
 the appropriate value where the cumulative probability is less than
-or equal to the specified quantile.  This simple example shows that with just a little effort, direct MPI methods are greatly applicable on large scale data analysis and likelihood computing.
+or equal to the specified quantile.  Specifically, it finds the zero, or root, of the monotone \code{f.quantile()} function.  This simple example shows that with just a little effort, direct MPI methods are greatly applicable on large scale data analysis and likelihood computing.
 
 Note that in the way that the \code{uniroot()} call is used above, we are legitimately operating in parallel and on distributed
 data.  Other optimization functions such as \code{optim()} and \code{nlm()}
@@ -250,20 +252,20 @@ is perhaps \emph{the} fundamental tool of the statistician.  The goal is to find
 \begin{align}
 \ltwo{ \bX\bbeta - \by }^2 \label{math:lls}
 \end{align}
-which is minimized.  In statistics, we tend to prefer to think of the problem as being of the form
+is minimized.  In statistics, we tend to prefer to think of the problem as being of the form
 \begin{align}
 \by = \bX\bbeta + \bepsilon \label{math:statslls}
 \end{align}
 where $\by$ is $N\times 1$ observed vector,
-$\bX$ is $N\times p$ designed matrix which is full rank and $N >> p$,
+$\bX$ is $N\times p$ (possibly designed) matrix which is often assumed to have full rank (more on that later), and $N >> p$,
 $\bbeta$ is the insterested parameters and unknown to be estimated,
 and $\bepsilon$ is errors and to be minimized in norm.
 
-Note that above, we do indeed mean (in fact, stress) \emph{a} solution to the linear least squares problem.  The full story is somewhat complicated.  The short explanation is that for many applications a statistician will face, expression (\ref{math:lls}) will actually have a unique solution.  But this is not always the case.  Indeed, it may occur that there is an infinite family of solutions.  So typically we go further and demand that a solution $\bbeta$ be such that $\ltwo{\bbeta}$ is at least as small as the corresponding norm of any other solution (although even this does not guarantee uniqueness).
+Note that above, we do indeed mean (in fact, stress) \emph{a} solution to the linear least squares problem.  For many applications a statistician will face, expression (\ref{math:lls}) will actually have a unique solution.  But this is not always the case, and trouble often arises when the model matrix is rank-deficient.  Indeed, in this case it may occur that there is an infinite family of solutions.  So typically we go further and demand that a solution $\bbeta$ be such that $\ltwo{\bbeta}$ is at least as small as the corresponding norm of any other solution (although even this may not guarantee uniqueness).
 
 A properly thorough treatment of the problems involved here go beyond the scope of this document, and require the reader have in-depth familiarity with linear algebra.  For our purposes, the concise explanation above will suffice.
 
-The classical Maximum Likelihood solution is given by:
+In the full rank case, we can provide an analytical, ``closed-form'' solution to the problem.  In this case, the classical Maximum Likelihood solution is given by:
 \begin{align}
  \hat{\bbeta} = (\bX^T\bX)^{-1}\bX^T\by \label{math:ols}
 \end{align}
@@ -291,13 +293,22 @@ While this is a fine demonstration of the power of ``getting your hands dirty'',
 \begin{align*}
 \bX^T\bX
 \end{align*}
-is often numerically non-stable.  Instead, it is generally better (although much slower) to take an orthogonal factorization of the data matrix.  Typically, the QR-decomposition is used to this end.  Here $\bX=QR$, where $Q$ is orthogonal and $R$ is upper trapezoidal.  This is beneficial, because orthogonal matrices are norm-preserving, and whence
+squares the condition number
+
+is often numerically non-stable.  Instead, it is generally better (although much slower) to take an orthogonal factorization of the data matrix.  Typically, the QR-decomposition is used to this end.  Here $\bX=QR$, where $Q$ is orthogonal and $R$ is upper trapezoidal.  This is beneficial, because orthogonal matrices are norm-preserving, i.e. $Q$ is an isometry, and whence
 \begin{align*}
 \ltwo{\bX\bbeta - \by} &= \ltwo{QR\bbeta - \by}\\
   &= \ltwo{Q^TQR\bbeta - Q^T\by}\\
   &= \ltwo{R\bbeta - Q^T\by}
 \end{align*}
-The (arguably) much more well-known Singular Value Decomposition can also be used to develop yet another algebraically identical solution which is quite elegant.  Here, if we take $\bX = U\Sigma V^T$, then it can be shown that ``the'' desired solution is given by
+The (arguably) much more well-known Singular Value Decomposition can also be used to develop yet another algebraically identical solution which is quite elegant.  Here, if we take the \emph{reduced} (or \emph{compact}) SVD $\bX = U\Sigma V^T$ where here we only take the first $rank(\bX)$ singular values, then it can be shown that ``the'' desired solution is given by
+\begin{align*}
+\ltwo{\bX\bbeta - \by} &= \ltwo{U\Sigma V^T\bbeta - \by}\\
+  &= \ltwo{\Sigma V^T\bbeta - U^T\by}
+\end{align*}
+
+
+
 \begin{align*}
 \bbeta = V\Sigma^+ U^T\by
 \end{align*}

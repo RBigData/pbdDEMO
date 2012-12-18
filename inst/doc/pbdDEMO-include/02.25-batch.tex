@@ -1,6 +1,0 @@
-\chapter{SPMD Programming with R}
-
-Throughout this document, we will be using the ``Single Program/Multiple Data'', or SPMD, paradigm for distributed computing.  Writing programs in the SPMD style is a very natural way of doing computations in parallel, but can be somewhat difficult to properly describe.  As the name implies, only one program is written, but the different processors involved in the computation all execute the code independently on different portions of the data.  The process is arguably the most natural extension of running serial codes in batch.  
-
-Unfortunately, executing jobs in batch is a somewhat unknown way of doing business to the typical \proglang{R} user.  While details and examples about this process will be provided in the chapters to follow, the reader is encouraged to see the \pkg{pbdMPI} package's vignette~\citep{Chen2012pbdMPIvignette} first.  Ideally, readers should run the demos of the \pkg{pbdMPI} package,
-going through the code step by step.

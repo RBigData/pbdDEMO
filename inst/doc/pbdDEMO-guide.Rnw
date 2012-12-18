@@ -33,7 +33,7 @@ Pragneskumar Patel, M.Sc.\\
 University of Tennessee, Knoxville}}
 %
 \\[2.5in]
-Version 1.0
+Version 0.5
 %
 \end{minipage}
 }
@@ -49,7 +49,7 @@ Version 1.0
 %%%%%%%%%%%%%%%%%
 \ \vfill
 
-\copyright\ 2012 Team pbdR.
+\copyright\ 2012 Team pbdR.  All rights reserved.
 
 Permission is granted to make and distribute verbatim copies of this vignette and its source provided the copyright notice and this permission notice are preserved on all copies.
 
@@ -86,7 +86,6 @@ This publication was typeset using \LaTeX.  The illustrations were created using
 % intro
 \input{./pbdDEMO-include/01-introduction}
 \input{./pbdDEMO-include/02-background}
-\input{./pbdDEMO-include/02.25-batch}
 % spmd methods
 \input{./pbdDEMO-include/02.5-mpi}
 \input{./pbdDEMO-include/03-statistics}
