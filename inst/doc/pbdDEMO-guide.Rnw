@@ -14,7 +14,7 @@
 \begin{minipage}{\textwidth}
 \centering
 %
-Team pbdR\\[.8cm]
+The pbdR Core Team\\[.8cm]
 %
 Drew Schmidt, M.Sc.\\
 {\small\emph{Remote Data Analysis and Visualization Center,\\
@@ -33,7 +33,7 @@ Pragneskumar Patel, M.Sc.\\
 University of Tennessee, Knoxville}}
 %
 \\[2.5in]
-Version 0.5
+Version 1.0
 %
 \end{minipage}
 }
@@ -49,7 +49,7 @@ Version 0.5
 %%%%%%%%%%%%%%%%%
 \ \vfill
 
-\copyright\ 2012 Team pbdR.  All rights reserved.
+\copyright\ 2012 pbdR Core Team.  All rights reserved.
 
 Permission is granted to make and distribute verbatim copies of this vignette and its source provided the copyright notice and this permission notice are preserved on all copies.
 
@@ -95,7 +95,10 @@ This publication was typeset using \LaTeX.  The illustrations were created using
 \input{./pbdDEMO-include/06-redist}
 \input{./pbdDEMO-include/07-dmat_stats}
 % appendices
+\appendix
+\input{./pbdDEMO-include/appendix}
 
+%
 \newpage
 
 \makeatletter

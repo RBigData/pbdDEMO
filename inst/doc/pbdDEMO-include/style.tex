@@ -19,6 +19,14 @@
 
 
 \newcommand{\ltwo}[1]{\left|\left| #1 \right|\right|_2}
+\newcommand{\norm}[1]{\left|\left| #1 \right|\right|}
+
+
+\newcommand\mnote[1]{\marginpar{\vspace*{-.8cm}#1}}
+
+\newcommand\easy{\mnote{\LARGE\color{green} \textbf{Easy}}}
+\newcommand\medium{\mnote{\LARGE\color{yellow2} \textbf{Medium}}}
+\newcommand\hard{\mnote{\LARGE\color{red} \textbf{Hard}}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%% paragraph spacing
@@ -32,9 +40,12 @@
 \usepackage{xcolor}
 \usepackage{color}
 
+\definecolor{yellow2}{rgb}{1, .7, 0}
+
 \definecolor{mygreen}{RGB}{0,150,0}
 
 \definecolor{gray}{rgb}{.6,.6,.6}
+\definecolor{dkgray}{rgb}{.3,.3,.3}
 \definecolor{orange}{rgb}{1,0.5,0}
 \definecolor{grayish}{rgb}{.85, .85, .85}
 
@@ -61,23 +72,28 @@
 \usepackage{listings}
 
 \lstdefinelanguage{rr}{language=R, 
-                       basicstyle=\ttfamily\color{black}, 
+                      basicstyle=\ttfamily\color{black}, 
 % 		       backgroundcolor=\color{grayish}, 
-		       frame=single, 
-		       breaklines=true, 
+		      frame=single, 
+		      breaklines=true, 
                       keywordstyle=\color{blue},
 		      commentstyle=\color{dkgreen},
 		      stringstyle=\color{mauve},
-		      numbers=none,
+		      numbers=left,%none,
+		      numberstyle=\tiny\color{dkgray},
 		      stepnumber=1,       
-		      numbersep=6pt,      
+		      numbersep=8pt,      
 		      showspaces=false,      
 		      showstringspaces=false,  
 		      showtabs=false,     
 		      rulecolor=\color{gray},   
 		      tabsize=4,     
 		      captionpos=t,
-		      title=\lstname
+		      title=\lstname,
+		      escapechar=?
+% 		      escapeinside={(*@}{@*)},
+% 		      escapebegin={\begin{lrbox}{0}\minipage[t]{.3\linewidth}\raggedleft\normalfont\itshape\small\leavevmode\color{black!70}\ignorespaces},
+%                       escapeend={\endminipage\end{lrbox}\llap{\raisebox{0pt}[0pt][0pt]{\box0}\hspace{\comsep}}}
 } 
 
 
@@ -107,9 +123,7 @@
 \lstnewenvironment{CodeOutput}[1][title=R Output]{\lstset{#1}}{}
 \lstnewenvironment{Error}[1][]{
   \lstset{title=Error Message,basicstyle=\small\ttfamily}\color{Red}}{}
-
-
-
+  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%% Chapter headings
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

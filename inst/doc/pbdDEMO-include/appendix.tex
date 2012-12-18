@@ -1,0 +1,101 @@
+\chapter{Numerical Linear Algebra and Linear Least Squares Problems}
+\label{apx:numlinalg}
+
+For the remainder, assume that all matrices are real-valued.
+
+Let us revisit the problem of solving linear least squares problems, introduced in Section~\ref{sec:ols}.  Recall that we wish to find a solution $\bbeta$ such that
+\begin{align*}
+\ltwo{ \bX\bbeta - \by }^2
+\end{align*}
+In the case that $\bX$ is full rank (which is often assumed, whether reasonable or not), this has analytical solution
+\begin{align}
+ \hat{\bbeta} = (\bX^T\bX)^{-1}\bX^T\by \label{math:ols2}
+\end{align}
+However, even with this nice closed form, implementing this efficiently on a computer is not entirely straightforward.  Herein we discuss several of the issues in implementing the linear least squares solution efficiently.  For more details, see the classic \emph{Matrix Computations} \citep{gvl}.
+
+
+
+
+
+\section{Forming the Normal Equations}
+
+If we wish to implement this numerically, then we would first compute the Cholesky factorization
+\begin{align*}
+\bX^T\bX = LL^T
+\end{align*}
+where $L$ is lower triangular, and turning to the so-called ``normal equations''
+\begin{align}
+ \left(\bX^T\bX\right)\bbeta &= \bX^T\by\label{math:normeq}
+\end{align}
+by simple substitution and grouping, we have
+\begin{align*}
+L\left(L^T\bbeta\right) &= \bX^T\by
+\end{align*}
+Now, since $L$ is triangular, these
+%
+%
+%
+
+
+
+
+
+\section{Using the QR Factorization}
+Directly computing the normal equations is ill advised, because forming the product $\bX^T\bX$ squares the condition number of $\bX$, so that the product is often ill-conditioned.  Indeed,
+\begin{align*}
+\kappa\left(\bX^T\bX\right) &= \norm{\bX^T\bX}\norm{\left(\bX^T\bX\right)^{-1}}\\
+  &=\norm{\bX^T\bX} \norm{\bX^{-1}\left(\bX^T\right)^{-1}}\\
+  &=\norm{\bX^T} \norm{\bX} \norm{\bX^{-1}} \norm{\bX^{-T}}\\
+  &=\norm{\bX} \norm{\bX} \norm{\bX^{-1}} \norm{\bX^{-1}}\\
+  &= \norm{\bX}^2 \norm{\bX^{-1}}^2\\
+  &=\kappa(\bX)^2
+\end{align*}
+So if $\kappa\left(\bX\right)$ is ``large'', then forming this product can lead to large numerical errors when computing matrix factorizations.
+
+To avoid this problem, the QR-decomposition is typically used.  Here we take 
+\begin{align*}
+\bX=QR
+\end{align*}
+where $Q$ is orthogonal and $R$ is upper trapezoidal (n the overdetermined case, $R$ is triangular).  This is beneficial, because orthogonal matrices are norm-preserving, i.e. $Q$ is an isometry, and whence
+\begin{align*}
+\ltwo{\bX\bbeta - \by} &= \ltwo{QR\bbeta - \by}\\
+  &= \ltwo{Q^TQR\bbeta - Q^T\by}\\
+  &= \ltwo{R\bbeta - Q^T\by}
+\end{align*}
+%
+% and so...
+%
+This method is much less prone to the kinds of numerical issues that directly forming the normal equations entails.  However, this method is computationally much slower.
+
+
+
+
+
+
+\section{Using the Singular Value Decomposition}
+There is another, arguably much more well-known matrix factorization which we can use to develop yet another analytically equivalent solution to the least squares problem, namely the Singular Value Decomposition (SVD).  Using this factorization leads to a very elegant solution, as is so often the case with the SVD.  Here, if we take the \emph{reduced} (or \emph{compact}) SVD 
+\begin{align*}
+\bX = U\Sigma V^T
+\end{align*}
+
+
+
+
+
+Note that in (\ref{math:ols2}), the quantity
+\begin{align*}
+(\bX^T\bX)^{-1}\bX^T
+\end{align*}
+is the Moore-Penrose inverse of $\bX$.  Then we have
+\begin{align*}
+\bX^+ &= \left(\bX^T\bX\right)^{-1}\bX^T\\
+  &= \left( \left(U\Sigma V^T\right)^T \left(U\Sigma V^T\right) \right)^{-1} U\Sigma V^T\\
+  &= \left( V\Sigma^T\Sigma V^T \right)^{-1} V\Sigma^T U^T\\
+  &= V \left( \left(\Sigma^T\Sigma\right)^{-1} \Sigma^T \right) U^T\\
+  &= V \Sigma^+ U^T
+\end{align*}
+Whence,
+\begin{align*}
+\bbeta = V\Sigma^+ U^T\by
+\end{align*}
+Conceptually, this is arguably the method of solving the linear least squares problem.  However, this approach is handily the most computationally intensive.
