@@ -1,0 +1,29 @@
+\chapter{Background}
+\label{sec:bg}
+
+% \subsection{Terminology}
+% \addcontentsline{toc}{subsection}{\thesubsection. Terminology}
+% 
+% OOP stuff
+
+\section[Notation]{Notation}
+\label{sec:notation}
+
+Note that we tend to use suffix \code{.spmd} for an object when we wish to indicate that the object is distributed.  This is purely for pedagogical convenience, and has no semantic meaning.  Since the code is written in SPMD style, you can think of such objects as referring to either a large, global object, or to a processor's local piece of the whole (depending on context).  This is less confusing than it might first sound.
+
+We will not use this suffix to denote a global object common to all processors.  As a simple example, you could imagine having a large matrix with (global) dimensions $m\times n$ with each processor owning different collections of rows of the matrix.  All processors might need to know the values for $m$ and $n$; however, $m$ and $n$ do not depend on the local process, and so these do not receive the \code{.spmd} suffix.  In many cases, it may be a good idea to invent an S4 class object and a corresponding set of methods.  Doing so can greatly improve the usability and readability of your code, but is never strictly necessary.  However, these constructions are the foundation of the \pkg{pbdBASE}~\citep{Schmidt2012pbdBASEpackage} and
+\pkg{pbdDMAT}~\citep{Schmidt2012pbdDMATpackage} packages.
+
+On that note, depending on your requirements in distributed computing with \proglang{R}, it may be beneficial to you to use higher pbdR toolchain.  If you need to perform dense matrix operations, or statistical analyses which depend heavily on matrix algebra (linear modeling, principal components analysis, \dots), then the \pkg{pbdBASE} and \pkg{pbdDMAT} packages are a natural choice.  The major hurdle to using these tools is getting the data into the appropriate \code{ddmatrix} format, although we provide many tools to ease the pains of doing so.  Learning how to use these packages can greatly improve code performance, and take your statistical modeling in \proglang{R} to previously unimaginable scales.
+
+Again for the sake of understanding, we will at times append the suffix \code{.dmat} to objects of class \code{ddmatrix} to differentiate them from the more general \code{.spmd} object.  As with \code{.spmd}, this carries no semantic meaning, and is merely used to improve the readability of example code (especially when managing both ``\code{.spmd}'' and \code{ddmatrix} objects).
+
+
+\section{SPMD Programming with R}
+
+Throughout this document, we will be using the ``Single Program/Multiple Data'', or SPMD, paradigm for distributed computing.  Writing programs in the SPMD style is a very natural way of doing computations in parallel, but can be somewhat difficult to properly describe.  As the name implies, only one program is written, but the different processors involved in the computation all execute the code independently on different portions of the data.  The process is arguably the most natural extension of running serial codes in batch.  
+
+Unfortunately, executing jobs in batch is a somewhat unknown way of doing business to the typical \proglang{R} user.  While details and examples about this process will be provided in the chapters to follow, the reader is encouraged to see the \pkg{pbdMPI} package's vignette~\citep{Chen2012pbdMPIvignette} first.  Ideally, readers should run the demos of the \pkg{pbdMPI} package,
+going through the code step by step.
+
+

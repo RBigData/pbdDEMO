@@ -1,158 +1,132 @@
-{\color{red} \bf Warning:} This document is written to explain the main
-functions of \pkg{pbdDEMO}~\citep{Schmidt2012pbdDEMOpackage}, version 0.1-0.
-Every effort will be made to ensure future versions are consistent with
-these instructions, but features in later versions may not be explained
-in this document.
-
-Information about the functionality of this package,
-and any changes in future versions can be found on website:
-``Programming with Big Data in R'' at
-\url{http://r-pbd.org/}.
-
-
 \part{Preliminaries}
 
 
-\section[Introduction]{Introduction}
+
+
+\chapter[Introduction]{Introduction}
 \label{sec:introduction}
-\addcontentsline{toc}{section}{\thesection. Introduction}
 
-This vignette is to explain some pbdR~\citep{pbdR2012}
-examples which are higher level
-applications and may be commonly found in basic Statistics.
-The purposes is to show how to reuse the pre-exist functions, and
-quickly solve problems in an efficient way.
-The functions built for examples may not be exactly same idea of original
-\proglang{R}~\citep{Rcore}
-functions, but can be adjusted in similar wa.
-You are very welcome to use these as templates and rewrite your own functions
-or packages.
 
-We presume that the reader already has an idea about SPMD programming. If not,
-please read \pkg{pbdMPI}'s vignette~\cite{Chen2012pbdMPIvignette} first.
-Ideally, readers should run the demos of the \pkg{pbdMPI} package,
-and go through the code step by step.
+\section{What is pbd?}
 
-\subsection[Installation]{Installation}
+The ``Programming with Big Data in R'' project~\citep{pbdR2012} (pbd or pbdR for short) is a project that aims to elevate the statistical programming language \proglang{R}~\citep{Rcore} to leadership-class computing platforms.  The main goal is empower data scientists by bringing flexibility and a big analytics toolbox to big data challenges, with an emphasis on productivity, portability, and performance.  We achieve this in part by mapping high-level programming syntax to portable, high-performance, scalable, parallel libraries.
+
+\begin{figure}[t]
+ \centering
+ \includegraphics[scale=.45]{pbdDEMO-include/pics/pbdR}
+ \caption{pbdR Packages and Their Relationships with Scalable Libraries}
+ \label{fig:pbdrpackages}
+\end{figure}
+Figure~\ref{fig:pbdrpackages} shows the current state of pbdR packages and how they utilize high-performance libraries.  More explicitly, the current pbdR packages are:
+
+\begin{itemize}
+ \item \pkg{pbdMPI} --- an efficient interface to MPI with a focus on Single Program/Multiple Data (SPMD) parallel programming style.
+ \item \pkg{pbdSLAP} --- bundles scalable dense linear algebra libraries in double precision for \pkg{R}, based on ScaLAPACK version 2.0.2~\citep{slug}..
+ \item \pkg{pbdNCDF4} --- Interface to Parallel Unidata NetCDF4 format data files~\citep{netcdf}.
+ \item \pkg{pbdBASE} --- base distributed classes and methods for the pbdR Project.
+ \item \pkg{pbdDMAT} --- distributed matrix computational methods, with a focus on linear algebra.
+ \item \pkg{pbdDEMO} --- set of package demonstrations and examples, and this unifying vignette.
+\end{itemize}
+
+In this vignette, we offer many examples using the above pbdR packages.  Many of the examples are high-level
+applications and may be commonly found in basic Statistics.  The purpose is to show how to reuse the pre-existing functions and utilities of pbdR to create minor extensions which can quickly solve problems in an efficient way.  The reader is encouraged to reuse and repurpose these functions.
+
+The \pkg{pbdDEMO} package consists of two main parts.  The first is a collection of roughly 20 package demos.  These offer example uses of the various pbdR packages.  The second is this vignette, which attempts to offer detailed explanations for the demos, as well as sometimes providing some mathematical or statistical insight.  A list of all of the package demos can be found in Section~\ref{sec:demolist}.
+
+
+
+\section{Why Parallelism?  Why pbdR?}
+
+It is common, in a document such as this, to justify the need for parallelism.  Generally this process goes:
+
+\begin{quote}
+\emph{
+Blah blah blah Moore's Law, blah blah Big Data, blah blah blah Concurrency.
+}
+\end{quote}
+
+How about this?  Parallelism is cool.  Any boring nerd can use one computer, but using 10,000 at once is another story.  We don't call them \emph{\textbf{supercomputers}} for nothing.
+
+But unfortunately, lots of people who would otherwise be thrilled to do all kinds of cool stuff with massive behemoths of computation~--- computers with names like \textbf{KRAKEN} and \textbf{TITAN}~--- are burdened by an unfortunate reality:  it's really, really hard.  Enter pbdR.  Through our project, we put a shiny new set of clothes on high-powered compiled code, making massive-scale computation accessible to a wider audience of data scientists than ever before.  Analytics in supercomputing shouldn't just be for the elites.
+
+
+
+\section[Installation]{Installation}
 \label{sec:installation}
-\addcontentsline{toc}{subsection}{\thesubsection. Installation}
 
 One can download \pkg{pbdDEMO} from CRAN at
 \url{http://cran.r-project.org}, and
 the intallation can be done with the following commands
-\begin{Command}
+\begin{lstlisting}
 tar zxvf pbdDEMO_0.1-0.tar.gz
 R CMD INSTALL pbdDEMO
-\end{Command}
-Since \pkg{pbdEMO} depends on other \pkg{pbdR} packages,
-please read the corresponding vignettes if installations did
-not succeed.
-We also provide several demos for the capability of \pkg{pbdR}
-packages which are explained correspondingly in the next few sections.
+\end{lstlisting}
+Since \pkg{pbdEMO} depends on other pbdR packages, please read the corresponding vignettes if installation of any of them is unsuccessful.
 
 
-\subsection{List of Demos}
-\addcontentsline{toc}{subsection}{\thesubsection. List of Demos}
+\section{List of Demos}
+\label{sec:demolist}
+
+A full list of demos contained in the \pkg{pbdDEMO} package is provided below.
 
 \begin{lstlisting}[title=Shell Script]
-### Under command mode, run the demo with 4 processors by
 ### (Use Rscript.exe for windows system)
 
-# ----------------- #
-# II Ad Hoc Methods #
-# ----------------- #
 
+		      # --------------------- #
+		      # II Direct MPI Methods #
+		      # --------------------- #
+
+### Chapter 5
 # Monte carlo simulation
-mpiexec -np 4 Rscript -e "demo(monte_carlo, package='pbdDMAT',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(monte_carlo, package='pbdDMAT', ask=F, echo=F)"
 # Sample mean and variance
-mpiexec -np 4 Rscript -e "demo(sample_stat, package='pbdDMAT',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(sample_stat, package='pbdDMAT', ask=F, echo=F)"
 # Binning
-mpiexec -np 4 Rscript -e "demo(binning, package='pbdDMAT',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(binning, package='pbdDMAT', ask=F, echo=F)"
 # Quantile
-mpiexec -np 4 Rscript -e "demo(quantile, package='pbdDMAT',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(quantile, package='pbdDMAT', ask=F, echo=F)"
 # OLS
-mpiexec -np 4 Rscript -e "demo(ols, package='pbdDMAT',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(ols, package='pbdDMAT', ask=F, echo=F)"
+# Distributed Logic
+mpiexec -np 4 Rscript -e "demo(comparators, package='pbdDMAT', ask=F, echo=F)"
 
-# -------------------- #
-# III ddmatrix Methods #
-# -------------------- #
+		  # ----------------------------- #
+		  # III Reading and Managing Data #
+		  # ----------------------------- #
 
+### Chapter 6
 # Random matrix generation
-mpiexec -np 4 Rscript -e "demo(randmat_global, package='pbdDMAT',ask=F,echo=F)"
-mpiexec -np 4 Rscript -e "demo(randmat_local, package='pbdDMAT',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(randmat_global, package='pbdDMAT', ask=F, echo=F)"
+mpiexec -np 4 Rscript -e "demo(randmat_local, package='pbdDMAT', ask=F, echo=F)"
+
+### Chapter 7
+# Reading csv
+mpiexec -np 4 Rscript -e "demo(read_csv, package='pbdDMAT', ask=F, echo=F)"
+# Reading sql
+mpiexec -np 4 Rscript -e "demo(read_sql, package='pbdDMAT', ask=F, echo=F)"
+# Reading netcdf4
+mpiexec -np 4 Rscript -e "demo(read_ncdf, package='pbdDMAT', ask=F, echo=F)"
+
+### Chapter 8
+# Loand/unload balance
+mpiexec -np 4 Rscript -e "demo(balance, package='pbdDMAT', ask=F, echo=F)"
 # SPMD to DMAT
-mpiexec -np 4 Rscript -e "demo(spmd_dmat, package='pbdDMAT',ask=F,echo=F)"
-# Parallel CSV read
-mpiexec -np 4 Rscript -e "demo(read_csv, package='pbdDMAT',ask=F,echo=F)"
-# Parallel SQL read
-mpiexec -np 4 Rscript -e "demo(read_sql, package='pbdDMAT',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(spmd_dmat, package='pbdDMAT', ask=F, echo=F)"
+# Distributed matrix redistributions
+mpiexec -np 4 Rscript -e "demo(reblock, package='pbdDMAT', ask=F, echo=F)"
+
+		  # ----------------------------- #
+		  # IV Distributed Matrix Methods #
+		  # ----------------------------- #
+
+### Chapter 9
+# Sample statistics revisited
+mpiexec -np 4 Rscript -e "demo(sample_stat_dmat, package='pbdDMAT', ask=F, echo=F)"
+# Verify solving Ax=b at scale
+mpiexec -np 4 Rscript -e "demo(verify, package='pbdDMAT', ask=F, echo=F)"
+# PCA compression
+mpiexec -np 4 Rscript -e "demo(pca, package='pbdDMAT', ask=F, echo=F)"
+# OLS and predictions
+mpiexec -np 4 Rscript -e "demo(ols_dmat, package='pbdDMAT', ask=F, echo=F)"
 \end{lstlisting}
-
-
-
-
-
-
-
-
-
-
-
-
-
-\section{Background}
-\label{sec:bg}
-\addcontentsline{toc}{section}{\thesection. Background}
-
-
-
-% \subsection{Terminology}
-% \addcontentsline{toc}{subsection}{\thesubsection. Terminology}
-% 
-% OOP stuff
-
-\subsection[Notation]{Notation}
-\label{sec:notation}
-\addcontentsline{toc}{subsection}{\thesubsection. Notation}
-
-Note that we tend to use suffix \code{.spmd} for an object when we wish to indicate that the object is distributed.  This is purely for pedagogical convenience, and has no semantic meaning.  Since the code is written in SPMD style, you can think of such objects as referring to either a large, global object, or to a processor's local piece of the whole (depending on context).  This is less confusing that it might first sound.
-
-%% What?
-% As the usual \proglang{R},
-% Supposer $\bX$ is a very big matrix, then
-% \code{X.spmd}'s could be R objects distributed on all processors,
-% and usually they have the same data type.
-% $\bX$ could be a result of \code{cbind} or \code{rbind} on all
-% \code{X.spmd}'s.
-% Examples can be found in the Section~\ref{sec:statistics_examples}.
-
-We will not use this suffix to denote a global object common to all processors.  As a simple example, you could imagine having a large matrix with (global) dimensions $m\times n$ with each processor owning different collections of rows of the matrix.  All processors might need to know the values for $m$ and $n$; however, $m$ and $n$ do not depend on the local process, and so these do not receive the \code{.spmd} suffix.  In many cases, it may be a good idea to invent an S4 class object and a corresponding set of methods.  Doing so can greatly improve the usability and readability of your code, but is never strictly necessary.  However, these constructions are the foundation of the \pkg{pbdBASE}~\citep{Schmidt2012pbdBASEpackage} and
-\pkg{pbdDMAT}~\citep{Schmidt2012pbdDMATpackage} packages.
-
-On that note, depending on your requirements in distributed computing with \proglang{R}, it may be beneficial to you to use higher pbdR toolchain.  If you need to perform dense matrix operations, or statistical analyses which depend heavily on matrix algebra (linear modeling, principal components analysis, \dots), then the \pkg{pbdBASE} and \pkg{pbdDMAT} packages are a natural choice.  The major hurdle to using these tools is getting the data into the appropriate \code{ddmatrix} format, although we provide many tools to ease the pains of doing so.  Learning how to use these packages can greatly improve code performance, and take your statistical modeling in \proglang{R} to previously unimaginable scales.
-
-Again for the sake of understanding, we will at times append the suffix \code{.dmat} to objects of class \code{ddmatrix}.  As with \code{.spmd}, this carries no semantic meaning, and is merely used to improve the readability of example code (especially when managing both ``\code{.spmd}'' and \code{ddmatrix} objects).
-
-
-\subsection{Timing Jobs}
-\addcontentsline{toc}{subsection}{\thesubsection. Timing Jobs}
-
-Measuring run time is a fundamental performance measure in computing.  However, in parallel computing, not all ``parallel components'' (e.g. threads, or MPI processes) will take the same amount of time to complete a task, even when all tasks are given completely identical jobs.  So measuring ``total run time'' begs the question, run time of what?
-
-To help, we offer a timing function \code{demo.timer()} which can wrap segments of code much in the same way that \code{system.time()} does.  However, the three numbers reported by \code{demo.timer()} are: (1) the minimum elapsed time measured across all processes, (2) the average elapsed time measured across all processes, and (3) the maximum elapsed time across all processes.  The code for this function is listed below:
-
-\begin{lstlisting}[language=rr,title=Timer Function]
-demo.timer <- function(timed)
-{
-  ltime <- system.time(timed)[3]
-  barrier()
-  
-  mintime <- allreduce(ltime, op='min')
-  maxtime <- allreduce(ltime, op='max')
-  
-  meantime <- allreduce(ltime, op='sum') / comm.size()
-  
-  return( c(min=mintime, mean=meantime, max=maxtime) )
-}
-\end{lstlisting}
-

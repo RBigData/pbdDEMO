@@ -1,11 +1,23 @@
-\section{Random Distributed Matrices}
+\part{Reading and Managing Data}
+\label{part:dmat}
+
+%%% ----------------------------------------------------------------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Random Distributed Matrices}
 \label{sec:reader}
-\addcontentsline{toc}{section}{\thesection. Random Distributed Matrices}
 
-For testing, or sometimes even real work, ``non-data'' matrices --- those with entries which are constant or are sampled from a probability distribution --- can be very useful.  We present several ways in which one can create such matrices, based on differing sets of input parameters.
+The \pkg{pbdBASE} and \pkg{pbdDMAT} packages offer a distributed matrix class, \code{ddmatrix}, as well as a collection of high-level methods for performing common matrix operations.  For example, if you want to compute the mean of an \proglang{R} matrix \code{x}, you would call 
+\begin{lstlisting}[language=rr]
+mean(x)
+\end{lstlisting}
+That's exactly the same command you would issue if \code{x} is no longer an ordinary \proglang{R} matrix, but a distributed matrix.  These methods range from simple, embarrassingly parallel operations like sums and means, to tightly coupled linear algebra operations like matrix-matrix multiply and singular value decomposition.
 
-\subsection{Fixed Global Dimension}\label{subsec:rng.gl}
-\addcontentsline{toc}{subsection}{\thesubsection. Fixed Global Dimension}
+Unfortunately, these higher methods come with a different cost:  getting the data into the right format, namely the distributed matrix class.  This can be especially frustrating because we assume that the any object of class \code{ddmatrix} is \emph{block cyclically distributed}.  This concept is discussed at length in the \pkg{pbdBASE} vignette \citep{Schmidt2012pbdBASEvignette}, and we do not intend to discuss the concept of a block cyclic data distribution at length herein.  However, we will demonstrate several examples of getting data into and out of the distributed block cyclic matrix format.
+
+Once the hurdle of getting the data into the ``right format'' is out of the way, these methods offer very simple syntax (designed to mimic \proglang{R} as closely as possible) with the ability to scale computations on very large distributed machines.  So the process of getting the data into the correct format must be addressed.  We begin dealing with this issue in the simplest way possible, namely by using randomly generated data.  
+
+\section{Fixed Global Dimension}\label{subsec:rng.gl}
 
 \emph{Example:  randomly generate distributed matrices with random normal data of specificed global dimension.}
 
@@ -16,9 +28,9 @@ The demo command is
 mpiexec -np 4 Rscript -e "demo(randmat_global,'pbdDEMO',ask=F,echo=F)"
 \end{Command}
 
-This demo shows 3 separate ways that one can generate a random normal matrix with specified global dimension.  The first two generate the matrix in full on at least one processor and distributes the data, while the last method generates locally only what is needed.  As such, the first two can be considered demonstrations with what to do when you have data read in on one processor and need to distribute it out to the remaining processors, but for the purposes of using a randomly generated distributed matrix, they are not particularly efficient strategies.
+This demo shows 3 separate ways that one can generate a random normal matrix with specified global dimension.  The first two generate the matrix in full on at least one processor and distribute(s) the data, while the last method generates locally only what is needed.  As such, the first two can be considered demonstrations with what to do when you have data read in on one processor and need to distribute it out to the remaining processors, but for the purposes of building a randomly generated distributed matrix, they are not particularly efficient strategies.
 
-The basic idea is as follows.  If I have a matrix \code{x} stored on processor 0 and \code{NULL} on the others, then I can distribute it out as an object of class \code{ddmatrix} via the command \code{as.ddmatrix()}.  For example
+The basic idea is as follows.  If we have a matrix \code{x} stored on processor 0 and \code{NULL} on the others, then we can distribute it out as an object of class \code{ddmatrix} via the command \code{as.ddmatrix()}.  For example
 \begin{lstlisting}[language=rr]
 if (comm.rank()==0){
   x <- matrix(rnorm(100), nrow=10, ncol=10)
@@ -39,11 +51,9 @@ x <- matrix(rnorm(100), nrow=10, ncol=10)
 dx <- as.ddmatrix(x)
 \end{lstlisting}
 
-Now, this assumes you are using the same seed on each processor.  This can be managed using the \pkg{pbdMPI} function \code{comm.set.seed()}, as in the demo script.  For more information, see that package's documentation.
+Here, each processor generates the full, global matrix, then throws away what is not needed.  Again, this is not efficient, but the code is concise, so it is extremely useful in testing.  Now, this assumes you are using the same seed on each processor.  This can be managed using the \pkg{pbdMPI} function \code{comm.set.seed()}, as in the demo script.  For more information, see that package's documentation.
 
-Finally, you can generate locally only what you need.  The demo script does this via the \pkg{pbdDEMO} package's \code{Hnorm()} or ``huge normal'' function.  There are two others provided, namely \code{Hconst()} and \code{Hunif()}.  The naming convention was chosen because the latter most function name makes me laugh.
-
-Internally, these ``huge'' functions rely on a much stronger working knowledge of the underlying data structure than most will be comfortable with.  However, for the sake of completeness, we will briefly examine \code{Hnorm()}.
+Finally, you can generate locally only what you need.  The demo script does this via the \pkg{pbdDEMO} package's \code{Hnorm()} or ``huge normal'' function.  There are two others provided, namely \code{Hconst()} and \code{Hunif()}.  The naming convention was chosen because the latter most function name makes the author laugh.  Internally, these ``huge'' functions rely on a much stronger working knowledge of the underlying data structure than most will be comfortable with.  However, for the sake of completeness, we will briefly examine \code{Hnorm()}.
 
 \begin{lstlisting}[language=rr,title=Hnorm()]
 Hnorm <- function(dim, bldim, mean=0, sd=1, ICTXT=0)
@@ -72,8 +82,7 @@ The concise explanation is that the \code{base.numroc()} utility determines the 
 More precisely, it calculates the local storage requirements given a global dimension \code{dim}, a blocking factor \code{bldim}, and a BLACS context number \code{ICTXT}.  The extra argument \code{fixme} determines whether or not the lowest value returned should be 1.  If \code{fixme==FALSE} and any of the returned local dimensions are less than 1, then that processor does not actually own any of the global matrix --- it has no local storage.  But something must be stored, and so we default this to \code{matrix(0)}, the $1\times 1$ matrix with single entry 0.
 
 
-\subsection{Fixed Local Dimension}
-\addcontentsline{toc}{subsection}{\thesubsection. Fixed Local Dimension}
+\section{Fixed Local Dimension}
 
 \emph{Example:  randomly generate distributed matrices with random normal data of specificed local dimension.}
 
@@ -84,7 +93,7 @@ The demo command is
 mpiexec -np 4 Rscript -e "demo(randmat_local,'pbdDEMO',ask=F,echo=F)"
 \end{Command}
 
-This is similar to the above, but with a critical difference.  Instead of specifying a fixed \emph{global} dimension and then go determine what the local storage space is, instead we specify a fixed \emph{local} dimension and then go figure out what the global dimension should be.  This can be useful for testing for weak scaling of an algorithm, where different numbers of cores are compared but with similar ram usage.
+This is similar to the above, but with a critical difference.  Instead of specifying a fixed \emph{global} dimension and then go determine what the local storage space is, instead we specify a fixed \emph{local} dimension and then go figure out what the global dimension should be.  This can be useful for testing weak scaling of an algorithm, where different numbers of cores are used with the same local problem size.
 
 To this end, the demo script utilizes the \code{Hnorm.local()} function, which has the user specify a local dimension size that all the processors should use, as well as a blocking factor and BLACS context value.  
 

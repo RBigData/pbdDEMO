@@ -152,11 +152,6 @@ verify.inverse <- function(nrows=1e3, mean=0, sd=1, bldim=8, tol=1e-7)
     comm.cat("YES!\n", quiet=T)
   else {
     comm.cat("No...\n", quiet=T)
-    s <- x-newx
-    diffs <- c(min(s), mean(s), max(s))
-    names(diffs) <- c("min", "mean", "max")
-    comm.cat("\nPrinting min/mean/max differences between original and result from factoring and then multiplying...\n", quiet=T)
-    comm.print(diffs, quiet=T)
   }
   
   comm.cat("\n\nRun times:\n", quiet=T)
@@ -209,10 +204,10 @@ verify.solve <- function(nrows=1e3, mean=0, sd=1, const=1, bldim=8, tol=1e-7)
     comm.cat("YES!\n", quiet=T)
   else {
     comm.cat("No...\n", quiet=T)
-    s <- x-newx
+    s <- sol-truesol
     diffs <- c(min(s), mean(s), max(s))
     names(diffs) <- c("min", "mean", "max")
-    comm.cat("\nPrinting min/mean/max differences between original and result from factoring and then multiplying...\n", quiet=T)
+    comm.cat("\nPrinting min/mean/max differences between numerical solution estimate and the true solution...\n", quiet=T)
     comm.print(diffs, quiet=T)
   }
   

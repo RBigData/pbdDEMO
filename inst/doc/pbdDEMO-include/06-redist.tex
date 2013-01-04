@@ -1,0 +1,315 @@
+\chapter{Redistribution Methods}
+\label{sec:redist}
+
+One final challenge similar to, but distinct from reading in data is managing data which has already been read into the R processes.  Throughout this chapter, we will be making reference to several particulars to the block-cyclic data type used for objects of class \code{ddmatrix}.  In particular, a working knowledge of the block-cyclic data structure and their relationship with BLACS contexts is most useful for the content to follow.  As such, the reader is \emph{strongly} encouraged to be familiar with the content of the \pkg{pbdBASE} vignette before proceeding.
+
+\section{Distributed Matrix Redistributions}
+\label{sec:dmatredist}
+
+\emph{Example:  Convert between different distributed matrix distributions.}
+
+The demo command is
+\begin{Command}
+### At the shell prompt, run the demo with 4 processors by
+### (Use Rscript.exe for windows system)
+mpiexec -np 4 Rscript -e "demo(reblock,'pbdDEMO',ask=F,echo=F)"
+\end{Command}
+
+The distributed matrix class \code{ddmatrix} has two components which can be specified, and modified, by the user to drastically affect the composition of the distributed matrix.  In particular, these are the object's block-cyclic blocking factor \code{bldim}, and the BLACS communicator number \code{CTXT} which sets the 2-dimensional processor grid.  
+
+Thankfully, redistributing is a fairly simple process; though we would emphasize that \textbf{this is not free of cost}.  Reshaping data, especially at scale, can be much more expensive in total than even computation time.  That said, sometimes data must move.  It is better to get the job done slowly than to ``take your ball and go home'' with no results.  But we caution that if redistribution can be avoided, then it should, at all costs.
+
+The demo relies on a utility from the \pkg{pbdBASE} package, namely \code{redistribute()}.  As the name implies, this method is for ``reshaping'' a block-cyclically distributed matrix of one kind to another.  Specifically, this takes an object of class \code{ddmatrix} as both an input and an output; i.e., and to emphasize the title of the chapter, this is not a method of \emph{distribution} but \emph{redistribution}.
+
+For example, if I have a distributed matrix \code{dx} and I wish to reshape the distributed matrix so that it now has blocking dimension \code{newbldim} and is distributed across BLACS context \code{newCTXT}, then I need merely call:
+
+\begin{lstlisting}[language=rr]
+dy <- redistribute(dx, bldim=newbldim, ICTXT=newCTXT)
+\end{lstlisting}
+
+Assuming the data is block cyclic of \emph{any} kind, including degenerate cases, we can convert it to a block cyclic format of any other kind we wish via this \code{redistribute()} function.  The only requirement is that the two different distributions have at least 1 processor in common, and so using the default BLACS contexts (0, 1, and 2) is always acceptable.
+
+
+
+
+
+\section{Implicit Redistributions}
+\label{sec:implicitredist}
+
+There are several useful functions which apply to distributed matrices, but require a data redistribution as in Section~\ref{sec:redist}, whether the user realizes it or not.
+\begin{table}[h]
+\centering
+\begin{tabular}{llll}\hline\hline
+\textbf{Function} & \textbf{Example} & \textbf{Package} & \textbf{Effect}\\\hline
+\code{`[`} & \code{dx[, -1]} & \pkg{pbdBASE} & Row/Column extraction and subsetting\\
+\code{na.exclude()} & \code{na.exclude(dx)} & \pkg{pbdBASE} & Drop rows with \code{NA}'s\\
+\code{apply()} & \code{apply(dx, 2, sd)} & \pkg{pbdDMAT} & Applies function to margin\\ \hline\hline
+\end{tabular}
+\caption{Distributed Matrix Methods with Implicit Data Redistributions}
+\label{tab:implicitredist}
+\end{table}
+These functions are listed in Table~\ref{tab:implicitredist}.  By default, these functions will re-distribute back to the original data distribution after having performed the initial (necessary) redistribution and performed the requested operations.  That is, by default, the problem of managing different data distributions is hidden from the user and entirely implicit.  However, there are advantages to becoming familiar with managing these data distributions, because each of these functions has the option to have redistribution directly managed.  Now, a data redistribution must occur to use these functions, but understanding which and why can help minimize the number of redistributions performed.
+
+Many of the full details, such as \emph{why} the redistributions need occur in the first place, are outlined in the \pkg{pbdBASE} vignette, but we provide a simple example here.  Suppose we have a distributed matrix \code{dx} distributed on the default grid (i.e., BLACS context 0) and we wish to drop the first column and then use the \code{apply()} function to extract the p-values, column-wise, of the result of running the Shapiro-Wilk normality test independently on the columns.  No one is claiming that this is a wise thing to do, but it is useful for the purpose of demonstration.
+
+To achieve this, we could execute the following:
+
+\begin{lstlisting}[language=rr,title=Implicit Redistributions]
+dx <- dx[-1, ]
+
+result <- apply(dx, MARGIN=2, FUN=function(col) shapiro.test(col)$p, reduce=TRUE)
+\end{lstlisting}
+
+In reality, underneath this is actually performing the following sequence of operations:
+
+\begin{lstlisting}[language=rr,title=Implicit Redistributions]
+dx <- redistribute(dx, ICTXT=2)
+dx <- dx[, -1]
+dx <- redistribute(dx, ICTXT=0)
+
+dx <- redistribute(dx, ICTXT=2)
+result <- apply(dx, MARGIN=2, FUN=function(col) shapiro.test(col)$p, reduce=TRUE)
+\end{lstlisting}
+
+Or suppose we wanted instead to drop the first column; then this is equivalent to
+
+\begin{lstlisting}[language=rr,title=Implicit Redistributions]
+dx <- redistribute(dx, ICTXT=1)
+dx <- dx[, -1]
+dx <- redistribute(dx, ICTXT=0)
+
+dx <- redistribute(dx, ICTXT=2)
+result <- apply(dx, MARGIN=2, FUN=function(col) shapiro.test(col)$p, reduce=TRUE)
+\end{lstlisting}
+
+The problem should be obvious.  However, thoroughly understanding the problem, we can easily manage the data redistributions using the \code{ICTXT=} option in these function.  So for example, we can minimize the redistributions to only the minimal necessary amount with the following:
+
+\begin{lstlisting}[language=rr,title=Implicit Redistributions]
+dx <- dx[, -1, ICTXT=2]
+
+result <- apply(dx, MARGIN=2, FUN=function(col) shapiro.test(col)$p, reduce=TRUE)
+\end{lstlisting}
+
+This is equvalent to explicitly calling:
+
+\begin{lstlisting}[language=rr,title=Implicit Redistributions]
+dx <- redistribute(dx, ICTXT=2)
+dx <- dx[, -1, ICTXT=2]
+
+result <- apply(dx, MARGIN=2, FUN=function(col) shapiro.test(col)$p, reduce=TRUE)
+\end{lstlisting}
+
+This is clearly preferred.  For more details, see the relevant function documentation.
+
+
+
+
+\section[Load Balance and Unload Balance]{Load Balance and Unload Balance}
+\label{sec:lb_ub}
+
+\emph{Example:  Load balancing (and unbalancing) distributed data.}
+
+The demo command is
+\begin{Command}
+### At the shell prompt, run the demo with 4 processors by
+### (Use Rscript.exe for windows system)
+mpiexec -np 4 Rscript -e "demo(balance,'pbdDEMO',ask=F,echo=F)"
+\end{Command}
+
+Suppose we have an unbalanced, distributed input matrix \code{X.spmd}.  We can call \code{balance.info()} on this object to store some information about how to balance the data load across all processors.  This can be useful for tracking data movement, as well as for ``unbalancing'' later, if we so choose.  Next, we call \code{load.balance()} to obtain a load-balanced object \code{new.X.spmd}.  We can also now undo this entire process and get back to \code{X.spmd} by calling \code{unload.balance()} on \code{new.X.spmd}.
+
+All together, the code looks something like:
+\begin{Code}[title=R Code]
+bal.info <- balance.info(X.spmd)
+new.X.spmd <- load.balance(X.spmd, bal.info)
+org.X.spmd <- unload.balance(new.X.spmd, bal.info)
+\end{Code}
+
+The details of this exchange are depicted in the example in Figure~\ref{fig:load_balnace}.  Here, 
+\code{X.spmd} is unbalanced, and \code{new.X.spmd} is a balanced version of \code{X.spmd}.
+
+\begin{figure}[h]
+\label{fig:load_balnace}
+\begin{center}
+\begin{tabular}{ccc}
+\code{X.spmd}(\code{org.X.spmd}) & & \code{new.X.spmd} \\
+
+$
+\left[
+\begin{array}{ccc}
+\color{p0}x_{1,1} & \color{p0}x_{1,2} & \color{p0}x_{1,3} \\ \hline
+\color{p1}x_{2,1} & \color{p1}x_{2,2} & \color{p1}x_{2,3} \\
+\color{p1}x_{3,1} & \color{p1}x_{3,2} & \color{p1}x_{3,3} \\ \hline
+\color{p2}x_{4,1} & \color{p2}x_{4,2} & \color{p2}x_{4,3} \\
+\color{p2}x_{5,1} & \color{p2}x_{5,2} & \color{p2}x_{5,3} \\
+\color{p2}x_{6,1} & \color{p2}x_{6,2} & \color{p2}x_{6,3} \\ \hline
+\color{p3}x_{7,1} & \color{p3}x_{7,2} & \color{p3}x_{7,3} \\
+\color{p3}x_{8,1} & \color{p3}x_{8,2} & \color{p3}x_{8,3} \\
+\color{p3}x_{9,1} & \color{p3}x_{9,2} & \color{p3}x_{9,3} \\
+\color{p3}x_{10,1} & \color{p3}x_{10,2} & \color{p3}x_{10,3} \\
+\end{array}
+\right]
+$
+
+&
+
+$
+\begin{array}{c}
+\mbox{\code{load.balance()}} \\
+\longrightarrow \\
+\hspace{0.5cm}\\
+\longleftarrow \\
+\mbox{\code{unload.balance()}} \\
+\end{array}
+$
+
+&
+
+$
+\left[
+\begin{array}{ccc}
+\color{p0}x_{1,1} & \color{p0}x_{1,2} & \color{p0}x_{1,3} \\
+\color{p0}x_{2,1} & \color{p0}x_{2,2} & \color{p0}x_{2,3} \\
+\color{p0}x_{3,1} & \color{p0}x_{3,2} & \color{p0}x_{3,3} \\ \hline
+\color{p1}x_{4,1} & \color{p1}x_{4,2} & \color{p1}x_{4,3} \\
+\color{p1}x_{5,1} & \color{p1}x_{5,2} & \color{p1}x_{5,3} \\
+\color{p1}x_{6,1} & \color{p1}x_{6,2} & \color{p1}x_{6,3} \\ \hline
+\color{p2}x_{7,1} & \color{p2}x_{7,2} & \color{p2}x_{7,3} \\
+\color{p2}x_{8,1} & \color{p2}x_{8,2} & \color{p2}x_{8,3} \\
+\color{p2}x_{9,1} & \color{p2}x_{9,2} & \color{p2}x_{9,3} \\ \hline
+\color{p3}x_{10,1} & \color{p3}x_{10,2} & \color{p3}x_{10,3} \\
+\end{array}
+\right]
+$
+\end{tabular}
+\end{center}
+\caption{
+$\bX$ is distributed in
+\code{X.spmd}(\code{org.X.spmd}) and \code{new.X.spmd}.
+Both are distributed row-wise in 4 processors.  The colors represent processors {\color{p0}0},
+{\color{p1}1}, {\color{p2}2}, and {\color{p3}3}, respectively.
+}
+\end{figure}
+ 
+
+The function \code{balance.info()} is extremely useful, because it will return the information used to load balance the given data \code{X.spmd}.  The return of \code{balance.info()} is a list consisting of two dataframes, \code{send} and \code{recv}, as well as two vectors, \code{N.allspmd} and \code{new.N.allspmd}.  
+
+Here, \code{send} records the original processor rank and the destination processor rank of the unbalanced data (that which is to be transmitted by that processor).
+The \code{load.balance()} function uses this table to move the data via \pkg{pbdMPI}'s \code{isend()} function.
+If any ``destination rank'' is not the ``original rank'', then the corresponding data row will be moved to the appropriate processor.  On the other hand, \code{recv} records the original processor rank and the destination rank of balanced data (that which is received by that processor).
+
+The \code{N.allspmd} and \code{new.N.allspmd} objects both have length equal to the communicator containing all numbers of rows of \code{X.spmd} before and after the balancing, respectively. This is for double checking and avoiding a 0-row matrix issue.
+
+For \code{unload.balance}, the process amounts to reversing \code{bal.info} and passing it to \code{load.balance}.
+
+Finally, note that the ``balanced'' data is chosen to be balanced in a very particular way; it is arguably not ``balanced'', since 3 processors own 3 rows while 1 owns 1 row, and it is perhaps more balanced to have 2 processors own 3 rows and 2 own 2.  However, we make this choice for the reason that our ``balanced'' data will always be a certain kind of degenerate block-cyclic structure.  We will discuss this at length in the following section.
+
+
+
+
+\section{Convert Between SPMD and DMAT}
+\label{sec:spmd_dmat}
+
+\emph{Example:  Convert between SPMD and DMAT formats.}
+
+The demo command is
+\begin{Command}
+### At the shell prompt, run the demo with 4 processors by
+### (Use Rscript.exe for windows system)
+mpiexec -np 4 Rscript -e "demo(spmd_dmat,'pbdDEMO',ask=F,echo=F)"
+\end{Command}
+
+The final redistribution challenge we will present is taking an object in SPMD format and putting it in the DMAT format.  More precisely, we assume the input object \code{X.spmd} is in SPMD and transfer the convert the object into an object of class \code{ddmatrix} which we will call \code{X.dmat}.  
+
+, then convert again to a \proglang{R}
+object in \code{X} which is common on all processors, as in the next.
+
+
+
+The Figure~\ref{fig:spmd_dmat} illustates an example \code{X.spmd} and \code{X.dmat} conversion.  For full details about the block-cyclic data format used for class \code{ddmatrix}, see the \pkg{pbdBASE} vignette.  
+
+To perform such a redistribution, one simply needs to call:
+\begin{Code}[title=R Code]
+X.dmat <- spmd2dmat(X.spmd)
+\end{Code}
+or
+\begin{Code}[title=R Code]
+X.spmd <- dmat2spmd(X.dmat)
+\end{Code}
+Here, the \code{spmd2dmat} function does the following:
+\begin{enumerate}
+\item Check number of columns of \code{X.spmd}.  All
+      processors should be the same.
+\item Row balance the SPMD matrix as necessary via \code{load.balance()} as in Section~\ref{sec:lb_ub}.
+\item Call construct a new ddmatrix object (via the \code{new()} constructor) on the balanced matrix,
+      say \code{X.dmat}, in BLACS context 2 (\code{ICTXT = 2}).
+\item Redistribute \code{X.dmat} to another BLACS context as needed 
+      (default \code{ICTXT = 0}) via the \code{base.reblock()} function as in Section~\ref{sec:dmatredist}.
+\end{enumerate}
+Note that the \code{load.balance()} function, as used above, is legitimately necessary here.  Indeed, this function takes a collection of distributed data and converts it into a degenerate block cyclic distribution; namely, this places the data in block ``1-cycle'' format, distributed across an $n\times 1$ processor grid.  In the context of Figure~\ref{fig:spmd_dmat} (where the aforementioned process is implicit), this is akin to first moving the data into a distributed matrix format with \code{bldim=c(3,3)} and \code{CTXT=2}.  Finally, we can take this degenerate block-cyclic distribution and again to Figure~\ref{fig:spmd_dmat} as our motivating example, we convert the data balanced data so that it has \code{bldim=c(2,2)} and \code{CTXT=0}.
+
+\begin{figure}
+\label{fig:spmd_dmat}
+\begin{center}
+\begin{tabular}{ccc}
+\code{X.spmd} & & \code{X.dmat} \\
+
+$
+\left[
+\begin{array}{ccc}
+\color{p0}x_{1,1} & \color{p0}x_{1,2} & \color{p0}x_{1,3} \\ \hline
+\color{p1}x_{2,1} & \color{p1}x_{2,2} & \color{p1}x_{2,3} \\
+\color{p1}x_{3,1} & \color{p1}x_{3,2} & \color{p1}x_{3,3} \\ \hline
+\color{p2}x_{4,1} & \color{p2}x_{4,2} & \color{p2}x_{4,3} \\
+\color{p2}x_{5,1} & \color{p2}x_{5,2} & \color{p2}x_{5,3} \\
+\color{p2}x_{6,1} & \color{p2}x_{6,2} & \color{p2}x_{6,3} \\ \hline
+\color{p3}x_{7,1} & \color{p3}x_{7,2} & \color{p3}x_{7,3} \\
+\color{p3}x_{8,1} & \color{p3}x_{8,2} & \color{p3}x_{8,3} \\
+\color{p3}x_{9,1} & \color{p3}x_{9,2} & \color{p3}x_{9,3} \\
+\color{p3}x_{10,1} & \color{p3}x_{10,2} & \color{p3}x_{10,3} \\
+\end{array}
+\right]
+$
+
+&
+
+$
+\begin{array}{c}
+\mbox{\code{spmd2dmat}} \\
+\longrightarrow \\
+\hspace{0.5cm}\\
+\longleftarrow \\
+\mbox{\code{dmat2spmd}} \\
+\end{array}
+$
+
+&
+
+$
+\left[
+\begin{array}{cc|c}
+\color{p0}x_{1,1} & \color{p0}x_{1,2} & \color{p1}x_{1,3} \\
+\color{p0}x_{2,1} & \color{p0}x_{2,2} & \color{p1}x_{2,3} \\ \hline
+\color{p2}x_{3,1} & \color{p2}x_{3,2} & \color{p3}x_{3,3} \\
+\color{p2}x_{4,1} & \color{p2}x_{4,2} & \color{p3}x_{4,3} \\ \hline
+\color{p0}x_{5,1} & \color{p0}x_{5,2} & \color{p1}x_{5,3} \\
+\color{p0}x_{6,1} & \color{p0}x_{6,2} & \color{p1}x_{6,3} \\ \hline
+\color{p2}x_{7,1} & \color{p2}x_{7,2} & \color{p3}x_{7,3} \\
+\color{p2}x_{8,1} & \color{p2}x_{8,2} & \color{p3}x_{8,3} \\ \hline
+\color{p0}x_{9,1} & \color{p0}x_{9,2} & \color{p1}x_{9,3} \\
+\color{p0}x_{10,1} & \color{p0}x_{10,2} & \color{p1}x_{10,3} \\
+\end{array}
+\right]
+$
+\end{tabular}
+\end{center}
+\caption{
+$\bX$ is distributed in
+\code{X.spmd} and \code{X.dmat}.
+Both are distributed in 4 processors
+where colors represents processor {\color{p0}0},
+{\color{p1}1}, {\color{p2}2}, and {\color{p3}3}.
+Note that \code{X.dmat} is in block-cyclic format of
+$2\times 2$ grid with $2\times 2$ block dimension.
+}
+\end{figure}

@@ -1,0 +1,167 @@
+\part{Distributed Matrix Methods}
+\label{part:dmat}
+
+%%% ----------------------------------------------------------------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Advanced Statistics Examples}
+
+The \pkg{pbdDMAT} package contains many useful methods for doing computations with distributed matrices.  For comprehensive (but shallow) demonstrations of the distributed matrix methods available, see the \pkg{pbdDMAT} package's vignette and demos.
+
+Here we showcase a few more advanced things that can be done by chaining together \proglang{R} and pbdR code seamlessly.
+
+
+
+
+
+\section{Sample Mean and Variance Revisited}
+
+\emph{Example:  Get summary statistics from a distributed matrix.}
+
+The demo command is
+\begin{Command}
+### At the shell prompt, run the demo with 4 processors by
+### (Use Rscript.exe for windows system)
+mpiexec -np 4 Rscript -e "demo(sample_stat_dmat,'pbdDEMO',ask=F,echo=F)"
+\end{Command}
+
+Returning to the sample statistics problem from Section~\ref{sec:sample_stat}, we can solve these same problems~--- and then some~--- using distributed matrices.  For the remainder, suppose we have a distributed matrix \code{dx}.
+
+Computing a mean is simple enough.  We need only call
+\begin{lstlisting}[language=rr,title=Summary Statistics]
+mean(dx)
+\end{lstlisting}
+We also have access to the other summary statistics methods for matrices, however, such as \code{rowSums()}, \code{rowMeans()}, etc.  Furthermore, we can calculate variances for distributed matrices.  Constructing the variance-covariance matrix is as simple as calling
+\begin{lstlisting}[language=rr,title=Summary Statistics]
+cov(dx)
+\end{lstlisting}
+Or we could generate standard deviations column-wise, using the method \proglang{R} suggests for ordinary matrices using \code{apply()}
+\begin{lstlisting}[language=rr,title=Summary Statistics]
+apply(dx, MARGIN=2, FUN=sd)
+\end{lstlisting}
+or we could simply call
+\begin{lstlisting}[language=rr,title=Summary Statistics]
+sd(dx)
+\end{lstlisting}
+In \proglang{R}, calling \code{sd()} on a matrix issues a warning, telling the user to instead use \code{apply()}.  Either of these approaches works with a distributed matrix (with the code as above), but for us, using \code{sd()} is preferred.  This is because, as outlined in Section~\ref{sec:implicitredist}, our \code{apply()} method carries an implicit data redistribution with it, while the \code{sd()} method is fast, ad-hoc code which requires no redistribution of the data.
+
+
+
+
+
+\section{Verification of Distributed System Solving}
+
+\emph{Example:  Solve a system of equations and verify that the solution is correct.}
+
+The demo command is
+\begin{Command}
+### At the shell prompt, run the demo with 4 processors by
+### (Use Rscript.exe for windows system)
+mpiexec -np 4 Rscript -e "demo(verify,'pbdDEMO',ask=F,echo=F)"
+\end{Command}
+
+The \pkg{pbdDEMO} contains a set of verification routines, designed to test for validity of the numerical methods at any scale.  Herein we will discuss the verification method for solving systems of linear equations, \code{verify.solve()}.
+
+The process is simple.  The goal is to solve the equation (in matrix notation)
+\begin{align*}
+Ax=b
+\end{align*}
+for $n\times n$ matrix $A$ and $n\times 1$ matrix $b$.  However, here we start with $A$ and $x$ and use these to produce $b$.  We then forget we ever knew what $x$ was and solve the system.  Finally, we remember what $x$ really should be and compare that with our numerical solution.
+  
+More specifically, we take the matrix $A$ to be random normal generated data and the true solution $x$ to be a constant vector.  We then calculate
+\begin{align*}
+b := Ax
+\end{align*}
+and finally the system is solve for a now (pretend) unknown $x$, so that we can compare the numerically determined $x$ to the true constant $x$.  All processes are timed, and both success/failure and timing results are printed for the user at the completion of the routine.  This effectively amounts to calling:
+\begin{lstlisting}[language=rr,title=Verifying Distributed System Solving]
+# generating data
+timer({
+  x <- Hnorm(dim=c(nrows, nrows))
+  truesol <- Hconst(dim=c(nrows, 1))
+})
+
+timer({
+  rhs <- x %*% truesol
+})
+
+# solving
+timer({
+  sol <- solve(x, rhs)
+})
+
+# verifying
+timer({
+  iseq <- all.equal(sol, truesol)
+  iseq <- as.logical(allreduce(iseq, op='min'))
+})
+\end{lstlisting}
+with some added window dressing.
+
+
+
+
+
+
+
+\section{Compression with Principal Components Analysis}
+
+\emph{Example:  Take PCA and retain only a subset of the rotated data.}
+
+The demo command is
+\begin{Command}
+### At the shell prompt, run the demo with 4 processors by
+### (Use Rscript.exe for windows system)
+mpiexec -np 4 Rscript -e "demo(pca,'pbdDEMO',ask=F,echo=F)"
+\end{Command}
+
+Suppose we wish to perform a principal components analysis and retain only some subset of the columns of the rotated data.  One of the ways this is often done is by using the singular values --- the standard deviations of the components --- as a measure of variation retained by a component.  However, the first step is to get the principal components data.  Luckily this is trivial.  If our data is stored in the distributed matrix object \code{dx}, then all we need to is issue the command:
+\begin{lstlisting}[language=rr]
+pca <- prcomp(x=dx, retx=TRUE, scale=TRUE)
+\end{lstlisting}
+
+Now that we have our PCA object (which has the same structure as that which comes from calling \code{prcomp()} on an ordinary \proglang{R} matrix), we need only decide how best to throw away what we do not want.  We might want to retain at least as many columns as would be needed to retain 90\% of the variation of the original data:
+
+\begin{lstlisting}[language=rr]
+prop_var <- cumsum(pca$sdev)/sum(pca$sdev)
+i <- min(which(prop_var > 0.9))
+
+new_dx <- pca$x[, 1:i]
+\end{lstlisting}
+
+Or we might want one fewer column than the number that would give us 90\%:
+
+\begin{lstlisting}[language=rr]
+prop_var <- cumsum(pca$sdev)/sum(pca$sdev)
+i <- max(min(which(prop_var > 0.9)) - 1, 1)
+
+new_dx <- pca$x[, 1:i]
+\end{lstlisting}
+
+
+
+
+
+
+
+
+\section{Predictions with Linear Regression}
+
+\emph{Example:  Fit a linear regression model and use it to make a prediction on new data.}
+
+The demo command is
+\begin{Command}
+### At the shell prompt, run the demo with 4 processors by
+### (Use Rscript.exe for windows system)
+mpiexec -np 4 Rscript -e "demo(ols_dmat,'pbdDEMO',ask=F,echo=F)"
+\end{Command}
+
+Suppose we have some predictor variables stored in the distributed $n\times p$ matrix \code{dx} and a response variable stored in the $n\times 1$ distributed matrix \code{dy}, and we wish to use the ordinary least squares model from (\ref{math:statslls}) to make a prediction about some new data, say \code{dy.new}.  Then this really amounts to just a few simple commands, namely:
+\begin{lstlisting}[language=rr]
+mdl <- lm.fit(dx, dy)
+
+pred <- dx.new %*% mdl$coefficients
+
+comm.print(submatrix(pred), quiet=T)
+\end{lstlisting}
+
+

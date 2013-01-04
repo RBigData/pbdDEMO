@@ -18,8 +18,12 @@ bal.info <- balance.info(X.spmd)
 new.X.spmd <- load.balance(X.spmd, bal.info)
 org.X.spmd <- unload.balance(new.X.spmd, bal.info)
 
-comm.cat("\norg.X.spmd on rank 2:\n", quiet = TRUE)
-comm.print(org.X.spmd, rank.print = 2, quiet = TRUE)
+comm.cat("\nnew.X.spmd on rank 2:\n", quiet = TRUE)
+comm.print(new.X.spmd, rank.print = 2, quiet = TRUE)
+
+comm.cat("\nbal.info on rank 2:\n", quiet = TRUE)
+comm.print(bal.info, rank.print = 2, quiet = TRUE)
+
 if(any(org.X.spmd - X.spmd != 0)){
   cat("Unbalance fails in the rank ", comm.rank(), "\n")
 }
