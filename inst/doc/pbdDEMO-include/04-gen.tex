@@ -82,6 +82,46 @@ The concise explanation is that the \code{base.numroc()} utility determines the 
 More precisely, it calculates the local storage requirements given a global dimension \code{dim}, a blocking factor \code{bldim}, and a BLACS context number \code{ICTXT}.  The extra argument \code{fixme} determines whether or not the lowest value returned should be 1.  If \code{fixme==FALSE} and any of the returned local dimensions are less than 1, then that processor does not actually own any of the global matrix --- it has no local storage.  But something must be stored, and so we default this to \code{matrix(0)}, the $1\times 1$ matrix with single entry 0.
 
 
+
+
+
+
+
+
+\section{Diagonal, Fixed Global Dimension}
+
+\emph{Example:  randomly generate \textbf{diagonal} distributed matrices with random normal data of specificed global dimension.}
+
+The demo command is
+\begin{Command}
+### At the shell prompt, run the demo with 4 processors by
+### (Use Rscript.exe for windows system)
+mpiexec -np 4 Rscript -e "demo(randmat_diag_global,'pbdDEMO',ask=F,echo=F)"
+\end{Command}
+
+In \proglang{R}, the \code{diag()} function serves two purposes.  If given a matrix, it produces a vector containing the diagonal entries of that matrix; but if given a vector, it constructs a diagonal matrix whose diagonal is that vector.  And so for example, the zero and identity matrices of any dimension can quickly be constructed via:
+\begin{lstlisting}[language=rr,title=Diagonal Matrices in R]
+diag(x=0, nrow=10, ncol=10) # zero matrix
+diag(x=1, nrow=10, ncol=10) # identity matrix
+\end{lstlisting}
+
+Both of the above functionalities of \code{diag()} are available for distributed matrices; however we will only focus on the latter. 
+
+When you wish to construct a diagonal distributed matrix, you can easily do so by using the additional \code{type=} argument to our \code{diag()} method.  By default, \code{type="matrix"}, though the user may specify \code{type="ddmatrix"}.  If so, then as one might expect, the optional \code{bldim=} and \code{ICTXT=} arguments are available.  So with just a little bit of tweaking, the above example becomes:
+\begin{lstlisting}[language=rr,title=Diagonal Matrices in pbdR]
+diag(x=0, nrow=10, ncol=10, type="ddmatrix") # zero (distributed) matrix
+diag(x=1, nrow=10, ncol=10, type="ddmatrix") # identity (distributed) matrix
+\end{lstlisting}
+In fact, the \code{type=} argument employs partial matching, so if we really want to be lazy, then we could simply do the following:
+\begin{lstlisting}[language=rr,title=Diagonal Matrices in pbdR]
+diag(x=0, nrow=10, ncol=10, type="d") # zero (distributed) matrix
+diag(x=1, nrow=10, ncol=10, type="d") # identity (distributed) matrix
+\end{lstlisting}
+
+Beyond the above brief explanation, the demo for this functionality is mostly self-contained, although we do employ the \code{redistribute()} function to fully show off local data storage.  This function is explained in detail in Chapter~\ref{sec:redist}.
+
+
+
 \section{Fixed Local Dimension}
 
 \emph{Example:  randomly generate distributed matrices with random normal data of specificed local dimension.}
