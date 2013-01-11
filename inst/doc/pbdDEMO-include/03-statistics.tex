@@ -300,18 +300,15 @@ and linear mixed effect models (LME).
 
 The implementation is straight forward:
 \begin{lstlisting}[language=rr,title=R Code]
-mpi.ols <- function(y.spmd, X.spmd){
-  if(length(y.spmd) != nrow(X.spmd)){
-    stop("length(y.spmd) != nrow(X.spmd)")
-  }
+if(length(y.spmd) != nrow(X.spmd)){
+  stop("length(y.spmd) != nrow(X.spmd)")
+}
 
-  t.X.spmd <- t(X.spmd)
-  A <- allreduce(t.X.spmd %*% X.spmd, op = "sum")
-  B <- allreduce(t.X.spmd %*% y.spmd, op = "sum")
+t.X.spmd <- t(X.spmd)
+A <- allreduce(t.X.spmd %*% X.spmd, op = "sum")
+B <- allreduce(t.X.spmd %*% y.spmd, op = "sum")
 
-  solve(matrix(A, ncol = ncol(X.spmd))) %*% B
-} # End of mpi.ols().
-
+solve(matrix(A, ncol = ncol(X.spmd))) %*% B
 \end{lstlisting}
 
 While this is a fine demonstration of the power of ``getting your hands dirty'', this approach is only efficient for small $N$ and small $p$.  This is, in large part, because the operation is not ``fully parallel'', in that the solution is serial and replicated on all processors.  Worse, directly computing
