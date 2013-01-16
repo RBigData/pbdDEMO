@@ -1,8 +1,11 @@
 
 ======================= Log Before Release =====================================
+2013-01-14:
+  * Add pbdNCDF4 examples.
+
 2012-11-27:
-  * Added pbdBASE and pbdDMAT examples.
-  * Added numerous functions.
+  * Add pbdBASE and pbdDMAT examples.
+  * Add numerous functions.
 
 2012-11-06:
   * Add pbdMPI and pbdSLAP examples.

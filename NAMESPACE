@@ -1,9 +1,8 @@
 useDynLib(pbdDEMO)
 
-import(methods, rlecuyer, pbdMPI, pbdSLAP, Rcpp, pbdBASE, pbdDMAT, sqldf)
+import(methods, rlecuyer, pbdMPI, pbdSLAP, Rcpp, pbdBASE, pbdDMAT, pbdNCDF4)
 
 exportPattern("^demo\\.[[:alpha:]]+")
-exportPattern("^mpi\\.[[:alpha:]]+")
 export(
   balance.info,
   load.balance,
@@ -13,5 +12,7 @@ export(
   ###
   read.csv.ddmatrix, read.sql.ddmatrix,
   Hconst, Hunif, Hnorm,
-  Hconst.local, Hunif.local, Hnorm.local
+  Hconst.local, Hunif.local, Hnorm.local,
+  ###
+  ncvar_put_2D, ncvar_put_dmat, ncvar_get_2D, ncvar_get_dmat
 )

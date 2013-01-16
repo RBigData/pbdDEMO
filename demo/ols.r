@@ -15,7 +15,7 @@ epsilon <- rnorm(N)
 y.spmd <- X.spmd %*% beta + epsilon 
 
 ### Run.
-ret.spmd <- mpi.ols(y.spmd, X.spmd)
+ret.spmd <- demo.ols(y.spmd, X.spmd)
 
 ### Output.
 comm.print(ret.spmd)

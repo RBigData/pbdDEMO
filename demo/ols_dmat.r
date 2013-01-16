@@ -28,7 +28,7 @@ dy <- Hunif(c(n, 1), bldim=bldim, min=ymin, max=ymax)
 
 mdl <- lm.fit(dx, dy)
 
-dx.new <- Hnorm(c(1, p), bldim=bldim, mean=mean, sd=sd)
+dx.new <- Hunif(c(1, p), bldim=bldim, min=ymin, max=ymax)
 pred <- dx.new %*% mdl$coefficients
 
 comm.cat(paste("\nThe predicted y value is:", submatrix(pred), "\n"), quiet=T)

@@ -213,7 +213,7 @@ The demo command is
 mpiexec -np 4 Rscript -e "demo(quantile,'pbdDEMO',ask=F,echo=F)"
 \end{lstlisting}
 
-Another fundamental tool in the statistician's toolbox is finding quantiles.  Quantiles are points taken from the cumulative distribution function.  Formally, a $q$-\emph{quantile} (or \emph{$q$-tile}) with $q~\in~[0,1]$ of a random variable $X$ is any value $\theta_q$ such that\footnote{This definition is due to the mathematical statistician Herman Rubin:  \url{http://mathforum.org/kb/message.jspa?messageID=406278}}
+Another fundamental tool in the statistician's toolbox is finding quantiles.  Quantiles are points taken from the cumulative distribution function.  Formally, a $q$-\emph{quantile} (or \emph{$q$-tile}) with $q~\in~[0,1]$ of a random variable $X$ is any value $\theta_q$ such that\footnote{This definition is due to Herman Rubin \url{http://mathforum.org/kb/message.jspa?messageID=406278}}
 \begin{align*}
 P(X\leq \theta_q) &\geq q\hspace{2cm}\text{and}\\
 P(X\geq \theta_q) &\leq 1-q
@@ -300,15 +300,18 @@ and linear mixed effect models (LME).
 
 The implementation is straight forward:
 \begin{lstlisting}[language=rr,title=R Code]
-if(length(y.spmd) != nrow(X.spmd)){
-  stop("length(y.spmd) != nrow(X.spmd)")
-}
+mpi.ols <- function(y.spmd, X.spmd){
+  if(length(y.spmd) != nrow(X.spmd)){
+    stop("length(y.spmd) != nrow(X.spmd)")
+  }
 
-t.X.spmd <- t(X.spmd)
-A <- allreduce(t.X.spmd %*% X.spmd, op = "sum")
-B <- allreduce(t.X.spmd %*% y.spmd, op = "sum")
+  t.X.spmd <- t(X.spmd)
+  A <- allreduce(t.X.spmd %*% X.spmd, op = "sum")
+  B <- allreduce(t.X.spmd %*% y.spmd, op = "sum")
 
-solve(matrix(A, ncol = ncol(X.spmd))) %*% B
+  solve(matrix(A, ncol = ncol(X.spmd))) %*% B
+} # End of mpi.ols().
+
 \end{lstlisting}
 
 While this is a fine demonstration of the power of ``getting your hands dirty'', this approach is only efficient for small $N$ and small $p$.  This is, in large part, because the operation is not ``fully parallel'', in that the solution is serial and replicated on all processors.  Worse, directly computing

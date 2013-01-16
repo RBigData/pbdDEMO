@@ -19,3 +19,9 @@ reblock			pbdDEMO		Fiddle with ddmatrix blocking parameters.
 verify			pbdDEMO		Solve a large system and verify the solution.
 pca				pbdDEMO		Principal Components Analysis
 ols_dmat	pbdDEMO		Ordinary least squares with pbdDMAT.
+
+trefht		pbdDEMO		An example of CAM5 output.
+nc4_serial	pbdDEMO		An example searial read and write NetCDF4.
+nc4_parallel	pbdDEMO		An example parallel read and write NetCDF4.
+nc4_block_cyclic	pbdDEMO		An example block-cyclic read and write NetCDF4.
+
