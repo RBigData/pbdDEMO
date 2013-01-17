@@ -8,8 +8,10 @@
   amount of each processor is nearly equal.
 }
 \usage{
-  balance.info(X.spmd, comm = .SPMD.CT$comm)
-  load.balance(X.spmd, bal.info = NULL, comm = .SPMD.CT$comm)
+  balance.info(X.spmd, comm = .SPMD.CT$comm,
+               spmd.major = .DEMO.CT$spmd.major)
+  load.balance(X.spmd, bal.info = NULL, comm = .SPMD.CT$comm,
+               spmd.major = .DEMO.CT$spmd.major)
   unload.balance(new.X.spmd, bal.info, comm = .SPMD.CT$comm)
 }
 \arguments{
@@ -17,6 +19,8 @@
   \item{comm}{a communicator number.}
   \item{bal.info}{a returned object from \code{balance.info}.}
   \item{new.X.spmd}{a SPMD data matrix or vector}
+  \item{spmd.major}{a SPMD major, either 1 for row-major or 2
+                    for column-major.}
 }
 \details{
   \code{X.spmd} is the data matrix with dimension \code{N.spmd * p} and

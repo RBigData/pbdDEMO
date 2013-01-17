@@ -7,13 +7,17 @@
 }
 \usage{
   spmd2dmat(X.spmd, skip.balance = FALSE, comm = .SPMD.CT$comm,
-            bldim = .DEMO.CT$bldim, ICTXT = .DEMO.CT$ictxt)
-  dmat2spmd(X.dmat, bal.info = NULL, comm = .SPMD.CT$comm)
+            spmd.major = .DEMO.CT$spmd.major, bldim = .DEMO.CT$bldim,
+            ICTXT = .DEMO.CT$ictxt)
+  dmat2spmd(X.dmat, bal.info = NULL, comm = .SPMD.CT$comm,
+            spmd.major = .DEMO.CT$spmd.major)
 }
 \arguments{
   \item{X.spmd}{a SPMD matrix.}
   \item{skip.balance}{if \code{load.balance} were skipped.}
   \item{comm}{a communicator number.}
+  \item{spmd.major}{a SPMD major, either 1 for row-major or 2
+                    for column-major.}
   \item{bldim}{the blocking dimension for block-cyclically distributing
                the matrix across the process grid. }
   \item{ICTXT}{BLACS context number for return.}

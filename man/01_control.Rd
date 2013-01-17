@@ -14,7 +14,9 @@
   Elements              \tab Default  \tab Usage \cr
   \code{ictxt}          \tab 0L       \tab a default BLACS context \cr
   \code{bldim}          \tab c(2L,2L) \tab a default block dimension \cr
+  \code{spmd.major}     \tab 1L       \tab a default SPMD major \cr
 }
+  The \code{spmd.major} is 1 for row-major and 2 for column-major.
 }
 \references{
   Programming with Big Data in R Website:

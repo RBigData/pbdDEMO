@@ -14,5 +14,5 @@ export(
   Hconst, Hunif, Hnorm,
   Hconst.local, Hunif.local, Hnorm.local,
   ###
-  ncvar_put_2D, ncvar_put_dmat, ncvar_get_2D, ncvar_get_dmat
+  ncvar_put_spmd, ncvar_put_dmat, ncvar_get_spmd, ncvar_get_dmat
 )

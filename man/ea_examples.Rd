@@ -12,8 +12,10 @@
   Laboratory.
 }
 \format{
-  An R data file contains two lists: \code{def} for structure definition
-  of \dQuote{TREFHT} and \code{data} for output values of simulation.
+  An R data file contains two lists: \code{def} for structure definition of
+  \dQuote{TREFHT} in \code{ncvar4} class (see \pkg{pbdNCDF4} package for
+  details), and \code{data} for output values of simulation in a matrix
+  where rows are for 1152 longitudes and columns are for 768 latitudes.
 }
 \details{
   Version 5.0 of the Community Atmosphere Model (CAM) is the latest in a
@@ -32,7 +34,7 @@
   format (column major), so it needs a transpose to obtains the R/Fortran
   format (row major). Also, the longitude order is not the same as the
   \pkg{maps} package. Please see the example below for the adjustment or
-  by calling \code{demo('trefht','pbdNCDF4')} inside an R session.
+  by calling \code{demo('trefht','pbdDEMO')} inside an R session.
 }
 \references{
   CAM5:
@@ -45,13 +47,13 @@
   Mr Prabhat and Michael Wehner.
 }
 \seealso{
-  \code{write.nc4} and \code{read.nc4}.
+  \code{ncvar_put_2D} and \code{ncvar_get_2D}.
 }
 \examples{
 \dontrun{
 library(maps)
 library(RColorBrewer)
-library(pbdNCDF4, quiet = TRUE)
+library(pbdDEMO, quiet = TRUE)
 
 lon <- TREFHT$def$dim[[1]]$vals               # longitude
 lat <- TREFHT$def$dim[[2]]$vals               # latitude

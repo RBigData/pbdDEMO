@@ -1,140 +1,159 @@
-### This file contains several functions for reading and writing
-### ddmatrix to NetCDF4 files
+### This file contains several functions for reading and writing spmd and
+### ddmatrix to NetCDF4 files and mainly forcus on 2D matrices.
 
-ncvar_put_2D <- function(nc, varid, vals, slice.id = NULL, verbose = FALSE,
-    comm = .SPMD.CT$comm){
-  ### check
-  if((! comm.all(is.matrix(vals))) && (! is.ddmatrix(vals))){
-    stop("vals should be a matrix or a ddmatrix.")
-  }
+### Warning: All "vals" are presumed to be "spmd column-major" matrices
+###          for all functions, but may be fine with other formats in
+###          some functions.
 
+demo.ncvar_put_2D <- function(nc, varid, vals, start = NA, count = NA,
+    verbose = FALSE, comm = .SPMD.CT$comm){
   ### get variable id from the nc header
   idobj <- pbdNCDF4:::vobjtovarid4(nc, varid, verbose = verbose,
                                    allowdimvar = TRUE)
 
-  ### obtain matrix size
+  ### obtain storage dimension
   ndim <- length(nc$var[[idobj$list_index]]$dim)
-  if(ndim > 2){
-    warning("Only the first two dimensions are written")
-  }
 
-  ### MPI information
-  rank <- comm.rank(comm)
-  size <- comm.size(comm)
-
-  ### divide data into pieces by rank
-  nrow <- nrow(vals)
-  ncol <- ncol(vals)
-  ncol.per.rank <- ceiling(ncol / size)
-  st <- c(1, 1 + ncol.per.rank * rank)
-  co <- c(nrow, ncol.per.rank)
-
-  ### prepare the matrix to write
-  if(is.ddmatrix(vals)){
-    ### redistribute data in spmd column format.
-    X.dmat <- redistribution(vals, bldim = c(nrow, ncol.per.rank), ICTXT = 1)
-    X.spmd <- X.dmat@Data
-  } else{
-    X.spmd <- vals
-  }
-
-  ### take care process overflows (size > ncol)
-  if(st[2] + co[2] > ncol){
-    if(st[2] <= ncol){  # fill the last piece
-      co <- c(nrow, ncol - st[2] + 1)
-    } else{             # empty matrix (rank > ncol)
-      st <- c(1, 1)
-      co <- c(0, 0)
+  ### check
+  if(comm.any(is.na(start) || is.na(count), comm = comm)){
+    COMM.RANK <- comm.rank(comm)
+    nrow <- nrow(vals)
+    ncol <- ncol(vals)
+    count <- NULL
+    start <- NULL
+    if(ndim == 1){
+      count <- nrow * ncol
+      start <- c(1, cumsum(allgather(count, comm = comm)))[COMM.RANK + 1]
+    }
+    if(ndim == 2){
+      count <- c(nrow, ncol)
+      start <- c(1, c(1, cumsum(allgather(ncol, comm = comm)))[COMM.RANK + 1])
     }
   }
-  if(ndim > 2){         # fill the slice of hypercube
-    if(comm.any(is.null(slice.id), comm = comm)){
-      slice.id <- c(0, 0, rep(1, ndim - 2))
-    } else{
-      if(comm.any(length(slice.id) <= 2, comm = comm)){
-        sto("length slice.id should be greater than 2.")
-      }
-      if(comm.any(sum(slice.id == 0) != 2, comm = comm)){
-        sto("slice.id should have exactly two 0 elements.")
-      }
-    }
-    st.new <- slice.id
-    st.new[slice.id == 0] <- st
-    st <- st.new 
-    co.new <- rep(0, ndim)
-    co.new[slice.id == 0] <- co
-    co <- co.new
+  if(comm.any(length(start) != ndim || length(count) != ndim, comm = comm)){
+    stop("start and count should be specified correctly for a hypercube.")
   }
-  if(co[2] != 0){
-    X.spmd.by.rank <- as.vector(X.spmd[, st[2] - 1 + (1:co[2])])
-  } else{
-    X.spmd.by.rank <- NULL
+  if(comm.any(prod(count[count != 0]) != length(vals), comm = comm)){
+    stop("dim(vals) and count are not consistent.")
   }
 
   ### parallel write
   nc_var_par_access(nc, varid, verbose = verbose)
-  ncvar_put(nc, varid, X.spmd.by.rank, start = st, count = co,
-            verbose = verbose)
+  ncvar_put(nc, varid, vals, start = start, count = count, verbose = verbose)
 
   invisible()
-} # End of ncvar_put_2D().
+} # End of demo.ncvar_put_2D().
 
+ncvar_put_dmat <- function(nc, varid, vals, start = NA, count = NA,
+    verbose = FALSE, comm = .SPMD.CT$comm){
+  ### check
+  if(! is.ddmatrix(vals)){
+    stop("vals should be a ddmatrix.")
+  }
 
-ncvar_put_dmat <- ncvar_put_2D
+  ### MPI information
+  COMM.SIZE <- comm.size(comm)
+
+  ### redistribute data in spmd column format.
+  nrow <- nrow(vals)
+  ncol <- ncol(vals)
+  ncol.spmd <- ceiling(ncol / COMM.SIZE)
+  X.dmat <- redistribution(vals, bldim = c(nrow, ncol.spmd), ICTXT = 1)
+
+  demo.ncvar_put_2D(nc, varid, X.dmat@Data, start = start, count = count,
+                    verbose = verbose, comm = comm)
+} # End of ncvar_put_dmat().
+
+ncvar_put_spmd <- function(nc, varid, vals, start = NA, count = NA,
+    verbose = FALSE, comm = .SPMD.CT$comm){
+  ### check
+  if(! comm.all(is.matrix(vals), comm = comm)){
+    stop("vals should be a spmd matrix")
+  }
+
+  demo.ncvar_put_2D(nc, varid, vals, start = start, count = count,
+                    verbose = verbose, comm = comm)
+} # End of ncvar_put_spmd().
 
 
 ### Modified from ncvar_get().
-ncvar_get_2D <- function(nc, varid, slice.id = NULL){
-  ### check
-  if(class(nc) != "ncdf4"){
-    stop("first argument (nc) is not of class ncdf4!")
-  }
-
-  if((mode(varid) != 'character') && (class(varid) != 'ncvar4') &&
-     (class(varid) != 'ncdim4') && (! is.na(varid))){
-    stop(paste("Error: second argument to ncvar_get must be an object of type ncvar or ncdim",
-               "(both parts of the ncdf object returned by nc_open()), the character-string name of a variable or dimension",
-               "or NA to get the default variable from the file.  If the file is netcdf version 4",
-               "format and uses groups, then the fully qualified var name must be given, for",
-               "example, model1/run5/Temperature"))
-  }
-
+demo.ncvar_get_2D <- function(nc, varid, start = NA, count = NA,
+    verbose = FALSE, signedbyte = TRUE, collapse_degen = TRUE,
+    comm = .SPMD.CT$comm){
   ### get variable id from the nc header
   idobj <- pbdNCDF4:::vobjtovarid4(nc, varid, verbose = verbose,
                                    allowdimvar = TRUE)
 
-  ### MPI information
-  rank <- comm.rank()
-  size <- comm.size()
-
-  ### obtain matrix size
+  ### obtain storage dimension
   ndim <- length(nc$var[[idobj$list_index]]$dim)
-  if(ndim > 2){
-    warning("Only the first two dimensions are read.")
-  }
 
-  ### divide data into pieces by rank
-  nrow <- nc$var[[idobj$list_index]]$dim[[1]]$len
-  ncol <- nc$var[[idobj$list_index]]$dim[[2]]$len
-  ncol.per.rank <- ceiling(ncol / size)
-  st <- c(1, 1 + ncol.per.rank * rank)
-  co <- c(nrow, ncol.per.rank)
+  ### check
+  if(comm.any(is.na(start) && is.na(count), comm = comm)){
+    COMM.RANK <- comm.rank(comm)
+    COMM.SIZE <- comm.size(comm)
+    count <- NULL
+    start <- NULL
+    if(ndim == 1){
+      ncol <- nc$var[[idobj$list_index]]$dim[[1]]$len
+      ncol.per.rank <- ceiling(ncol / COMM.SIZE)
+      start <- c(1 + ncol.per.rank * COMM.RANK)
+      count <- c(ncol.per.rank)
+      if(start + cont > ncol){
+        count <- ncol - start + 1
+      }
+      if(start > ncol){
+        start <- 1
+        count <- 0
+      }
+    }
+    if(ndim == 2){
+      nrow <- nc$var[[idobj$list_index]]$dim[[1]]$len
+      ncol <- nc$var[[idobj$list_index]]$dim[[2]]$len
+      ncol.per.rank <- ceiling(ncol / COMM.SIZE)
+      start <- c(1, 1 + nco.per.rank * COMM.RANK)
+      count <- c(nrow, ncol.per.rank)
+      if(start[2] + count[2] > ncol){
+        count[2] <-  ncol - start[2] + 1
+      }
+      if(start[2] > ncol){
+        start <- c(1, 1)
+        count <- c(0, 0)
+      }
+    }
+  }
+  if(comm.any(length(start) != ndim || length(count) != ndim, comm = comm)){
+    stop("start and count should be specified correctly for a hypercube.")
+  }
+  if(comm.any(prod(count[count != 0]) != length(vals), comm = comm)){
+    stop("dim(vals) and count are not consistent.")
+  }
 
   ### parallel read
   nc_var_par_access(nc, varid)
-  X.spmd <- ncvar_get(nc, varid, x.by.rank, start = st, count = co)
+  vals <- ncvar_get(nc, varid, start = start, count = count,
+                    verbose = verbose, signedbyte = signedbyte,
+                    collapse_desgn = collapse_dsgn)
+  vals
+} # End of demo.ncvar_get_2D().
 
-  X.spmd
-} # End of ncvar_get_2D().
-
-
-ncvar_get_dmat <- function(nc, varid, slice.id = NULL, bldim = .DEMO.CT$bldim,
-    ICTXT = .DEMO.CT$ictxt){
-  X.spmd <- ncvar_get_2D(nc, varid, slice.id = slice.id)
+ncvar_get_dmat <- function(nc, varid, start = NA, count = NA,
+    verbose = FALSE, signedbyte = TRUE, collapse_degen = TRUE,
+    bldim = .DEMO.CT$bldim, ICTXT = .DEMO.CT$ictxt){
+  vals <- demo.ncvar_get_2D(nc, varid, start = start, count = count,
+                            verbose = verbose, signedbyte = signedbyte,
+                            collapse_desgn = collapse_dsgn)
   
-  ### redistribute data in ddmatrix format.
-  X.dmat <- redistribution(X.spmd, bldim = bldim, ICTXT = ICTXT)
+  ### block-cyclic in context 2.
+  X.dmat <- new("ddmatrix", Data = vals,
+                dim = c(N, p), ldim = ldim, bldim = bldim.org, CTXT = 2)
 
-  X.dmat
+
+  ### redistribute data in ddmatrix format.
+  redistribution(vals, bldim = bldim, ICTXT = ICTXT)
 } # End of ncvar_get_dmat().
+
+ncvar_get_spmd <- function(nc, varid, start = NA, count = NA,
+    verbose = FALSE, signedbyte = TRUE, collapse_degen = TRUE,
+    comm = .SPMD.CT$comm){
+} # End of ncvar_get_spmd().
 
