@@ -221,6 +221,7 @@ mpiexec -np 4 Rscript -e "demo(spmd_dmat,'pbdDEMO',ask=F,echo=F)"
 
 The final redistribution challenge we will present is taking an object in SPMD format and putting it in the DMAT format.  More precisely, we assume the input object \code{X.spmd} is in SPMD and convert the object into an object of class \code{ddmatrix} which we will call \code{X.dmat}.
 
+
 The Figure~\ref{fig:spmd_dmat} illustates an example \code{X.spmd} and \code{X.dmat} conversion.  For full details about the block-cyclic data format used for class \code{ddmatrix}, see the \pkg{pbdBASE} vignette.  
 
 To perform such a redistribution, one simply needs to call:
@@ -308,6 +309,7 @@ $2\times 2$ grid with $2\times 2$ block dimension.
 }
 \label{fig:spmd_dmat}
 \end{figure}
+
 
 
 \section{Exercises}

@@ -1,6 +1,6 @@
 
 ======================= Log Before Release =====================================
-2013-01-16:
+2013-02-07:
   * Add pbdNCDF4 examples.
   * Add SPMD data matrix major for load balance functions, and
     spmd2dmat and dmat2spmd functions.
@@ -8,8 +8,8 @@
   * Add NetCDF4 chapter to vignette.
 
 2012-11-27:
-  * Add pbdBASE and pbdDMAT examples.
-  * Add numerous functions.
+  * Added pbdBASE and pbdDMAT examples.
+  * Added numerous functions.
 
 2012-11-06:
   * Add pbdMPI and pbdSLAP examples.
