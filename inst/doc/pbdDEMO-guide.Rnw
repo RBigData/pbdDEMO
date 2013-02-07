@@ -118,7 +118,8 @@ This publication was typeset using \LaTeX.  The illustrations were created using
 \input{./pbdDEMO-include/05-reading}
 \input{./pbdDEMO-include/05-z_pbdNCDF4}
 \input{./pbdDEMO-include/06-redist}
-\input{./pbdDEMO-include/07-dmat_stats}
+\input{./pbdDEMO-include/07-dmat_basic}
+\input{./pbdDEMO-include/08-dmat_stats}
 % appendices
 \appendix
 \input{./pbdDEMO-include/appendix}
