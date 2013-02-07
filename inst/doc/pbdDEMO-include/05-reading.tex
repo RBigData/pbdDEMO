@@ -66,28 +66,22 @@ To use a more complicated query for a database with differing structure, it shou
 
 
 
+\section{Exercises}
+\label{sec:reading_exercise}
 
+\begin{enumerate}[label=\thechapter-\arabic*]
+\item \label{ex:read_csv}
+In Section~\ref{sec:csv_files}, we have seen an CSV reading example, however,
+this is not an efficient way for large CSV files by calling \code{read.csv}.
+The \proglang{R} functions \code{con <- file(...)} can open a connection to
+the CSV files and \code{readLines(con, n = 100000)} can access a chunk of
+data ($100,000$ lines)
+from disk more efficiently. Implement a simple function as \code{read.csv}
+and compare performance.
 
-\section{NetCDF4 Files}
+\item
+As Exercise~\ref{ex:read_csv}, implement a simple function by utilizing
+\code{writeLines()} for writing large CSV file and compare performance
+to the \code{write.csv}.
 
-\emph{Example:  Read data from a netcdf4 file, perform matrix computations, and write results to disk.}
-
-The demo command is
-\begin{Command}
-### At the shell prompt, run the demo with 4 processors by
-### (Use Rscript.exe for windows system)
-mpiexec -np 4 Rscript -e "demo(red_ncdf,'pbdDEMO',ask=F,echo=F)"
-\end{Command}
-
-
-
-\begin{center}
-{\Huge \color{red}{WORK IN PROGRESS}} 
-\end{center}
-
-
-
-
-
-
-
+\end{enumerate}

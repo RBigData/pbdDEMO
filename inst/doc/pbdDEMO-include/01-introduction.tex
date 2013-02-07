@@ -67,7 +67,7 @@ Since \pkg{pbdEMO} depends on other pbdR packages, please read the corresponding
 \section{List of Demos}
 \label{sec:demolist}
 
-A full list of demos contained in the \pkg{pbdDEMO} package is provided below.
+A full list of demos contained in the \pkg{pbdDEMO} package is provided below.  We may or may not describe all of the demos in this vignette.
 
 \begin{lstlisting}[title=Shell Script]
 ### (Use Rscript.exe for windows system)
@@ -77,7 +77,7 @@ A full list of demos contained in the \pkg{pbdDEMO} package is provided below.
 		      # II Direct MPI Methods #
 		      # --------------------- #
 
-### Chapter 5
+### Chapter 4
 # Monte carlo simulation
 mpiexec -np 4 Rscript -e "demo(monte_carlo, package='pbdDMAT', ask=F, echo=F)"
 # Sample mean and variance
@@ -95,19 +95,24 @@ mpiexec -np 4 Rscript -e "demo(comparators, package='pbdDMAT', ask=F, echo=F)"
 		  # III Reading and Managing Data #
 		  # ----------------------------- #
 
-### Chapter 6
+### Chapter 5
 # Random matrix generation
 mpiexec -np 4 Rscript -e "demo(randmat_global, package='pbdDMAT', ask=F, echo=F)"
-mpiexec -np 4 Rscript -e "demo(randmat_diag_global, package='pbdDMAT', ask=F, echo=F)"
 mpiexec -np 4 Rscript -e "demo(randmat_local, package='pbdDMAT', ask=F, echo=F)"
 
-### Chapter 7
+### Chapter 6
 # Reading csv
 mpiexec -np 4 Rscript -e "demo(read_csv, package='pbdDMAT', ask=F, echo=F)"
 # Reading sql
 mpiexec -np 4 Rscript -e "demo(read_sql, package='pbdDMAT', ask=F, echo=F)"
-# Reading netcdf4
-mpiexec -np 4 Rscript -e "demo(read_ncdf, package='pbdDMAT', ask=F, echo=F)"
+
+### Chapter 7
+# Reading and writing parallel NetCDF4
+Rscript -e "demo(trefht, package="pbdDEMO", ask = F, echo = F)"
+mpiexec -np 4 Rscript -e "demo(nc4_serial, package='pbdDEMO', ask=F, echo=F)"
+mpiexec -np 4 Rscript -e "demo(nc4_parallel, package='pbdDEMO', ask=F, echo=F)"
+mpiexec -np 4 Rscript -e "demo(nc4_dmat, package='pbdDEMO', ask=F, echo=F)"
+mpiexec -np 4 Rscript -e "demo(nc4_spmdc, package='pbdDEMO', ask=F, echo=F)"
 
 ### Chapter 8
 # Loand/unload balance

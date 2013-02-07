@@ -28,7 +28,7 @@
 
    -- 64-bits
      C:/> set_mpisrc 64
-     C:/> mpiexec -np 2 Rscript.exe -e "demo(ex_1,'pbdDEMO',ask=F,echo=F)"
+     C:/> mpiexec -np 2 Rscript.exe -e "demo(monte_carlo,'pbdDEMO',ask=F,echo=F)"
    -- 32-bits
      C:/> set_mpisrc 32
-     C:/> mpiexec -np 2 Rscript.exe -e "demo(ex_1,'pbdDEMO',ask=F,echo=F)"
+     C:/> mpiexec -np 2 Rscript.exe -e "demo(monte_carlo,'pbdDEMO',ask=F,echo=F)"
