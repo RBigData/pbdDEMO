@@ -125,11 +125,10 @@ new.X.spmd <- load.balance(X.spmd, bal.info)
 org.X.spmd <- unload.balance(new.X.spmd, bal.info)
 \end{Code}
 
-The details of this exchange are depicted in the example in Figure~\ref{fig:load_balnace}.  Here, 
+The details of this exchange are depicted in the example in Figure~\ref{fig:load_balance}.  Here, 
 \code{X.spmd} is unbalanced, and \code{new.X.spmd} is a balanced version of \code{X.spmd}.
 
 \begin{figure}[h]
-\label{fig:load_balnace}
 \begin{center}
 \begin{tabular}{ccc}
 \code{X.spmd}(\code{org.X.spmd}) & & \code{new.X.spmd} \\
@@ -189,6 +188,7 @@ $\bX$ is distributed in
 Both are distributed row-wise in 4 processors.  The colors represent processors {\color{p0}0},
 {\color{p1}1}, {\color{p2}2}, and {\color{p3}3}, respectively.
 }
+\label{fig:load_balance}
 \end{figure}
  
 
@@ -219,12 +219,7 @@ The demo command is
 mpiexec -np 4 Rscript -e "demo(spmd_dmat,'pbdDEMO',ask=F,echo=F)"
 \end{Command}
 
-The final redistribution challenge we will present is taking an object in SPMD format and putting it in the DMAT format.  More precisely, we assume the input object \code{X.spmd} is in SPMD and transfer the convert the object into an object of class \code{ddmatrix} which we will call \code{X.dmat}.  
-
-, then convert again to a \proglang{R}
-object in \code{X} which is common on all processors, as in the next.
-
-
+The final redistribution challenge we will present is taking an object in SPMD format and putting it in the DMAT format.  More precisely, we assume the input object \code{X.spmd} is in SPMD and convert the object into an object of class \code{ddmatrix} which we will call \code{X.dmat}.
 
 The Figure~\ref{fig:spmd_dmat} illustates an example \code{X.spmd} and \code{X.dmat} conversion.  For full details about the block-cyclic data format used for class \code{ddmatrix}, see the \pkg{pbdBASE} vignette.  
 
@@ -249,7 +244,6 @@ Here, the \code{spmd2dmat} function does the following:
 Note that the \code{load.balance()} function, as used above, is legitimately necessary here.  Indeed, this function takes a collection of distributed data and converts it into a degenerate block cyclic distribution; namely, this places the data in block ``1-cycle'' format, distributed across an $n\times 1$ processor grid.  In the context of Figure~\ref{fig:spmd_dmat} (where the aforementioned process is implicit), this is akin to first moving the data into a distributed matrix format with \code{bldim=c(3,3)} and \code{CTXT=2}.  Finally, we can take this degenerate block-cyclic distribution and again to Figure~\ref{fig:spmd_dmat} as our motivating example, we convert the data balanced data so that it has \code{bldim=c(2,2)} and \code{CTXT=0}.
 
 \begin{figure}
-\label{fig:spmd_dmat}
 \begin{center}
 \begin{tabular}{ccc}
 \code{X.spmd} & & \code{X.dmat} \\
@@ -312,4 +306,68 @@ where colors represents processor {\color{p0}0},
 Note that \code{X.dmat} is in block-cyclic format of
 $2\times 2$ grid with $2\times 2$ block dimension.
 }
+\label{fig:spmd_dmat}
 \end{figure}
+
+
+\section{Exercises}
+\label{sec:redist_exercise}
+
+\begin{enumerate}[label=\thechapter-\arabic*]
+\item
+\label{ex:convert_row_column}
+In the Sections~\ref{sec:lb_ub} and \ref{sec:spmd_dmat},
+we have seen the load balance of SPMD matrix
+and the conversion between SPMD and DMAT where SPMD matrices \code{X.spmd}
+are presumed in row-major as shown in
+the Firgures~\ref{fig:load_balance} and \ref{fig:spmd_dmat}.
+Create new functions
+\code{spmdr2spmdc()} and \code{spmdc2spmdr()} converting between
+row-major and column-major by utilizing functions \code{spmd2dmat()}
+and \code{dmat2spmd()} and changing their option \code{spmd.major}.
+
+\item
+The demo code \code{demo/spmd_dmat.r} of \pkg{pbdDEMO} has a SPMD row-major
+matrix \code{X.spmd}. Utilize the functions developed in the
+Exercise~\ref{ex:convert_row_column}.
+Convert \code{X.spmd} to a column-major matrix \code{new.X.spmdc}
+by calling \code{spmdr2spmdc()}, then convert \code{new.X.spmdc} back to a
+row-major matrix \code{new.X.spmdr} by calling \code{spmdc2spmdr()}.
+Check if \code{new.X.spmdr} were the same as \code{X.spmd}.
+
+\item
+In \pkg{pbdDEMO}, there are some internal functions \code{demo.spmdr2dmat()},
+\code{demo.spmdc2dmat()}, \code{demo.dmat2spmdr()}, and
+\code{demo.dmat2spmdc()} which have similar implementations as the
+functions \code{spmdr2spmdc()} and \code{spmdc2spmdr()} of the
+Exercise~\ref{ex:convert_row_column}. Utilize these functions as templates.
+Create a function \code{spmd2spmd()} with an argument \code{new.major} (1, 2)
+for designated row- or column-majors.
+Return warnings or errors if the input matrix is not convertible.
+
+\item
+\label{ex:nc4_spmdr}
+The demo code \code{demo/nc4_spmdc.r} of \pkg{pbdDEMO} is an example utilizing
+SPMD column-major matrix \code{X.spmdc} and dumps the matrix into a NetCDF4
+file. Adjust the code. Create a SPMD row-major matrix \code{X.spmdr} and dump
+the matrix to a new NetCDF4 file \code{nc4_spmdr.nc} by utilizing the function
+\code{ncvar_put_spmd()} with option \code{spmd.major = 1}. Verify that all
+\code{TREFHT} values of both \code{nc4_spmdc.nc} and \code{nc4_spmdr.nc}
+are identical.
+{\color{blue}Hint:
+The local matrix of a SPMD row- or column-major matrix is still
+row-major as the default of \proglang{R}.
+}
+
+\item
+The \code{load.balance()} and \code{unload.balance()} have a potential bug
+when data size is small and can not fit into the desired block size of
+a block-cyclic matrix. For instance, four processes in
+a SPMD row-major format with a matrix $5\times 1$. The two functions will
+(un-) balance the data in $2\times 1$ in process 0, and $1\times 1$ in others.
+If the desired block size is $2\time 1$, then the data should be
+$2\times 1$ in processes 0 and 1, $1\times 1$ in process 2, and no
+element for processor 3. Does any way to fix these two functions?
+
+\end{enumerate}
+

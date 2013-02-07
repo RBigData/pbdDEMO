@@ -70,10 +70,10 @@ spmd2dmat <- function(X.spmd, skip.balance = FALSE, comm = .SPMD.CT$comm,
     ICTXT = .DEMO.CT$ictxt){
   if(spmd.major == 1){
     demo.spmdr2dmat(X.spmd, skip.balance = skip.balance, comm = comm,
-                    major = major, bldim = bldim, ICTXT = ICTXT)
+                    bldim = bldim, ICTXT = ICTXT)
   } else if(spmd.major == 2){
     demo.spmdc2dmat(X.spmd, skip.balance = skip.balance, comm = comm,
-                    major = major, bldim = bldim, ICTXT = ICTXT)
+                    bldim = bldim, ICTXT = ICTXT)
   } else{
     stop("spmd.major = 1 or 2.")
   }
@@ -95,7 +95,11 @@ demo.dmat2spmdr <- function(X.dmat, bal.info = NULL, comm = .SPMD.CT$comm){
   X.dmat <- base.reblock(X.dmat, bldim = bldim.new, ICTXT = 2)
 
   ### copy to spmd.
-  X.spmd <- X.dmat@Data
+  if(base.ownany(dim(X.dmat), bldim(X.dmat), CTXT = 2)){
+    X.spmd <- X.dmat@Data
+  } else{
+    X.spmd <- matrix(0, nrow = 0, ncol = 0)
+  }
 
   ### unload balance data.
   if(! is.null(bal.info)){
@@ -123,7 +127,11 @@ demo.dmat2spmdc <- function(X.dmat, bal.info = NULL, comm = .SPMD.CT$comm){
   X.dmat <- base.reblock(X.dmat, bldim = bldim.new, ICTXT = 1)
 
   ### copy to spmd.
-  X.spmd <- X.dmat@Data
+  if(base.ownany(dim(X.dmat), bldim(X.dmat), CTXT = 1)){
+    X.spmd <- X.dmat@Data
+  } else{
+    X.spmd <- matrix(0, nrow = 0, ncol = 0)
+  }
 
   ### unload balance data.
   if(! is.null(bal.info)){
@@ -137,7 +145,7 @@ demo.dmat2spmdc <- function(X.dmat, bal.info = NULL, comm = .SPMD.CT$comm){
 } # End of demo.dmat2spmdc().
 
 dmat2spmd <- function(X.dmat, bal.info = NULL, comm = .SPMD.CT$comm,
-    spmd.major = .SPMD.CT$spmd.major){
+    spmd.major = .DEMO.CT$spmd.major){
   if(spmd.major == 1){
     demo.dmat2spmdr(X.dmat, bal.info = bal.info, comm = comm)
   } else if(spmd.major == 2){

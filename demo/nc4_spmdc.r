@@ -2,7 +2,7 @@ library(pbdDEMO, quiet = TRUE)
 library(pbdNCDF4, quiet = TRUE)
 
 # -------------------------------------
-# Parallel write and read NetCDF4 file
+# Write and read NetCDF4 file in spmd matrix
 # -------------------------------------
 
 ### default of pbdMPI
@@ -12,39 +12,22 @@ size <- comm.size()
 ### divide data into pieces by rank
 X <- TREFHT$data
 ncol <- ncol(X)
-nrow <- nrow(X)
-
 ncol.per.rank <- ceiling(ncol / size)
-st <- c(1, 1 + ncol.per.rank * rank)
-co <- c(nrow, ncol.per.rank)
+st <- 1 + ncol.per.rank * rank
+en <- min(c(ncol, st + ncol.per.rank - 1))
+X.spmdc <- X[, st:en]
 
-### take care process overflows
-if(st[2] + co[2] > ncol){
-  if(st[2] <= ncol){  # fill the last piece
-    co <- c(nrow, ncol - st[2] + 1)
-  } else{             # empty matrix (rank > ncol)
-    st <- c(1, 1)
-    co <- c(0, 0)
-  }
-}
-if(co[2] != 0){
-  X.spmdc <- X[, st[2] - 1 + (1:co[2])]
-} else{
-  X.spmdc <- matrix(0, nrow = 0, ncol = 0)
-}
-
-### define dimension and variable
+# define dimension and variable
 lon <- ncdim_def("lon", "degree_east", vals = TREFHT$def$dim[[1]]$vals)
 lat <- ncdim_def("lat", "degree_north", vals = TREFHT$def$dim[[2]]$vals)
 var.def <- ncvar_def("TREFHT", "K", list(lon = lon, lat = lat), NULL)
 
 ### parallel write
-file.name <- "nc4_parallel.nc"
+file.name <- "nc4_spmdc.nc"
 nc <- nc_create_par(file.name, var.def)
-nc_var_par_access(nc, "TREFHT")
-ncvar_put(nc, "TREFHT", X.spmdc, start = st, count = co)
+ncvar_put_spmd(nc, "TREFHT", X.spmdc, spmd.major = 2)
 nc_close(nc)
-if(rank == 0){
+if(comm.rank() == 0){
   ncdump(file.name)
 }
 
@@ -53,8 +36,7 @@ nc <- nc_open_par(file.name)
 if(comm.rank() == 0){
   print(nc)
 }
-nc_var_par_access(nc, "TREFHT")
-new.X.spmdc <- ncvar_get(nc, "TREFHT", start = st, count = co)
+new.X.spmdc <- ncvar_get_spmd(nc, "TREFHT", spmd.major = 2)
 nc_close(nc)
 
 finalize()

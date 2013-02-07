@@ -1,5 +1,6 @@
-\name{TREFHT}
+\name{Temperature at Reference Height}
 \alias{Practical Example}
+\alias{TREFHT}
 \docType{data}
 \title{Surface Air Temperature at Reference Height (TREFHT)}
 \description{
@@ -37,6 +38,9 @@
   by calling \code{demo('trefht','pbdDEMO')} inside an R session.
 }
 \references{
+  More datasets are available on ESGF (\url{http://www.earthsystemgrid.org/})
+  through the C20C project (on the NERSC portal).
+
   CAM5:
   \url{http://www.cesm.ucar.edu/models/cesm1.0/cam/}
 
@@ -49,9 +53,7 @@
 \seealso{
   \code{ncvar_put_2D} and \code{ncvar_get_2D}.
 }
-\examples{
-\dontrun{
-library(maps)
+\examples{ \dontrun{ library(maps)
 library(RColorBrewer)
 library(pbdDEMO, quiet = TRUE)
 

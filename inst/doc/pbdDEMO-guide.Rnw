@@ -16,19 +16,19 @@
 %
 The pbdR Core Team\\[.8cm]
 %
-Drew Schmidt, M.Sc.\\
+Drew Schmidt\\
 {\small\emph{Remote Data Analysis and Visualization Center,\\
 University of Tennessee, Knoxville}}\\[.4cm]
 %%%
-Wei-Chen Chen, Ph.D.\\
+Wei-Chen Chen\\
 {\small\emph{Computer Science and Mathematics Division, \\
 Oak Ridge National Laboratory}}\\[.4cm]
 %%%
-George Ostrouchov, Ph.D.\\
+George Ostrouchov\\
 {\small\emph{Computer Science and Mathematics Division, \\
 Oak Ridge National Laboratory}}\\[.4cm]
 %%%
-Pragneskumar Patel, M.Sc.\\
+Pragneskumar Patel\\
 {\small\emph{Remote Data Analysis and Visualization Center,\\
 University of Tennessee, Knoxville}}
 %
@@ -92,6 +92,7 @@ This publication was typeset using \LaTeX.  The illustrations were created using
 % ddmatrix methods
 \input{./pbdDEMO-include/04-gen}
 \input{./pbdDEMO-include/05-reading}
+\input{./pbdDEMO-include/05-z_pbdNCDF4}
 \input{./pbdDEMO-include/06-redist}
 \input{./pbdDEMO-include/07-dmat_stats}
 % appendices

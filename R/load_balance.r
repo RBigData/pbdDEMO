@@ -59,15 +59,15 @@ load.balance <- function(X.spmd, bal.info = NULL, comm = .SPMD.CT$comm,
       for(i in send.to){
         if(i != COMM.RANK){
           tmp <- matrix(X.spmd[bal.info$send$belong == i,], ncol = p)
+          isend(tmp, rank.dest = i, tag = COMM.RANK, comm = comm)
         }
-        isend(tmp, rank.dest = i, tag = COMM.RANK, comm = comm)
       }
     } else{
       for(i in send.to){
         if(i != COMM.RANK){
           tmp <- matrix(X.spmd[, bal.info$send$belong == i], nrow = p)
+          isend(tmp, rank.dest = i, tag = COMM.RANK, comm = comm)
         }
-        isend(tmp, rank.dest = i, tag = COMM.RANK, comm = comm)
       }
     }
   }
