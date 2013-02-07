@@ -43,6 +43,12 @@ Version 1.0
 % First header/footer style
 \prebodyheadfoot
 
+\begin{textblock*}{0mm}(0mm,0mm)
+\includegraphics[scale=1]{./cover/cover.pdf}
+\end{textblock*}
+
+\newpage\ \newpage
+
 \date{}
 \maketitle
 
@@ -64,21 +70,39 @@ This publication was typeset using \LaTeX.  The illustrations were created using
 \fancyfoot{}
 \tableofcontents
 
+% ----------------------
+% Pre-body (roman numeral pages)
+% ----------------------
+
+\newpage
+\fancyhf[C]{}
+\input{./pbdDEMO-include/00-preface}
+
 \newpage
 \fancyhf[C]{}
 \input{./pbdDEMO-include/00-acknowledgement}
 
 \newpage
+\fancyhf[C]{}
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{section}{List of Figures}
+\listoffigures
+\addcontentsline{toc}{section}{List of Tables}
+\listoftables
+
+\newpage
 \input{./pbdDEMO-include/00-warn}
+
+
+% ----------------------
+% Body
+% ----------------------
 
 \newpage
 \pagenumbering{arabic}
 \setcounter{page}{1}
 \pagestyle{fancy}
-
-% ----------------------
-% Body
-% ----------------------
 
 % Body header/footer style
 \bodyheadfoot
@@ -116,5 +140,7 @@ This publication was typeset using \LaTeX.  The illustrations were created using
 \renewcommand{\thechapter}{}
 
 \bibliography{./pbdDEMO-include/pbdDEMO}
+
+\printindex
 
 \end{document}
