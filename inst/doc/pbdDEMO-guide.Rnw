@@ -162,7 +162,7 @@ This publication was typeset using \LaTeX.  The illustrations were created using
 
 \makeatletter
 \renewenvironment{thebibliography}[1]
-     {\chapter*{\bibname}% <-- this line was changed from \chapter* to \section*
+     {\chapter*{\bibname}
       \@mkboth{\MakeUppercase\bibname}{\MakeUppercase\bibname}%
       \list{\@biblabel{\@arabic\c@enumiv}}%
            {\settowidth\labelwidth{\@biblabel{#1}}%

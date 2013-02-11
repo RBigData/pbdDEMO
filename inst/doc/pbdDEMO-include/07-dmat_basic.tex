@@ -29,8 +29,6 @@ In Section~\ref{sub:diag}, we discussed the way that the \code{diag()} method ma
 library(pbdDMAT, quiet = TRUE)
 init.grid()
 
-comm.set.seed(diff = TRUE)
-
 dx <- ddmatrix(data=0:1, nrow=10, ncol=10)
 
 sm <- sum(dx)
@@ -53,8 +51,6 @@ We also offer some ``super reductions''.  It is possible to change a distributed
 \begin{lstlisting}[language=rr,title=Super Reductions]
 library(pbdDMAT, quiet = TRUE)
 init.grid()
-
-comm.set.seed(diff = TRUE)
 
 dx <- ddmatrix(data=0:1, nrow=10, ncol=10)
 print(dx)
@@ -96,13 +92,11 @@ finalize()
 
 \section{Matrix Arithmetic}
 
-We also offer a complete set of methods for distributed matrix arithmetic.  With identical syntax to \proglang{R}, we can do some fairly complicated things, such as:
+We also offer a complete set of methods for distributed matrix arithmetic.  With identical syntax to \proglang{R}, we can do some reasonably complicated things, such as:
 
 \begin{lstlisting}[language=rr,title=Transformations]
 library(pbdDMAT, quiet = TRUE)
 init.grid()
-
-comm.set.seed(diff = TRUE)
 
 dx <- ddmatrix(data=-3:3, nrow=10, ncol=10)
 vec <- 1:2
@@ -118,9 +112,33 @@ finalize()
 For a full list of methods, see the \pkg{pbdDMAT} documentation.
 
 
+One item worth noting is that, as with regular \proglang{R}, if the user wishes to compute $X^TX$ or $XX^T$, then it is usually much faster to use the methods \code{crossprod()} and \code{tcrossprod()}, respectively.  However, for this operation, things are somewhat more complicated in the distributed sphere than in serial.  
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=.6]{pbdDEMO-include/pics/cov.pdf}
+\caption[Covariance Benchmark]{Covariance Benchmark Showing Effect of Parameter Calibration}\label{fig:cov}
+\end{figure}
+Figure~\ref{fig:cov} shows the results of a benchmark of the \code{cov()} method for computing variance-covariance matrices (which is just a small amount of extra work on top of \code{crossprod()}).  Here, each run consists of 25 replicates of calling \code{cov()} (which calls \code{crossprod()}) and then reporting the average run time.  The changes in parameters are subtle, but the effects are enormous.  Sometimes is may be (much) more beneficial to use \code{t(x) \%*\% x}.  Others it may not.  Proper calibration of these parameters to achieve optimal performance for a given task is still somewhat of an open question to the HPC community.
 
 
-% 
-% \section{Matrix Factorizations}
-% 
-% svd, qr, chol
+
+
+
+\section{Matrix Factorizations}
+
+In addition to all of the above, we also provide several of the more important matrix factorizations for distributed matrices.  Namely, the singular value decomposition \code{svd()}/\code{La.svd()}, QR factorization \code{qr()}, Cholesky factorization \code{chol()}, and LU factorization \code{lu()}.  So for example:
+
+\begin{lstlisting}[language=rr,title=Matrix Factorizations]
+library(pbdDEMO, quiet = TRUE)
+init.grid()
+
+comm.set.seed(diff = TRUE)
+
+dx <- Hnorm(dim=c(10,10), bldim=2)
+
+out <- chol(crossprod(dx))
+print(out)
+
+finalize()
+\end{lstlisting}
+
