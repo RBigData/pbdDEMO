@@ -45,7 +45,7 @@ There are several useful functions which apply to distributed matrices, but requ
 \code{na.exclude()} & \code{na.exclude(dx)} & \pkg{pbdBASE} & Drop rows with \code{NA}'s\\
 \code{apply()} & \code{apply(dx, 2, sd)} & \pkg{pbdDMAT} & Applies function to margin\\ \hline\hline
 \end{tabular}
-\caption{Distributed Matrix Methods with Implicit Data Redistributions}
+\caption[Implicit Data Redistributions]{Distributed Matrix Methods with Implicit Data Redistributions}
 \label{tab:implicitredist}
 \end{table}
 These functions are listed in Table~\ref{tab:implicitredist}.  By default, these functions will re-distribute back to the original data distribution after having performed the initial (necessary) redistribution and performed the requested operations.  That is, by default, the problem of managing different data distributions is hidden from the user and entirely implicit.  However, there are advantages to becoming familiar with managing these data distributions, because each of these functions has the option to have redistribution directly managed.  Now, a data redistribution must occur to use these functions, but understanding which and why can help minimize the number of redistributions performed.
@@ -182,8 +182,8 @@ $
 $
 \end{tabular}
 \end{center}
-\caption{
-$\bX$ is distributed in
+\caption[Load Balancing/Unbalancing Data]{
+Load Balancing/Unbalancing Data:  $\bX$ is distributed in
 \code{X.spmd}(\code{org.X.spmd}) and \code{new.X.spmd}.
 Both are distributed row-wise in 4 processors.  The colors represent processors {\color{p0}0},
 {\color{p1}1}, {\color{p2}2}, and {\color{p3}3}, respectively.
@@ -298,8 +298,8 @@ $
 $
 \end{tabular}
 \end{center}
-\caption{
-$\bX$ is distributed in
+\caption[Converting Between SPMD and DMAT]{
+Converting Between SPMD and DMAT:  $\bX$ is distributed in
 \code{X.spmd} and \code{X.dmat}.
 Both are distributed in 4 processors
 where colors represents processor {\color{p0}0},

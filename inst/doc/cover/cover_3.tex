@@ -1,0 +1,30 @@
+\documentclass{article}% modified from the TUG example by:
+                       %Jean-C\^ome Charpentier 2005
+
+\usepackage[margin=0.5in]{geometry}
+\usepackage{graphicx}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{pstricks}
+
+
+\begin{document}
+\thispagestyle{empty}
+
+\noindent
+\begin{pspicture}(0,13.5)(\linewidth,0)
+  \psline[linewidth=75mm,linecolor=Dandelion](0,9.8)(\linewidth,9.8)
+  \rput(\linewidth,13.5)
+    {\pspolygon*[linecolor=MidnightBlue](-3.6,.04)(-1.4,.04)(0,-1.4)(0,-3.6)}
+  \rput(\linewidth,13.5)
+    {\rput{-45}(-1,-1){\Large\textbf{\white Version}}}
+  \rput(\linewidth,13.5)
+    {\rput{-45}(-1.5,-1.5){\Large\textbf{\white 1.0}}}
+    \rput[l](.5,6.8){\psscaleboxto(6,1){\white pbdR Core Team}}
+    \psline[linewidth=188mm,linecolor=YellowGreen](0,-3.5)(\linewidth,-3.5)
+  \rput[l](.5,2.5){\psscaleboxto(.95\textwidth,3){Programming with}}
+  \rput[l](.5,-.7){\psscaleboxto(.95\textwidth,3){Big Data in R}}
+  \rput[l](.5,-2.8){\textsl{\huge Package Examples and Demonstrations}}
+  \rput[b]{20}(12,-9.5){\includegraphics{join2.png}}
+\end{pspicture}
+
+\end{document}

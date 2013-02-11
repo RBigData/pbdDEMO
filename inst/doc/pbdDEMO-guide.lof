@@ -1,18 +1,18 @@
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {1.1}{\ignorespaces pbdR Packages and Their Relationships with Scalable Libraries}}{3}{figure.1.1}
+\contentsline {figure}{\numberline {1.1}{\ignorespaces pbdR Packages}}{3}{figure.1.1}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {4.1}{\ignorespaces Approximating $\pi $ by Monte Carlo methods}}{20}{figure.4.1}
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Approximating $\pi $}}{21}{figure.4.1}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {7.1}{\ignorespaces Monthly averaged temperature at reference height (TREFHT) in Kelvin (K) for the January 2004. Water freezes at 273.15K and boils at 373.15K.}}{41}{figure.7.1}
-\addvspace {10\p@ }
-\contentsline {figure}{\numberline {8.1}{\ignorespaces $\boldsymbol {X}$ is distributed in \bgroup \catcode `\_12\relax \catcode `\~12\relax \catcode `\$12\relax {\normalfont \ttfamily \hyphenchar \font =-1 X.spmd}\egroup (\bgroup \catcode `\_12\relax \catcode `\~12\relax \catcode `\$12\relax {\normalfont \ttfamily \hyphenchar \font =-1 org.X.spmd}\egroup ) and \bgroup \catcode `\_12\relax \catcode `\~12\relax \catcode `\$12\relax {\normalfont \ttfamily \hyphenchar \font =-1 new.X.spmd}\egroup . Both are distributed row-wise in 4 processors. The colors represent processors {\color {p0}0}, {\color {p1}1}, {\color {p2}2}, and {\color {p3}3}, respectively. }}{47}{figure.8.1}
-\contentsline {figure}{\numberline {8.2}{\ignorespaces $\boldsymbol {X}$ is distributed in \bgroup \catcode `\_12\relax \catcode `\~12\relax \catcode `\$12\relax {\normalfont \ttfamily \hyphenchar \font =-1 X.spmd}\egroup and \bgroup \catcode `\_12\relax \catcode `\~12\relax \catcode `\$12\relax {\normalfont \ttfamily \hyphenchar \font =-1 X.dmat}\egroup . Both are distributed in 4 processors where colors represents processor {\color {p0}0}, {\color {p1}1}, {\color {p2}2}, and {\color {p3}3}. Note that \bgroup \catcode `\_12\relax \catcode `\~12\relax \catcode `\$12\relax {\normalfont \ttfamily \hyphenchar \font =-1 X.dmat}\egroup is in block-cyclic format of $2\times 2$ grid with $2\times 2$ block dimension. }}{49}{figure.8.2}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
+\contentsline {figure}{\numberline {9.1}{\ignorespaces Monthly averaged temperature}}{49}{figure.9.1}
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {10.1}{\ignorespaces Load Balancing/Unbalancing Data}}{55}{figure.10.1}
+\contentsline {figure}{\numberline {10.2}{\ignorespaces Converting Between SPMD and DMAT}}{57}{figure.10.2}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \contentsfinish 
