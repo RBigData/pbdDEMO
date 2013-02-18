@@ -9,7 +9,7 @@ Cicero once said that ``If you have a garden and a library, you have everything 
 
 \section{MPI Basics}
 
-In a sense, Cicero (in the above tortured metaphor) was quite right.  MPI is all that we \emph{need} in the same way that I might only \emph{need} bread and cheese, but really what I \emph{want} is a pizza.  MPI is somewhat low-level and can be quite fiddley, but mastering it adds a very powerful tool to the repertoire of the parallel \proglang{R} programmer, and is essential for anyone who wants to do large scale development of parallel codes.  
+In a sense, Cicero (in the above tortured metaphor) was quite right.  MPI is all that we \emph{need} in the same way that I might only \emph{need} bread and cheese, but really what I \emph{want} is a pizza.  MPI is somewhat low-level and can be quite fiddly, but mastering it adds a very powerful tool to the repertoire of the parallel \proglang{R} programmer, and is essential for anyone who wants to do large scale development of parallel codes.  
 
 ``MPI'' stands for ``Message Passing Interface''.  How it really works goes \emph{well} beyond the scope of this document.  But at a basic level, the idea is that the user is running a code on different compute nodes that (usually) can not directly modify objects in each others' memory.  In order to have all of the nodes working together on a common problem, data and computation directives are passed around over the network (often over a specialized link called infiniband).  
 

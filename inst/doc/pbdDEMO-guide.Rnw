@@ -7,8 +7,8 @@
 %%% Required by R CMD check
 %\VignetteIndexEntry{pbdDEMO-Guide}
 
-\title{\Huge Programming with Big Data in \proglang{R}\\[.3cm]
-{\LARGE Package Examples and Demonstrations}}
+\title{\Huge Speaking Parallel with a Serial Accent\\[.3cm] 
+  {\LARGE Programming with Big Data in \proglang{R} Package Examples and Demonstrations}}
 
 \author{
 \begin{minipage}{\textwidth}
