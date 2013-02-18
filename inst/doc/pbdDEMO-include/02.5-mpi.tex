@@ -1,4 +1,4 @@
-\part{Direct MPI Methods}
+
 %%% ----------------------------------------------------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -9,7 +9,7 @@ Cicero once said that ``If you have a garden and a library, you have everything 
 
 \section{MPI Basics}
 
-In a sense, Cicero (in the above tortured metaphor) was quite right.  MPI is all that we \emph{need} in the same way that I might only \emph{need} bread and cheese, but really what I \emph{want} is a pizza.  MPI is somewhat low-level and can be quite fiddley, but mastering it adds a very powerful tool to the repertoire of the parallel \proglang{R} programmer, and is essential for anyone who wants to do large scale development of parallel codes.  
+In a sense, Cicero (in the above tortured metaphor) was quite right.  MPI is all that we \emph{need} in the same way that I might only \emph{need} bread and cheese, but really what I \emph{want} is a pizza.  MPI is somewhat low-level and can be quite fiddly, but mastering it adds a very powerful tool to the repertoire of the parallel \proglang{R} programmer, and is essential for anyone who wants to do large scale development of parallel codes.  
 
 ``MPI'' stands for ``Message Passing Interface''.  How it really works goes \emph{well} beyond the scope of this document.  But at a basic level, the idea is that the user is running a code on different compute nodes that (usually) can not directly modify objects in each others' memory.  In order to have all of the nodes working together on a common problem, data and computation directives are passed around over the network (often over a specialized link called infiniband).  
 
@@ -79,7 +79,7 @@ In terms of performance, \pkg{pbdMPI} can greatly outperform \pkg{Rmpi}.  We pre
 function from each package on a randomly generated $10,000 \times 10,000$ distributed matrix with entries coming from the standard normal distribution, using different numbers of processors.  
 \begin{table}[h]
  \centering
- \caption{Runtimes (seconds) for \pkg{Rmpi} and \pkg{pbdMPI}.}
+ \caption[Benchmark Comparing \pkg{Rmpi} and \pkg{pbdMPI}]{Benchmark Comparing \pkg{Rmpi} and \pkg{pbdMPI}.  Run time in seconds is listed for each operation.  The speedup is relative to \pkg{Rmpi}.}
  \label{tab:allgather}
  \begin{tabular}{rrrr}\hline\hline
   Cores & \pkg{Rmpi} & \pkg{pbdMPI} & Speedup \\\hline
@@ -113,15 +113,16 @@ First things first, we must examine basic communicator issues, like construction
 \begin{itemize}
   \item \textbf{Managing a Communicator}:  Create and destroy communicators.\\
   \code{init()} --- initialize communicator\\
-  \code{finalize()} --- shut down communicator(s)\\
+  \code{finalize()} --- shut down communicator(s)
   %
   \item \textbf{Rank query}: Determine the processor's position in the communicator.\\
   \code{comm.rank()} --- ``who am I?''\\
-  \code{comm.size()} --- ``how many of us are there?''\\
+  \code{comm.size()} --- ``how many of us are there?''
   %
   \item \textbf{Barrier}: No processor can proceed until \emph{all} processors can proceed.\\
   \code{barrier()} --- ``computation wall'' that only all processors together can tear down
 \end{itemize}
+
 
 One quick word before proceeding.  If a processor queries \code{comm.size()}, this will return the total number of processors in the communicators.  However, communicator indexing is like indexing in the programming language \proglang{C}.  That is, the first element is numbered 0 rather than 1.  So when the first processor queries \code{comm.rank()}, it will return 0, and when the last processor queries \code{comm.rank()}, it will return \code{comm.size() - 1}.
   
@@ -176,13 +177,14 @@ Once managing a communicator is under control, you presumably want to do things 
 \begin{itemize}
   \item \textbf{Reduction}:  Say each processor has a number \code{x.spmd}. Add all of them up, find the largest, find the smallest, \dots .\\
   \code{reduce(x.spmd, op='sum')} --- only one processor gets result (default is 0)\\
-  \code{allreduce(x.spmd, op='sum')} --- every processor gets result\\[.4cm]
+  \code{allreduce(x.spmd, op='sum')} --- every processor gets result
+  %
   \item \textbf{Gather}: Say each processor has a number. Create a new object on some processor(s) containing all of those numbers.\\
   \code{gather(x.spmd)} --- only one processor gets result\\
-  \code{allgather(x.spmd)} --- every processor gets result\\[.4cm]
+  \code{allgather(x.spmd)} --- every processor gets result
+  %
   \item \textbf{Broadcast}: One processor has a number \code{x.spmd} that every other processor should also have.\\
   \code{bcast(x.spmd)}
-  \\[.4cm]
 \end{itemize}
 
 Here perhaps explanations are inferior to examples; so without wasting any more time, we proceed to the next example:
@@ -212,18 +214,76 @@ Try experimenting with this by running the program several times.  You should ge
 
 
 
-\subsection{pbdMPI Sugar}\label{sec:pbdsugar}
+\subsection{Printing and RNG Seeds}\label{sec:pbdsugar}
 
 In addition to the above common MPI operations, which will make up the bulk of the MPI programmer's toolbox, we offer a few extra utility functions:
 
 \begin{itemize}
   \item \textbf{Print}: printing with control over which processor prints.\\
   \code{comm.print(x, \dots)}\\
+  \code{comm.cat(x, \dots)}
   %
   \item \textbf{Random Seeds}: \\
   \code{comm.set.seed(seed, diff=FALSE)}:  every processor uses the seed \code{seed}
   \code{comm.set.seed(diff=TRUE)}: every processor uses an independent seed (via \pkg{rlecuyer})
-  %
+\end{itemize}
+
+The \code{comm.print()} and \code{comm.cat()} functions are especially handy, because they are much more sophisticated than their \code{R} counterparts when using multiple processes.  These functions which processes do the printing, and if you choose to have all processes print their result, then the printing occurs in an orderly fashion, with processor 0 getting the first line, processor 1 getting the second, and so on.
+
+For example, revisiting our ``Hello, world'' example, we can somewhat simplify the code with a slight modification:
+
+\begin{lstlisting}[language=rr,title=Simple pbdMPI Example 3]
+library(pbdMPI, quiet = TRUE)
+init()
+
+myRank <- comm.rank()
+
+comm.print("Hello, world.")
+
+finalize()
+\end{lstlisting}
+
+If we want to see what each processor has to say, we can pass the optional argument \code{all,rank=TRUE} to \code{comm.print()}.  By default, each process will print its rank, then what you told it to print.  You can suppress the printing of communicator rank via the optional argument \code{quiet=TRUE} to \code{comm.print()}.
+
+These functions are quite handy\dots
+\begin{center}
+\colorbox{yellow}{\Huge \color{red}{\#\#\#\#\# HOWEVER \#\#\#\#\# }}  
+\end{center}
+these functions are potentially dangerous, and so some degree of care should be exercised.  Indeed, it is possible to lock up all of the active \proglang{R} sessions by incorrectly using them.  Worse, achieving this behavior is fairly easy to do.  The way this occurs is by issuing a \code{comm.print()} on an expression which requires communication.  For example, suppose we have a distributed object with local piece \code{x.spmd} and a function \code{myFunction()} which requires communication between the processors.  Then calling
+\begin{lstlisting}[language=rr,title=A Cautionary Tale of Printing in Parallel (1 of 3)]
+print(myFunction(x.spmd)) 
+\end{lstlisting}
+is just fine, but will not have the nice orderly, behaved printing style of \code{comm.print()}.  However, if we issue
+\begin{lstlisting}[language=rr,title=A Cautionary Tale of Printing in Parallel (2 of 3)]
+comm.print(myFunction(x.spmd)) 
+\end{lstlisting}
+then we have just locked up all of the \proglang{R} processes.  Indeed, behind the scenes, a call somewhat akin to 
+\begin{lstlisting}[language=rr]
+for (rank in 0:comm.size()){
+  if (comm.rank() == rank){
+    # do things
+  }
+  barrier()
+}
+\end{lstlisting}
+has been ordered.  The problem arises in the ``do things'' part.  Since (in our hypothetical example) the function \code{myFunction()} requires communication between the processors, it will simply wait forever for the others to respond until the job is killed.  This is because the other processors skipped over the ``do things'' part and are waiting at the barrier.  So lonely little processor 0 has been stood up, unable to communicate with the remaining processors.
+
+To avoid this problem, make it a personal habit to only print on \emph{results}, not \emph{computations}.  We can quickly rectify the above example by doing the following:
+\begin{lstlisting}[language=rr,title=A Cautionary Tale of Printing in Parallel (3 of 3)]
+myResult <- myFunction(x.spmd)
+comm.print(myResult)
+\end{lstlisting}
+
+In short, printing stored objects is safe.  Printing a yet-to-be-evaluated expression is not safe.
+
+
+
+
+
+\subsection{Apply, Lapply, and Sapply}\label{sec:pbdsugar2}
+
+But the \pkg{pbdMPI} sugar extends to more than just printing.  We also have a family of ``*ply'' functions, in the same vein as \proglang{R}'s \code{apply()}, \code{lapply()}, and \code{sapply()}:
+\begin{itemize}
   \item \textbf{Apply}: *ply-like functions.\\
   \code{pbdApply(X, MARGIN, FUN, \dots)} --- analogue of \code{apply()}\\
   \code{pbdLapply(X, FUN, \dots)} --- analogue of \code{lapply()}\\
@@ -232,7 +292,7 @@ In addition to the above common MPI operations, which will make up the bulk of t
 
 Here is a simple example utilizing \code{pbdLapply()}:
     
-\begin{lstlisting}
+\begin{lstlisting}[language=rr,title=Example 4]
 library(pbdMPI, quiet = TRUE)
 init()
 

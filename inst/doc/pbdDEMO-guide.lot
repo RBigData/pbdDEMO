@@ -1,16 +1,16 @@
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {3.1}{\ignorespaces Runtimes (seconds) for {\fontseries {b}\selectfont Rmpi} and {\fontseries {b}\selectfont pbdMPI}.}}{12}{table.3.1}
+\contentsline {table}{\numberline {3.1}{\ignorespaces Benchmark Comparing {\fontseries {b}\selectfont Rmpi} and {\fontseries {b}\selectfont pbdMPI}}}{12}{table.3.1}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {7.1}{\ignorespaces {\fontseries {b}\selectfont pbdNCDF4} and {\fontseries {b}\selectfont ncdf4} functions for accessing NetCDF4 files}}{40}{table.7.1}
-\addvspace {10\p@ }
-\contentsline {table}{\numberline {8.1}{\ignorespaces Distributed Matrix Methods with Implicit Data Redistributions}}{45}{table.8.1}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
+\contentsline {table}{\numberline {9.1}{\ignorespaces Functions for accessing NetCDF4 files}}{50}{table.9.1}
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {10.1}{\ignorespaces Implicit Data Redistributions}}{55}{table.10.1}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \contentsfinish 

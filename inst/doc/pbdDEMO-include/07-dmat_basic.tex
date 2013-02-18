@@ -1,5 +1,4 @@
-\part{Distributed Matrix Methods}
-\label{part:dmat}
+
 
 %%% ----------------------------------------------------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -10,73 +9,82 @@ There is a deep part of the author that does not want to begin with these exampl
 
 Matlab is an amazing product.  It costs \$100,000; it had better damn well be.  However, for statistics, machine learning, data mining --- data science --- we believe that \proglang{R} is ``better.''  Is \proglang{R} faster?  No, probably not.  But we argue that \proglang{R} wins in other ways.
 
-It is true that everything \proglang{R} can do, so too can Matlab; of course, the converse is also true --- that everything Matlab can do, \proglang{R} can do as well.  Each is a turing complete language.  But being turing complete is not sufficient; \LaTeX\ is turing complete, and yet we do not perform scientific computation in it (although of course it is unparalleled in typesetting).  But we could.  Consider Project Euler problem 2:  Find the sum of all the even-valued Fibonacci numbers which do not exceed four million.  Using \LaTeX:
+It is true that everything \proglang{R} can do, so too can Matlab; of course, the converse is also true --- that everything Matlab can do, \proglang{R} can do as well.  Each is a turing complete language.  But being turing complete is not sufficient; \LaTeX\ is turing complete, and yet we do not perform scientific computation in it (although of course it is unparalleled in typesetting).  But we could.  
 
-\begin{lstlisting}
-documentclass[a4paper,10pt]{article}
-\usepackage[utf8x]{inputenc}
- 
-\usepackage{forloop}  
-\usepackage{fp}  
- 
-\begin{document}
- 
-\newcounter{sum}
-\newcounter{current}
-\newcounter{prev}
-\newcounter{prevprev}
-\newcounter{n}
- 
-\FPset{\sum}{0}
-\FPset{\prev}{1}
-\FPset{\prevprev}{1}
-\FPset{\current}{2}
- 
-\forloop{n}{1}{\value{n} < 2}{
-    \FPdiv{\test}{\current}{2}
-    \FPifint{\test} \FPadd{\sum}{\sum}{\current} \fi
- 
-    \FPset{\prevprev}{\prev}
-    \FPset{\prev}{\current}
-    \FPadd{\current}{\prev}{\prevprev}
- 
-    \FPiflt{\current}{4000000} \setcounter{n}{0} \fi
-}
- 
-\FPround{\sum}{\sum}{0}
- 
-The sum of all even valued Fibonacci Numbers below 4,000,000 is \FPprint{\sum}.
- 
-\end{document}
-\end{lstlisting}
+The fact that we do not is an extension of the fact that math journals do not publish articles written in \proglang{C} or \proglang{Fortran}.  Those programming languages are the wrong mediums of abstraction for expressing highly complicated ideas to domain experts.  Only a madman would attempt to express deep mathematical abstraction in these languages for publication (implementation being an entirely separate issue).  Likewise, we do not perform our statistical analyses in \LaTeX\ (don't be a pedant; we are not talking about sweave and you know it).  People overwhelmingly choose \proglang{R} for the analysis of data because it is the closest brain~$\rightarrow$~computer translation available for such problems.
 
-In \proglang{R}?
+Of course, this goes both ways.  If your life is matrix algebra, then \proglang{R} is a much worse fit for you than is Matlab.  Much of statistics is applied matrix algebra, but not all matrix algebra is statistics.
 
-\begin{lstlisting}[language=rr]
-fib <- c(1, 1)
-i <- 3
-while (fib[i-1] + fib[i-2] < 4e6){
-  fib[i] <- fib[i-1]+fib[i-2]
-  i <- i+1
-}
- 
-sum(fib[which(fib %% 2 == 1)])
-\end{lstlisting}
-
-Which one of those is more readable to you?  This is an extension of the fact that math journals do not publish articles written in \proglang{C} or \proglang{Fortran}.  Those programming languages are the wrong mediums of abstraction for expressing highly complicated ideas to domain experts.  Only a madman would attempt to express deep mathematical abstraction in these languages for publication (implementation being an entirely separate issue).  
-
-Likewise, we do not perform our statistical analyses in \LaTeX\ (don't be a pedant; we are not talking about sweave and you know it).  Of course, Matlab is much closer to the level of expressiveness we want in data science than \LaTeX.  But \proglang{R} is closer.
-
-
-
+So we reluctantly press on with several basic examples utilizing distributed matrices.  For meatier examples, see Chapter~\ref{chpt:avdstat}.
 
 
 
 
 \section{Reductions and Transformations}
 
+\subsection{Reductions}
 
-sum, prod, min, max, veiling, floor, round, abs, log, sqrt
+In Section~\ref{sub:diag}, we discussed the way that the \code{diag()} method may be utilized as a reduction operator.  We have numerous other reductions available, such as \code{sum()}, \code{prod()}, \code{min()}, and \code{max()}.  These operate exactly as their serial counterparts:
+\begin{lstlisting}[language=rr,title=Reductions]
+library(pbdDMAT, quiet = TRUE)
+init.grid()
+
+dx <- ddmatrix(data=0:1, nrow=10, ncol=10)
+
+sm <- sum(dx)
+comm.print(sm)
+
+pd <- prod(dx)
+comm.print(pd)
+
+mn <- min(dx)
+comm.print(mn)
+
+mx <- max(dx)
+comm.print(mx)
+
+finalize()
+\end{lstlisting}
+
+We also offer some ``super reductions''.  It is possible to change a distributed matrix into a non-distributed matrix or vector using the methods \code{as.matrix()} or \code{as.vector()}.  For example:
+
+\begin{lstlisting}[language=rr,title=Super Reductions]
+library(pbdDMAT, quiet = TRUE)
+init.grid()
+
+dx <- ddmatrix(data=0:1, nrow=10, ncol=10)
+print(dx)
+
+x <- as.matrix(dx)
+comm.print(x)
+
+finalize()
+\end{lstlisting}
+
+These can be very useful in testing, but should be used sparingly at scale.
+
+
+
+
+\subsection{Transformations}
+
+We also offer numerous in-place transformations, such as the various \code{log()} functions, \code{abs()}, \code{sqrt()}, \code{ceiling()}, \code{floor()}, and \code{round()}.  For example:
+
+\begin{lstlisting}[language=rr,title=Transformations]
+library(pbdDMAT, quiet = TRUE)
+init.grid()
+
+comm.set.seed(diff = TRUE)
+
+dx <- ddmatrix(data=-3:3, nrow=10, ncol=10)
+
+dx <- ceiling(sqrt(abs(dx)))
+
+x <- as.matrix(dx)
+comm.print(x)
+
+finalize()
+\end{lstlisting}
 
 
 
@@ -84,10 +92,33 @@ sum, prod, min, max, veiling, floor, round, abs, log, sqrt
 
 \section{Matrix Arithmetic}
 
+We also offer a complete set of methods for distributed matrix arithmetic.  With identical syntax to \proglang{R}, we can do some reasonably complicated things, such as:
 
-crossprod/tcrossprod (give timings)
+\begin{lstlisting}[language=rr,title=Transformations]
+library(pbdDMAT, quiet = TRUE)
+init.grid()
+
+dx <- ddmatrix(data=-3:3, nrow=10, ncol=10)
+vec <- 1:2
+
+dy <- (dx - vec) %*% dx
+
+y <- as.matrix(dy)
+comm.print(y)
+
+finalize()
+\end{lstlisting}
+
+For a full list of methods, see the \pkg{pbdDMAT} documentation.
 
 
+One item worth noting is that, as with regular \proglang{R}, if the user wishes to compute $X^TX$ or $XX^T$, then it is usually much faster to use the methods \code{crossprod()} and \code{tcrossprod()}, respectively.  However, for this operation, things are somewhat more complicated in the distributed sphere than in serial.  
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=.6]{pbdDEMO-include/pics/cov.pdf}
+\caption[Covariance Benchmark]{Covariance Benchmark Showing Effect of Parameter Calibration}\label{fig:cov}
+\end{figure}
+Figure~\ref{fig:cov} shows the results of a benchmark of the \code{cov()} method for computing variance-covariance matrices (which is just a small amount of extra work on top of \code{crossprod()}).  Here, each run consists of 25 replicates of calling \code{cov()} (which calls \code{crossprod()}) and then reporting the average run time.  The changes in parameters are subtle, but the effects are enormous.  Sometimes is may be (much) more beneficial to use \code{t(x) \%*\% x}.  Others it may not.  Proper calibration of these parameters to achieve optimal performance for a given task is still somewhat of an open question to the HPC community.
 
 
 
@@ -95,4 +126,19 @@ crossprod/tcrossprod (give timings)
 
 \section{Matrix Factorizations}
 
-svd, qr, chol
+In addition to all of the above, we also provide several of the more important matrix factorizations for distributed matrices.  Namely, the singular value decomposition \code{svd()}/\code{La.svd()}, QR factorization \code{qr()}, Cholesky factorization \code{chol()}, and LU factorization \code{lu()}.  So for example:
+
+\begin{lstlisting}[language=rr,title=Matrix Factorizations]
+library(pbdDEMO, quiet = TRUE)
+init.grid()
+
+comm.set.seed(diff = TRUE)
+
+dx <- Hnorm(dim=c(10,10), bldim=2)
+
+out <- chol(crossprod(dx))
+print(out)
+
+finalize()
+\end{lstlisting}
+

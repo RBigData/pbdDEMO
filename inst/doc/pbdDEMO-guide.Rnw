@@ -7,14 +7,14 @@
 %%% Required by R CMD check
 %\VignetteIndexEntry{pbdDEMO-Guide}
 
-\title{\Huge Programming with Big Data in \proglang{R}\\[.3cm]
-{\LARGE Package Examples and Demonstrations}}
+\title{\Huge Speaking Parallel with a Serial Accent\\[.3cm] 
+  {\LARGE Programming with Big Data in \proglang{R} Package Examples and Demonstrations}}
 
 \author{
 \begin{minipage}{\textwidth}
 \centering
 %
-The pbdR Core Team\\[.8cm]
+% The pbdR Core Team\\[.8cm]
 %
 Drew Schmidt\\
 {\small\emph{Remote Data Analysis and Visualization Center,\\
@@ -24,14 +24,14 @@ Wei-Chen Chen\\
 {\small\emph{Computer Science and Mathematics Division, \\
 Oak Ridge National Laboratory}}\\[.4cm]
 %%%
-George Ostrouchov\\
-{\small\emph{Computer Science and Mathematics Division, \\
-Oak Ridge National Laboratory}}\\[.4cm]
-%%%
 Pragneskumar Patel\\
 {\small\emph{Remote Data Analysis and Visualization Center,\\
-University of Tennessee, Knoxville}}
+University of Tennessee, Knoxville}}\\[.4cm]
 %
+George Ostrouchov\\
+{\small\emph{Computer Science and Mathematics Division, \\
+Oak Ridge National Laboratory}}
+%%%
 \\[2.5in]
 Version 1.0
 %
@@ -80,15 +80,25 @@ This publication was typeset using \LaTeX.  The illustrations were created using
 \phantomsection
 \addcontentsline{toc}{section}{List of Figures}
 \listoffigures
+
+\newpage
+\phantomsection
 \addcontentsline{toc}{section}{List of Tables}
 \listoftables
 
-\newpage
-\fancyhf[C]{}
-\input{./pbdDEMO-include/00-preface}
+% \newpage
+% \fancyhf[C]{}
+% \phantomsection
+% \input{./pbdDEMO-include/00-preface}
+
+% \newpage
+% \fancyhf[C]{}
+% \phantomsection
+% \input{./pbdDEMO-include/00-foreword}
 
 \newpage
 \fancyhf[C]{}
+\phantomsection
 \input{./pbdDEMO-include/00-acknowledgement}
 
 \newpage
@@ -108,18 +118,23 @@ This publication was typeset using \LaTeX.  The illustrations were created using
 \bodyheadfoot
 
 % intro
+\part{Preliminaries}
 \input{./pbdDEMO-include/01-introduction}
 \input{./pbdDEMO-include/02-background}
 % spmd methods
+\part{Direct MPI Methods}
 \input{./pbdDEMO-include/02.5-mpi}
 \input{./pbdDEMO-include/03-statistics}
 % ddmatrix methods
+\part{Distributed Matrix Methods}\label{part:dmat}
 \input{./pbdDEMO-include/04-gen}
+\input{./pbdDEMO-include/07-dmat_basic}
+\input{./pbdDEMO-include/08-dmat_stats}
+% reading /managing data
+\part{Reading and Managing Data}
 \input{./pbdDEMO-include/05-reading}
 \input{./pbdDEMO-include/05-z_pbdNCDF4}
 \input{./pbdDEMO-include/06-redist}
-\input{./pbdDEMO-include/07-dmat_basic}
-\input{./pbdDEMO-include/08-dmat_stats}
 % appendices
 \appendix
 \input{./pbdDEMO-include/appendix}
@@ -147,7 +162,7 @@ This publication was typeset using \LaTeX.  The illustrations were created using
 
 \makeatletter
 \renewenvironment{thebibliography}[1]
-     {\chapter*{\bibname}% <-- this line was changed from \chapter* to \section*
+     {\chapter*{\bibname}
       \@mkboth{\MakeUppercase\bibname}{\MakeUppercase\bibname}%
       \list{\@biblabel{\@arabic\c@enumiv}}%
            {\settowidth\labelwidth{\@biblabel{#1}}%
