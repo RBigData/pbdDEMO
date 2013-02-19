@@ -4,18 +4,19 @@
 
 \section{Introduction}
 
-Network Common Data Form version 4 (NetCDF4) is
+Network Common Data Form version 4 (NetCDF4)\index{NetCDF4} is
 a self-describing, machine-independent data formats and
 mainly support array-oriented scientific data. 
 The NetCDF4 library is available on
 the website at \url{http://www.unidata.ucar.edu/software/netcdf}.
-The NetCDF4 is built on top of HDF5 data model for extremely large and complex
+The NetCDF4 is built on top of HDF5\index{HDF5}
+data model for extremely large and complex
 data collections. i.e. The NetCDF4 is a subset of HDF5 but with enhanced
 features. The HDF5 library is available on
 the website at \url{http://www.htfgroup.org/HDF5/}.
 The both libraries provide high-performance functionalities to create, access,
 read, write, and modify NetCDF4 files.
-The \proglang{R} package \pkg{ncdf4}~\citep{ncdf4}
+The \proglang{R} package \pkg{ncdf4}~\citep{ncdf4}\index{ncdf4}
 mainly provides interface for NetCDF4 libraries and a short summary of
 major functions is given in the Table~\ref{tab:ncdf4}
 
@@ -59,7 +60,7 @@ demonstration of parallel-enable functions.
 The Table~\ref{tab:ncdf4} also lists the the major functions of
 \pkg{pbdNCDF4}.
 
-The \pkg{pbdDEMO} has an example dataset \code{TREFHT} from a
+The \pkg{pbdDEMO} has an example dataset \code{TREFHT}\index{TREFHT} from a
 Community Atmosphere Model (CAM) version 5 simulation output.
 The CAM is a series of
 global atmosphere models originally developed at the National Center
@@ -82,7 +83,7 @@ The total amount of simulation outputs is over 200 Terabytes
 which are summarized and averaged including monthly-averaged,
 daily-averaged, and three-hours-averaged data.
 More datasets are available on ESGF (\url{http://www.earthsystemgrid.org/})
-through the C20C project (on the NERSC jportal).
+through the C20C project (on the NERSC portal).
 \begin{figure}[t]
   \centering
   \includegraphics[width=6.0in]{pbdDEMO-include/pics/trefht}
