@@ -8,7 +8,7 @@
 %\VignetteIndexEntry{pbdDEMO-Guide}
 
 \title{\Huge Speaking Serial R with a Parallel Accent\\[.3cm] 
-  {\LARGE Programming with Big Data in \proglang{R} Package Examples and Demonstrations}}
+  {\LARGE \proglang{pbdR} Package Examples and Demonstrations}}
 
 \author{
 \begin{minipage}{\textwidth}

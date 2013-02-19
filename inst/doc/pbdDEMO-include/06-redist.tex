@@ -330,7 +330,8 @@ and \code{dmat2spmd()} and changing their option \code{spmd.major}.
 
 \item
 The demo code \code{demo/spmd_dmat.r} of \pkg{pbdDEMO} has a SPMD row-major
-matrix \code{X.spmd}. Utilize the functions developed in the
+matrix \code{X.spmd}.\index{SPMD row-major matrix}
+Utilize the functions developed in the
 Exercise~\ref{ex:convert_row_column}.
 Convert \code{X.spmd} to a column-major matrix \code{new.X.spmdc}
 by calling \code{spmdr2spmdc()}, then convert \code{new.X.spmdc} back to a
@@ -350,7 +351,8 @@ Return warnings or errors if the input matrix is not convertible.
 \item
 \label{ex:nc4_spmdr}
 The demo code \code{demo/nc4_spmdc.r} of \pkg{pbdDEMO} is an example utilizing
-SPMD column-major matrix \code{X.spmdc} and dumps the matrix into a NetCDF4
+SPMD column-major matrix \code{X.spmdc} \index{SPMD column-major matrix}
+and dumps the matrix into a NetCDF4
 file. Adjust the code. Create a SPMD row-major matrix \code{X.spmdr} and dump
 the matrix to a new NetCDF4 file \code{nc4_spmdr.nc} by utilizing the function
 \code{ncvar_put_spmd()} with option \code{spmd.major = 1}. Verify that all
