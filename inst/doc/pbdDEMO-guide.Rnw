@@ -7,7 +7,7 @@
 %%% Required by R CMD check
 %\VignetteIndexEntry{pbdDEMO-Guide}
 
-\title{\Huge Speaking Parallel with a Serial Accent\\[.3cm] 
+\title{\Huge Speaking Serial R with a Parallel Accent\\[.3cm] 
   {\LARGE Programming with Big Data in \proglang{R} Package Examples and Demonstrations}}
 
 \author{
