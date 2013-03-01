@@ -23,12 +23,12 @@ bldim <- c(2,2)
 
 comm.set.seed(1234, diff=TRUE)
 
-dx <- Hnorm(c(n, p), bldim=bldim, mean=mean, sd=sd)
-dy <- Hunif(c(n, 1), bldim=bldim, min=ymin, max=ymax)
+dx <- ddmatrix("rnorm", nrow=n, ncol=p, bldim=bldim, mean=mean, sd=sd)
+dy <- ddmatrix("runif", nrow=n, ncol=1, bldim=bldim, min=ymin, max=ymax)
 
 mdl <- lm.fit(dx, dy)
 
-dx.new <- Hnorm(c(1, p), bldim=bldim, mean=mean, sd=sd)
+dx.new <- ddmatrix("rnorm", nrow=1, ncol=p, bldim=bldim, mean=mean, sd=sd)
 pred <- dx.new %*% mdl$coefficients
 
 comm.cat(paste("\nThe predicted y value is:", submatrix(pred), "\n"), quiet=T)

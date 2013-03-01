@@ -139,7 +139,15 @@ dx <- as.ddmatrix(x)
 
 Here, each processor generates the full, global matrix, then throws away what is not needed.  Again, this is not efficient, but the code is concise, so it is extremely useful in testing.  Now, this assumes you are using the same seed on each processor.  This can be managed using the \pkg{pbdMPI} function \code{comm.set.seed()}, as in the demo script.  For more information, see that package's documentation.
 
-Finally, you can generate locally only what you need.  The demo script does this via the \pkg{pbdDEMO} package's \code{Hnorm()} or ``huge normal'' function.  There are two others provided, namely \code{Hconst()} and \code{Hunif()}.  The naming convention was chosen because the latter most function name makes the author laugh.  Internally, these ``huge'' functions rely on a much stronger working knowledge of the underlying data structure than most will be comfortable with, but we note that the disciplined reader is more than capable of figuring out how it functions by examining the source code and checking with the reference manual.
+Finally, you can generate locally only what you need.  The demo script does this via the \pkg{pbdDMAT} package's \code{ddmatrix()} function.  This is ``new'' behavior for this syntax (if you view \code{ddmatrix()} as an extension of \code{matrix()}).  Ordinarily you would merely execute something like
+\begin{lstlisting}[language=rr,title=Creating a random normal matrix in serial R]
+x <- rnorm(n*p)
+x <- matrix(x, nrow=n, ncol=p) # this creates a copy
+
+y <- rnorm(n*p)
+dim(y) <- c(n, p) # this does not
+\end{lstlisting}
+However, things are slightly more complicated with \code{ddmatrix} objects, and the user may not easily know ahead of time what the size of the local piece is just from knowing the global dimension.  Because this requires a much stronger working knowledge of the underlying data structure than most will be comfortable with, we provide this simple functionality as an extension.  However, we note that the disciplined reader is more than capable of figuring out how it functions by examining the source code and checking with the reference manual.
 % 
 % The concise explanation is that the \code{base.numroc()} utility determines the size of the local storage.  This is all very well documented in the \pkg{pbdBASE} documentation, but since no one even pretends to read that stuff, \texttt{NUMROC} is a ScaLAPACK tool, which means ``\texttt{NUM}ber of \texttt{R}ows \texttt{O}r \texttt{C}olumns.''  The function \code{base.numroc()} is an implementation in \proglang{R} which calculates the number of rows \emph{and} columns at the same time (so it is a bit of a misnomer, but preserved for historical reasons).  
 % 
