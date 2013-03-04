@@ -24,7 +24,7 @@ sd <- 25
 
 bldim <- c(2,2)
 
-dx <- Hnorm(c(n, p), bldim=bldim, mean=mean, sd=sd)
+dx <- ddmatrix("rnorm", nrow=n, ncol=p, bldim=bldim, mean=mean, sd=sd)
 
 
 # --------------------------

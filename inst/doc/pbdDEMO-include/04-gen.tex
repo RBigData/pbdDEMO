@@ -139,7 +139,15 @@ dx <- as.ddmatrix(x)
 
 Here, each processor generates the full, global matrix, then throws away what is not needed.  Again, this is not efficient, but the code is concise, so it is extremely useful in testing.  Now, this assumes you are using the same seed on each processor.  This can be managed using the \pkg{pbdMPI} function \code{comm.set.seed()}, as in the demo script.  For more information, see that package's documentation.
 
-Finally, you can generate locally only what you need.  The demo script does this via the \pkg{pbdDEMO} package's \code{Hnorm()} or ``huge normal'' function.  There are two others provided, namely \code{Hconst()} and \code{Hunif()}.  The naming convention was chosen because the latter most function name makes the author laugh.  Internally, these ``huge'' functions rely on a much stronger working knowledge of the underlying data structure than most will be comfortable with, but we note that the disciplined reader is more than capable of figuring out how it functions by examining the source code and checking with the reference manual.
+Finally, you can generate locally only what you need.  The demo script does this via the \pkg{pbdDMAT} package's \code{ddmatrix()} function.  This is ``new'' behavior for this syntax (if you view \code{ddmatrix()} as an extension of \code{matrix()}).  Ordinarily you would merely execute something like
+\begin{lstlisting}[language=rr,title=Creating a random normal matrix in serial R]
+x <- rnorm(n*p)
+x <- matrix(x, nrow=n, ncol=p) # this creates a copy
+
+y <- rnorm(n*p)
+dim(y) <- c(n, p) # this does not
+\end{lstlisting}
+However, things are slightly more complicated with \code{ddmatrix} objects, and the user may not easily know ahead of time what the size of the local piece is just from knowing the global dimension.  Because this requires a much stronger working knowledge of the underlying data structure than most will be comfortable with, we provide this simple functionality as an extension.  However, we note that the disciplined reader is more than capable of figuring out how it functions by examining the source code and checking with the reference manual.
 % 
 % The concise explanation is that the \code{base.numroc()} utility determines the size of the local storage.  This is all very well documented in the \pkg{pbdBASE} documentation, but since no one even pretends to read that stuff, \texttt{NUMROC} is a ScaLAPACK tool, which means ``\texttt{NUM}ber of \texttt{R}ows \texttt{O}r \texttt{C}olumns.''  The function \code{base.numroc()} is an implementation in \proglang{R} which calculates the number of rows \emph{and} columns at the same time (so it is a bit of a misnomer, but preserved for historical reasons).  
 % 
@@ -162,41 +170,6 @@ mpiexec -np 4 Rscript -e "demo(randmat_local,'pbdDEMO',ask=F,echo=F)"
 
 This is similar to the above, but with a critical difference.  Instead of specifying a fixed \emph{global} dimension and then go determine what the local storage space is, instead we specify a fixed \emph{local} dimension and then go figure out what the global dimension should be.  This can be useful for testing weak scaling of an algorithm, where different numbers of cores are used with the same local problem size.
 
-To this end, the demo script utilizes the \code{Hnorm.local()} function, which has the user specify a local dimension size that all the processors should use, as well as a blocking factor and BLACS context value.  Now here things get somewhat tricky, because in order for this matrix to exist at all, each margin of the blocking factor must divide (as an integer) the corresponding margin of the global dimension.  To better understand why this is so, the reader is suggested to read the \pkg{pbdBASE} vignette.  But if you already understand or are merely willing to take it on faith, then you surely grant that this is a problem.
+To this end, the demo script utilizes the \code{ddmatrix.local()} function, which has the user specify a local dimension size that all the processors should use, as well as a blocking factor and BLACS context.  Now here things get somewhat tricky, because in order for this matrix to exist at all, each margin of the blocking factor must divide (as an integer) the corresponding margin of the global dimension.  To better understand why this is so, the reader is suggested to read the \pkg{pbdBASE} vignette.  But if you already understand or are merely willing to take it on faith, then you surely grant that this is a problem.
 
-So here, we assume that the local dimension is chosen appropriately by the user, but it is possible that a bad blocking factor is supplied by the user.  Rather than halt with a stop error, we attempt to find the next best blocking factor possible.  We do this with a simple ``next best divisor'' function:
-
-\begin{lstlisting}[language=rr,title=nbd()]
-nbd <- function(n, d)
-{
-  if (n < d)
-    stop("'n' may not be smaller than 'd'")
-  
-  ret <- .Fortran("NBD", 
-                  as.integer(n), as.integer(d),
-                  PACKAGE="pbdDEMO")$D
-  
-  return( ret )
-}
-\end{lstlisting}
-
-which is just a shallow wrapper on the \proglang{Fortran} code:
-
-\begin{lstlisting}[language=ft,title=NBD]
-      SUBROUTINE NBD(N, D)
-      INTEGER N, D, I, TEST
-      
-      DO I = D+1, N-1
-        TEST = MOD(N, I)
-        IF (TEST.EQ.0) THEN
-          D = I
-          RETURN
-        END IF
-      END DO
-      
-      D = N
-      RETURN
-      END
-\end{lstlisting}
-
-Even those who don't know \proglang{Fortran} should easily be able to see what is going on here.  We are given integers \code{N} and \code{D}, and we loop over the integers inbetween these two until we find one which divides \code{N}.
+So here, we assume that the local dimension is chosen appropriately by the user, but it is possible that a bad blocking factor is supplied by the user.  Rather than halt with a stop error, we attempt to find the next best blocking factor possible.  To do this, we must find the smallest integer above the specified blocking factor that will divide the number of local rows or columns.

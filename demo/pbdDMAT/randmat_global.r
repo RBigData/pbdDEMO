@@ -42,7 +42,7 @@ if (is.logical(test)){
 # This will produce a different matrix because of the block cyclic 
 # distribution.
 comm.set.seed(1234, diff = TRUE)
-dx3 <- demo.Hnorm(dim=c(n, p), 4)
+dx3 <- ddmatrix("rnorm", nrow=n, ncol=p, bldim=4)
 
 print(dx3)
 

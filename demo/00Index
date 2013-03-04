@@ -26,3 +26,4 @@ nc4_parallel	pbdDEMO		An example parallel read and write NetCDF4.
 nc4_dmat	pbdDEMO		An example block-cyclic read and write NetCDF4.
 nc4_spmdc	pbdDEMO		An example SPMD column-major read and write NetCDF4.
 
+

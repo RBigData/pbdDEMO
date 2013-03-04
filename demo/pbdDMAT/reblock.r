@@ -5,7 +5,7 @@ init.grid(nprow=2, npcol=2)
 comm.set.seed(1234, diff=TRUE)
 
 # default 2x2 grid
-dx.0 <- Hnorm(c(500, 200), bldim=c(2,2), ICTXT=0)
+dx.0 <- ddmatrix("rnorm", nrow=500, ncol=200, bldim=2)
 print(dx.0)
 
 # 1x4 grid

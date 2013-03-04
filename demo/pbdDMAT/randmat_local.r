@@ -13,7 +13,7 @@ p <- 50
 # This will produce a different matrix because of the block cyclic 
 # distribution.
 comm.set.seed(1234, diff = TRUE)
-dx <- demo.Hnorm.local(ldim=c(n, p), 4)
+dx <- ddmatrix.local("rnorm", nrow=n, ncol=p, bldim=4)
 
 print(dx)
 

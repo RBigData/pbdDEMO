@@ -7,7 +7,7 @@ n <- 1e4
 p <- 250
 
 comm.set.seed(diff=T)
-dx <- Hnorm(dim=c(n, p), bldim=c(4,4), mean=100, sd=25)
+dx <- ddmatrix("rnorm", nrow=n, ncol=p, bldim=c(4,4), mean=100, sd=25)
 
 # PCA with scaling, retaining only 90% of the variation
 pca <- prcomp(x=dx, retx=TRUE, scale=TRUE)

@@ -34,9 +34,9 @@ read.sql.ddmatrix <- function(dbname, table, bldim=.BLDIM, num.rdrs=1, ICTXT=0)
   
   # determine dimension on first process then scatter to others, so the db only gets queried once
   if (blacs_$MYROW==0 && blacs_$MYCOL==0){
-    nrow <- sqldf(paste("SELECT COUNT(*) FROM", table), dbname=dbname)
+    nrow <- sqldf::sqldf(paste("SELECT COUNT(*) FROM", table), dbname=dbname)
     # make sure columns are numeric
-    x <- sqldf(paste("SELECT * FROM ", table, " WHERE rowid  = 1"), dbname=dbname)
+    x <- sqldf::sqldf(paste("SELECT * FROM ", table, " WHERE rowid  = 1"), dbname=dbname)
     if(!all(unlist(lapply(seq_along(x), function(i) is.numeric(x[, i])))))
       stop("All data must be numeric")
     ncol <- ncol(x)
@@ -59,7 +59,7 @@ read.sql.ddmatrix <- function(dbname, table, bldim=.BLDIM, num.rdrs=1, ICTXT=0)
 
     query <- paste("SELECT * FROM ", table, " WHERE rowid % ", modulus, " in (", paste(myrows, collapse=", "), ")", sep="")
     
-    x <- unlist(sqldf(query, dbname=dbname))
+    x <- unlist(sqldf::sqldf(query, dbname=dbname))
     if (!is.double(x))
       x <- as.double(x)
 
@@ -74,7 +74,7 @@ read.sql.ddmatrix <- function(dbname, table, bldim=.BLDIM, num.rdrs=1, ICTXT=0)
               bldim=tmpbl, CTXT=MYCTXT)
   
   if (ICTXT != MYCTXT || any(tmpbl != bldim) )
-    out <- base.reblock(out, bldim=bldim, ICTXT=ICTXT)
+    out <- dmat.reblock(out, bldim=bldim, ICTXT=ICTXT)
   
   if (newgrid)
     base.gridexit(MYCTXT)

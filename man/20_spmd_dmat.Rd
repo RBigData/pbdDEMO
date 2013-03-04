@@ -7,8 +7,10 @@
 }
 \usage{
   spmd2dmat(X.spmd, skip.balance = FALSE, comm = .SPMD.CT$comm,
-            bldim = .DEMO.CT$bldim, ICTXT = .DEMO.CT$ictxt)
-  dmat2spmd(X.dmat, bal.info = NULL, comm = .SPMD.CT$comm)
+            spmd.major = .DEMO.CT$spmd.major, bldim = .DEMO.CT$bldim, 
+            ICTXT = .DEMO.CT$ictxt)
+  dmat2spmd(X.dmat, bal.info = NULL, comm = .SPMD.CT$comm, 
+            spmd.major = .DEMO.CT$spmd.major)
 }
 \arguments{
   \item{X.spmd}{a SPMD matrix.}
@@ -16,6 +18,7 @@
   \item{comm}{a communicator number.}
   \item{bldim}{the blocking dimension for block-cyclically distributing
                the matrix across the process grid. }
+  \item{spmd.major}{l}
   \item{ICTXT}{BLACS context number for return.}
 
   \item{X.dmat}{a ddmatrix matrix.}

@@ -2,20 +2,20 @@
 # SVD
 # ---------------------------------------------
 
-verify.svd <- function(nrows=1e3, ncols=1e3, mean=0, sd=1, bldim=8, tol=1e-7)
+verify.svd <- function(nrows=1e3, ncols=1e3, mean=0, sd=1, bldim=8, tol=1e-7, ICTXT=.DEMO.CT$ictxt)
 {
   # generating data
   comm.cat(paste("Generating a ", nrows, "x", ncols, " distributed matrix of random normal data, performing the SVD, and then multiplying the factorization back together and comparing it to the original matrix\n", sep=""), quiet=T)
   
   time_data <- timer({
-    x <- Hnorm(dim=c(nrows, ncols), bldim=bldim, mean=mean, sd=sd, ICTXT=0)
+    x <- ddmatrix("rnorm", nrow=nrows, ncol=ncols, bldim=bldim, mean=mean, sd=sd, ICTXT=ICTXT)
   })
   
   time_svd <- timer({
     svd_x <- La.svd(x)
   })
   
-  newd <- Hconst(dim=c(nrows, ncols), bldim=bldim, const=0, ICTXT=0)
+  newd <- ddmatrix(0.0, nrow=nrows, ncol=ncols, bldim=bldim, ICTXT=ICTXT)
   for (i in 1:length(svd_x$d)){
     newd[i, i] <- svd_x$d[i]
   }
@@ -61,13 +61,13 @@ verify.svd <- function(nrows=1e3, ncols=1e3, mean=0, sd=1, bldim=8, tol=1e-7)
 # Cholesky
 # ---------------------------------------------
 
-verify.chol <- function(nrows=1e3, mean=0, sd=1, bldim=8, tol=1e-7)
+verify.chol <- function(nrows=1e3, mean=0, sd=1, bldim=8, tol=1e-7, ICTXT=.DEMO.CT$ictxt)
 {
   # generating data
   comm.cat(paste("Generating a ", nrows, "x", nrows, " distributed matrix X of random normal data, 'symmetrizing' it by computing X <- t(X)%*%X, computing the Cholesky factorization, and then multiplying the factorization back together and comparing it to the original matrix\n", sep=""), quiet=T)
   
   time_data <- timer({
-    x <- Hnorm(dim=c(nrows, nrows), bldim=bldim, mean=mean, sd=sd, ICTXT=0)
+    x <- ddmatrix("rnorm", nrow=nrow, ncol=nrows, bldim=bldim, mean=mean, sd=sd, ICTXT=ICTXT)
   })
   
   # symmetrize x
@@ -120,13 +120,13 @@ verify.chol <- function(nrows=1e3, mean=0, sd=1, bldim=8, tol=1e-7)
 # Inverse
 # ---------------------------------------------
 
-verify.inverse <- function(nrows=1e3, mean=0, sd=1, bldim=8, tol=1e-7)
+verify.inverse <- function(nrows=1e3, mean=0, sd=1, bldim=8, tol=1e-7, ICTXT=.DEMO.CT$ictxt)
 {
   # generating data
   comm.cat(paste("Generating a ", nrows, "x", nrows, " distributed matrix X of random normal data, inverting it, and then multiplying the inverse against the original matrix and verifying that the identity matrix is produced\n", sep=""), quiet=T)
   
   time_data <- timer({
-    x <- Hnorm(dim=c(nrows, nrows), bldim=bldim, mean=mean, sd=sd, ICTXT=0)
+    x <- ddmatrix("rnorm", nrow=nrows, ncol=ncols, bldim=bldim, mean=mean, sd=sd, ICTXT=ICTXT)
   })
   
   # 
@@ -174,14 +174,14 @@ verify.inverse <- function(nrows=1e3, mean=0, sd=1, bldim=8, tol=1e-7)
 # Solving a system
 # ---------------------------------------------
 
-verify.solve <- function(nrows=1e3, mean=0, sd=1, const=1, bldim=8, tol=1e-7)
+verify.solve <- function(nrows=1e3, mean=0, sd=1, const=1, bldim=8, tol=1e-7, ICTXT=.DEMO.CT$ictxt)
 {
   # generating data
   comm.cat(paste("Generating a ", nrows, "x", nrows, " distributed matrix X of random normal data and a 'true' solution as a vector of 1's. Then the vector of right hand sides is produced by projecting the system onto the true solution, and then finally the system is solved. The numerically determined solution is compared against the vector of 1's.\n", sep=""), quiet=T)
   
   time_data <- timer({
-    x <- Hnorm(dim=c(nrows, nrows), bldim=bldim, mean=mean, sd=sd, ICTXT=0)
-    truesol <- Hconst(dim=c(nrows, 1), bldim=bldim, const=const, ICTXT=0)
+    x <- ddmatrix("rnorm", nrow=nrows, ncol=ncols, bldim=bldim, mean=mean, sd=sd, ICTXT=ICTXT)
+    truesol <- ddmatrix(const, nrow=nrows, ncol=1, bldim=bldim, const=const, ICTXT=ICTXT)
   })
   
   time_rhs <- timer({
