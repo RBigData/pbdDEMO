@@ -18,7 +18,7 @@
   \item{comm}{a communicator number.}
   \item{bldim}{the blocking dimension for block-cyclically distributing
                the matrix across the process grid. }
-  \item{spmd.major}{l}
+  \item{spmd.major}{1 for row-major storage, 2 for column-major.}
   \item{ICTXT}{BLACS context number for return.}
 
   \item{X.dmat}{a ddmatrix matrix.}

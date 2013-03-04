@@ -18,12 +18,9 @@ read.sql.ddmatrix <- function(dbname, table, bldim=.BLDIM, num.rdrs=1, ICTXT=0)
     MYCTXT <- 2
   } else {
     MYCTXT <- base.minctxt()
-    assign(x=paste(".__blacs_gridinfo_", MYCTXT, sep=""),
-       value=.Fortran("mpi_blacs_initialize", 
-              NPROW=as.integer(num.rdrs), NPCOL=as.integer(1), 
-              ICTXT=as.integer(MYCTXT), MYROW=as.integer(0), 
-              MYCOL=as.integer(0) ),
-       envir=.GlobalEnv )
+    
+    blacs_gridinit(ICTXT=MYCTXT, NPROW=num.rdrs, NPCOL=1L)
+    
     newgrid <- TRUE
   }
   
@@ -157,7 +154,7 @@ read.csv.ddmatrix <- function(file, sep=",", nrows, ncols, header=FALSE, bldim=4
               bldim=tmpbl, CTXT=0)
   
     if (ICTXT != 0 || any(tmpbl != bldim) )
-      out <- base.redistribute(dx=out, bldim=bldim, ICTXT=ICTXT)
+      out <- dmat.redistribute(dx=out, bldim=bldim, ICTXT=ICTXT)
     
     return(out)
     
@@ -165,12 +162,9 @@ read.csv.ddmatrix <- function(file, sep=",", nrows, ncols, header=FALSE, bldim=4
     MYCTXT <- 2
   } else {
     MYCTXT <- base.minctxt()
-    assign(x=paste(".__blacs_gridinfo_", MYCTXT, sep=""), 
-       value=.Fortran("mpi_blacs_initialize", 
-              NPROW=as.integer(num.rdrs), NPCOL=as.integer(1), 
-              ICTXT=as.integer(MYCTXT), MYROW=as.integer(0), 
-              MYCOL=as.integer(0) ),
-       envir=.GlobalEnv )
+    
+    blacs_gridinit(ICTXT=MYCTXT, NPROW=num.rdrs, NPCOL=1L)
+    
     newgrid <- TRUE
   }
   
@@ -208,11 +202,10 @@ read.csv.ddmatrix <- function(file, sep=",", nrows, ncols, header=FALSE, bldim=4
     ldim <- dim(Data)
   }
   
-  out <- new("ddmatrix", Data=Data, dim=dim, ldim=ldim,
-              bldim=tmpbl, CTXT=MYCTXT)
+  out <- new("ddmatrix", Data=Data, dim=dim, ldim=ldim, bldim=tmpbl, CTXT=MYCTXT)
   
   if (ICTXT != MYCTXT || any(tmpbl != bldim) )
-    out <- base.redistribute(dx=out, bldim=bldim, ICTXT=ICTXT)
+    out <- dmat.redistribute(dx=out, bldim=bldim, ICTXT=ICTXT)
   
   if (newgrid)
     gridexit(MYCTXT)

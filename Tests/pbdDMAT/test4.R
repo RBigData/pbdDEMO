@@ -125,9 +125,10 @@ comm.print("-------ScaLAPACK lu()-------")
 N <- 25
 A <- matrix(rnorm(N*N, 10, 100), N, N)
 dA <- as.ddmatrix(A, BL)
+  out2 <- as.matrix( lu(dA) )
+  
   suppressPackageStartupMessages(library(Matrix))
   out1 <- matrix(lu(A)@x, nrow=N, ncol=N)
-  out2 <- as.matrix( lu(dA) )
   comm.print(all.equal(out1, out2))
 
 
