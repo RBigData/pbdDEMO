@@ -3,7 +3,7 @@ Title: Programming with Big Data -- Demonstrations of pbd Packages
 Version: 0.1-0
 Date: 2013-01-18
 Depends: R (>= 2.15.1), methods, rlecuyer, pbdMPI (>= 0.1-1), pbdSLAP,
-        pbdBASE (>= 0.2-0), pbdDMAT(>= 0.1-1)
+        pbdBASE (>= 0.2-0), pbdDMAT(>= 0.1-1), sqldf
 Enhances: maps, RColorBrewer, pbdNCDF4 (>= 0.1-1)
 LazyLoad: yes
 LazyData: yes

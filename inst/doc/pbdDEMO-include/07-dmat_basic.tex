@@ -134,7 +134,7 @@ init.grid()
 
 comm.set.seed(diff = TRUE)
 
-dx <- Hnorm(dim=c(10,10), bldim=2)
+dx <- ddmatrix("rnorm", nrow=10, ncol=10, bldim=2)
 
 out <- chol(crossprod(dx))
 print(out)

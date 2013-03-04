@@ -73,8 +73,8 @@ and finally the system is solve for a now (pretend) unknown $x$, so that we can 
 \begin{lstlisting}[language=rr,title=Verifying Distributed System Solving]
 # generating data
 timer({
-  x <- Hnorm(dim=c(nrows, nrows))
-  truesol <- Hconst(dim=c(nrows, 1))
+  x <- ddmatrix("rnorm", nrow=nrows, ncol=ncols)
+  truesol <- ddmatrix(0.0, nrow=nrows, ncol=1)
 })
 
 timer({

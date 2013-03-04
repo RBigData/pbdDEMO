@@ -8,10 +8,14 @@
   At-scale verification routines for distributed linear algebra.
 }
 \usage{
-  verify.svd(nrows=1e3, ncols=1e3, mean=0, sd=1, bldim=8, tol=1e-7)
-  verify.chol(nrows=1e3, mean=0, sd=1, bldim=8, tol=1e-7)
-  verify.inverse(nrows=1e3, mean=0, sd=1, bldim=8, tol=1e-7)
-  verify.solve(nrows=1e3, mean=0, sd=1, const=1, bldim=8, tol=1e-7)
+  verify.svd(nrows=1e3, ncols=1e3, mean=0, sd=1, bldim=8, tol=1e-7, 
+             ICTXT = .DEMO.CT$ictxt)
+  verify.chol(nrows=1e3, mean=0, sd=1, bldim=8, tol=1e-7,
+             ICTXT = .DEMO.CT$ictxt)
+  verify.inverse(nrows=1e3, mean=0, sd=1, bldim=8, tol=1e-7, 
+             ICTXT = .DEMO.CT$ictxt)
+  verify.solve(nrows=1e3, mean=0, sd=1, const=1, bldim=8, tol=1e-7, 
+             ICTXT = .DEMO.CT$ictxt)
 }
 \arguments{
   \item{nrows, ncols}{global dimension.}
@@ -21,6 +25,7 @@
   \item{const}{numerical value for generating a constant \code{ddmatrix}.}
   \item{tol}{numeric tolerance for testing equality. Differences 
   smaller than \code{tol} are considered equal.}
+  \item{ICTXT}{BLACS context}
 }
 \details{
   Finds the min, mean, and max execution time across all independent 

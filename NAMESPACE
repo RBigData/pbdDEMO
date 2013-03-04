@@ -1,6 +1,4 @@
-useDynLib(pbdDEMO)
-
-import(methods, rlecuyer, pbdMPI, pbdSLAP, pbdBASE, pbdDMAT)
+import(methods, rlecuyer, pbdMPI, pbdSLAP, pbdBASE, pbdDMAT, sqldf)
 
 exportPattern("^demo\\.[[:alpha:]]+")
 export(
@@ -11,8 +9,6 @@ export(
   dmat2spmd,
   ###
   read.csv.ddmatrix, read.sql.ddmatrix,
-  Hconst, Hunif, Hnorm,
-  Hconst.local, Hunif.local, Hnorm.local,
   ###
   ncvar_put_spmd, ncvar_put_dmat, ncvar_get_spmd, ncvar_get_dmat
 )

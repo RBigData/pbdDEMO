@@ -170,41 +170,6 @@ mpiexec -np 4 Rscript -e "demo(randmat_local,'pbdDEMO',ask=F,echo=F)"
 
 This is similar to the above, but with a critical difference.  Instead of specifying a fixed \emph{global} dimension and then go determine what the local storage space is, instead we specify a fixed \emph{local} dimension and then go figure out what the global dimension should be.  This can be useful for testing weak scaling of an algorithm, where different numbers of cores are used with the same local problem size.
 
-To this end, the demo script utilizes the \code{Hnorm.local()} function, which has the user specify a local dimension size that all the processors should use, as well as a blocking factor and BLACS context value.  Now here things get somewhat tricky, because in order for this matrix to exist at all, each margin of the blocking factor must divide (as an integer) the corresponding margin of the global dimension.  To better understand why this is so, the reader is suggested to read the \pkg{pbdBASE} vignette.  But if you already understand or are merely willing to take it on faith, then you surely grant that this is a problem.
+To this end, the demo script utilizes the \code{ddmatrix.local()} function, which has the user specify a local dimension size that all the processors should use, as well as a blocking factor and BLACS context.  Now here things get somewhat tricky, because in order for this matrix to exist at all, each margin of the blocking factor must divide (as an integer) the corresponding margin of the global dimension.  To better understand why this is so, the reader is suggested to read the \pkg{pbdBASE} vignette.  But if you already understand or are merely willing to take it on faith, then you surely grant that this is a problem.
 
-So here, we assume that the local dimension is chosen appropriately by the user, but it is possible that a bad blocking factor is supplied by the user.  Rather than halt with a stop error, we attempt to find the next best blocking factor possible.  We do this with a simple ``next best divisor'' function:
-
-\begin{lstlisting}[language=rr,title=nbd()]
-nbd <- function(n, d)
-{
-  if (n < d)
-    stop("'n' may not be smaller than 'd'")
-  
-  ret <- .Fortran("NBD", 
-                  as.integer(n), as.integer(d),
-                  PACKAGE="pbdDEMO")$D
-  
-  return( ret )
-}
-\end{lstlisting}
-
-which is just a shallow wrapper on the \proglang{Fortran} code:
-
-\begin{lstlisting}[language=ft,title=NBD]
-      SUBROUTINE NBD(N, D)
-      INTEGER N, D, I, TEST
-      
-      DO I = D+1, N-1
-        TEST = MOD(N, I)
-        IF (TEST.EQ.0) THEN
-          D = I
-          RETURN
-        END IF
-      END DO
-      
-      D = N
-      RETURN
-      END
-\end{lstlisting}
-
-Even those who don't know \proglang{Fortran} should easily be able to see what is going on here.  We are given integers \code{N} and \code{D}, and we loop over the integers inbetween these two until we find one which divides \code{N}.
+So here, we assume that the local dimension is chosen appropriately by the user, but it is possible that a bad blocking factor is supplied by the user.  Rather than halt with a stop error, we attempt to find the next best blocking factor possible.  To do this, we must find the smallest integer above the specified blocking factor that will divide the number of local rows or columns.
