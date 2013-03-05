@@ -17,7 +17,7 @@
   \item{X.spmd}{a SPMD data matrix (converted if not).}
   \item{comm}{a communicator number.}
   \item{bal.info}{a returned object from \code{balance.info}.}
-  \item{spmd.major}{l}
+  \item{spmd.major}{1 for row-major storage, 2 for column-major.}
   \item{new.X.spmd}{a SPMD data matrix or vector}
 }
 \details{

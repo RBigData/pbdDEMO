@@ -25,7 +25,7 @@ demo.spmdr2dmat <- function(X.spmd, skip.balance = FALSE, comm = .SPMD.CT$comm,
 
   ### block-cyclic in context 2.
   X.dmat <- new("ddmatrix", Data = X.spmd,
-                dim = c(N, p), ldim = ldim, bldim = bldim.org, CTXT = 2)
+                dim = c(N, p), ldim = ldim, bldim = bldim.org, ICTXT = 2)
 
   ### reblock to any context and block size.
   X.dmat <- dmat.reblock(X.dmat, bldim = bldim, ICTXT = ICTXT)
@@ -57,7 +57,7 @@ demo.spmdc2dmat <- function(X.spmd, skip.balance = FALSE, comm = .SPMD.CT$comm,
 
   ### block-cyclic in context 1.
   X.dmat <- new("ddmatrix", Data = X.spmd,
-                dim = c(p, N), ldim = ldim, bldim = bldim.org, CTXT = 1)
+                dim = c(p, N), ldim = ldim, bldim = bldim.org, ICTXT = 1)
 
   ### reblock to any context and block size.
   X.dmat <- dmat.reblock(X.dmat, bldim = bldim, ICTXT = ICTXT)
@@ -95,7 +95,7 @@ demo.dmat2spmdr <- function(X.dmat, bal.info = NULL, comm = .SPMD.CT$comm){
   X.dmat <- dmat.reblock(X.dmat, bldim = bldim.new, ICTXT = 2)
 
   ### copy to spmd.
-  if(base.ownany(dim(X.dmat), bldim(X.dmat), CTXT = 2)){
+  if(base.ownany(dim(X.dmat), bldim(X.dmat), ICTXT = 2)){
     X.spmd <- X.dmat@Data
   } else{
     X.spmd <- matrix(0, nrow = 0, ncol = 0)
@@ -127,7 +127,7 @@ demo.dmat2spmdc <- function(X.dmat, bal.info = NULL, comm = .SPMD.CT$comm){
   X.dmat <- dmat.reblock(X.dmat, bldim = bldim.new, ICTXT = 1)
 
   ### copy to spmd.
-  if(base.ownany(dim(X.dmat), bldim(X.dmat), CTXT = 1)){
+  if(base.ownany(dim(X.dmat), bldim(X.dmat), ICTXT = 1)){
     X.spmd <- X.dmat@Data
   } else{
     X.spmd <- matrix(0, nrow = 0, ncol = 0)

@@ -1,29 +1,33 @@
-monte_carlo		pbdDEMO		Simple Monte Carlo for pi.
-sample_stat		pbdDEMO		Simple statistics.
-binning			pbdDEMO		Simple binning.
-quantile		pbdDEMO		Simple quantile.
-ols					pbdDEMO		Simple ordinary least square estimate.
-comparators	pbdDEMO		Example of comm.any() and comm.all().
-
-randmat_global	pbdDEMO		Generate random matrices by global dimension.
-randmat_local	pbdDEMO		Generate random matrices by local dimension.
-
-read_csv		pbdDEMO		Read a csv into ddmatrix format.
-read_sql		pbdDEMO		Read a database into ddmatrix format.
-read_ncdf		pbdDEMO		Read and write ddmatrix to netcdf4 format.
-
-balance			pbdDEMO		Simple load balance and unload balance.
-spmd_dmat		pbdDEMO		Simple convertion of SPMD and DMAT.
-reblock			pbdDEMO		Fiddle with ddmatrix blocking parameters.
-
-verify			pbdDEMO		Solve a large system and verify the solution.
-pca				pbdDEMO		Principal Components Analysis
-ols_dmat	pbdDEMO		Ordinary least squares with pbdDMAT.
-
-trefht		pbdDEMO		An example of CAM5 output.
-nc4_serial	pbdDEMO		An example searial read and write NetCDF4.
-nc4_parallel	pbdDEMO		An example parallel read and write NetCDF4.
-nc4_dmat	pbdDEMO		An example block-cyclic read and write NetCDF4.
-nc4_spmdc	pbdDEMO		An example SPMD column-major read and write NetCDF4.
+monte_carlo         pbdDEMO   Simple Monte Carlo for pi.
+sample_stat         pbdDEMO   Simple statistics.
+binning             pbdDEMO   Simple binning.
+quantile            pbdDEMO   Simple quantile.
+ols                 pbdDEMO   Simple ordinary least square estimate.
+comparators         pbdDEMO   Example of comm.any() and comm.all().
 
 
+
+randmat_global      pbdDEMO   Generate random matrices by global dimension.
+randmat_local       pbdDEMO   Generate random matrices by local dimension.
+randmat_diag_global pbdDEMO   Generate a diagonal distributed matrix.
+
+sample_stat_dmat    pbdDEMO   Simple statistics revisited.
+verify              pbdDEMO   Solve a large system and verify the solution.
+pca                 pbdDEMO   Principal Components Analysis
+ols_dmat            pbdDEMO   Ordinary least squares with pbdDMAT.
+
+
+
+read_csv            pbdDEMO   Read a csv into ddmatrix format.
+read_sql            pbdDEMO   Read a database into ddmatrix format.
+read_ncdf           pbdDEMO   Read and write ddmatrix to netcdf4 format.
+
+trefht              pbdDEMO   An example of CAM5 output.
+nc4_serial          pbdDEMO   An example searial read and write NetCDF4.
+nc4_parallel        pbdDEMO   An example parallel read and write NetCDF4.
+nc4_dmat            pbdDEMO   An example block-cyclic read and write NetCDF4.
+nc4_spmdc           pbdDEMO   An example SPMD column-major read and write NetCDF4.
+
+balance             pbdDEMO   Simple load balance and unload balance.
+spmd_dmat           pbdDEMO   Simple convertion of SPMD and DMAT.
+reblock             pbdDEMO   Fiddle with ddmatrix blocking parameters.

@@ -126,7 +126,7 @@ verify.inverse <- function(nrows=1e3, mean=0, sd=1, bldim=8, tol=1e-7, ICTXT=.DE
   comm.cat(paste("Generating a ", nrows, "x", nrows, " distributed matrix X of random normal data, inverting it, and then multiplying the inverse against the original matrix and verifying that the identity matrix is produced\n", sep=""), quiet=T)
   
   time_data <- timer({
-    x <- ddmatrix("rnorm", nrow=nrows, ncol=ncols, bldim=bldim, mean=mean, sd=sd, ICTXT=ICTXT)
+    x <- ddmatrix("rnorm", nrow=nrows, ncol=nrows, bldim=bldim, mean=mean, sd=sd, ICTXT=ICTXT)
   })
   
   # 
@@ -180,7 +180,7 @@ verify.solve <- function(nrows=1e3, mean=0, sd=1, const=1, bldim=8, tol=1e-7, IC
   comm.cat(paste("Generating a ", nrows, "x", nrows, " distributed matrix X of random normal data and a 'true' solution as a vector of 1's. Then the vector of right hand sides is produced by projecting the system onto the true solution, and then finally the system is solved. The numerically determined solution is compared against the vector of 1's.\n", sep=""), quiet=T)
   
   time_data <- timer({
-    x <- ddmatrix("rnorm", nrow=nrows, ncol=ncols, bldim=bldim, mean=mean, sd=sd, ICTXT=ICTXT)
+    x <- ddmatrix("rnorm", nrow=nrows, ncol=nrows, bldim=bldim, mean=mean, sd=sd, ICTXT=ICTXT)
     truesol <- ddmatrix(const, nrow=nrows, ncol=1, bldim=bldim, const=const, ICTXT=ICTXT)
   })
   
