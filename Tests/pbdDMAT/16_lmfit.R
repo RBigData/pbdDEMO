@@ -131,10 +131,10 @@ genmat(n, p)
 x[,1] <- x[,3] <- x[,4] <- x[,5]
 check.mdl(x, y)
 
-genmat(n, p)
-x[,1] <- x[,2] <- x[,3] <- x[,4] <- x[,5] <- x[,6]
-check.mdl(x, y)
-comm.print("ok to disagree", quiet=T)
+#genmat(n, p)
+#x[,1] <- x[,2] <- x[,3] <- x[,4] <- x[,5] <- x[,6]
+#check.mdl(x, y)
+#comm.print("ok to disagree", quiet=T)
 
 
 
@@ -166,10 +166,10 @@ genmat(n, p)
 x[,1] <- x[,3] <- x[,4] <- x[,5]
 check.mdl(x, y)
 
-genmat(n, p)
-x[,1] <- x[,2] <- x[,3] <- x[,4] <- x[,5] <- x[,6]
-check.mdl(x, y)
-comm.print("ok to disagree", quiet=T)
+#genmat(n, p)
+#x[,1] <- x[,2] <- x[,3] <- x[,4] <- x[,5] <- x[,6]
+#check.mdl(x, y)
+#comm.print("ok to disagree", quiet=T)
 
 
 
