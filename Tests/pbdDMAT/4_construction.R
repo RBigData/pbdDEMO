@@ -13,17 +13,12 @@ library(pbdDMAT, quiet=T)
 
 init.grid()
 
-#comm.set.seed(diff=F) # uniform seed on all processors
+comm.set.seed(diff=F) # uniform seed on all processors
 
 
 n <- 1e2
 p <- 25
 
-n <- 4
-p <- 4
-
-
-set.seed(10)
 if (comm.rank()==0){
   x <- matrix(rnorm(n*p), n, p)
 } else {
@@ -41,8 +36,6 @@ nx <- as.matrix(dx)
 comm.print(all.equal(x, nx))
 
 ny <- as.matrix(dy, proc.dest=0)
-
-#comm.print(ny)
 comm.print(all.equal(y, ny))
 
 

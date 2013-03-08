@@ -38,15 +38,16 @@ tests <- function(.)
   out2 <- as.matrix( scale(dA) )
   comm.print(all.equal(out1, out2))
   
-#  comm.print(out1)
-#  comm.print(out2)
-  
   out1 <- prcomp(A)$sdev
   out2 <- prcomp(dA)$sdev
   comm.print(all.equal(out1, out2))
   
   out1 <- cov(A)
   out2 <- as.matrix(cov(dA))
+  comm.print(all.equal(out1, out2))
+  
+  out1 <- cor(A)
+  out2 <- as.matrix(cor(dA))
   comm.print(all.equal(out1, out2))
 }
 
