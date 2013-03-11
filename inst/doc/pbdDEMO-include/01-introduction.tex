@@ -4,7 +4,7 @@
 
 \section{What is pbd?}
 
-The ``Programming with Big Data in R'' project~\citep{pbdR2012} (pbd or pbdR for short) is a project that aims to elevate the statistical programming language \proglang{R}~\citep{Rcore} to leadership-class computing platforms.  The main goal is empower data scientists by bringing flexibility and a big analytics toolbox to big data challenges, with an emphasis on productivity, portability, and performance.  We achieve this in part by mapping high-level programming syntax to portable, high-performance, scalable, parallel libraries.
+The ``Programming with Big Data in R'' project~\citep{pbdR2012} (pbd or pbdR for short) is a project that aims to elevate the statistical programming language \proglang{R}~\citep{Rcore} to leadership-class computing platforms.  The main goal is empower data scientists by bringing flexibility and a big analytics toolbox to big data challenges, with an emphasis on productivity, portability, and performance.  We achieve this in part by mapping high-level programming syntax to portable, high-performance, scalable, parallel libraries.  In short, we make \proglang{R} scalable.
 
 \begin{figure}[t]
  \centering
@@ -59,14 +59,29 @@ R CMD INSTALL pbdDEMO
 Since \pkg{pbdEMO} depends on other pbdR packages, please read the corresponding vignettes if installation of any of them is unsuccessful.
 
 
-\section{List of Demos}
+
+
+
+\section{Structure of pbdDEMO}
+
+The \pkg{pbdDEMO} package consists of several key components:
+
+\begin{enumerate}
+  \item This vignette
+  \item A set of demos in the \code{demo/} tree
+  \item A set of benchmark codes in the \code{Benchmarks/} tree
+\end{enumerate}
+
+The following subsections elaborate on the contents of the latter two.
+
+
+\subsection{List of Demos}
 \label{sec:demolist}
 
 A full list of demos contained in the \pkg{pbdDEMO} package is provided below.  We may or may not describe all of the demos in this vignette.
 
-\begin{lstlisting}[title=Shell Script]
-### (Use Rscript.exe for windows system)
-
+\begin{lstlisting}[title=List of Demos]
+### (Use Rscript.exe for windows systems)
 
 		      # --------------------- #
 		      # II Direct MPI Methods #
@@ -86,42 +101,16 @@ mpiexec -np 4 Rscript -e "demo(ols, package='pbdDMAT', ask=F, echo=F)"
 # Distributed Logic
 mpiexec -np 4 Rscript -e "demo(comparators, package='pbdDMAT', ask=F, echo=F)"
 
-		  # ----------------------------- #
-		  # III Reading and Managing Data #
-		  # ----------------------------- #
+		  # ------------------------------ #
+		  # III Distributed Matrix Methods #
+		  # ------------------------------ #
 
 ### Chapter 5
 # Random matrix generation
 mpiexec -np 4 Rscript -e "demo(randmat_global, package='pbdDMAT', ask=F, echo=F)"
 mpiexec -np 4 Rscript -e "demo(randmat_local, package='pbdDMAT', ask=F, echo=F)"
 
-### Chapter 6
-# Reading csv
-mpiexec -np 4 Rscript -e "demo(read_csv, package='pbdDMAT', ask=F, echo=F)"
-# Reading sql
-mpiexec -np 4 Rscript -e "demo(read_sql, package='pbdDMAT', ask=F, echo=F)"
-
 ### Chapter 7
-# Reading and writing parallel NetCDF4
-Rscript -e "demo(trefht, package="pbdDEMO", ask = F, echo = F)"
-mpiexec -np 4 Rscript -e "demo(nc4_serial, package='pbdDEMO', ask=F, echo=F)"
-mpiexec -np 4 Rscript -e "demo(nc4_parallel, package='pbdDEMO', ask=F, echo=F)"
-mpiexec -np 4 Rscript -e "demo(nc4_dmat, package='pbdDEMO', ask=F, echo=F)"
-mpiexec -np 4 Rscript -e "demo(nc4_spmdc, package='pbdDEMO', ask=F, echo=F)"
-
-### Chapter 8
-# Loand/unload balance
-mpiexec -np 4 Rscript -e "demo(balance, package='pbdDMAT', ask=F, echo=F)"
-# SPMD to DMAT
-mpiexec -np 4 Rscript -e "demo(spmd_dmat, package='pbdDMAT', ask=F, echo=F)"
-# Distributed matrix redistributions
-mpiexec -np 4 Rscript -e "demo(reblock, package='pbdDMAT', ask=F, echo=F)"
-
-		  # ----------------------------- #
-		  # IV Distributed Matrix Methods #
-		  # ----------------------------- #
-
-### Chapter 9
 # Sample statistics revisited
 mpiexec -np 4 Rscript -e "demo(sample_stat_dmat, package='pbdDMAT', ask=F, echo=F)"
 # Verify solving Ax=b at scale
@@ -130,4 +119,59 @@ mpiexec -np 4 Rscript -e "demo(verify, package='pbdDMAT', ask=F, echo=F)"
 mpiexec -np 4 Rscript -e "demo(pca, package='pbdDMAT', ask=F, echo=F)"
 # OLS and predictions
 mpiexec -np 4 Rscript -e "demo(ols_dmat, package='pbdDMAT', ask=F, echo=F)"
+
+		  # ---------------------------- #
+		  # IV Reading and Managing Data #
+		  # ---------------------------- #
+
+
+### Chapter 8
+# Reading csv
+mpiexec -np 4 Rscript -e "demo(read_csv, package='pbdDMAT', ask=F, echo=F)"
+# Reading sql
+mpiexec -np 4 Rscript -e "demo(read_sql, package='pbdDMAT', ask=F, echo=F)"
+
+### Chapter 9
+# Reading and writing parallel NetCDF4
+Rscript -e "demo(trefht, package="pbdDEMO", ask = F, echo = F)"
+mpiexec -np 4 Rscript -e "demo(nc4_serial, package='pbdDEMO', ask=F, echo=F)"
+mpiexec -np 4 Rscript -e "demo(nc4_parallel, package='pbdDEMO', ask=F, echo=F)"
+mpiexec -np 4 Rscript -e "demo(nc4_dmat, package='pbdDEMO', ask=F, echo=F)"
+mpiexec -np 4 Rscript -e "demo(nc4_spmdc, package='pbdDEMO', ask=F, echo=F)"
+
+### Chapter 10
+# Loand/unload balance
+mpiexec -np 4 Rscript -e "demo(balance, package='pbdDMAT', ask=F, echo=F)"
+# SPMD to DMAT
+mpiexec -np 4 Rscript -e "demo(spmd_dmat, package='pbdDMAT', ask=F, echo=F)"
+# Distributed matrix redistributions
+mpiexec -np 4 Rscript -e "demo(reblock, package='pbdDMAT', ask=F, echo=F)"
 \end{lstlisting}
+
+
+
+
+
+\subsection{List of Benchmarks}
+
+At the time of writing, there are benchmarks for computing covariance, linear models, and principal components.  The benchmarks come in two variants.  The first is an ordinary set of benchmark codes, which generate data of specified dimension(s) and time the indicated computation.  This operation is replicated for a user-specified number of times (default 10), and then the timing results are printed to the terminal.  
+
+From the \code{Benchmarks/} subtree, the user can run the first set of benchmarks with, for example, 4 processors by issuing any of the commands:
+\begin{lstlisting}
+### (Use Rscript.exe for windows systems)
+mpiexec -np 4 Rscript cov.r
+mpiexec -np 4 Rscript lmfit.r
+mpiexec -np 4 Rscript pca.r
+\end{lstlisting}
+
+The second set of benchmarks are those that try to find the ``balancing'' point where, for the indicted computation with user specified number of cores, the computation is performed faster using pbdR than using serial \proglang{R}.  In general, throwing a bunch of cores at a problem may not be the best course of action, because parallel algorithms (almost always) have inherent overhead over their serial counterparts that can make their use ill-advised for small problems.  But for sufficiently big (which is usually not very big at all) problems, that overhead should quickly be dwarfed by the increased scalability.
+
+From the \code{Benchmarks/} subtree, the user can run the second set of benchmarks with, for example, 4 processors by issuing any of the commands:
+\begin{lstlisting}
+### (Use Rscript.exe for windows systems)
+mpiexec -np 4 Rscript balance_cov.r
+mpiexec -np 4 Rscript balance_lmfit.r
+mpiexec -np 4 Rscript balance_pca.r
+\end{lstlisting}
+
+Now we must note that there are other costs than just statistical computation.  There is of course the cost of disk IO (when dealing with real data).  However, a parallel file system should help with this, and for large datasets should actually be faster anyway.  The main cost not measured here is the cost of starting all of the R processes and loading packages.  Assuming \proglang{R} is not compiled statically (and it almost certainly is not), then this cost is non-trivial and somewhat unique to very large scale computing.  For instance, it took us well over an hour to start 12,000 \proglang{R} sessions and load the required packages on the supercomputer Kraken\footnote{See \url{https://en.wikipedia.org/wiki/Kraken_(supercomputer)}}.  This problem is not unique to \proglang{R}, however.  It affects any project that has a great deal of dynamic library loading to do.  This includes \proglang{Python}, although their community has made some impressive strides in dealing with this problem.
