@@ -1,5 +1,4 @@
 library(pbdDMAT, quiet = TRUE)
-library(rbenchmark)
 
 ###################SETTINGS######################
 init.grid()
@@ -10,7 +9,6 @@ comm.set.seed(diff = TRUE)
 N <- 15000
 p <- 500
 
-
 # blocking
 bldim <- 4
 
@@ -18,9 +16,8 @@ bldim <- 4
 mean <- 100
 sd <- 1000
 
-# rbenchmark
+# replications
 reps <- 10
-cols <- c("test", "replications", "elapsed")
 
 #################################################
 
@@ -47,11 +44,12 @@ if (log10(size) > 3){
 comm.cat(sprintf("\n%.2f %s of data generated in %.3f seconds\n\n", size, unit, datatimes), quiet=T)
 
 
-times <- benchmark(lm.fit(x=dx, y=dy), columns=cols, replications=reps)
-times[3] <- allreduce(times[3], op='max')
-times$mean <- times[3]/reps
-names(times)[3] <- "total.runtime"
-names(times$mean) <- "mean.runtime"
-comm.print(times, quiet=T)
+times <- sapply(1:reps, function(.) system.time(lm.fit(x=dx, y=dy))[3])
+total <- allreduce(sum(times), op='max')
+avg <- total/reps
+
+bench <- data.frame(operation="lm.fit(dx, dy)", mean.runtime=avg, total.runtime=total)
+row.names(bench) <- ""
+comm.print(bench, quiet=T)
 
 finalize()
