@@ -1,5 +1,11 @@
 
 ======================= Log Before Release =====================================
+
+2013-03-12:
+  * Added cover to vignette.
+  * Changed title of vignette.
+  * Cleaned up for CRAN.
+
 2013-02-07:
   * Add pbdNCDF4 examples.
   * Add SPMD data matrix major for load balance functions, and
