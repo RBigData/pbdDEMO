@@ -1,5 +1,4 @@
 library(pbdDMAT, quiet = TRUE)
-library(rbenchmark)
 
 ###################SETTINGS######################
 init.grid()

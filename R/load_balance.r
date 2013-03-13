@@ -19,12 +19,22 @@ balance.info <- function(X.spmd, comm = .SPMD.CT$comm,
   N.allspmd <- spmd.allgather.integer(as.integer(N.spmd), integer(COMM.SIZE),
                                       comm = comm)
   N <- sum(N.allspmd)
-  n <- ceiling(N / COMM.SIZE)
-  new.N.allspmd <- c(rep(n, COMM.SIZE - 1), N - n * (COMM.SIZE - 1))
 
+  ### NULL in the last can cause problems.
+  # n <- ceiling(N / COMM.SIZE)
+  # new.N.allspmd <- c(rep(n, COMM.SIZE - 1), N - n * (COMM.SIZE - 1))
+  # rank.org <- rep(0:(COMM.SIZE - 1), N.allspmd)
+  # rank.belong <- rep(0:(COMM.SIZE - 1), each = n)[1:N]
+
+  ### Try block0 method which is better for conversion to ddmatrix.
+  n <- floor(N / COMM.SIZE)
+  n.residual <- N %% COMM.SIZE
+  new.N.allspmd <- rep(n, COMM.SIZE) +
+                   rep(c(1, 0), c(n.residual, COMM.SIZE - n.residual))
   rank.org <- rep(0:(COMM.SIZE - 1), N.allspmd)
-  rank.belong <- rep(0:(COMM.SIZE - 1), each = n)[1:N]
+  rank.belong <- rep(0:(COMM.SIZE - 1), new.N.allspmd)
 
+  ### Build send and recv information if any.
   send.info <- data.frame(org = rank.org[rank.org == COMM.RANK],
                           belong = rank.belong[rank.org == COMM.RANK])
   recv.info <- data.frame(org = rank.org[rank.belong == COMM.RANK],
