@@ -8,7 +8,8 @@
   amount of each processor is nearly equal.
 }
 \usage{
-  balance.info(X.spmd, comm = .SPMD.CT$comm, spmd.major = .DEMO.CT$spmd.major)
+  balance.info(X.spmd, comm = .SPMD.CT$comm, spmd.major = .DEMO.CT$spmd.major,
+               method = .DEMO.CT$divide.method)
   load.balance(X.spmd, bal.info = NULL, comm = .SPMD.CT$comm, 
                spmd.major = .DEMO.CT$spmd.major)
   unload.balance(new.X.spmd, bal.info, comm = .SPMD.CT$comm)
@@ -19,6 +20,7 @@
   \item{bal.info}{a returned object from \code{balance.info}.}
   \item{spmd.major}{1 for row-major storage, 2 for column-major.}
   \item{new.X.spmd}{a SPMD data matrix or vector}
+  \item{method}{"block.cyclic" or "block0".}
 }
 \details{
   \code{X.spmd} is the data matrix with dimension \code{N.spmd * p} and
