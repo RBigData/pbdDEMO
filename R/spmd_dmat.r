@@ -17,13 +17,14 @@ demo.spmdr2dmat <- function(X.spmd, skip.balance = FALSE, comm = .SPMD.CT$comm,
   if(! skip.balance){
     X.spmd <- load.balance(X.spmd, comm = comm, spmd.major = 1) 
   }
-  ldim <- as.integer(dim(X.spmd))
-  N <- spmd.allreduce.integer(ldim[1], integer(1), op = "sum", comm = comm)
-  bldim.org <- c(spmd.allreduce.integer(ldim[1], integer(1), op = "max",
+  ldim.spmd <- as.integer(dim(X.spmd))
+  N <- spmd.allreduce.integer(ldim.spmd[1], integer(1), op = "sum", comm = comm)
+  bldim.org <- c(spmd.allreduce.integer(ldim.spmd[1], integer(1), op = "max",
                                         comm = comm),
                  p)
 
   ### block-cyclic in context 2.
+  ldim <- base.numroc(dim = c(N, p), bldim = bldim.org, ICTXT = 2)
   X.dmat <- new("ddmatrix", Data = X.spmd,
                 dim = c(N, p), ldim = ldim, bldim = bldim.org, ICTXT = 2)
 
@@ -50,12 +51,13 @@ demo.spmdc2dmat <- function(X.spmd, skip.balance = FALSE, comm = .SPMD.CT$comm,
   if(! skip.balance){
     X.spmd <- load.balance(X.spmd, comm = comm, spmd.major = 2) 
   }
-  ldim <- as.integer(dim(X.spmd))
-  N <- spmd.allreduce.integer(ldim[2], integer(1), op = "sum", comm = comm)
-  bldim.org <- c(p, spmd.allreduce.integer(ldim[2], integer(1), op = "max",
+  ldim.spmd <- as.integer(dim(X.spmd))
+  N <- spmd.allreduce.integer(ldim.spmd[2], integer(1), op = "sum", comm = comm)
+  bldim.org <- c(p, spmd.allreduce.integer(ldim.spmd[2], integer(1), op = "max",
                                            comm = comm))
 
   ### block-cyclic in context 1.
+  ldim <- base.numroc(dim = c(p, N), bldim = bldim.org, ICTXT = 1)
   X.dmat <- new("ddmatrix", Data = X.spmd,
                 dim = c(p, N), ldim = ldim, bldim = bldim.org, ICTXT = 1)
 

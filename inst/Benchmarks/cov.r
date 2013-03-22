@@ -7,8 +7,10 @@ init.grid()
 comm.set.seed(diff = TRUE)
 
 # size
-N <- 10000
-p <- 500
+#N <- 10000
+#p <- 500
+N <- 1000
+p <- 50
 
 # blocking
 bldim <- 2

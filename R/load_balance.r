@@ -1,7 +1,7 @@
 ### This file contains functions to load balance of data X.spmd.
 
 balance.info <- function(X.spmd, comm = .SPMD.CT$comm,
-    spmd.major = .DEMO.CT$spmd.major){
+    spmd.major = .DEMO.CT$spmd.major, method = .DEMO.CT$divide.method){
   COMM.SIZE <- spmd.comm.size(comm)
   COMM.RANK <- spmd.comm.rank(comm)
 
@@ -20,19 +20,38 @@ balance.info <- function(X.spmd, comm = .SPMD.CT$comm,
                                       comm = comm)
   N <- sum(N.allspmd)
 
-  ### NULL in the last can cause problems.
-  # n <- ceiling(N / COMM.SIZE)
-  # new.N.allspmd <- c(rep(n, COMM.SIZE - 1), N - n * (COMM.SIZE - 1))
-  # rank.org <- rep(0:(COMM.SIZE - 1), N.allspmd)
-  # rank.belong <- rep(0:(COMM.SIZE - 1), each = n)[1:N]
+  if(method[1] == "block.cyclic"){
+    ### This can cause problems.
+    # n <- ceiling(N / COMM.SIZE)
+    # new.N.allspmd <- c(rep(n, COMM.SIZE - 1), N - n * (COMM.SIZE - 1))
+    # rank.org <- rep(0:(COMM.SIZE - 1), N.allspmd)
+    # rank.belong <- rep(0:(COMM.SIZE - 1), each = n)[1:N]
 
-  ### Try block0 method which is better for conversion to ddmatrix.
-  n <- floor(N / COMM.SIZE)
-  n.residual <- N %% COMM.SIZE
-  new.N.allspmd <- rep(n, COMM.SIZE) +
-                   rep(c(1, 0), c(n.residual, COMM.SIZE - n.residual))
-  rank.org <- rep(0:(COMM.SIZE - 1), N.allspmd)
-  rank.belong <- rep(0:(COMM.SIZE - 1), new.N.allspmd)
+    ### Try again.
+    n <- ceiling(N / COMM.SIZE)
+    rep.n <- N %/% n
+    new.N.allspmd <- rep(n, rep.n)
+    if(n * rep.n < N){
+      new.N.allspmd <- c(new.N.allspmd, (N - n * rep.n))
+    }
+    if(length(new.N.allspmd) < COMM.SIZE){
+      new.N.allspmd <- c(new.N.allspmd,
+                         rep(0, COMM.SIZE - length(new.N.allspmd)))
+    }
+    rank.org <- rep(0:(COMM.SIZE - 1), N.allspmd)
+    rank.belong <- rep(0:(COMM.SIZE - 1), new.N.allspmd) 
+  } else if(method[1] == "block0"){
+    ### Try block0 method which is a better way to balance data. However,
+    ### this is not necessary in block-cyclic, so useless for ddmatrix.
+    n <- floor(N / COMM.SIZE)
+    n.residual <- N %% COMM.SIZE
+    new.N.allspmd <- rep(n, COMM.SIZE) +
+                     rep(c(1, 0), c(n.residual, COMM.SIZE - n.residual))
+    rank.org <- rep(0:(COMM.SIZE - 1), N.allspmd)
+    rank.belong <- rep(0:(COMM.SIZE - 1), new.N.allspmd)
+  } else{
+    comm.stop("method is not found.")
+  }
 
   ### Build send and recv information if any.
   send.info <- data.frame(org = rank.org[rank.org == COMM.RANK],

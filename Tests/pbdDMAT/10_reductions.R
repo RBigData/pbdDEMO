@@ -18,7 +18,7 @@ comm.print <- function(x) pbdMPI::comm.print(x, quiet=T)
 
 M <- 250
 N <- 250
-# M<- N<- 10
+ M<- N<- 10
 BL <- 4
 
 seed <- sample(1:1000, size=1)
