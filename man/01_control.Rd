@@ -11,9 +11,11 @@
 \details{
   The elements of \code{.DEMO.CT} are default values
 \tabular{lcl}{
-  Elements              \tab Default  \tab Usage \cr
-  \code{ictxt}          \tab 0L       \tab a default BLACS context \cr
-  \code{bldim}          \tab c(2L,2L) \tab a default block dimension \cr
+  Elements              \tab Default        \tab Usage \cr
+  \code{spmd.major}     \tab 1L             \tab a default SPMD row-major \cr
+  \code{ictxt}          \tab 0L             \tab a default BLACS context \cr
+  \code{bldim}          \tab c(2L,2L)       \tab a default block dimension \cr
+  \code{divide.method}  \tab "block.cyclic" \tab a default balance method \cr
 }
 }
 \references{

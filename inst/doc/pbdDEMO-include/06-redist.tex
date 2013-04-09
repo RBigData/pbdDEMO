@@ -1,7 +1,7 @@
 \chapter{Redistribution Methods}
 \label{sec:redist}
 
-One final challenge similar to, but distinct from reading in data is managing data which has already been read into the R processes.  Throughout this chapter, we will be making reference to several particulars to the block-cyclic data type used for objects of class \code{ddmatrix}.  In particular, a working knowledge of the block-cyclic data structure and their relationship with BLACS contexts is most useful for the content to follow.  As such, the reader is \emph{strongly} encouraged to be familiar with the content of the \pkg{pbdBASE} vignette before proceeding.
+One final challenge similar to, but distinct from reading in data is managing data which has already been read into the R processes.  Throughout this chapter, we will be making reference to several particulars to the block-cyclic data type used for objects of class \code{ddmatrix}.  In particular, a working knowledge of the block-cyclic data structure and their relationship with BLACS contexts is most useful for the content to follow.  As such, the reader is \emph{strongly} encouraged to be familiar with the content of the \pkg{pbdDMAT} vignette before proceeding.
 
 \section{Distributed Matrix Redistributions}
 \label{sec:dmatredist}
@@ -50,7 +50,7 @@ There are several useful functions which apply to distributed matrices, but requ
 \end{table}
 These functions are listed in Table~\ref{tab:implicitredist}.  By default, these functions will re-distribute back to the original data distribution after having performed the initial (necessary) redistribution and performed the requested operations.  That is, by default, the problem of managing different data distributions is hidden from the user and entirely implicit.  However, there are advantages to becoming familiar with managing these data distributions, because each of these functions has the option to have redistribution directly managed.  Now, a data redistribution must occur to use these functions, but understanding which and why can help minimize the number of redistributions performed.
 
-Many of the full details, such as \emph{why} the redistributions need occur in the first place, are outlined in the \pkg{pbdBASE} vignette, but we provide a simple example here.  Suppose we have a distributed matrix \code{dx} distributed on the default grid (i.e., BLACS context 0) and we wish to drop the first column and then use the \code{apply()} function to extract the p-values, column-wise, of the result of running the Shapiro-Wilk normality test independently on the columns.  No one is claiming that this is a wise thing to do, but it is useful for the purpose of demonstration.
+Many of the full details, such as \emph{why} the redistributions need occur in the first place, are outlined in the \pkg{pbdDMAT} vignette, but we provide a simple example here.  Suppose we have a distributed matrix \code{dx} distributed on the default grid (i.e., BLACS context 0) and we wish to drop the first column and then use the \code{apply()} function to extract the p-values, column-wise, of the result of running the Shapiro-Wilk normality test independently on the columns.  No one is claiming that this is a wise thing to do, but it is useful for the purpose of demonstration.
 
 To achieve this, we could execute the following:
 
@@ -222,7 +222,7 @@ mpiexec -np 4 Rscript -e "demo(spmd_dmat,'pbdDEMO',ask=F,echo=F)"
 The final redistribution challenge we will present is taking an object in SPMD format and putting it in the DMAT format.  More precisely, we assume the input object \code{X.spmd} is in SPMD and convert the object into an object of class \code{ddmatrix} which we will call \code{X.dmat}.
 
 
-The Figure~\ref{fig:spmd_dmat} illustates an example \code{X.spmd} and \code{X.dmat} conversion.  For full details about the block-cyclic data format used for class \code{ddmatrix}, see the \pkg{pbdBASE} vignette.  
+The Figure~\ref{fig:spmd_dmat} illustates an example \code{X.spmd} and \code{X.dmat} conversion.  For full details about the block-cyclic data format used for class \code{ddmatrix}, see the \pkg{pbdDMAT} vignette.  
 
 To perform such a redistribution, one simply needs to call:
 \begin{Code}[title=R Code]
