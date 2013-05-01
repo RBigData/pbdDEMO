@@ -4,6 +4,7 @@
 
 
 \chapter{MPI for the R User}
+\label{chp:mpi_for_the_r_user}
 
 Cicero once said that ``If you have a garden and a library, you have everything you need.''  So in that spirit, for the next two chapters we will use the MPI library to get our hands dirty and root around in the dirt of low-level MPI programming.
 
@@ -329,3 +330,20 @@ demo.timer <- function(timed)
   return( c(min=mintime, mean=meantime, max=maxtime) )
 }
 \end{lstlisting}
+
+
+
+\section{Exercises}
+\label{sec:mpi_for_the_r_user_exercise}
+
+\begin{enumerate}[label=\thechapter-\arabic*]
+\item
+In \pkg{pbdMPI}, there is a parallel sorting function called
+\code{comm.sort()} which is similar to the usual \code{sort()} of \proglang{R}.
+Implement parallel equivalents to the usual \code{order()} and \code{rank()}
+of \proglang{R}.
+
+\end{enumerate}
+
+
+
