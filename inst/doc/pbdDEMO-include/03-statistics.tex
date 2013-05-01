@@ -61,9 +61,10 @@ E[X] &= P( V_1 + V_2 \leq 1 )\\
      &= \frac{1}{2}\left[ \frac{\pi}{4} +\frac{\pi}{4}  \right]
 \end{align*}
 and by sampling observations $X_i$ for $i=1,\dots,N$, by the Strong Law of Large Numbers
-\begin{align*}
+\begin{equation}
 \bar{X}_N \longrightarrow^{\hspace{-.55cm} a.s.} \hspace{.1cm} \frac{\pi}{4} \hspace{.4cm} \text{ as } N\rightarrow \infty
-\end{align*}
+\label{eqn:as_convergence}
+\end{equation}
 In other words,
 \begin{align*}
 P\left(\lim_{N\rightarrow\infty} \bar{X}_N = \frac{\pi}{4}\right) = 1
@@ -287,7 +288,9 @@ A properly thorough treatment of the problems involved here go beyond the scope 
 
 
 
-In the full rank case, we can provide an analytical, ``closed-form'' solution to the problem.  In this case, the classical Maximum Likelihood solution is given by:
+In the full rank case, we can provide an analytical, ``closed-form'' solution to the problem.  In this case, the classical
+% Maximum Likelihood solution
+is given by:
 \begin{align}
  \hat{\bbeta} = (\bX^T\bX)^{-1}\bX^T\by \label{math:ols}
 \end{align}
@@ -397,3 +400,41 @@ need2stop <- comm.any(need2stop)
 if (need2stop)
   stop("Problem :[") 
 \end{lstlisting}
+
+
+
+
+\section{Exercises}
+\label{sec:statistics_exercise}
+
+\begin{enumerate}[label=\thechapter-\arabic*]
+\item
+What are assumptions for the Strong Law of Large Numbers?
+
+\item
+What is the Weak Law of Large Numbers?
+
+\item
+As Statement~(\ref{eqn:as_convergence}),
+prove $\bar{X}_N$ converges to $\frac{\pi}{4}$ in probability and
+in distribution.
+
+\item
+As Statement~(\ref{eqn:as_convergence}),
+Prove $4\bar{X}_N$ converges to $\pi$ almost surely, in probability and
+in distribution.
+
+\item
+What are assumptions for Statement~(\ref{math:statslls})?
+
+\item
+Prove $\hat{\bbeta}$ of Statement~(\ref{math:ols}) is an unbiased
+estimator of $\bbeta$.
+
+\item
+Prove $\bX^\top\bX$ is non-negative definite if $\bX$ is full rank $p$,
+therefore, the inverse exists.
+
+\end{enumerate}
+
+

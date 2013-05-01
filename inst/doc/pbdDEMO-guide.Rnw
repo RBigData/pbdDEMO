@@ -43,11 +43,18 @@ Version 1.0
 % First header/footer style
 \prebodyheadfoot
 
-\begin{textblock*}{0mm}(-7.5mm,-8mm)
-\includegraphics[scale=1.07]{./cover/cover.pdf}
-\end{textblock*}
+%\begin{textblock*}{0mm}(-7.5mm,-8mm)
+%  \includegraphics[scale=1.07]{./cover/cover.pdf}
+%\end{textblock*}
+\begin{figure}[h]
+  \begin{minipage}[c]{8.5in}
+  \hspace{-1.0in}
+  \includegraphics[width=8.25in,height=10in]{./cover/cover.pdf}
+  \end{minipage}
+\end{figure}
 
-\newpage\ \newpage
+
+%\newpage\ \newpage
 
 \date{}
 \maketitle
@@ -135,7 +142,11 @@ This publication was typeset using \LaTeX.  The illustrations were created using
 \input{./pbdDEMO-include/05-reading}
 \input{./pbdDEMO-include/05-z_pbdNCDF4}
 \input{./pbdDEMO-include/06-redist}
+% applications
+\part{Applications}
+\input{./pbdDEMO-include/a0-pmclust}
 % appendices
+\part{Appendix}
 \appendix
 \input{./pbdDEMO-include/appendix}
 
