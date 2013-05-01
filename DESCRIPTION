@@ -11,13 +11,13 @@ Authors@R: c(person("Drew", "Schmidt", role = c("aut", "cre"), email =
         "schmidt@math.utk.edu"), person("Wei-Chen", "Chen", role =
         "aut"), person("George", "Ostrouchov", role = "aut"),
         person("Pragneshkumar", "Patel", role = "aut"))
-Description: pbdDEMO is a package for pbd implementations by utilizing higher
-        level functionalities of all other pbd packages.
+Description: pbdDEMO is a set of demos of pbdR packages, with a useful,
+        unifying vignette.
 SystemRequirements: OpenMPI (>= 1.5.4) on Linux and Mac, MPICH2 (>=
         1.4.1p1) on Windows
 License: GPL (>= 2)
 URL: http://r-pbd.org/
-BugReports: RBigDataProgramming on Google Group
+BugReports: http://group.r-pbd.org/
 MailingList: Please send questions and comments regarding pbdR to
         RBigData@gmail.com
 Packaged: 2013-02-19 19:03:51 UTC; snoweye
