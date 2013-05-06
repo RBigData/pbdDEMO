@@ -8,7 +8,8 @@ library(pbdDEMO, quiet = TRUE)
 rank <- comm.rank()
 size <- comm.size()
 
-nc <- nc_open_par("../extra/data/x.nc")
+file.path <- system.file("extra/data/x.nc", package = "pbdDEMO")
+nc <- nc_open_par(file.path)
 nc_var_par_access(nc, "testMatrix")
 
 ### get data dimension.
@@ -67,7 +68,7 @@ x.nc_var <- ncvar_def("testMatrix", "count",
                       missval = -1, prec = "integer")
 
 ### create (collectively) in parallel a file with given dimensions
-nc <- nc_create_par("../extra/data/test_par.nc", x.nc_var)
+nc <- nc_create_par("./test_par.nc", x.nc_var)
 nc_var_par_access(nc, x.nc_var)
 
 ### write variable values to file
@@ -77,7 +78,7 @@ nc_sync(nc)
 ### close file
 nc_close(nc)
 
-ncdump("../extra/data/test_par.nc")
+ncdump("./test_par.nc")
 
 finalize()
 

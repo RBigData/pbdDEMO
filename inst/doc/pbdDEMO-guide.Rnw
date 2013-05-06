@@ -43,18 +43,20 @@ Version 1.0
 % First header/footer style
 \prebodyheadfoot
 
-\begin{textblock*}{0mm}(-7.5mm,-8mm)
- \includegraphics[scale=1.07]{./cover/cover.pdf}
-\end{textblock*}
-% \begin{figure}[h]
-%   \begin{minipage}[c]{8.5in}
-%   \hspace{-1.0in}
-%   \includegraphics[width=8.25in,height=10in]{./cover/cover.pdf}
-%   \end{minipage}
-% \end{figure}
+%\begin{textblock*}{0mm}(-7.5mm,-8mm)
+% \includegraphics[scale=1.07]{./cover/cover.pdf}
+%\end{textblock*}
+
+\begin{figure}[h]
+  \vspace{-1.5in}
+  \begin{minipage}[t]{2.5in}
+    \hspace{-1.5in}
+    \includegraphics[width=9.25in,height=11.75in]{./cover/cover.pdf}
+  \end{minipage}
+\end{figure}
 
 
-\newpage\ \newpage
+%\newpage\ \newpage
 
 \date{}
 \maketitle
@@ -124,27 +126,32 @@ This publication was typeset using \LaTeX.  The illustrations were created using
 % Body header/footer style
 \bodyheadfoot
 
-% intro
+%%% intro
 \part{Preliminaries}
 \input{./pbdDEMO-include/01-introduction}
 \input{./pbdDEMO-include/02-background}
+
 % spmd methods
 \part{Direct MPI Methods}
 \input{./pbdDEMO-include/02.5-mpi}
 \input{./pbdDEMO-include/03-statistics}
-% ddmatrix methods
+
+%%% ddmatrix methods
 \part{Distributed Matrix Methods}\label{part:dmat}
 \input{./pbdDEMO-include/04-gen}
 \input{./pbdDEMO-include/07-dmat_basic}
 \input{./pbdDEMO-include/08-dmat_stats}
-% reading /managing data
+
+%%% reading /managing data
 \part{Reading and Managing Data}
 \input{./pbdDEMO-include/05-reading}
 \input{./pbdDEMO-include/05-z_pbdNCDF4}
 \input{./pbdDEMO-include/06-redist}
-% applications
+
+%%% applications
 \part{Applications}
 \input{./pbdDEMO-include/a0-pmclust}
+
 % appendices
 \part{Appendix}
 \appendix
