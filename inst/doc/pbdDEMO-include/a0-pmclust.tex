@@ -142,6 +142,24 @@ for supervised learning,
 or clustered in three groups by algorithms for unsupervised learning.
 Note that the dimension of $\bX$ is $N = 150$ by $p = 4$.
 
+Figure~\ref{iris_pairs} shows the pair-wised scatter plot for all features
+denoted on the diagonal, and classes are indicated by colors. Each panel
+plots two features on x and y axes. It is clear
+that \code{Petal.Length} can split three species in two groups. However,
+one of the group is mixed with two species and can not be distinguished by
+any of these four features.
+\begin{figure}[h!bt]
+  \centering
+  \includegraphics[width=6.5in]{pbdDEMO-include/pics/iris_pairs.pdf}
+  \vspace{-1.5cm}
+  \caption[Iris pair-wised scatter plot]{
+    Iris pair-wised scatter plot. {\it Iris setosa} is in red,
+    {\it Iris versicolor} is in green, and {\it Iris virginica} is in blue.
+  }
+  \label{fig:iris_pairs}
+\end{figure}
+
+
 From the supervised learning point view, the empirical estimation for
 $\bTheta$ from data will be the best description for the data assuming
 the true model is Gaussian mixture. The demo code \code{iris_overlap} in
