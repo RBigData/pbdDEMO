@@ -127,35 +127,35 @@ This publication was typeset using \LaTeX.  The illustrations were created using
 \bodyheadfoot
 
 %%% intro
-%\part{Preliminaries}
-%\input{./pbdDEMO-include/01-introduction}
-%\input{./pbdDEMO-include/02-background}
+\part{Preliminaries}
+\input{./pbdDEMO-include/01-introduction}
+\input{./pbdDEMO-include/02-background}
 
 % spmd methods
-%\part{Direct MPI Methods}
-%\input{./pbdDEMO-include/02.5-mpi}
-%\input{./pbdDEMO-include/03-statistics}
+\part{Direct MPI Methods}
+\input{./pbdDEMO-include/02.5-mpi}
+\input{./pbdDEMO-include/03-statistics}
 
 %%% ddmatrix methods
-%\part{Distributed Matrix Methods}\label{part:dmat}
-%\input{./pbdDEMO-include/04-gen}
-%\input{./pbdDEMO-include/07-dmat_basic}
-%\input{./pbdDEMO-include/08-dmat_stats}
+\part{Distributed Matrix Methods}\label{part:dmat}
+\input{./pbdDEMO-include/04-gen}
+\input{./pbdDEMO-include/07-dmat_basic}
+\input{./pbdDEMO-include/08-dmat_stats}
 
 %%% reading /managing data
-%\part{Reading and Managing Data}
-%\input{./pbdDEMO-include/05-reading}
-%\input{./pbdDEMO-include/05-z_pbdNCDF4}
-%\input{./pbdDEMO-include/06-redist}
+\part{Reading and Managing Data}
+\input{./pbdDEMO-include/05-reading}
+\input{./pbdDEMO-include/05-z_pbdNCDF4}
+\input{./pbdDEMO-include/06-redist}
 
 %%% applications
 \part{Applications}
 \input{./pbdDEMO-include/a0-pmclust}
 
 % appendices
-%\part{Appendix}
-%\appendix
-%\input{./pbdDEMO-include/appendix}
+\part{Appendix}
+\appendix
+\input{./pbdDEMO-include/appendix}
 
 %
 \newpage
