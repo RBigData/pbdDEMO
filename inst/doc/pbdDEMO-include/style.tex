@@ -126,7 +126,7 @@
 \makeatother
 \lstnewenvironment{Command}[1][title=Shell Command]{\lstset{#1}}{}
 \lstnewenvironment{Code}[1][title=R Script]{\lstset{#1}}{}
-\lstnewenvironment{Output}[1][title=  \ ]{\lstset{#1}}{}
+\lstnewenvironment{Output}[1][title=\ ]{\lstset{#1}}{}
 \lstnewenvironment{CodeOutput}[1][title=R Output]{\lstset{#1}}{}
 \lstnewenvironment{Error}[1][]{
   \lstset{title=Error Message,basicstyle=\small\ttfamily}\color{Red}}{}
@@ -136,10 +136,10 @@
 %%%%% pseudocode
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\usepackage{varwidth}
 \usepackage{algpseudocode}
 
 \newcommand{\pseudocode}[1]{
+  \centering Pseudocode\\[.1cm]
   \fbox{\noindent
   \begin{minipage}{\dimexpr\textwidth-2\fboxsep-2\fboxrule\relax}
   \begin{algorithmic}[1]
