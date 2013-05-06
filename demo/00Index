@@ -31,3 +31,5 @@ nc4_spmdc           pbdDEMO   An example SPMD column-major read and write NetCDF
 balance             pbdDEMO   Simple load balance and unload balance.
 spmd_dmat           pbdDEMO   Simple convertion of SPMD and DMAT.
 reblock             pbdDEMO   Fiddle with ddmatrix blocking parameters.
+
+iris_overlap        pbdDEMO   Iris overlap levels.
