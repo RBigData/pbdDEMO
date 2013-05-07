@@ -55,13 +55,22 @@
 \definecolor{orange}{rgb}{1,0.5,0}
 \definecolor{grayish}{rgb}{.9, .9, .9}
 
-\definecolor{g11}{rgb}{0, 0, 1}
-\definecolor{g12}{rgb}{0, .4, 1}
-\definecolor{g13}{rgb}{0, .8, 1}
+% % \definecolor{g11}{rgb}{0, 0, 1}
+% % \definecolor{g12}{rgb}{0, .4, 1}
+% % \definecolor{g13}{rgb}{0, .8, 1}
+% % 
+% % \definecolor{g21}{rgb}{0, .5, .3}
+% % \definecolor{g22}{rgb}{.4, .5, .3}
+% % \definecolor{g23}{rgb}{.8, .5, .3}
 
-\definecolor{g21}{rgb}{0, .5, .3}
-\definecolor{g22}{rgb}{.4, .5, .3}
-\definecolor{g23}{rgb}{.8, .5, .3}
+% changed for the colorblind, taken from http://jfly.iam.u-tokyo.ac.jp/color/#pallet
+\definecolor{g11}{rgb}{.90, .60, 0}
+\definecolor{g12}{rgb}{.35, .70, .90}
+\definecolor{g13}{rgb}{0, .60, .50}
+
+\definecolor{g21}{rgb}{.80, .40, 0}
+\definecolor{g22}{rgb}{0, .45, .70}
+\definecolor{g23}{rgb}{.80, .60, .70}
 
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{mauve}{rgb}{0.58,0,0.82}
@@ -126,10 +135,29 @@
 \makeatother
 \lstnewenvironment{Command}[1][title=Shell Command]{\lstset{#1}}{}
 \lstnewenvironment{Code}[1][title=R Script]{\lstset{#1}}{}
+\lstnewenvironment{Output}[1][title=\ ]{\lstset{#1}}{}
 \lstnewenvironment{CodeOutput}[1][title=R Output]{\lstset{#1}}{}
 \lstnewenvironment{Error}[1][]{
   \lstset{title=Error Message,basicstyle=\small\ttfamily}\color{Red}}{}
   
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% pseudocode
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{algpseudocode}
+
+\newcommand{\pseudocode}[1]{
+  {\centering Pseudocode\\[.1cm]}
+  \fbox{\noindent
+  \begin{minipage}{\dimexpr\textwidth-2\fboxsep-2\fboxrule\relax}
+  \begin{algorithmic}[1]
+  #1
+  \end{algorithmic}
+  \end{minipage}
+  }\\
+}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%% Chapter headings
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

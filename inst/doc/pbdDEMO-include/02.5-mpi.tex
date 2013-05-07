@@ -99,6 +99,170 @@ Whichever package you choose, whichever your favorite, for the remainder of this
 
 
 
+\section{The SPMD Data Structure}
+
+This is the boring stuff everyone hates, but like your medicine, it's ultimately better for you to just take it and get it out of the way:  data structures.  In particular, we will be discussing a distributed data structure that, for lack of a better name (and I assure you we tried), we will call the SPMD data structure.  This data structure is more paradigm or philosophy than a rigid data structure like an array or list.  Consider it a set of ``best practices'', or if nothing else, a starting place if you have no idea how to proceed.
+
+The SPMD data structure is designed to fit the types of problems which are arguably most common to data science, namely tall and skinny matrices.  It will work best with these (from a computational efficiency perspective) problems, although that is not required.  In fact, very little at all is required of this data structure.  At its core, the data structure is a distributed matrix data structure, with the following rules:
+  \begin{enumerate}
+    \item \code{SPMD} is \emph{distributed}.  No one processor owns all of the matrix.
+%     \item \code{SPMD} is \emph{balanced}.  Every processor owns (roughly) the same amount of data.
+    \item \code{SPMD} is \emph{non-overlapping}. Any row owned by one processor is owned by no other processors.
+    \item \code{SPMD} is \emph{row-contiguous}.  If a processor owns one element of a row, it owns the entire row.
+    \item \code{SPMD} is globally \emph{row-major}\footnote{In the sense of the data decomposition.  More specifically, the global matrix is chopped up into local sub-matrices in a row-major way.}, locally \emph{column-major}\footnote{The local sub-objects are \proglang{R} matrices, which are stored in column-major fashion.}.
+    \item The last row of the local storage of a processor is adjacent (by global row) to the first row of the local storage of next processor (by communicator number) that owns data.  That is, global row-adjacency is preserved in local storage via the communicator.\label{enum:confusing}
+    \item \code{SPMD} is (relatively) easy to understand, but can lead to bottlenecks if you have many more columns than rows.
+  \end{enumerate}
+
+Of this list, perhaps the most difficult to understand is number~\ref{enum:confusing}.  This is a precise, albeit cumbersome explanation for a simple idea.  If two processors are adjacent and each owns data, then their local sub-matrices are adjacent row-wise as well.  For example, rows $n$ and $n+1$ of a matrix are adjacent; possible configurations for the distributed ownership are processors $q$ owns row $n$ and $q+1$ owns row $n+1$; processor $q$ owns row $n$, processor $q+1$ owns \emph{nothing}, and processor $q+2$ owns row $n+1$.
+
+For some, no matter how much we try or what we write, the wall of text simply will not suffice.  So here are a few visual examples.  Suppose we have the global data matrix $x$, given as:
+
+\begin{align*}
+x &= \left[
+      \begin{array}{lllllllll}
+      x_{11} & x_{12} & x_{13} & x_{14} & x_{15} & x_{16} & x_{17} & x	_{18} & x_{19}\\
+      x_{21} & x_{22} & x_{23} & x_{24} & x_{25} & x_{26} & x_{27} & x	_{28} & x_{29}\\
+      x_{31} & x_{32} & x_{33} & x_{34} & x_{35} & x_{36} & x_{37} & x	_{38} & x_{39}\\
+      x_{41} & x_{42} & x_{43} & x_{44} & x_{45} & x_{46} & x_{47} & x	_{48} & x_{49}\\
+      x_{51} & x_{52} & x_{53} & x_{54} & x_{55} & x_{56} & x_{57} & x	_{58} & x_{59}\\
+      x_{61} & x_{62} & x_{63} & x_{64} & x_{65} & x_{66} & x_{67} & x	_{68} & x_{69}\\
+      x_{71} & x_{72} & x_{73} & x_{74} & x_{75} & x_{76} & x_{77} & x	_{78} & x_{79}\\
+      x_{81} & x_{82} & x_{83} & x_{84} & x_{85} & x_{86} & x_{87} & x	_{88} & x_{89}\\
+      x_{91} & x_{92} & x_{93} & x_{94} & x_{95} & x_{96} & x_{97} & x	_{98} & x_{99}
+      \end{array}
+\right]_{9\times 9}
+\end{align*}
+with processor array\footnote{Palette selected to be distinguishable by the color blind, taken from \url{http://jfly.iam.u-tokyo.ac.jp/color/\#pallet}} (indexing always starts at 0 not 1)
+\begin{align*}
+\text{Processors = }
+      \begin{array}{llllll}
+      \color{g11}0 & \color{g12}1 & \color{g13}2 & \color{g21}3 & \color{g22}4 & \color{g23}5
+      \end{array}
+\end{align*}
+
+Then we might split up and distribute the data onto processors like so:
+\begin{align*}
+x &= \left[
+      \begin{array}{lllllllll}
+      \color{g11}x_{11} & \color{g11}x_{12} & \color{g11}x_{13} & \color{g11}x_{14} & \color{g11}x_{15} & \color{g11}x_{16} & \color{g11}x_{17} & \color{g11}x_{18} & \color{g11}x_{19}\\
+      %
+      \color{g11}x_{21} & \color{g11}x_{22} & \color{g11}x_{23} & \color{g11}x_{24} & \color{g11}x_{25} & \color{g11}x_{26} & \color{g11}x_{27} & \color{g11}x_{28} & \color{g11}x_{29}\\\hline
+      %
+      \color{g12}x_{31} & \color{g12}x_{32} & \color{g12}x_{33} & \color{g12}x_{34} & \color{g12}x_{35} & \color{g12}x_{36} & \color{g12}x_{37} & \color{g12}x_{38} & \color{g12}x_{39}\\
+      %
+      \color{g12}x_{41} & \color{g12}x_{42} & \color{g12}x_{43} & \color{g12}x_{44} & \color{g12}x_{45} & \color{g12}x_{46} & \color{g12}x_{47} & \color{g12}x_{48} & \color{g12}x_{49}\\\hline
+      %
+      \color{g13}x_{51} & \color{g13}x_{52} & \color{g13}x_{53} & \color{g13}x_{54} & \color{g13}x_{55} & \color{g13}x_{56} & \color{g13}x_{57} & \color{g13}x_{58} & \color{g13}x_{59}\\
+      %
+      \color{g13}x_{61} & \color{g13}x_{62} & \color{g13}x_{63} & \color{g13}x_{64} & \color{g13}x_{65} & \color{g13}x_{66} & \color{g13}x_{67} & \color{g13}x_{68} & \color{g13}x_{69}\\\hline
+      %
+      \color{g21}x_{71} & \color{g21}x_{72} & \color{g21}x_{73} & \color{g21}x_{74} & \color{g21}x_{75} & \color{g21}x_{76} & \color{g21}x_{77} & \color{g21}x_{78} & \color{g21}x_{79}\\\hline
+      %
+      \color{g22}x_{81} & \color{g22}x_{82} & \color{g22}x_{83} & \color{g22}x_{84} & \color{g22}x_{85} & \color{g22}x_{86} & \color{g22}x_{87} & \color{g22}x_{88} & \color{g22}x_{89}\\\hline
+      %
+      \color{g23}x_{91} & \color{g23}x_{92} & \color{g23}x_{93} & \color{g23}x_{94} & \color{g23}x_{95} & \color{g23}x_{96} & \color{g23}x_{97} & \color{g23}x_{98} & \color{g23}x_{99}\\
+      \end{array}
+\right]_{9\times 9}
+\end{align*}
+
+With local storage view:
+\begin{align*}
+\left[\begin{array}{lllllllll}
+      \color{g11}x_{11} & \color{g11}x_{12} & \color{g11}x_{13} & \color{g11}x_{14} & \color{g11}x_{15} & \color{g11}x_{16} & \color{g11}x_{17} & \color{g11}x_{18} & \color{g11}x_{19}\\
+      \color{g11}x_{21} & \color{g11}x_{22} & \color{g11}x_{23} & \color{g11}x_{24} & \color{g11}x_{25} & \color{g11}x_{26} & \color{g11}x_{27} & \color{g11}x_{28} & \color{g11}x_{29}
+\end{array}\right]_{2\times 9}
+\\
+\left[\begin{array}{lllllllll}
+      \color{g12}x_{31} & \color{g12}x_{32} & \color{g12}x_{33} & \color{g12}x_{34} & \color{g12}x_{35} & \color{g12}x_{36} & \color{g12}x_{37} & \color{g12}x_{38} & \color{g12}x_{39}\\
+      \color{g12}x_{41} & \color{g12}x_{42} & \color{g12}x_{43} & \color{g12}x_{44} & \color{g12}x_{45} & \color{g12}x_{46} & \color{g12}x_{47} & \color{g12}x_{48} & \color{g12}x_{49}
+\end{array}\right]_{2\times 9}
+\\
+\left[\begin{array}{lllllllll}
+      \color{g13}x_{51} & \color{g13}x_{52} & \color{g13}x_{53} & \color{g13}x_{54} & \color{g13}x_{55} & \color{g13}x_{56} & \color{g13}x_{57} & \color{g13}x_{58} & \color{g13}x_{59}\\
+      \color{g13}x_{61} & \color{g13}x_{62} & \color{g13}x_{63} & \color{g13}x_{64} & \color{g13}x_{65} & \color{g13}x_{66} & \color{g13}x_{67} & \color{g13}x_{68} & \color{g13}x_{69}
+\end{array}\right]_{2\times 9}
+\\
+\left[\begin{array}{lllllllll}
+      \color{g21}x_{71} & \color{g21}x_{72} & \color{g21}x_{73} & \color{g21}x_{74} & \color{g21}x_{75} & \color{g21}x_{76} & \color{g21}x_{77} & \color{g21}x_{78} & \color{g21}x_{79}
+\end{array}\right]_{1\times 9}
+\\
+\left[\begin{array}{lllllllll}
+      \color{g22}x_{81} & \color{g22}x_{82} & \color{g22}x_{83} & \color{g22}x_{84} & \color{g22}x_{85} & \color{g22}x_{86} & \color{g22}x_{87} & \color{g22}x_{88} & \color{g22}x_{89}
+\end{array}\right]_{1\times 9}
+\\
+\left[\begin{array}{lllllllll}
+      \color{g23}x_{91} & \color{g23}x_{92} & \color{g23}x_{93} & \color{g23}x_{94} & \color{g23}x_{95} & \color{g23}x_{96} & \color{g23}x_{97} & \color{g23}x_{98} & \color{g23}x_{99}\\
+\end{array}\right]_{1\times 9}
+\end{align*}
+
+This is a \emph{load balanced} approach, where we try to give each processor roughly the same amount of stuff.  Of course, that is not part of the rules of the SPMD structure, so we could just as well distribute the data like so:
+\begin{align*}
+x &= \left[
+      \begin{array}{lllllllll}
+      \\\hline
+      \color{g12}x_{11} & \color{g12}x_{12} & \color{g12}x_{13} & \color{g12}x_{14} & \color{g12}x_{15} & \color{g12}x_{16} & \color{g12}x_{17} & \color{g12}x_{18} & \color{g12}x_{19}\\
+      %
+      \color{g12}x_{21} & \color{g12}x_{22} & \color{g12}x_{23} & \color{g12}x_{24} & \color{g12}x_{25} & \color{g12}x_{26} & \color{g12}x_{27} & \color{g12}x_{28} & \color{g12}x_{29}\\
+      %
+      \color{g12}x_{31} & \color{g12}x_{32} & \color{g12}x_{33} & \color{g12}x_{34} & \color{g12}x_{35} & \color{g12}x_{36} & \color{g12}x_{37} & \color{g12}x_{38} & \color{g12}x_{39}\\
+      %
+      \color{g12}x_{41} & \color{g12}x_{42} & \color{g12}x_{43} & \color{g12}x_{44} & \color{g12}x_{45} & \color{g12}x_{46} & \color{g12}x_{47} & \color{g12}x_{48} & \color{g12}x_{49}\\\hline
+      %%%%
+      \color{g13}x_{51} & \color{g13}x_{52} & \color{g13}x_{53} & \color{g13}x_{54} & \color{g13}x_{55} & \color{g13}x_{56} & \color{g13}x_{57} & \color{g13}x_{58} & \color{g13}x_{59}\\
+      %
+      \color{g13}x_{61} & \color{g13}x_{62} & \color{g13}x_{63} & \color{g13}x_{64} & \color{g13}x_{65} & \color{g13}x_{66} & \color{g13}x_{67} & \color{g13}x_{68} & \color{g13}x_{69}\\\hline
+      %%%%
+      \color{g21}x_{71} & \color{g21}x_{72} & \color{g21}x_{73} & \color{g21}x_{74} & \color{g21}x_{75} & \color{g21}x_{76} & \color{g21}x_{77} & \color{g21}x_{78} & \color{g21}x_{79}\\\hline\\\hline
+      %%%%
+      \color{g23}x_{81} & \color{g23}x_{82} & \color{g23}x_{83} & \color{g23}x_{84} & \color{g23}x_{85} & \color{g23}x_{86} & \color{g23}x_{87} & \color{g23}x_{88} & \color{g23}x_{89}\\
+      %
+      \color{g23}x_{91} & \color{g23}x_{92} & \color{g23}x_{93} & \color{g23}x_{94} & \color{g23}x_{95} & \color{g23}x_{96} & \color{g23}x_{97} & \color{g23}x_{98} & \color{g23}x_{99}\\
+      \end{array}
+\right]_{9\times 9}
+\end{align*}
+With local storage view:
+\begin{align*}
+\left[\begin{array}{lllllllll}
+      &&&&&&&&\hspace{4.87cm} 
+\end{array}\right]_{0\times 9}
+\\
+\left[\begin{array}{lllllllll}
+      \color{g12}x_{11} & \color{g12}x_{12} & \color{g12}x_{13} & \color{g12}x_{14} & \color{g12}x_{15} & \color{g12}x_{16} & \color{g12}x_{17} & \color{g12}x_{18} & \color{g12}x_{19}\\
+      %
+      \color{g12}x_{21} & \color{g12}x_{22} & \color{g12}x_{23} & \color{g12}x_{24} & \color{g12}x_{25} & \color{g12}x_{26} & \color{g12}x_{27} & \color{g12}x_{28} & \color{g12}x_{29}\\
+      %
+      \color{g12}x_{31} & \color{g12}x_{32} & \color{g12}x_{33} & \color{g12}x_{34} & \color{g12}x_{35} & \color{g12}x_{36} & \color{g12}x_{37} & \color{g12}x_{38} & \color{g12}x_{39}\\
+      %
+      \color{g12}x_{41} & \color{g12}x_{42} & \color{g12}x_{43} & \color{g12}x_{44} & \color{g12}x_{45} & \color{g12}x_{46} & \color{g12}x_{47} & \color{g12}x_{48} & \color{g12}x_{49}\\
+\end{array}\right]_{4\times 9}
+\\
+\left[\begin{array}{lllllllll}
+      \color{g13}x_{51} & \color{g13}x_{52} & \color{g13}x_{53} & \color{g13}x_{54} & \color{g13}x_{55} & \color{g13}x_{56} & \color{g13}x_{57} & \color{g13}x_{58} & \color{g13}x_{59}\\
+      %
+      \color{g13}x_{61} & \color{g13}x_{62} & \color{g13}x_{63} & \color{g13}x_{64} & \color{g13}x_{65} & \color{g13}x_{66} & \color{g13}x_{67} & \color{g13}x_{68} & \color{g13}x_{69}\\
+\end{array}\right]_{2\times 9}
+\\
+\left[\begin{array}{lllllllll}
+      \color{g21}x_{71} & \color{g21}x_{72} & \color{g21}x_{73} & \color{g21}x_{74} & \color{g21}x_{75} & \color{g21}x_{76} & \color{g21}x_{77} & \color{g21}x_{78} & \color{g21}x_{79}
+\end{array}\right]_{1\times 9}
+\\
+\left[\begin{array}{lllllllll}
+    &&&&&&&&\hspace{4.87cm} 
+\end{array}\right]_{0\times 9}
+\\
+\left[\begin{array}{lllllllll}
+      \color{g23}x_{81} & \color{g23}x_{82} & \color{g23}x_{83} & \color{g23}x_{84} & \color{g23}x_{85} & \color{g23}x_{86} & \color{g23}x_{87} & \color{g23}x_{88} & \color{g23}x_{89}\\
+      \color{g23}x_{91} & \color{g23}x_{92} & \color{g23}x_{93} & \color{g23}x_{94} & \color{g23}x_{95} & \color{g23}x_{96} & \color{g23}x_{97} & \color{g23}x_{98} & \color{g23}x_{99}\\
+\end{array}\right]_{2\times 9}
+\end{align*}
+
+Generally, we would recommend using a load balanced approach over this bizarre distribution, although some problems may call for very strange data distributions.
+
+With our first of two cumbersome data structures out of the way, we can proceed to much more interesting content: actually using MPI.
+
+
+
 
 
 \section{Common MPI Operations}
@@ -337,8 +501,8 @@ demo.timer <- function(timed)
 \label{sec:mpi_for_the_r_user_exercise}
 
 \begin{enumerate}[label=\thechapter-\arabic*]
-\item
-In \pkg{pbdMPI}, there is a parallel sorting function called
+\item Write a function that will take 
+\item In \pkg{pbdMPI}, there is a parallel sorting function called
 \code{comm.sort()} which is similar to the usual \code{sort()} of \proglang{R}.
 Implement parallel equivalents to the usual \code{order()} and \code{rank()}
 of \proglang{R}.
