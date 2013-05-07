@@ -229,6 +229,8 @@ meant to be a demonstration of its scalability prowess.  The \code{iris} dataset
 \subsection{{\it Iris} in Serial Code and Sample Outputs}
 
 \subsubsection{Code}
+The code here is fairly self-explanatory and well-documented besides, so no additional commentary is provided.
+
 \textbf{Step 1:}  PCA\vspace{-.6cm}
 \begin{lstlisting}[language=rr]
 ### Load data
@@ -358,12 +360,288 @@ Finally, figure~\ref{fig:iris_cluster_serial}
 shows the visualization created by this script.
 
 
+
+
+
+
+
+
 \subsection{{\it Iris} in SPMD Code}
+
+\subsubsection{Code}
+
+
+
+\textbf{Step 1:}  PCA\vspace{-.6cm}
+\begin{lstlisting}[language=rr]
+library(pbdMPI, quiet = TRUE)              # Load library
+if(comm.size() != 4)
+  comm.stop("4 processors are required.")
+
+### Load data
+X <- as.matrix(iris[, -5])                 # Dimension 150 by 4
+X.cid <- as.numeric(iris[, 5])             # True id
+
+### Distribute data
+jid <- get.jid(nrow(X))
+X.spmd <- X[jid,]                          # SPMD row-major format
+
+### Standardize
+N <- allreduce(nrow(X.spmd))               # 150
+p <- ncol(X.spmd)                          # 4
+mu <- allreduce(colSums(X.spmd / N))
+X.std <- sweep(X.spmd, 2, mu, FUN = "-")   # Substract mean
+std <- sqrt(allreduce(colSums(X.std^2 / (N - 1))))
+X.std <- sweep(X.std, 2, std, FUN = "/")   # Divide by SE
+
+### SVD manually in serial
+X.tmp <- crossprod(X.std)                  # X'X (local)
+X.tmp <- allreduce(X.tmp)
+dim(X.tmp) <- c(p, p)
+ret <- eigen(X.tmp)                        # X'X = V D^2 V'
+d <- sqrt(ret$values)
+v <- ret$vectors
+u <- X.std %*% v %*% diag(1/d)                        
+\end{lstlisting}
+
+\textbf{Step 2:}  Project onto the first two PC's\vspace{-.6cm}
+\begin{lstlisting}[language=rr]
+### Project on column space of singular vectors
+A <- u %*% diag(d)
+B <- X.std %*% v                           # A ~ B 
+X.prj <- A[, 1:2]                          # Only useful for plot
+X.prj <- do.call("rbind", allgather(X.prj))
+\end{lstlisting}
+
+\textbf{Step 3:}  Cluster\vspace{-.6cm}
+\begin{lstlisting}[language=rr]
+### Clustering
+library(pmclust, quiet = TRUE)
+comm.set.seed(123, diff = TRUE)
+
+X.spmd <- X.std
+PARAM.org <- set.global(K = 3)             # Preset storage
+.pmclustEnv$CONTROL$debug <- 0             # Disable debug messages
+PARAM.org <- initial.center(PARAM.org)     # Initial parameters
+PARAM.kms <- kmeans.step(PARAM.org)        # K-means
+X.kms.cid <- allgather(.pmclustEnv$CLASS.spmd,
+                       unlist = TRUE)
+
+PARAM.org <- set.global(K = 3)             # Preset storage
+.pmclustEnv$CONTROL$debug <- 0             # Disable debug messages
+PARAM.org <- initial.em(PARAM.org,
+                        MU = PARAM.kms$MU) # Initial by K-means
+PARAM.mbc1 <- em.step(PARAM.org)           # Model-based clustering
+X.mbc1.cid <- allgather(.pmclustEnv$CLASS.spmd,
+                        unlist = TRUE)
+
+PARAM.org <- set.global(K = 3, RndEM.iter = 1000)     # Preset storage
+.pmclustEnv$CONTROL$debug <- 0             # Disable debug messages
+PARAM.org <- initial.RndEM(PARAM.org)      # Initial by Rand-EM
+PARAM.mbc2 <- em.step(PARAM.org)           # Model-based clustering
+X.mbc2.cid <- allgather(.pmclustEnv$CLASS.spmd,
+                        unlist = TRUE)
+
+### Validation
+X.kms.adjR <- EMCluster::RRand(X.cid, X.kms.cid)$adjRand
+X.mbc1.adjR <- EMCluster::RRand(X.cid, X.mbc1.cid)$adjRand
+X.mbc2.adjR <- EMCluster::RRand(X.cid, X.mbc2.cid)$adjRand
+comm.print(c(X.kms.adjR, X.mbc1.adjR, X.mbc2.adjR))
+
+### Swap classification id
+tmp <- X.kms.cid
+X.kms.cid[tmp == 1] <- 2
+X.kms.cid[tmp == 2] <- 1
+tmp <- X.mbc1.cid
+X.mbc1.cid[tmp == 1] <- 2
+X.mbc1.cid[tmp == 2] <- 1
+\end{lstlisting}
+
+\textbf{Step 4:}  Visualize\vspace{-.6cm}
+\begin{lstlisting}[language=rr]
+### Display on first 2 components
+if(comm.rank() == 0){
+  pdf("spmd_plot.pdf")
+  
+  par(mfrow = c(2, 2))
+  plot(X.prj, col = X.cid + 1, pch = X.cid,
+       main = "iris (true)", xlab = "PC1", ylab = "PC2")
+  plot(X.prj, col = X.kms.cid + 1, pch = X.kms.cid,
+       main = paste("iris (kmeans)", sprintf("%.4f", X.kms.adjR)),
+       xlab = "PC1", ylab = "PC2")
+  plot(X.prj, col = X.mbc1.cid + 1, pch = X.mbc1.cid,
+       main = paste("iris (model-based 1)", sprintf("%.4f", X.mbc1.adjR)),
+       xlab = "PC1", ylab = "PC2")
+  plot(X.prj, col = X.mbc2.cid + 1, pch = X.mbc2.cid,
+       main = paste("iris (model-based 2)", sprintf("%.4f", X.mbc2.adjR)),
+       xlab = "PC1", ylab = "PC2")
+
+  dev.off()
+}
+
+### Finish
+finalize()
+\end{lstlisting}
+
+\subsubsection{Sample Outputs}
+Running this script should produce an ouput that looks something like the following:
+\begin{Output}
+COMM.RANK = 0
+[1] 2.547376e-14 8.076873e-15 4.440892e-14
+COMM.RANK = 0
+[1] 0.6201352 0.6311581 0.6928082
+null device 
+          1 
+\end{Output}
+
+Finally, figure~\ref{fig:iris_cluster_spmd}
+\begin{figure}[h!bt]
+  \centering
+  \includegraphics[width=4in]{pbdDEMO-include/pics/spmd_plot.pdf}
+  \caption{Iris Clustering Plots --- SPMD}
+  \label{fig:iris_cluster_spmd}
+\end{figure}
+shows the visualization created by this script.
+
+
+
+
+
+
+
+
+
 
 
 
 
 \subsection{{\it Iris} in \code{ddmatrix}\ Code}
+
+\subsubsection{Code}
+
+
+
+\textbf{Step 1:}  PCA\vspace{-.6cm}
+\begin{lstlisting}[language=rr]
+library(pbdDMAT, quiet = TRUE)                        # Load library
+init.grid()
+if(comm.size() != 4)
+  comm.stop("4 processors are required.")
+
+### Load data
+X <- as.matrix(iris[, -5])                            # Dimension 150 by 4
+X.cid <- as.numeric(iris[, 5])                        # True id
+
+### Convert to ddmatrix
+X.dmat <- as.ddmatrix(X)
+
+### Standardized
+X.std <- scale(X.dmat)
+mu <- as.matrix(colMeans(X.std))
+cov <- as.matrix(cov(X.std))
+comm.print(mu)
+comm.print(cov)
+
+### SVD
+X.svd <- svd(X.std)                  
+\end{lstlisting}
+
+\textbf{Step 2:}  Project onto the first two PC's\vspace{-.6cm}
+\begin{lstlisting}[language=rr]
+### Project on column space of singular vectors
+A <- X.svd$u %*% diag(X.svd$d, type="ddmatrix")
+B <- X.std %*% X.svd$v                                # A ~ B
+X.prj <- as.matrix(A[, 1:2])                          # Only useful for plot
+\end{lstlisting}
+
+\textbf{Step 3:}  Cluster\vspace{-.6cm}
+\begin{lstlisting}[language=rr]
+### Clustering
+library(pmclust, quiet = TRUE)
+comm.set.seed(123, diff = TRUE)
+
+X.dmat <- X.std
+PARAM.org <- set.global.dmat(K = 3)                   # Preset storage
+.pmclustEnv$CONTROL$debug <- 0                        # Disable debug messages
+PARAM.org <- initial.center.dmat(PARAM.org)
+PARAM.kms <- kmeans.step.dmat(PARAM.org)              # K-means
+X.kms.cid <- as.vector(.pmclustEnv$CLASS.dmat)
+
+### Validation
+X.kms.adjR <- EMCluster::RRand(X.cid, X.kms.cid)$adjRand
+comm.print(X.kms.adjR)
+
+### Swap classification id
+tmp <- X.kms.cid
+X.kms.cid[tmp == 1] <- 3
+X.kms.cid[tmp == 2] <- 1
+X.kms.cid[tmp == 3] <- 2
+\end{lstlisting}
+
+\textbf{Step 4:}  Visualize\vspace{-.6cm}
+\begin{lstlisting}[language=rr]
+### Display on first 2 components
+if(comm.rank() == 0){
+  pdf("dmat_plot.pdf")
+  
+  par(mfrow = c(2, 2))
+  plot(X.prj, col = X.cid + 1, pch = X.cid,
+       main = "iris (true)", xlab = "PC1", ylab = "PC2")
+  plot(X.prj, col = X.kms.cid + 1, pch = X.kms.cid,
+       main = paste("iris (kmeans)", sprintf("%.4f", X.kms.adjR)),
+       xlab = "PC1", ylab = "PC2")
+  dev.off()
+}
+
+### Finish
+finalize()
+\end{lstlisting}
+
+\subsubsection{Sample Outputs}
+Running this script should produce an ouput that looks something like the following:
+\begin{Output}
+Using 2x2 for the default grid size
+
+COMM.RANK = 0
+              [,1]         [,2]          [,3]         [,4]
+[1,] -4.440892e-16 1.990595e-16 -2.428613e-17 2.498002e-16
+COMM.RANK = 0
+           [,1]       [,2]       [,3]       [,4]
+[1,]  1.0000000 -0.1175698  0.8717538  0.8179411
+[2,] -0.1175698  1.0000000 -0.4284401 -0.3661259
+[3,]  0.8717538 -0.4284401  1.0000000  0.9628654
+[4,]  0.8179411 -0.3661259  0.9628654  1.0000000
+COMM.RANK = 0
+[1] 0.645147
+
+null device 
+          1 
+\end{Output}
+
+Finally, figure~\ref{fig:iris_cluster_spmd}
+\begin{figure}[h!bt]
+  \centering
+  \includegraphics[width=4in]{pbdDEMO-include/pics/dmat_plot.pdf}
+  \caption{Iris Clustering Plots --- SPMD}
+  \label{fig:iris_cluster_spmd}
+\end{figure}
+shows the visualization created by this script.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
