@@ -100,6 +100,7 @@ Whichever package you choose, whichever your favorite, for the remainder of this
 
 
 \section{The SPMD Data Structure}
+\label{sec:spmdstruct}
 
 This is the boring stuff everyone hates, but like your medicine, it's ultimately better for you to just take it and get it out of the way:  data structures.  In particular, we will be discussing a distributed data structure that, for lack of a better name (and I assure you we tried), we will call the SPMD data structure.  This data structure is more paradigm or philosophy than a rigid data structure like an array or list.  Consider it a set of ``best practices'', or if nothing else, a starting place if you have no idea how to proceed.
 
@@ -501,7 +502,8 @@ demo.timer <- function(timed)
 \label{sec:mpi_for_the_r_user_exercise}
 
 \begin{enumerate}[label=\thechapter-\arabic*]
-\item Write a function that will take 
+\item Write a script that will have each processor randomly take a sample of size 1 of \code{TRUE} and \code{FALSE}.  Have each processor print its result.\label{ex:mpi1}
+\item Modify the script in Exercise~\ref{ex:mpi1} above to determine if any processors sampled \code{TRUE}.  Do the same to determine if all processors sampled \code{TRUE}.  In each case, print the result.  Compare to the functions \code{comm.all()} and \code{comm.any()}.  (Hint:  use \code{allreduce()}).
 \item In \pkg{pbdMPI}, there is a parallel sorting function called
 \code{comm.sort()} which is similar to the usual \code{sort()} of \proglang{R}.
 Implement parallel equivalents to the usual \code{order()} and \code{rank()}

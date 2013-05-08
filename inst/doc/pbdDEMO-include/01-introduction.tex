@@ -6,13 +6,14 @@
 
 The ``Programming with Big Data in R'' project~\citep{pbdR2012} (pbd or pbdR for short) is a project that aims to elevate the statistical programming language \proglang{R}~\citep{Rcore} to leadership-class computing platforms.  The main goal is empower data scientists by bringing flexibility and a big analytics toolbox to big data challenges, with an emphasis on productivity, portability, and performance.  We achieve this in part by mapping high-level programming syntax to portable, high-performance, scalable, parallel libraries.  In short, we make \proglang{R} scalable.
 
-\begin{figure}[t]
+\begin{figure}[h]
  \centering
- \includegraphics[scale=.45]{pbdDEMO-include/pics/pbdR}
- \caption[pbdR Packages]{pbdR Packages and Their Relationships with Scalable Libraries}
+ \includegraphics[scale=.65]{pbdDEMO-include/pics/pbdR.png}
+ \caption{pbdR Packages}
  \label{fig:pbdrpackages}
 \end{figure}
-Figure~\ref{fig:pbdrpackages} shows the current state of pbdR packages and how they utilize high-performance libraries.  More explicitly, the current pbdR packages are:
+
+Figure~\ref{fig:pbdrpackages} shows the current list of pbdR packages released to the CRAN, and how they depend on each other.  More explicitly, the current pbdR packages are:
 
 \begin{itemize}
  \item \pkg{pbdMPI} --- an efficient interface to MPI with a focus on Single Program/Multiple Data (SPMD) parallel programming style.
@@ -22,6 +23,24 @@ Figure~\ref{fig:pbdrpackages} shows the current state of pbdR packages and how t
  \item \pkg{pbdDMAT} --- distributed matrix classes and computational methods, with a focus on linear algebra and statistics.
  \item \pkg{pbdDEMO} --- set of package demonstrations and examples, and this unifying vignette.
 \end{itemize}
+
+To try to make this landscape a bit more clear, one could divide pbdR packages into those meant for users, developers, or something inbetween.  
+\begin{figure}[h]
+ \centering
+ \includegraphics[scale=.55]{pbdDEMO-include/pics/pbdR-packages.png}
+ \caption{pbdR Package Use}
+ \label{fig:pbdrpackages2}
+\end{figure}
+Figure~\ref{fig:pbdrpackages2} shows a gradient scale representation, where more red means the package is more for developers, while more blue means the package is more for users.  For example, \pkg{pbdDEMP} is squarely meant for users of pbdR packages, while \pkg{pbdBASE} and \pkg{pbdSLAP} are really not meant for general use.  The other packages fall somewhere inbetween, having plenty of utility for both camps.
+
+Finally, 
+\begin{figure}[h]
+ \centering
+ \includegraphics[scale=.85]{pbdDEMO-include/pics/libs.png}
+ \caption{pbdR Interface to Foreign Libraries}
+ \label{fig:pbdrlibs}
+\end{figure}
+Figure~\ref{fig:pbdrlibs} shows pbdR relationship to high-performance libraries.
 
 In this vignette, we offer many examples using the above pbdR packages.  Many of the examples are high-level
 applications and may be commonly found in basic Statistics.  The purpose is to show how to reuse the pre-existing functions and utilities of pbdR to create minor extensions which can quickly solve problems in an efficient way.  The reader is encouraged to reuse and repurpose these functions.
@@ -89,17 +108,17 @@ A full list of demos contained in the \pkg{pbdDEMO} package is provided below.  
 
 ### Chapter 4
 # Monte carlo simulation
-mpiexec -np 4 Rscript -e "demo(monte_carlo,package='pbdDMAT',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(monte_carlo, package='pbdDMAT', ask=F, echo=F)"
 # Sample mean and variance
-mpiexec -np 4 Rscript -e "demo(sample_stat,package='pbdDMAT',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(sample_stat, package='pbdDMAT', ask=F, echo=F)"
 # Binning
-mpiexec -np 4 Rscript -e "demo(binning,package='pbdDMAT',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(binning, package='pbdDMAT', ask=F, echo=F)"
 # Quantile
-mpiexec -np 4 Rscript -e "demo(quantile,package='pbdDMAT',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(quantile, package='pbdDMAT', ask=F, echo=F)"
 # OLS
-mpiexec -np 4 Rscript -e "demo(ols,package='pbdDMAT',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(ols, package='pbdDMAT', ask=F, echo=F)"
 # Distributed Logic
-mpiexec -np 4 Rscript -e "demo(comparators,package='pbdDMAT',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(comparators, package='pbdDMAT', ask=F, echo=F)"
 
 		  # ------------------------------ #
 		  # III Distributed Matrix Methods #
@@ -107,18 +126,18 @@ mpiexec -np 4 Rscript -e "demo(comparators,package='pbdDMAT',ask=F,echo=F)"
 
 ### Chapter 5
 # Random matrix generation
-mpiexec -np 4 Rscript -e "demo(randmat_global,package='pbdDMAT',ask=F,echo=F)"
-mpiexec -np 4 Rscript -e "demo(randmat_local,package='pbdDMAT',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(randmat_global, package='pbdDMAT', ask=F, echo=F)"
+mpiexec -np 4 Rscript -e "demo(randmat_local, package='pbdDMAT', ask=F, echo=F)"
 
 ### Chapter 7
 # Sample statistics revisited
-mpiexec -np 4 Rscript -e "demo(sample_stat_dmat,package='pbdDMAT',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(sample_stat_dmat, package='pbdDMAT', ask=F, echo=F)"
 # Verify solving Ax=b at scale
-mpiexec -np 4 Rscript -e "demo(verify,package='pbdDMAT',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(verify, package='pbdDMAT', ask=F, echo=F)"
 # PCA compression
-mpiexec -np 4 Rscript -e "demo(pca,package='pbdDMAT',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(pca, package='pbdDMAT', ask=F, echo=F)"
 # OLS and predictions
-mpiexec -np 4 Rscript -e "demo(ols_dmat,package='pbdDMAT',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(ols_dmat, package='pbdDMAT', ask=F, echo=F)"
 
 		  # ---------------------------- #
 		  # IV Reading and Managing Data #
@@ -126,25 +145,25 @@ mpiexec -np 4 Rscript -e "demo(ols_dmat,package='pbdDMAT',ask=F,echo=F)"
 
 ### Chapter 8
 # Reading csv
-mpiexec -np 4 Rscript -e "demo(read_csv,package='pbdDMAT',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(read_csv, package='pbdDMAT', ask=F, echo=F)"
 # Reading sql
-mpiexec -np 4 Rscript -e "demo(read_sql,package='pbdDMAT',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(read_sql, package='pbdDMAT', ask=F, echo=F)"
 
 ### Chapter 9
 # Reading and writing parallel NetCDF4
-Rscript -e "demo(trefht,package="pbdDEMO",ask = F,echo = F)"
-mpiexec -np 4 Rscript -e "demo(nc4_serial,package='pbdDEMO',ask=F,echo=F)"
-mpiexec -np 4 Rscript -e "demo(nc4_parallel,package='pbdDEMO',ask=F,echo=F)"
-mpiexec -np 4 Rscript -e "demo(nc4_dmat,package='pbdDEMO',ask=F,echo=F)"
-mpiexec -np 4 Rscript -e "demo(nc4_spmdc,package='pbdDEMO',ask=F,echo=F)"
+Rscript -e "demo(trefht, package="pbdDEMO", ask = F, echo = F)"
+mpiexec -np 4 Rscript -e "demo(nc4_serial, package='pbdDEMO', ask=F, echo=F)"
+mpiexec -np 4 Rscript -e "demo(nc4_parallel, package='pbdDEMO', ask=F, echo=F)"
+mpiexec -np 4 Rscript -e "demo(nc4_dmat, package='pbdDEMO', ask=F, echo=F)"
+mpiexec -np 4 Rscript -e "demo(nc4_spmdc, package='pbdDEMO', ask=F, echo=F)"
 
 ### Chapter 10
 # Loand/unload balance
-mpiexec -np 4 Rscript -e "demo(balance,package='pbdDMAT',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(balance, package='pbdDMAT', ask=F, echo=F)"
 # SPMD to DMAT
-mpiexec -np 4 Rscript -e "demo(spmd_dmat,package='pbdDMAT',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(spmd_dmat, package='pbdDMAT', ask=F, echo=F)"
 # Distributed matrix redistributions
-mpiexec -np 4 Rscript -e "demo(reblock,package='pbdDMAT',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(reblock, package='pbdDMAT', ask=F, echo=F)"
 
 		  # ---------------------------- #
 		  # V Applications               #
@@ -152,7 +171,10 @@ mpiexec -np 4 Rscript -e "demo(reblock,package='pbdDMAT',ask=F,echo=F)"
 
 ### Chapter 11
 # Parallel Model-Based Clustering
-Rscript -e "demo(iris_overlap,package='pbdDEMO',ask=F,echo=F)"
+Rscript -e "demo(iris_overlap, package='pbdDEMO', ask=F, echo=F)"
+Rscript -e "demo(iris_serial, package='pbdDEMO', ask=F, echo=F)"
+Rscript -e "demo(iris_spmd, package='pbdDEMO', ask=F, echo=F)"
+Rscript -e "demo(iris_dmat, package='pbdDEMO', ask=F, echo=F)"
 
 \end{lstlisting}
 
