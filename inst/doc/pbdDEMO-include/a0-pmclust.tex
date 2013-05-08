@@ -228,86 +228,16 @@ meant to be a demonstration of its scalability prowess.  The \code{iris} dataset
 
 \subsection{{\it Iris} in Serial Code and Sample Outputs}
 
-\subsubsection{Code}
-The code here is fairly self-explanatory and well-documented besides, so no additional commentary is provided.
+The demo code for the serial iris example can be found with the package demos, and executed via:
+\begin{Command}
+### At the shell prompt, run the demo with 4 processors by
+### (Use Rscript.exe for windows system)
+mpiexec -np 4 Rscript -e "demo(iris_serial, 'pbdDEMO', ask=F, echo=F)"
+\end{Command}
 
-\textbf{Step 1:}  PCA\vspace{-.6cm}
-\begin{lstlisting}[language=rr]
-### Load data
-X <- as.matrix(iris[, -5])         # Dimension 150 by 4
-X.cid <- as.numeric(iris[, 5])     # True id
+The code is fairly self-explanatory, and well-commented besides, so we will leave it as an exercise to the reader to read through it carefully.
 
-### Transformation and check
-X.std <- scale(X)                  # Standardize
-mu <- colMeans(X.std)              # Columns means are near 0
-cov <- cov(X.std)                  # Diagonals are near 1
-print(mu)
-print(cov)
-
-### SVD
-X.svd <- svd(X.std)
-\end{lstlisting}
-
-\textbf{Step 2:}  Project onto the first two PC's\vspace{-.6cm}
-\begin{lstlisting}[language=rr]
-### Project on column space of singular vectors; three equivalent ways
-A <- X.std %*% diag(X.svd$d)
-B <- X.std %*% X.svd$v
-C <- prcomp(X.std)$x               # A = B = C
-
-X.prj <- C[, 1:2]                  # project onto first 2 PC's
-\end{lstlisting}
-
-\textbf{Step 3:}  Cluster\vspace{-.6cm}
-\begin{lstlisting}[language=rr]
-### Clustering
-set.seed(1234)                     # Set overall seed
-X.kms <- kmeans(X.std, 3)          # K-means
-X.kms
-X.kms.cid <- X.kms$cluster         # Classification
-
-library(EMCluster)                 # Model-based clustering
-X.mbc <- init.EM(X.std, 3)         # Initial by em-EM
-X.mbc
-X.mbc.cid <- X.mbc$class           # Classification
-
-
-### Validation
-# k-means adjusted Rand index
-X.kms.adjR <- RRand(X.cid, X.kms.cid)$adjRand 
-# MBC adjusted Rand index
-X.mbc.adjR <- RRand(X.cid, X.mbc.cid)$adjRand  
-
-
-### Swap classification id
-X.kms.cid[X.kms.cid == 2] <- 4
-X.kms.cid[X.kms.cid == 3] <- 2
-X.kms.cid[X.kms.cid == 4] <- 3
-\end{lstlisting}
-
-\textbf{Step 4:}  Visualize\vspace{-.6cm}
-\begin{lstlisting}[language=rr]
-### Display on first 2 components
-pdf("serial_plot.pdf")
-
-par(mfrow = c(2, 2))
-plot(X.prj, col = X.cid + 1, pch = X.cid,
-     main = "iris (true)", xlab = "PC1", ylab = "PC2")
-plot(X.prj, col = X.kms.cid + 1, pch = X.kms.cid,
-     main = paste("iris (k-Means)", sprintf("%.4f", X.kms.adjR)),
-     xlab = "PC1", ylab = "PC2")
-plot(X.prj, col = X.mbc.cid + 1, pch = X.mbc.cid,
-     main = paste("iris (Model-based)", sprintf("%.4f", X.mbc.adjR)),
-     xlab = "PC1", ylab = "PC2")
-accuracy <- c(X.kms.adjR, X.mbc.adjR)
-names(accuracy) <- c("k-Means", "Model-based")
-barplot(accuracy, main = "Clustering Accuracy")
-
-dev.off()
-\end{lstlisting}
-
-\subsubsection{Sample Outputs}
-Running this script should produce an ouput that looks something like the following:
+Running this demo should produce an ouput that looks something like the following:
 \begin{Output}
  Sepal.Length   Sepal.Width  Petal.Length   Petal.Width 
 -4.480675e-16  2.035409e-16 -2.844947e-17 -3.714621e-17 
@@ -368,120 +298,12 @@ shows the visualization created by this script.
 
 \subsection{{\it Iris} in SPMD Code}
 
-\subsubsection{Code}
-
-
-
-\textbf{Step 1:}  PCA\vspace{-.6cm}
-\begin{lstlisting}[language=rr]
-library(pbdMPI, quiet = TRUE)              # Load library
-if(comm.size() != 4)
-  comm.stop("4 processors are required.")
-
-### Load data
-X <- as.matrix(iris[, -5])                 # Dimension 150 by 4
-X.cid <- as.numeric(iris[, 5])             # True id
-
-### Distribute data
-jid <- get.jid(nrow(X))
-X.spmd <- X[jid,]                          # SPMD row-major format
-
-### Standardize
-N <- allreduce(nrow(X.spmd))               # 150
-p <- ncol(X.spmd)                          # 4
-mu <- allreduce(colSums(X.spmd / N))
-X.std <- sweep(X.spmd, 2, mu, FUN = "-")   # Substract mean
-std <- sqrt(allreduce(colSums(X.std^2 / (N - 1))))
-X.std <- sweep(X.std, 2, std, FUN = "/")   # Divide by SE
-
-### SVD manually in serial
-X.tmp <- crossprod(X.std)                  # X'X (local)
-X.tmp <- allreduce(X.tmp)
-dim(X.tmp) <- c(p, p)
-ret <- eigen(X.tmp)                        # X'X = V D^2 V'
-d <- sqrt(ret$values)
-v <- ret$vectors
-u <- X.std %*% v %*% diag(1/d)                        
-\end{lstlisting}
-
-\textbf{Step 2:}  Project onto the first two PC's\vspace{-.6cm}
-\begin{lstlisting}[language=rr]
-### Project on column space of singular vectors
-A <- u %*% diag(d)
-B <- X.std %*% v                           # A ~ B 
-X.prj <- A[, 1:2]                          # Only useful for plot
-X.prj <- do.call("rbind", allgather(X.prj))
-\end{lstlisting}
-
-\textbf{Step 3:}  Cluster\vspace{-.6cm}
-\begin{lstlisting}[language=rr]
-### Clustering
-library(pmclust, quiet = TRUE)
-comm.set.seed(123, diff = TRUE)
-
-X.spmd <- X.std
-PARAM.org <- set.global(K = 3)             # Preset storage
-.pmclustEnv$CONTROL$debug <- 0             # Disable debug messages
-PARAM.org <- initial.center(PARAM.org)     # Initial parameters
-PARAM.kms <- kmeans.step(PARAM.org)        # K-means
-X.kms.cid <- allgather(.pmclustEnv$CLASS.spmd,
-                       unlist = TRUE)
-
-PARAM.org <- set.global(K = 3)             # Preset storage
-.pmclustEnv$CONTROL$debug <- 0             # Disable debug messages
-PARAM.org <- initial.em(PARAM.org,
-                        MU = PARAM.kms$MU) # Initial by K-means
-PARAM.mbc1 <- em.step(PARAM.org)           # Model-based clustering
-X.mbc1.cid <- allgather(.pmclustEnv$CLASS.spmd,
-                        unlist = TRUE)
-
-PARAM.org <- set.global(K = 3, RndEM.iter = 1000)     # Preset storage
-.pmclustEnv$CONTROL$debug <- 0             # Disable debug messages
-PARAM.org <- initial.RndEM(PARAM.org)      # Initial by Rand-EM
-PARAM.mbc2 <- em.step(PARAM.org)           # Model-based clustering
-X.mbc2.cid <- allgather(.pmclustEnv$CLASS.spmd,
-                        unlist = TRUE)
-
-### Validation
-X.kms.adjR <- EMCluster::RRand(X.cid, X.kms.cid)$adjRand
-X.mbc1.adjR <- EMCluster::RRand(X.cid, X.mbc1.cid)$adjRand
-X.mbc2.adjR <- EMCluster::RRand(X.cid, X.mbc2.cid)$adjRand
-comm.print(c(X.kms.adjR, X.mbc1.adjR, X.mbc2.adjR))
-
-### Swap classification id
-tmp <- X.kms.cid
-X.kms.cid[tmp == 1] <- 2
-X.kms.cid[tmp == 2] <- 1
-tmp <- X.mbc1.cid
-X.mbc1.cid[tmp == 1] <- 2
-X.mbc1.cid[tmp == 2] <- 1
-\end{lstlisting}
-
-\textbf{Step 4:}  Visualize\vspace{-.6cm}
-\begin{lstlisting}[language=rr]
-### Display on first 2 components
-if(comm.rank() == 0){
-  pdf("spmd_plot.pdf")
-  
-  par(mfrow = c(2, 2))
-  plot(X.prj, col = X.cid + 1, pch = X.cid,
-       main = "iris (true)", xlab = "PC1", ylab = "PC2")
-  plot(X.prj, col = X.kms.cid + 1, pch = X.kms.cid,
-       main = paste("iris (kmeans)", sprintf("%.4f", X.kms.adjR)),
-       xlab = "PC1", ylab = "PC2")
-  plot(X.prj, col = X.mbc1.cid + 1, pch = X.mbc1.cid,
-       main = paste("iris (model-based 1)", sprintf("%.4f", X.mbc1.adjR)),
-       xlab = "PC1", ylab = "PC2")
-  plot(X.prj, col = X.mbc2.cid + 1, pch = X.mbc2.cid,
-       main = paste("iris (model-based 2)", sprintf("%.4f", X.mbc2.adjR)),
-       xlab = "PC1", ylab = "PC2")
-
-  dev.off()
-}
-
-### Finish
-finalize()
-\end{lstlisting}
+The demo code for the SPMD iris example can be found with the package demos, and executed via:
+\begin{Command}
+### At the shell prompt, run the demo with 4 processors by
+### (Use Rscript.exe for windows system)
+mpiexec -np 4 Rscript -e "demo(iris_spmd, 'pbdDEMO', ask=F, echo=F)"
+\end{Command}
 
 \subsubsection{Sample Outputs}
 Running this script should produce an ouput that looks something like the following:
@@ -517,85 +339,13 @@ shows the visualization created by this script.
 
 \subsection{{\it Iris} in \code{ddmatrix}\ Code}
 
-\subsubsection{Code}
+The demo code for the DMAT iris example can be found with the package demos, and executed via:
+\begin{Command}
+### At the shell prompt, run the demo with 4 processors by
+### (Use Rscript.exe for windows system)
+mpiexec -np 4 Rscript -e "demo(iris_dmat, 'pbdDEMO', ask=F, echo=F)"
+\end{Command}
 
-
-
-\textbf{Step 1:}  PCA\vspace{-.6cm}
-\begin{lstlisting}[language=rr]
-library(pbdDMAT, quiet = TRUE)                        # Load library
-init.grid()
-if(comm.size() != 4)
-  comm.stop("4 processors are required.")
-
-### Load data
-X <- as.matrix(iris[, -5])                            # Dimension 150 by 4
-X.cid <- as.numeric(iris[, 5])                        # True id
-
-### Convert to ddmatrix
-X.dmat <- as.ddmatrix(X)
-
-### Standardized
-X.std <- scale(X.dmat)
-mu <- as.matrix(colMeans(X.std))
-cov <- as.matrix(cov(X.std))
-comm.print(mu)
-comm.print(cov)
-
-### SVD
-X.svd <- svd(X.std)                  
-\end{lstlisting}
-
-\textbf{Step 2:}  Project onto the first two PC's\vspace{-.6cm}
-\begin{lstlisting}[language=rr]
-### Project on column space of singular vectors
-A <- X.svd$u %*% diag(X.svd$d, type="ddmatrix")
-B <- X.std %*% X.svd$v                                # A ~ B
-X.prj <- as.matrix(A[, 1:2])                          # Only useful for plot
-\end{lstlisting}
-
-\textbf{Step 3:}  Cluster\vspace{-.6cm}
-\begin{lstlisting}[language=rr]
-### Clustering
-library(pmclust, quiet = TRUE)
-comm.set.seed(123, diff = TRUE)
-
-X.dmat <- X.std
-PARAM.org <- set.global.dmat(K = 3)                   # Preset storage
-.pmclustEnv$CONTROL$debug <- 0                        # Disable debug messages
-PARAM.org <- initial.center.dmat(PARAM.org)
-PARAM.kms <- kmeans.step.dmat(PARAM.org)              # K-means
-X.kms.cid <- as.vector(.pmclustEnv$CLASS.dmat)
-
-### Validation
-X.kms.adjR <- EMCluster::RRand(X.cid, X.kms.cid)$adjRand
-comm.print(X.kms.adjR)
-
-### Swap classification id
-tmp <- X.kms.cid
-X.kms.cid[tmp == 1] <- 3
-X.kms.cid[tmp == 2] <- 1
-X.kms.cid[tmp == 3] <- 2
-\end{lstlisting}
-
-\textbf{Step 4:}  Visualize\vspace{-.6cm}
-\begin{lstlisting}[language=rr]
-### Display on first 2 components
-if(comm.rank() == 0){
-  pdf("dmat_plot.pdf")
-  
-  par(mfrow = c(2, 2))
-  plot(X.prj, col = X.cid + 1, pch = X.cid,
-       main = "iris (true)", xlab = "PC1", ylab = "PC2")
-  plot(X.prj, col = X.kms.cid + 1, pch = X.kms.cid,
-       main = paste("iris (kmeans)", sprintf("%.4f", X.kms.adjR)),
-       xlab = "PC1", ylab = "PC2")
-  dev.off()
-}
-
-### Finish
-finalize()
-\end{lstlisting}
 
 \subsubsection{Sample Outputs}
 Running this script should produce an ouput that looks something like the following:

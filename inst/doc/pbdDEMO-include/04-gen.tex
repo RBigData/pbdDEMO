@@ -2,6 +2,350 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
+\chapter{The Distributed Matrix Data Structure}
+
+Before continuing, we must spend some time describing a new distributed data structure.  Let us return to our old friend from Section~\ref{sec:spmdstruct}:\\
+\begin{align*}
+x &= \left[
+      \begin{array}{lllllllll}
+      x_{11} & x_{12} & x_{13} & x_{14} & x_{15} & x_{16} & x_{17} & x	_{18} & x_{19}\\
+      x_{21} & x_{22} & x_{23} & x_{24} & x_{25} & x_{26} & x_{27} & x	_{28} & x_{29}\\
+      x_{31} & x_{32} & x_{33} & x_{34} & x_{35} & x_{36} & x_{37} & x	_{38} & x_{39}\\
+      x_{41} & x_{42} & x_{43} & x_{44} & x_{45} & x_{46} & x_{47} & x	_{48} & x_{49}\\
+      x_{51} & x_{52} & x_{53} & x_{54} & x_{55} & x_{56} & x_{57} & x	_{58} & x_{59}\\
+      x_{61} & x_{62} & x_{63} & x_{64} & x_{65} & x_{66} & x_{67} & x	_{68} & x_{69}\\
+      x_{71} & x_{72} & x_{73} & x_{74} & x_{75} & x_{76} & x_{77} & x	_{78} & x_{79}\\
+      x_{81} & x_{82} & x_{83} & x_{84} & x_{85} & x_{86} & x_{87} & x	_{88} & x_{89}\\
+      x_{91} & x_{92} & x_{93} & x_{94} & x_{95} & x_{96} & x_{97} & x	_{98} & x_{99}
+      \end{array}
+\right]_{9\times 9}
+\end{align*}
+
+but now suppose that our processors form a 2-dimensional grid of size $2\times3$:
+\begin{align*}
+\text{Processors = }
+\left[
+      \begin{array}{lll}
+      \color{g11}0 & \color{g12}1 & \color{g13}2\\
+      \color{g21}3 & \color{g22}4 & \color{g23}5
+      \end{array}
+\right] &= 
+\left[
+      \begin{tabular}{lll}
+      \color{g11}(0,0) & \color{g12}(0,1) & \color{g13}(0,2)\\
+      \color{g21}(1,0) & \color{g22}(1,1) & \color{g23}(1,2)
+      \end{tabular}
+\right]
+\end{align*}
+
+with the usual MPI processor rank on the left, and the corresponding BLACS processor grid position on the right.  But this isn't the only wrinkle.  Not only are we going to distribute our data on a 2-dimensional grid of processors (for very good reasons that are difficult to impart to the reader at this time), we are going to do so in \emph{block-cyclic} fashion.  To do this, we are going to declare a \emph{blocking factor}, which is an ordered pair, describing the decomposition size in each dimension of the matrix we wish to distribute.  The process can be difficult to imagine, so it is perhaps best to proceed with our example.
+
+To distribute this data across our 6 processors in the form of a $2\times 3$ process grid in $2\times 2$ blocks, we go in a ``round robin'' fashion, assigning $2\times 2$ submatrices of the original matrix to the appropriate processor, starting with processor $(0, 0)$.  Then, if possible, we move on to the next $2\times 2$ block of $x$ and give it to processor $(0, 1)$.  We continue in this fashion with $(0,2)$ if necessary, and if there is yet more of $x$ in that row still without ownership, we cycle back to processor $(0,0)$ and start over, continuing in this fashion until there is nothing left to distribute in that row.
+
+After all the data in the first two rows of $x$ has been chopped into 2-column blocks and given to the appropriate process in process-column 1, we then move onto the next 2 rows, proceeding in the same way but now using the second process row from our process grid.  For the next 2 rows, we cycle back to process row 1.  And so on and so forth.
+
+Then distributed across processors, the data will look like:
+\begin{align*}
+x &= \left[
+      \begin{array}{ll|ll|ll|ll|l}
+      \color{g11}x_{11} & \color{g11}x_{12} & \color{g12}x_{13} & \color{g12}x_{14} & \color{g13}x_{15} & \color{g13}x_{16} & \color{g11}x_{17} & \color{g11}x_{18} & \color{g12}x_{19}\\
+      \color{g11}x_{21} & \color{g11}x_{22} & \color{g12}x_{23} & \color{g12}x_{24} & \color{g13}x_{25} & \color{g13}x_{26} & \color{g11}x_{27} & \color{g11}x_{28} & \color{g12}x_{29}\\\hline
+      \color{g21}x_{31} & \color{g21}x_{32} & \color{g22}x_{33} & \color{g22}x_{34} & \color{g23}x_{35} & \color{g23}x_{36} & \color{g21}x_{37} & \color{g21}x_{38} & \color{g22}x_{39}\\
+      \color{g21}x_{41} & \color{g21}x_{42} & \color{g22}x_{43} & \color{g22}x_{44} & \color{g23}x_{45} & \color{g23}x_{46} & \color{g21}x_{47} & \color{g21}x_{48} & \color{g22}x_{49}\\\hline
+      \color{g11}x_{51} & \color{g11}x_{52} & \color{g12}x_{53} & \color{g12}x_{54} & \color{g13}x_{55} & \color{g13}x_{56} & \color{g11}x_{57} & \color{g11}x_{58} & \color{g12}x_{59}\\
+      \color{g11}x_{61} & \color{g11}x_{62} & \color{g12}x_{63} & \color{g12}x_{64} & \color{g13}x_{65} & \color{g13}x_{66} & \color{g11}x_{67} & \color{g11}x_{68} & \color{g12}x_{69}\\\hline
+      \color{g21}x_{71} & \color{g21}x_{72} & \color{g22}x_{73} & \color{g22}x_{74} & \color{g23}x_{75} & \color{g23}x_{76} & \color{g21}x_{77} & \color{g21}x_{78} & \color{g22}x_{79}\\
+      \color{g21}x_{81} & \color{g21}x_{82} & \color{g22}x_{83} & \color{g22}x_{84} & \color{g23}x_{85} & \color{g23}x_{86} & \color{g21}x_{87} & \color{g21}x_{88} & \color{g22}x_{89}\\\hline
+      \color{g11}x_{91} & \color{g11}x_{92} & \color{g12}x_{93} & \color{g12}x_{94} & \color{g13}x_{95} & \color{g13}x_{96} & \color{g11}x_{97} & \color{g11}x_{98} & \color{g12}x_{99}\\
+      \end{array}
+\right]_{9\times 9}
+\end{align*}
+ with local storage:
+\begin{align*}
+\left[
+      \begin{array}{ll|ll}
+      \color{g11}x_{11} & \color{g11}x_{12} & \color{g11}x_{17} & \color{g11}x_{18}\\
+      \color{g11}x_{21} & \color{g11}x_{22} & \color{g11}x_{27} & \color{g11}x_{28}\\\hline
+      \color{g11}x_{51} & \color{g11}x_{52} & \color{g11}x_{57} & \color{g11}x_{58}\\
+      \color{g11}x_{61} & \color{g11}x_{62} & \color{g11}x_{67} & \color{g11}x_{68}\\\hline
+      \color{g11}x_{91} & \color{g11}x_{92} & \color{g11}x_{97} & \color{g11}x_{98}\\
+      \end{array}
+\right]_{5\times 4}
+\left[
+      \begin{array}{ll|l}
+      \color{g12}x_{13} & \color{g12}x_{14} & \color{g12}x_{19}\\
+      \color{g12}x_{23} & \color{g12}x_{24} & \color{g12}x_{29}\\\hline
+      \color{g12}x_{53} & \color{g12}x_{54} & \color{g12}x_{59}\\
+      \color{g12}x_{63} & \color{g12}x_{64} & \color{g12}x_{69}\\\hline
+      \color{g12}x_{93} & \color{g12}x_{94} & \color{g12}x_{99}\\
+      \end{array}
+\right]_{5\times 3}
+\left[
+      \begin{array}{ll}
+      \color{g13}x_{15} & \color{g13}x_{16}\\
+      \color{g13}x_{25} & \color{g13}x_{26}\\\hline
+      \color{g13}x_{55} & \color{g13}x_{56}\\
+      \color{g13}x_{65} & \color{g13}x_{66}\\\hline
+      \color{g13}x_{95} & \color{g13}x_{96}\\
+      \end{array}
+\right]_{5\times 2}
+\\
+\left[
+      \begin{array}{ll|ll}
+      \color{g21}x_{31} & \color{g21}x_{32} & \color{g21}x_{37} & \color{g21}x_{38}\\
+      \color{g21}x_{41} & \color{g21}x_{42} & \color{g21}x_{47} & \color{g21}x_{48}\\\hline
+      \color{g21}x_{71} & \color{g21}x_{72} & \color{g21}x_{77} & \color{g21}x_{78}\\
+      \color{g21}x_{81} & \color{g21}x_{82} & \color{g21}x_{87} & \color{g21}x_{88}\\
+      \end{array}
+\right]_{4\times 4}
+\left[
+      \begin{array}{ll|l}
+      \color{g22}x_{33} & \color{g22}x_{34} & \color{g22}x_{39}\\
+      \color{g22}x_{43} & \color{g22}x_{44} & \color{g22}x_{49}\\\hline
+      \color{g22}x_{73} & \color{g22}x_{74} & \color{g22}x_{79}\\
+      \color{g22}x_{83} & \color{g22}x_{84} & \color{g22}x_{89}\\
+      \end{array}
+\right]_{4\times 3}
+\left[
+      \begin{array}{ll}
+      \color{g23}x_{35} & \color{g23}x_{36} \\
+      \color{g23}x_{45} & \color{g23}x_{46} \\\hline
+      \color{g23}x_{75} & \color{g23}x_{76} \\
+      \color{g23}x_{85} & \color{g23}x_{86} \\
+      \end{array}
+\right]_{4\times 2}
+\end{align*}
+
+Especially at first introduction, this can be a very confusing distribution.  However, it is a very robust, useful data structure for certain kinds of linear algebra computations.  This is the data structure of ScaLAPACK, which has more than proven itself in terms of performance.  
+
+You \emph{could} use some more natural data distributions than the above.  However, this may have a substantial impact on performance, depending on the kinds of operations you wish to do.  For things that make extensive use of linear algebra --- particularly matrix factorizations --- you are probably much better off using the above kind of block-cyclic data distribution.  These different processor grid shapes are referred to as \emph{contexts}.  They are actually specialized MPI communicators.  By default, the recommended (easy) way of managing these contexts with \pkg{pbdDMAT} is to call
+\begin{lstlisting}[language=rr]
+library(pbdDMAT, quiet = TRUE)
+init.grid()
+\end{lstlisting}
+The call to \code{init.grid()} will initialize three such contexts, named 0, 1, and 2.  Context 0 is a communicator with processors as close to square as possible, like above.  This can be confusing if you ever need to directly manipulate this data structure, but \pkg{pbdDMAT} contains \emph{numerous} helpler methods to make this process painless, often akin to manipulating an ordinary, non-distributed \proglang{R} data structure.  Context 1 puts the processors in a 1-dimensional grid consisting of 1 row.  Continuing with our example, the processors form the grid:
+\begin{align*}
+\text{Processors = }
+\left[
+      \begin{array}{llllll}
+      \color{g11}0 & \color{g12}1 & \color{g13}2 & \color{g21}3 & \color{g22}4 & \color{g23}5
+      \end{array}
+\right] &= 
+\left[
+      \begin{tabular}{llllll}
+      \color{g11}(0,0) & \color{g12}(0,1) & \color{g13}(0,2) & \color{g21}(0,3) & \color{g22}(0,4) & \color{g23}(0,5)
+      \end{tabular}
+\right]
+\end{align*}
+and if we preserve the $2\times 2$ blocking factor, then the data would be distributed like so:
+\begin{align*}
+x &= \left[
+      \begin{array}{ll|ll|ll|ll|l}
+      \color{g11}x_{11} & \color{g11}x_{12} & \color{g12}x_{13} & \color{g12}x_{14} & \color{g13}x_{15} & \color{g13}x_{16} & \color{g21}x_{17} & \color{g21}x_{18} & \color{g22}x_{19}\\
+      \color{g11}x_{21} & \color{g11}x_{22} & \color{g12}x_{23} & \color{g12}x_{24} & \color{g13}x_{25} & \color{g13}x_{26} & \color{g21}x_{27} & \color{g21}x_{28} & \color{g22}x_{29}\\
+      \color{g11}x_{31} & \color{g11}x_{32} & \color{g12}x_{33} & \color{g12}x_{34} & \color{g13}x_{35} & \color{g13}x_{36} & \color{g21}x_{37} & \color{g21}x_{38} & \color{g22}x_{39}\\
+      \color{g11}x_{41} & \color{g11}x_{42} & \color{g12}x_{43} & \color{g12}x_{44} & \color{g13}x_{45} & \color{g13}x_{46} & \color{g21}x_{47} & \color{g21}x_{48} & \color{g22}x_{49}\\
+      \color{g11}x_{51} & \color{g11}x_{52} & \color{g12}x_{53} & \color{g12}x_{54} & \color{g13}x_{55} & \color{g13}x_{56} & \color{g21}x_{57} & \color{g21}x_{58} & \color{g22}x_{59}\\
+      \color{g11}x_{61} & \color{g11}x_{62} & \color{g12}x_{63} & \color{g12}x_{64} & \color{g13}x_{65} & \color{g13}x_{66} & \color{g21}x_{67} & \color{g21}x_{68} & \color{g22}x_{69}\\
+      \color{g11}x_{71} & \color{g11}x_{72} & \color{g12}x_{73} & \color{g12}x_{74} & \color{g13}x_{75} & \color{g13}x_{76} & \color{g21}x_{77} & \color{g21}x_{78} & \color{g22}x_{79}\\
+      \color{g11}x_{81} & \color{g11}x_{82} & \color{g12}x_{83} & \color{g12}x_{84} & \color{g13}x_{85} & \color{g13}x_{86} & \color{g21}x_{87} & \color{g21}x_{88} & \color{g22}x_{89}\\
+      \color{g11}x_{91} & \color{g11}x_{92} & \color{g12}x_{93} & \color{g12}x_{94} & \color{g13}x_{95} & \color{g13}x_{96} & \color{g21}x_{97} & \color{g21}x_{98} & \color{g22}x_{99}\\
+      \end{array}
+\right]_{9\times 9}
+\end{align*}
+Locally, the data is stored as follows:
+\begin{align*}
+\left[
+      \begin{array}{ll}
+      \color{g11}x_{11} & \color{g11}x_{12} \\
+      \color{g11}x_{21} & \color{g11}x_{22} \\
+      \color{g11}x_{31} & \color{g11}x_{32} \\
+      \color{g11}x_{41} & \color{g11}x_{42} \\
+      \color{g11}x_{51} & \color{g11}x_{52} \\
+      \color{g11}x_{61} & \color{g11}x_{62} \\
+      \color{g11}x_{71} & \color{g11}x_{72} \\
+      \color{g11}x_{81} & \color{g11}x_{82} \\
+      \color{g11}x_{91} & \color{g11}x_{92} 
+      \end{array}
+\right]_{9\times 2}
+\left[
+      \begin{array}{ll}
+      \color{g12}x_{13}  &  \color{g12}x_{14} \\
+      \color{g12}x_{23}  &  \color{g12}x_{24} \\
+      \color{g12}x_{33}  &  \color{g12}x_{34} \\
+      \color{g12}x_{43}  &  \color{g12}x_{44} \\
+      \color{g12}x_{53}  &  \color{g12}x_{54} \\
+      \color{g12}x_{63}  &  \color{g12}x_{64} \\
+      \color{g12}x_{73}  &  \color{g12}x_{74} \\
+      \color{g12}x_{83}  &  \color{g12}x_{84} \\
+      \color{g12}x_{93}  &  \color{g12}x_{94} 
+      \end{array}
+\right]_{9\times 2}
+\left[
+      \begin{array}{ll}
+      \color{g13}x_{15}  &  \color{g13}x_{16} \\
+      \color{g13}x_{25}  &  \color{g13}x_{26} \\
+      \color{g13}x_{35}  &  \color{g13}x_{36} \\
+      \color{g13}x_{45}  &  \color{g13}x_{46} \\
+      \color{g13}x_{55}  &  \color{g13}x_{56} \\
+      \color{g13}x_{65}  &  \color{g13}x_{66} \\
+      \color{g13}x_{75}  &  \color{g13}x_{76} \\
+      \color{g13}x_{85}  &  \color{g13}x_{86} \\
+      \color{g13}x_{95}  &  \color{g13}x_{96} 
+      \end{array}
+\right]_{9\times 2}
+\left[
+      \begin{array}{ll}
+      \color{g21}x_{17}  &  \color{g21}x_{18} \\
+      \color{g21}x_{27}  &  \color{g21}x_{28} \\
+      \color{g21}x_{37}  &  \color{g21}x_{38} \\
+      \color{g21}x_{47}  &  \color{g21}x_{48} \\
+      \color{g21}x_{57}  &  \color{g21}x_{58} \\
+      \color{g21}x_{67}  &  \color{g21}x_{68} \\
+      \color{g21}x_{77}  &  \color{g21}x_{78} \\
+      \color{g21}x_{87}  &  \color{g21}x_{88} \\
+      \color{g21}x_{97}  &  \color{g21}x_{98} 
+      \end{array}
+\right]_{9\times 2}
+\left[
+      \begin{array}{ll}
+      \color{g22}x_{19}\\
+      \color{g22}x_{29}\\
+      \color{g22}x_{39}\\
+      \color{g22}x_{49}\\
+      \color{g22}x_{59}\\
+      \color{g22}x_{69}\\
+      \color{g22}x_{79}\\
+      \color{g22}x_{89}\\
+      \color{g22}x_{99}\\
+      \end{array}
+\right]_{9\times 1}
+\left[
+      \begin{array}{ll}
+      &\\
+      &\\
+      &\\
+      &\\
+      &\\
+      &\\
+      &\\
+      &\\
+      &
+      \end{array}
+\right]_{0\times 1}
+\end{align*}
+
+Here, the first dimension of the blocking factor is irrelevant.  All processors own either some part of \emph{all} rows, or they own nothing at all.  So the above would be the exact same data distribution if we had a blocking factor of $100\times 2$ or $2\times 2$.  However, the decomposition is still block-cyclic; here we use up everything before needing to cycle, based on our choice of blocking factor.  If we instead chose a $1\times 1$ blocking, then the data would be distributed like so:
+
+\begin{align*}
+x &= \left[
+      \begin{array}{l|l|l|l|l|l|l|l|l}
+      \color{g11}x_{11} & \color{g12}x_{12} & \color{g13}x_{13} & \color{g21}x_{14} & \color{g22}x_{15} & \color{g23}x_{16} & \color{g11}x_{17} & \color{g12}x_{18} & \color{g13}x_{19}\\
+      \color{g11}x_{21} & \color{g12}x_{22} & \color{g13}x_{23} & \color{g21}x_{24} & \color{g22}x_{25} & \color{g23}x_{26} & \color{g11}x_{27} & \color{g12}x_{28} & \color{g13}x_{29}\\
+      \color{g11}x_{31} & \color{g12}x_{32} & \color{g13}x_{33} & \color{g21}x_{34} & \color{g22}x_{35} & \color{g23}x_{36} & \color{g11}x_{37} & \color{g12}x_{38} & \color{g13}x_{39}\\
+      \color{g11}x_{41} & \color{g12}x_{42} & \color{g13}x_{43} & \color{g21}x_{44} & \color{g22}x_{45} & \color{g23}x_{46} & \color{g11}x_{47} & \color{g12}x_{48} & \color{g13}x_{49}\\
+      \color{g11}x_{51} & \color{g12}x_{52} & \color{g13}x_{53} & \color{g21}x_{54} & \color{g22}x_{55} & \color{g23}x_{56} & \color{g11}x_{57} & \color{g12}x_{58} & \color{g13}x_{59}\\
+      \color{g11}x_{61} & \color{g12}x_{62} & \color{g13}x_{63} & \color{g21}x_{64} & \color{g22}x_{65} & \color{g23}x_{66} & \color{g11}x_{67} & \color{g12}x_{68} & \color{g13}x_{69}\\
+      \color{g11}x_{71} & \color{g12}x_{72} & \color{g13}x_{73} & \color{g21}x_{74} & \color{g22}x_{75} & \color{g23}x_{76} & \color{g11}x_{77} & \color{g12}x_{78} & \color{g13}x_{79}\\
+      \color{g11}x_{81} & \color{g12}x_{82} & \color{g13}x_{83} & \color{g21}x_{84} & \color{g22}x_{85} & \color{g23}x_{86} & \color{g11}x_{87} & \color{g12}x_{88} & \color{g13}x_{89}\\
+      \color{g11}x_{91} & \color{g12}x_{92} & \color{g13}x_{93} & \color{g21}x_{94} & \color{g22}x_{95} & \color{g23}x_{96} & \color{g11}x_{97} & \color{g12}x_{98} & \color{g13}x_{99}\\
+      \end{array}
+\right]_{9\times 9}
+\end{align*}
+
+Finally, there is context 2.  This is deceivingly similar to the SPMD data structure, but the two are, in general, not comparable.  This context puts the processors in a 1-dimensional grid consisting of one column (note the transpose):
+\begin{align*}
+\text{Processors = }
+\left[
+      \begin{array}{llllll}
+      \color{g11}0 & \color{g12}1 & \color{g13}2 & \color{g21}3 & \color{g22}4 & \color{g23}5
+      \end{array}
+\right]^T &= 
+\left[
+      \begin{tabular}{llllll}
+      \color{g11}(0,0) & \color{g12}(1,0) & \color{g13}(2,0) & \color{g21}(3,0) & \color{g22}(4,0) & \color{g23}(5,0)
+      \end{tabular}
+\right]^T
+\end{align*}
+So here, the data would be decomposed as:
+\begin{align*}
+x &= \left[
+      \begin{array}{lllllllll}
+      \color{g11}x_{11} & \color{g11}x_{12} & \color{g11}x_{13} & \color{g11}x_{14} & \color{g11}x_{15} & \color{g11}x_{16} & \color{g11}x_{17} & \color{g11}x_{18} & \color{g11}x_{19}\\
+      \color{g11}x_{21} & \color{g11}x_{22} & \color{g11}x_{23} & \color{g11}x_{24} & \color{g11}x_{25} & \color{g11}x_{26} & \color{g11}x_{27} & \color{g11}x_{28} & \color{g11}x_{29}\\\hline
+      \color{g12}x_{31} & \color{g12}x_{32} & \color{g12}x_{33} & \color{g12}x_{34} & \color{g12}x_{35} & \color{g12}x_{36} & \color{g12}x_{37} & \color{g12}x_{38} & \color{g12}x_{39}\\
+      \color{g12}x_{41} & \color{g12}x_{42} & \color{g12}x_{43} & \color{g12}x_{44} & \color{g12}x_{45} & \color{g12}x_{46} & \color{g12}x_{47} & \color{g12}x_{48} & \color{g12}x_{49}\\\hline
+      \color{g13}x_{51} & \color{g13}x_{52} & \color{g13}x_{53} & \color{g13}x_{54} & \color{g13}x_{55} & \color{g13}x_{56} & \color{g13}x_{57} & \color{g13}x_{58} & \color{g13}x_{59}\\
+      \color{g13}x_{61} & \color{g13}x_{62} & \color{g13}x_{63} & \color{g13}x_{64} & \color{g13}x_{65} & \color{g13}x_{66} & \color{g13}x_{67} & \color{g13}x_{68} & \color{g13}x_{69}\\\hline
+      \color{g21}x_{71} & \color{g21}x_{72} & \color{g21}x_{73} & \color{g21}x_{74} & \color{g21}x_{75} & \color{g21}x_{76} & \color{g21}x_{77} & \color{g21}x_{78} & \color{g21}x_{79}\\
+      \color{g21}x_{81} & \color{g21}x_{82} & \color{g21}x_{83} & \color{g21}x_{84} & \color{g21}x_{85} & \color{g21}x_{86} & \color{g21}x_{87} & \color{g21}x_{88} & \color{g21}x_{89}\\\hline
+      \color{g22}x_{91} & \color{g22}x_{92} & \color{g22}x_{93} & \color{g22}x_{94} & \color{g22}x_{95} & \color{g22}x_{96} & \color{g22}x_{97} & \color{g22}x_{98} & \color{g22}x_{99}\\
+      \end{array}
+\right]_{9\times 9}
+\end{align*}
+ with local storage view:
+\begin{align*}
+\left[
+      \begin{array}{lllllllll}
+      \color{g11}x_{11} & \color{g11}x_{12} & \color{g11}x_{13} & \color{g11}x_{14} & \color{g11}x_{15} & \color{g11}x_{16} & \color{g11}x_{17} & \color{g11}x_{18} & \color{g11}x_{19}\\
+      \color{g11}x_{21} & \color{g11}x_{22} & \color{g11}x_{23} & \color{g11}x_{24} & \color{g11}x_{25} & \color{g11}x_{26} & \color{g11}x_{27} & \color{g11}x_{28} & \color{g11}x_{29}
+      \end{array}
+\right]_{2\times 9}
+\\
+\left[
+      \begin{array}{lllllllll}
+      \color{g12}x_{31} & \color{g12}x_{32} & \color{g12}x_{33} & \color{g12}x_{34} & \color{g12}x_{35} & \color{g12}x_{36} & \color{g12}x_{37} & \color{g12}x_{38} & \color{g12}x_{39}\\
+      \color{g12}x_{41} & \color{g12}x_{42} & \color{g12}x_{43} & \color{g12}x_{44} & \color{g12}x_{45} & \color{g12}x_{46} & \color{g12}x_{47} & \color{g12}x_{48} & \color{g12}x_{49}
+      \end{array}
+\right]_{2\times 9}
+\\
+\left[
+      \begin{array}{lllllllll}
+      \color{g13}x_{51} & \color{g13}x_{52} & \color{g13}x_{53} & \color{g13}x_{54} & \color{g13}x_{55} & \color{g13}x_{56} & \color{g13}x_{57} & \color{g13}x_{58} & \color{g13}x_{59}\\
+      \color{g13}x_{61} & \color{g13}x_{62} & \color{g13}x_{63} & \color{g13}x_{64} & \color{g13}x_{65} & \color{g13}x_{66} & \color{g13}x_{67} & \color{g13}x_{68} & \color{g13}x_{69}
+      \end{array}
+\right]_{9\times 2}
+\\
+\left[
+      \begin{array}{lllllllll}
+      \color{g21}x_{71} & \color{g21}x_{72} & \color{g21}x_{73} & \color{g21}x_{74} & \color{g21}x_{75} & \color{g21}x_{76} & \color{g21}x_{77} & \color{g21}x_{78} & \color{g21}x_{79}\\
+      \color{g21}x_{81} & \color{g21}x_{82} & \color{g21}x_{83} & \color{g21}x_{84} & \color{g21}x_{85} & \color{g21}x_{86} & \color{g21}x_{87} & \color{g21}x_{88} & \color{g21}x_{89}
+      \end{array}
+\right]_{9\times 2}
+\\
+\left[
+      \begin{array}{lllllllll}
+      \color{g22}x_{91} & \color{g22}x_{92} & \color{g22}x_{93} & \color{g22}x_{94} & \color{g22}x_{95} & \color{g22}x_{96} & \color{g22}x_{97} & \color{g22}x_{98} & \color{g22}x_{99}\\
+      \end{array}
+\right]_{9\times 1}
+\\
+\left[
+      \begin{array}{l}
+      \hspace{7.65cm}
+      \end{array}
+\right]_{1\times 0}
+\end{align*}
+
+
+So to summarize this data structure:
+\begin{enumerate}
+  \item \code{DMAT} is \emph{distributed}.  No one processor owns all of the matrix. \label{enum:dmat1}
+  \item \code{DMAT} is \emph{non-overlapping}. Any piece owned by one processor is owned by no other processors.\label{enum:dmat2} \item \code{DMAT} can be row-contiguous or not, depending on the blocking factor used.
+  \item \code{DMAT} is locally column-major and globally, it depends\dots
+  \item \code{DMAT} is confusing, but very robust and useful for matrix algebra (and thus most non-trivial statistics).
+\end{enumerate}
+
+The only items in common between SPMD and DMAT are items \ref{enum:dmat1} and \ref{enum:dmat2}.  A full characterization can be given as follows.  Let $X$ be a distributed matrix with $n$ (global) rows and $p$ (global) columns.  Suppose we distribute this matrix onto a set of $nprocs$ processors in context 2 using a blocking factor $b=(b_1, b_2)$.  Then SPMD is a generalization of DMAT \emph{if and only if} we have $b_1 > \frac{n}{nprocs}$.  Otherwise, there is no relationship between these two structures (and converting between them is difficult).
+
+In the sections to follow, we offer numerous examples utilizing this data structure.  The dedicated reader can find more information about these contexts and utilizing the DMAT data structure, see the \pkg{pbdBASE}~\citep{Schmidt2012pbdBASEvignette} and \pkg{pbdDMAT}~\citep{Schmidt2012pbdDMATvignette} vignettes.  Additionally, you can experiment more with different kinds of block-cyclic data distributions on 2-dimensional processor grids using \href{http://acts.nersc.gov/scalapack/hands-on/datadist.html}{this very useful website}.
+
+
+
+
+%%% ----------------------------------------------------------------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 \chapter{Constructing Distributed Matrices}
 
 The \pkg{pbdBASE} and \pkg{pbdDMAT} packages offer a distributed matrix class, \code{ddmatrix}, as well as a collection of high-level methods for performing common matrix operations.  For example, if you want to compute the mean of an \proglang{R} matrix \code{x}, you would call 
@@ -10,16 +354,14 @@ mean(x)
 \end{lstlisting}
 That's exactly the same command you would issue if \code{x} is no longer an ordinary \proglang{R} matrix, but a distributed matrix.  These methods range from simple, embarrassingly parallel operations like sums and means, to tightly coupled linear algebra operations like matrix-matrix multiply and singular value decomposition.
 
-Unfortunately, these higher methods come with a different cost:  getting the data into the right format, namely the distributed matrix class.  This can be especially frustrating because we assume that the any object of class \code{ddmatrix} is \emph{block cyclically distributed}.  This concept is discussed at length in the \pkg{pbdBASE}~\citep{Schmidt2012pbdBASEvignette} and \pkg{pbdDMAT}~\citep{Schmidt2012pbdDMATvignette} vignettes, and we do not intend to discuss the concept of a block cyclic data distribution at length herein.  However, we will demonstrate several examples of getting data into and out of the distributed block cyclic matrix format.
-
-Once the hurdle of getting the data into the ``right format'' is out of the way, these methods offer very simple syntax (designed to mimic \proglang{R} as closely as possible) with the ability to scale computations on very large distributed machines.  So the process of getting the data into the correct format must be addressed.  We begin dealing with this issue in the simplest way possible.  
+Unfortunately, these higher methods come with a different cost:  getting the data into the right format, namely the distributed matrix data structure DMAT, discussed at length in the previous chapter.  That said, once the hurdle of getting the data into the ``right format'' is out of the way, these methods offer very simple syntax (designed to mimic \proglang{R} as closely as possible), with the ability to scale computations on very large distributed machines.  But to get to the fun stuff, the process of exactly how to decompose data into a block-cyclic distribution must be addressed.  We begin dealing with this issue in the simplest way possible.  
 
 
 
 
 \section{Fixed Global Dimension}
 
-
+In these examples, we will examine the case where you know ahead of time what the global number of rows and columns are.
 
 \subsection{Constructing Simple Distributed Matrices}
 
