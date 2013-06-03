@@ -7,6 +7,7 @@ As we mentioned at the beginning of the discussion on distributed matrix methods
 \label{sec:csv_files}
 
 \emph{Example:  Read data from a csv directly into a distributed matrix.}
+\index{CSV}
 
 The demo command is
 \begin{Command}
@@ -44,6 +45,7 @@ The code powering the function itself is quite complicated, going well beyond th
 \label{sec:sql_db}
 
 \emph{Example:  Read data from a sql database directly into a distributed matrix.}
+\index{SQL}
 
 The demo command is
 \begin{Command}
@@ -83,5 +85,10 @@ and compare performance.
 As Exercise~\ref{ex:read_csv}, implement a simple function by utilizing
 \code{writeLines()} for writing large CSV file and compare performance
 to the \code{write.csv}.
+
+\item
+Other \proglang{R} packages can deal with fast reading for CSV format or so
+in serial. Try \pkg{ff}~\citep{ff} and \pkg{bigmemory}~\citep{bigmemory}.
+ 
 
 \end{enumerate}

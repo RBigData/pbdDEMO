@@ -503,7 +503,8 @@ demo.timer <- function(timed)
 
 \begin{enumerate}[label=\thechapter-\arabic*]
 \item Write a script that will have each processor randomly take a sample of size 1 of \code{TRUE} and \code{FALSE}.  Have each processor print its result.\label{ex:mpi1}
-\item Modify the script in Exercise~\ref{ex:mpi1} above to determine if any processors sampled \code{TRUE}.  Do the same to determine if all processors sampled \code{TRUE}.  In each case, print the result.  Compare to the functions \code{comm.all()} and \code{comm.any()}.  (Hint:  use \code{allreduce()}).
+\item Modify the script in Exercise~\ref{ex:mpi1} above to determine if any processors sampled \code{TRUE}.  Do the same to determine if all processors sampled \code{TRUE}.  In each case, print the result.  Compare to the functions \code{comm.all()} and \code{comm.any()}.
+      {\color{blue} Hint:  use \code{allreduce()}.}
 \item In \pkg{pbdMPI}, there is a parallel sorting function called
 \code{comm.sort()} which is similar to the usual \code{sort()} of \proglang{R}.
 Implement parallel equivalents to the usual \code{order()} and \code{rank()}

@@ -52,7 +52,7 @@ By definition, if a matrix has finite condition number, then it must have been i
 \end{align*}
 So if $\kappa\left(\bX\right)$ is ``large'', then forming this product can lead to large numerical errors when attempting to numerically invert or factor a matrix, or solve a system of equations.
 
-To avoid this problem, the orthogonal QR-decomposition is typically used.  Here we take 
+To avoid this problem, the orthogonal QR Decomposition is typically used.  Here we take 
 \begin{align*}
 \bX=QR
 \end{align*}
@@ -74,7 +74,7 @@ While this method is much less prone to the numerical issues discussed above, it
 
 
 \section{Using the Singular Value Decomposition}
-There is another, arguably much more well-known matrix factorization which we can use to develop yet another analytically equivalent solution to the least squares problem, namely the Singular Value Decomposition (SVD).  Using this factorization leads to a very elegant solution, as is so often the case with the SVD.  
+There is another, arguably much more well-known matrix factorization which we can use to develop yet another analytically equivalent solution to the least squares problem, namely the Singular Value Decomposition (SVD).~\index{Singular Value Decomposition}\index{SVD}  Using this factorization leads to a very elegant solution, as is so often the case with the SVD.  
 
 Note that in (\ref{math:ols2}), the quantity
 \begin{align*}
@@ -103,9 +103,11 @@ Conceptually, this is arguably the most elegant method of solving the linear lea
 
 \chapter{Linear Regression and Rank Degeneracy in R}
 
-In the case that $\bX$ is rank deficient, then $\bX$ (and whence $\bX^T\bX$) is not invertible, so the problem can not be solved by the method of Section~\ref{asec:nrmleq}.  Both \proglang{R} and pbdR use a QR factorization as in Section~\ref{asec:qr}, although the two systems use a slightly different approach.  While most of the linear algebra in \proglang{R} is handled by LAPACK \citep{lug}, arguably the most important numerical function in all of \proglang{R}, namely \code{lm.fit()} used by \code{lm()} to fit linear regression models, uses LINPACK \citep{linpack}.  By comparison to LAPACK, LINPACK is much less sophisticated.  However, pbdR uses level 3 PBLAS and ScaLAPACK (the distributed equivalent of using level 3 BLAS and LAPACK) to fit linear regression models.
+In the case that $\bX$ is rank deficient, then $\bX$ (and whence $\bX^T\bX$) is not invertible, so the problem can not be solved by the method of Section~\ref{asec:nrmleq}.  Both \proglang{R} and pbdR use a QR factorization as in Section~\ref{asec:qr}, although the two systems use a slightly different approach.  While most of the linear algebra in \proglang{R} is handled by LAPACK~\citep{lug},~\index{LAPACK} arguably the most important numerical function in all of \proglang{R}, namely \code{lm.fit()} used by \code{lm()} to fit linear regression models, uses LINPACK \citep{linpack}.  By comparison to LAPACK, LINPACK~\index{LINPACK} is much less sophisticated.  However, pbdR uses level 3 PBLAS~\index{PBLAS} and ScaLAPACK (the distributed equivalent of using level 3 BLAS and LAPACK) to fit linear regression models.
 
-The LINPACK routines used by \proglang{R} are \code{DQRLS}, which calls a modified \code{DQRDC2} to compute a rank-revealing QR factorization with a ``limited pivoting strategy'' (more on this later).  Finally, \code{DQRSL} is called to apply the output of the QR factorization to compute the least squares soluations.  By contrast, pbdR uses a modified \code{PDGELS} routine, which uses a version of \code{PDGEQPF} modified to use \proglang{R}'s ``limited pivoting strategy'', and then calls \code{PDORMQR} to fit the least squares solution.
+The LINPACK routines used by \proglang{R} are \code{DQRLS}, which calls a modified \code{DQRDC2} to compute a rank-revealing
+QR factorization\index{QR}
+with a ``limited pivoting strategy'' (more on this later).  Finally, \code{DQRSL} is called to apply the output of the QR factorization to compute the least squares soluations.  By contrast, pbdR uses a modified \code{PDGELS} routine, which uses a version of \code{PDGEQPF} modified to use \proglang{R}'s ``limited pivoting strategy'', and then calls \code{PDORMQR} to fit the least squares solution.
 
 Neither approach assumes that the model matrix is full rank.  Instead, the methods are \emph{rank-revealing}, in that they attempt to discover the numerical rank while computing the orthogonal factorization.  However, both \proglang{R} and (for the sake of consistency) pbdR use a ``limited pivoting strategy'' (with language, we believe, due to Ross Ihaka) in determining numerical rank.  Generally when computing a QR with pivoting, for the sake of numerical stability one chooses the column with largest partial norm while forming the Householder reflections.  However, in doing so it is possible to permute the columns in such a way that a desired statistical interpretation (such as in an ANOVA) is destroyed.  The solution employed by \proglang{R} is to merely iterate over the columns and choose the current column as the pivot each time.  When a column is detected to have ``small'' partial norm, it is pushed to the back.  The author of these modification writes:
 \begin{quote}

@@ -60,7 +60,7 @@ E[X] &= P( V_1 + V_2 \leq 1 )\\
 	\right]_{V_1\rightarrow 0}^{V_1\rightarrow 1}\\
      &= \frac{1}{2}\left[ \frac{\pi}{4} +\frac{\pi}{4}  \right]
 \end{align*}
-and by sampling observations $X_i$ for $i=1,\dots,N$, by the Strong Law of Large Numbers
+and by sampling observations $X_i$ for $i=1,\dots,N$, by the Strong Law of Large Numbers~\index{Strong Law of Large Numbers}\index{SLLN}
 \begin{equation}
 \bar{X}_N \longrightarrow^{\hspace{-.55cm} a.s.} \hspace{.1cm} \frac{\pi}{4} \hspace{.4cm} \text{ as } N\rightarrow \infty
 \label{eqn:as_convergence}
@@ -317,7 +317,11 @@ While this is a fine demonstration of the power of ``getting your hands dirty'',
 \end{align*}
 has numerical stability issues.  Instead, it is generally better (although much slower) to take an orthogonal factorization of the data matrix.  See Appendix~\ref{apx:numlinalg} for details.
 
-Finally, all of the above assumes that the model matrix $\bX$ is full rank.  However, we have implemented an efficient method of solving linear least squares problems in \pkg{pbdDMAT}'s \code{lm.fit()} method for distributed matrices.  This method uses a fully parallel rank-revealing QR decomposition to find the least squares solution.  So for larger problems, and especially those where numerical accuracy is important or rank-degeneracy is a possibility, it is much better to simply convert \code{y.spmd} and \code{X.spmd} into the block-cyclic format as in Part~\ref{part:dmat} and utilize \pkg{pbdBASE} and \pkg{pbdDMAT} for all matrix computations.
+Finally, all of the above assumes that the model matrix $\bX$ is full rank.  However, we have implemented an efficient method of solving linear least squares problems in \pkg{pbdDMAT}'s
+\code{lm.fit()}~\index{\code{lm.fit()}}
+method for distributed matrices.  This method uses a fully parallel rank-revealing
+QR Decomposition~\index{QR}
+to find the least squares solution.  So for larger problems, and especially those where numerical accuracy is important or rank-degeneracy is a possibility, it is much better to simply convert \code{y.spmd} and \code{X.spmd} into the block-cyclic format as in Part~\ref{part:dmat} and utilize \pkg{pbdBASE} and \pkg{pbdDMAT} for all matrix computations.
 
 
 
@@ -409,20 +413,24 @@ if (need2stop)
 
 \begin{enumerate}[label=\thechapter-\arabic*]
 \item
-What are assumptions for the Strong Law of Large Numbers?
+What are assumptions for the Strong Law of Large Numbers (SLLN)
+in order to prove Statement~(\ref{eqn:as_convergence})?
 
 \item
-What is the Weak Law of Large Numbers?
+What is the Weak Law of Large Numbers (WLLN)?~\index{Weak Law of Large Numbers}\index{WLLN}
+Prove that SLLN can imply WLLN. Provide a counter example that
+WLLN does not necessary imply SLLN.
 
 \item
 As Statement~(\ref{eqn:as_convergence}),
-prove $\bar{X}_N$ converges to $\frac{\pi}{4}$ in probability and
+prove $\bar{X}_N$ converges to $\frac{\pi}{4}$ in probability by WLLN and
 in distribution.
 
 \item
 As Statement~(\ref{eqn:as_convergence}),
-Prove $4\bar{X}_N$ converges to $\pi$ almost surely, in probability and
-in distribution.
+prove $g(\bar{X}_N)$ converges to $g\left(\frac{\pi}{4}\right)$
+almost surely, in probability and
+in distribution where $g(\cdot)$ is a continuous function.
 
 \item
 What are assumptions for Statement~(\ref{math:statslls})?
@@ -432,7 +440,7 @@ Prove $\hat{\bbeta}$ of Statement~(\ref{math:ols}) is an unbiased
 estimator of $\bbeta$.
 
 \item
-Prove $\bX^\top\bX$ is non-negative definite if $\bX$ is full rank $p$,
+Prove $\bX^\top\bX$ is non-negative definite if $\bX$ has full column rank $p$,
 therefore, the inverse exists.
 
 \end{enumerate}

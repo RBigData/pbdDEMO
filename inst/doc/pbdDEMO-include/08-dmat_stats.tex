@@ -142,6 +142,7 @@ new_dx <- pca$x[, 1:i]
 
 
 \section{Predictions with Linear Regression}
+\label{sec:predictions_with_linear_regression}
 
 \emph{Example:  Fit a linear regression model and use it to make a prediction on new data.}
 
@@ -161,4 +162,16 @@ pred <- dx.new %*% mdl$coefficients
 comm.print(submatrix(pred), quiet=T)
 \end{lstlisting}
 
+
+
+
+\section{Exercises}
+\label{sec:pmclust_exercise}
+
+\begin{enumerate}[label=\thechapter-\arabic*]
+
+\item Based on Section~\ref{sec:predictions_with_linear_regression},
+compute 95\% confidence interval for the predictor.
+
+\end{enumerate}
 

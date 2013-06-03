@@ -2,7 +2,7 @@
 \label{sec:introduction}
 
 
-\section{What is pbd?}
+\section{What is pbdR?}
 
 The ``Programming with Big Data in R'' project~\citep{pbdR2012} (pbd or pbdR for short) is a project that aims to elevate the statistical programming language \proglang{R}~\citep{Rcore} to leadership-class computing platforms.  The main goal is empower data scientists by bringing flexibility and a big analytics toolbox to big data challenges, with an emphasis on productivity, portability, and performance.  We achieve this in part by mapping high-level programming syntax to portable, high-performance, scalable, parallel libraries.  In short, we make \proglang{R} scalable.
 
@@ -17,7 +17,8 @@ Figure~\ref{fig:pbdrpackages} shows the current list of pbdR packages released t
 
 \begin{itemize}
  \item \pkg{pbdMPI} --- an efficient interface to MPI with a focus on Single Program/Multiple Data (SPMD) parallel programming style.
- \item \pkg{pbdSLAP} --- bundles scalable dense linear algebra libraries in double precision for \pkg{R}, based on ScaLAPACK version 2.0.2~\citep{slug}..
+ \item \pkg{pbdSLAP} --- bundles scalable dense linear algebra libraries in double precision for \pkg{R}, based on
+                         ScaLAPACK version 2.0.2~\citep{slug}.~\index{ScaLAPACK}
  \item \pkg{pbdNCDF4} --- Interface to Parallel Unidata NetCDF4 format data files~\citep{netcdf}.
  \item \pkg{pbdBASE} --- low-level ScaLAPACK codes and wrappers.
  \item \pkg{pbdDMAT} --- distributed matrix classes and computational methods, with a focus on linear algebra and statistics.
@@ -205,3 +206,21 @@ mpiexec -np 4 Rscript balance_pca.r
 \end{lstlisting}
 
 Now we must note that there are other costs than just statistical computation.  There is of course the cost of disk IO (when dealing with real data).  However, a parallel file system should help with this, and for large datasets should actually be faster anyway.  The main cost not measured here is the cost of starting all of the R processes and loading packages.  Assuming \proglang{R} is not compiled statically (and it almost certainly is not), then this cost is non-trivial and somewhat unique to very large scale computing.  For instance, it took us well over an hour to start 12,000 \proglang{R} sessions and load the required packages on the supercomputer Kraken\footnote{See \url{https://en.wikipedia.org/wiki/Kraken_(supercomputer)}}.  This problem is not unique to \proglang{R}, however.  It affects any project that has a great deal of dynamic library loading to do.  This includes \proglang{Python}, although their community has made some impressive strides in dealing with this problem.
+
+
+
+
+\section{Exercises}
+\label{sec:introduction_exercise}
+
+\begin{enumerate}[label=\thechapter-\arabic*]
+\item
+Read \pkg{pbdMPI}'s vignettes and install either OpenMPI~\index{OpenMPI} or
+MPICH2~\index{MPICH2}, and test if install correctly.
+\label{ex:introduction1}
+
+\item
+When finish Exercise~\ref{ex:introduction1},
+install all \proglang{pbdR} packages and run demo codes.
+\end{enumerate}
+
