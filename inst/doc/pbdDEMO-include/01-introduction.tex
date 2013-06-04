@@ -4,7 +4,8 @@
 
 \section{What is pbdR?}
 
-The ``Programming with Big Data in R'' project~\citep{pbdR2012} (pbdR
+The ``Programming with Big Data in R'' project~\citep{pbdR2012}
+(\proglang{pbd} or \proglang{pbdR}
 for short) is a project that aims to elevate the statistical programming
 language \proglang{R}~\citep{Rcore} to leadership-class computing platforms.
 The main goal is empower data scientists by bringing flexibility and a big
@@ -20,19 +21,23 @@ In short, we make \proglang{R} scalable.
  \label{fig:pbdrpackages}
 \end{figure}
 
-Figure~\ref{fig:pbdrpackages} shows the current list of pbdR packages released
+Figure~\ref{fig:pbdrpackages} shows the current list of \proglang{pbdR}
+packages released
 to the CRAN (\url{http://cran.r-project.org}), and how they depend on each
-other. More explicitly, the current \proglang{pbdR} packages are:
+other. More explicitly, the current \proglang{pbdR} packages
+\citep{Chen2012pbdMPIpackage,Chen2012pbdSLAPpackage,Schmidt2012pbdBASEpackage,
+Schmidt2012pbdDMATpackage,Patel2013pbdNCDF4package,Schmidt2013pbdDEMOpackage}
+are:
 
 \begin{itemize}
  \item \pkg{pbdMPI} --- an efficient interface to MPI~\citep{MPI1994} with a
-       focus on Single Program/Multiple Data (SPMD)\index{SPMD} parallel
-       programming style.
+       focus on Single Program/Multiple Data (SPMD)\index{Parallelism!SPMD}
+       parallel programming style.
  \item \pkg{pbdSLAP} --- bundles scalable dense linear algebra libraries in
        double precision for \proglang{R}, based on ScaLAPACK
-       version 2.0.2~\citep{slug}.~\index{ScaLAPACK}
- \item \pkg{pbdNCDF4} --- Interface to Parallel Unidata NetCDF4\index{NetCDF4}
-       format data files~\citep{netcdf}.
+       version 2.0.2~\citep{slug}.~\index{Library!ScaLAPACK}
+ \item \pkg{pbdNCDF4} --- Interface to Parallel Unidata
+       NetCDF4\index{Library!NetCDF4} format data files~\citep{netcdf}.
  \item \pkg{pbdBASE} --- low-level ScaLAPACK codes and wrappers.
  \item \pkg{pbdDMAT} --- distributed matrix classes and computational methods,
        with a focus on linear algebra and statistics.
@@ -42,7 +47,7 @@ other. More explicitly, the current \proglang{pbdR} packages are:
 
 To try to make this landscape a bit more clear, one could divide
 \proglang{pbdR} packages into those meant for users, developers, or
-something in between.  
+something in-between.  
 \begin{figure}[h]
  \centering
  \includegraphics[scale=.55]{pbdDEMO-include/pics/pbdR-packages.png}
@@ -54,7 +59,7 @@ more red means the package is more for developers, while more blue means the
 package is more for users.  For example, \pkg{pbdDEMO} is squarely meant for
 users of \proglang{pbdR} packages, while \pkg{pbdBASE} and \pkg{pbdSLAP} are
 really not meant for general use. The other packages fall somewhere
-in between, having plenty of utility for both camps.
+in-between, having plenty of utility for both camps.
 
 Finally, 
 \begin{figure}[h]
@@ -69,7 +74,7 @@ high-performance libraries.
 In this vignette, we offer many examples using the above \proglang{pbdR}
 packages. Many of the examples are high-level applications and may be commonly
 found in basic Statistics. The purpose is to show how to reuse the
-pre-existing functions and utilities of \proglang{pbdR} to create minor
+preexisting functions and utilities of \proglang{pbdR} to create minor
 extensions which can quickly solve problems in an efficient way.
 The reader is encouraged to reuse and re-purpose these functions.
 
@@ -288,14 +293,20 @@ KRAKEN\footnote{See \url{https://en.wikipedia.org/wiki/Kraken_(supercomputer)}}.
 
 \begin{enumerate}[label=\thechapter-\arabic*]
 \item
-Read \pkg{pbdMPI}'s vignettes and install either
-OpenMPI~\index{OpenMPI} (\url{http://www.open-mpi.org/}) or
-MPICH2~\index{MPICH2} (\url{http://www.mcs.anl.gov/research/projects/mpich2/}),
- and test if installation is correct.
-\label{ex:introduction1}
+Read MPI wiki pages
+(\url{http://en.wikipedia.org/wiki/Message_Passing_Interface})
+including it's History, Overview, Functionality, and Concepts.
 
 \item
-When finish Exercise~\ref{ex:introduction1},
+Read \pkg{pbdMPI}'s vignettes and install either
+OpenMPI~\index{Library!OpenMPI} (\url{http://www.open-mpi.org/}) or
+MPICH2~\index{Library!MPICH2}
+(\url{http://www.mcs.anl.gov/research/projects/mpich2/}),
+ and test if installation is correct.
+\label{ex:introduction2}
+
+\item
+When finish Exercise~\ref{ex:introduction2},
 install all \proglang{pbdR} packages and run demo codes.
 \end{enumerate}
 

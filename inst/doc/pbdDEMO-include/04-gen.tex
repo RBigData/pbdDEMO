@@ -39,7 +39,8 @@ but now suppose that our processors form a 2-dimensional grid of size $2\times3$
 \end{align*}
 
 with the usual MPI processor rank on the left, and the corresponding
-BLACS~\index{BLACS} processor grid position on the right.  But this isn't the only wrinkle.  Not only are we going to distribute our data on a 2-dimensional grid of processors (for very good reasons that are difficult to impart to the reader at this time), we are going to do so in \emph{block-cyclic} fashion.  To do this, we are going to declare a \emph{blocking factor}, which is an ordered pair, describing the decomposition size in each dimension of the matrix we wish to distribute.  The process can be difficult to imagine, so it is perhaps best to proceed with our example.
+BLACS~\index{Library!BLACS} processor grid position on the right.
+But this isn't the only wrinkle.  Not only are we going to distribute our data on a 2-dimensional grid of processors (for very good reasons that are difficult to impart to the reader at this time), we are going to do so in \emph{block-cyclic} fashion.  To do this, we are going to declare a \emph{blocking factor}, which is an ordered pair, describing the decomposition size in each dimension of the matrix we wish to distribute.  The process can be difficult to imagine, so it is perhaps best to proceed with our example.
 
 To distribute this data across our 6 processors in the form of a $2\times 3$ process grid in $2\times 2$ blocks, we go in a ``round robin'' fashion, assigning $2\times 2$ submatrices of the original matrix to the appropriate processor, starting with processor $(0, 0)$.  Then, if possible, we move on to the next $2\times 2$ block of $x$ and give it to processor $(0, 1)$.  We continue in this fashion with $(0,2)$ if necessary, and if there is yet more of $x$ in that row still without ownership, we cycle back to processor $(0,0)$ and start over, continuing in this fashion until there is nothing left to distribute in that row.
 
@@ -118,7 +119,7 @@ x &= \left[
 \end{align*}
 
 Especially at first introduction, this can be a very confusing distribution.  However, it is a very robust, useful data structure for certain kinds of linear algebra computations.  This is the data structure of
-ScaLAPACK,~\index{ScaLAPACK} which has more than proven itself in terms of performance.  
+ScaLAPACK,~\index{Library!ScaLAPACK} which has more than proven itself in terms of performance.  
 
 You \emph{could} use some more natural data distributions than the above.  However, this may have a substantial impact on performance, depending on the kinds of operations you wish to do.  For things that make extensive use of linear algebra --- particularly matrix factorizations --- you are probably much better off using the above kind of block-cyclic data distribution.  These different processor grid shapes are referred to as \emph{contexts}.  They are actually specialized MPI communicators.  By default, the recommended (easy) way of managing these contexts with \pkg{pbdDMAT} is to call
 \begin{lstlisting}[language=rr]
@@ -347,7 +348,7 @@ a very useful website at
 
 
 \section{Exercises}
-\label{sec:statistics_exercise}
+\label{sec:distributed_exercise}
 
 \begin{enumerate}[label=\thechapter-\arabic*]
 \item
@@ -369,7 +370,9 @@ by J. Demmel, M. Heath, and H. van der Vorst.
 
 \chapter{Constructing Distributed Matrices}
 
-The \pkg{pbdBASE} and \pkg{pbdDMAT} packages offer a distributed matrix class, \code{ddmatrix}, as well as a collection of high-level methods for performing common matrix operations.  For example, if you want to compute the mean of an \proglang{R} matrix \code{x}, you would call 
+The \pkg{pbdBASE} and \pkg{pbdDMAT} packages offer a distributed matrix class,
+\code{ddmatrix},\index{Class!\code{ddmatrix}}
+as well as a collection of high-level methods for performing common matrix operations.  For example, if you want to compute the mean of an \proglang{R} matrix \code{x}, you would call 
 \begin{lstlisting}[language=rr]
 mean(x)
 \end{lstlisting}
@@ -387,9 +390,9 @@ In these examples, we will examine the case where you know ahead of time what th
 \subsection{Constructing Simple Distributed Matrices}
 
 It is possible to construct fairly simple distributed matrices much in the same way that one can construct simple matrices in \proglang{R}.  We can do this using the functions
-\code{ddmatrix()}\index{code!\code{ddmatrix()}} and
-\code{as.ddmatrix()}.\index{code!\code{as.ddmatrix()}}
-The former essentially behaves identically to \proglang{R}'s own \code{matrix()} function.  This function takes a global input vector/matrix \code{data=}, as well as the global number of rows \code{nrow=} and the global number of columns \code{ncol=}.  Additionally, the user may specify the blocking factor \code{bldim=} and the BLACS~\index{BLACS} context \code{CTXT}, and the return is a distributed matrix.  For instance, we can specify
+\code{ddmatrix()}\index{Code!\code{ddmatrix()}} and
+\code{as.ddmatrix()}.\index{Code!\code{as.ddmatrix()}}
+The former essentially behaves identically to \proglang{R}'s own \code{matrix()} function.  This function takes a global input vector/matrix \code{data=}, as well as the global number of rows \code{nrow=} and the global number of columns \code{ncol=}.  Additionally, the user may specify the blocking factor \code{bldim=} and the BLACS~\index{Library!BLACS} context \code{CTXT}, and the return is a distributed matrix.  For instance, we can specify
 \begin{lstlisting}[language=rr,title=ddmatrix()]
 dx <- ddmatrix(data=0, nrow=10, ncol=10)
 \end{lstlisting}
@@ -483,7 +486,9 @@ mpiexec -np 4 Rscript -e "demo(randmat_global,'pbdDEMO',ask=F,echo=F)"
 
 This demo shows 3 separate ways that one can generate a random normal matrix with specified global dimension.  The first two generate the matrix in full on at least one processor and distribute(s) the data, while the last method generates locally only what is needed.  As such, the first two can be considered demonstrations with what to do when you have data read in on one processor and need to distribute it out to the remaining processors, but for the purposes of building a randomly generated distributed matrix, they are not particularly efficient strategies.
 
-As described in the previous section, if we have a matrix \code{x} stored on processor 0 and \code{NULL} on the others, then we can distribute it out as an object of class \code{ddmatrix} via the command \code{as.ddmatrix()}.  For example
+As described in the previous section, if we have a matrix \code{x} stored on processor 0 and \code{NULL} on the others, then we can distribute it out as an object of
+class \code{ddmatrix}\index{Class!\code{ddmatrix}} via the command
+\code{as.ddmatrix()}.\index{Code!\code{as.ddmatrix()}}  For example
 \begin{lstlisting}[language=rr]
 if (comm.rank()==0){
   x <- matrix(rnorm(100), nrow=10, ncol=10)
@@ -537,7 +542,7 @@ mpiexec -np 4 Rscript -e "demo(randmat_local,'pbdDEMO',ask=F,echo=F)"
 
 This is similar to the above, but with a critical difference.  Instead of specifying a fixed \emph{global} dimension and then go determine what the local storage space is, instead we specify a fixed \emph{local} dimension and then go figure out what the global dimension should be.  This can be useful for testing weak scaling of an algorithm, where different numbers of cores are used with the same local problem size.
 
-To this end, the demo script utilizes the \code{ddmatrix.local()} function, which has the user specify a local dimension size that all the processors should use, as well as a blocking factor and BLACS~\index{BLACS} context.  Now here things get somewhat tricky, because in order for this matrix to exist at all, each margin of the blocking factor must divide (as an integer) the corresponding margin of the global dimension.  To better understand why this is so, the reader is suggested to read the \pkg{pbdDMAT} vignette.  But if you already understand or are merely willing to take it on faith, then you surely grant that this is a problem.
+To this end, the demo script utilizes the \code{ddmatrix.local()} function, which has the user specify a local dimension size that all the processors should use, as well as a blocking factor and BLACS~\index{Library!BLACS} context.  Now here things get somewhat tricky, because in order for this matrix to exist at all, each margin of the blocking factor must divide (as an integer) the corresponding margin of the global dimension.  To better understand why this is so, the reader is suggested to read the \pkg{pbdDMAT} vignette.  But if you already understand or are merely willing to take it on faith, then you surely grant that this is a problem.
 
 So here, we assume that the local dimension is chosen appropriately by the user, but it is possible that a bad blocking factor is supplied by the user.  Rather than halt with a stop error, we attempt to find the next best blocking factor possible.  To do this, we must find the smallest integer above the specified blocking factor that will divide the number of local rows or columns.
 
@@ -551,7 +556,7 @@ So here, we assume that the local dimension is chosen appropriately by the user,
 \item
 Random number generation (RNG) is used in this Section such as \code{rnorm()}.
 In \proglang{pbdR}, we use an \proglang{R} package
-\pkg{rlecuyer}~\citep{rlecuyer}\index{package!\pkg{rlecuyer}}
+\pkg{rlecuyer}~\citep{rlecuyer}\index{Package!\pkg{rlecuyer}}
 to set different streams of seed in
 parallel. Try to find and use other RNG methods or implementations
 in \proglang{R}.

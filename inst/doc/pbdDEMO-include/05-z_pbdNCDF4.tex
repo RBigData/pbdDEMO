@@ -5,19 +5,19 @@
 \section{Introduction}
 \label{sec:pbdNCDF4_introduction}
 
-Network Common Data Form version 4 (NetCDF4)\index{NetCDF4} is
+Network Common Data Form version 4 (NetCDF4)\index{Library!NetCDF4} is
 a self-describing, machine-independent data formats and
 mainly support array-oriented scientific data. 
 The NetCDF4 library is available on
 the website at \url{http://www.unidata.ucar.edu/software/netcdf}.
-The NetCDF4 is built on top of HDF5\index{HDF5}
+The NetCDF4 is built on top of HDF5\index{Library!HDF5}
 data model for extremely large and complex
 data collections. i.e. The NetCDF4 is a subset of HDF5 but with enhanced
 features. The HDF5 library is available on
 the website at \url{http://www.htfgroup.org/HDF5/}.
 The both libraries provide high-performance functionalities to create, access,
 read, write, and modify NetCDF4 files.
-The \proglang{R} package \pkg{ncdf4}~\citep{ncdf4}\index{package!\pkg{ncdf4}}
+The \proglang{R} package \pkg{ncdf4}~\citep{ncdf4}\index{Package!\pkg{ncdf4}}
 mainly provides interface for NetCDF4 libraries and a short summary of
 major functions is given in the Table~\ref{tab:ncdf4}
 
@@ -95,7 +95,8 @@ through the C20C project (on the NERSC portal).
 \end{figure}
 
 The \code{TREFHT$def} contains all definitions regarding to this variable in
-class \code{ncvar4} including locations, dimensions, units, variable size,
+class \code{ncvar4}\index{Class!\code{ncvar4}}
+including locations, dimensions, units, variable size,
 data storage, missing values, ... etc.
 The \code{TREFHT$def$size} gives the data dimensions which are
 $(lon, lat, time) = (1152, 768, 1)$. Since this data is monthly averaged
@@ -171,7 +172,7 @@ to the dimensions.
 write the data into the variable on the disk, and close the file.
 Line 20, 24, and 25 open the file again and read the data from the
 variable from the data and convert them to a
-\code{ddmatrix}.\index{class!\code{ddmatrix}}
+\code{ddmatrix}.\index{Class!\code{ddmatrix}}
 
 Note that \code{ncvar_put_dmat()} and \code{ncvar_get_dmat()} are implemented
 for 2D variable only. Please use \pkg{pbdNCDF4}/\pkg{ncdf4} primitive functions
@@ -211,7 +212,7 @@ Dump \code{TREFHT} to a slice of 3D cube and load them back to a
 \item
 In the Sections~\ref{sec:lb_ub} and ~\ref{sec:spmd_dmat}, we introduce
 simple matrix distributed formats \code{spmdr} and \code{spmdc} similar to
-the BLACS~\index{BLACS} contexts \code{ICTXT} 2 and 1 with very large block size.
+the BLACS~\index{Library!BLACS} contexts \code{ICTXT} 2 and 1 with very large block size.
 The demo code
 \code{demo/nc4_spmdc.r} implements similar functionality as for
 \code{ddmatrix}, but for \code{spmdc} format only. Modify the demo code for

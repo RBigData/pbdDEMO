@@ -34,7 +34,7 @@ $N$ observations.  Then the log likelihood is
 where $f$ is as in Equation~(\ref{eqn:gaussian_mixture}).
 Solving the problem of maximizing this log-likelihood is usually done by the
 expectation-maximization (EM)
-algorithm~\citep{Dempster1977}.~\index{EM algorithm}
+algorithm~\citep{Dempster1977}.~\index{Algorithm!EM}
 Assuming the EM algorithm converges, we let $\hat{\bTheta}$ be the
 maximum likelihood estimator of Equation~(\ref{eqn:gaussian_mixture_logl}).
 Then the maximum posterior probability
@@ -47,8 +47,8 @@ for $n = 1, 2, \ldots, N$
 indicates the membership of the observations of the data set $\bX$.
 
 
-The \pkg{mclust}~\citep{mclust}\index{package!\pkg{mclust}} and
-\pkg{EMCluster}~\citep{Chen2012EMClusterpackage}\index{package!\pkg{EMCluster}} packages
+The \pkg{mclust}~\citep{mclust}\index{Package!\pkg{mclust}} and
+\pkg{EMCluster}~\citep{Chen2012EMClusterpackage}\index{Package!\pkg{EMCluster}} packages
 are the two main \proglang{R} packages implementing the EM algorithm for the
 model-based clustering.
 The \pkg{mclust} package has several selections on different kinds of models one may fit, while \pkg{EMCluster} 
@@ -58,7 +58,7 @@ semi-supervised learning.~\index{semi-supervised learning}
 However, both assume small $N$ and tiny $p$, and only run in serial with
 sufficient memory.
 
-Note that the k-means algorithm~\citep{Forgy1965}~\index{k-means}
+Note that the k-means algorithm~\citep{Forgy1965}~\index{Algorithm!k-means}
 equivalently assumes
 $\eta_1 = \eta_2 = \cdots = \eta_K \equiv 1/K$ and
 $\bSigma_1 = \bSigma_2 = \cdots = \bSigma_K \equiv \bI$
@@ -71,17 +71,18 @@ However, due to its strict assumptions, the cluster results are almost always un
 
 \subsection{Parallel Model-Based Clustering}
 
-The \pkg{pmclust}~\citep{Chen2012pmclustpackage}\index{package!\pkg{pmclust}}
+The \pkg{pmclust}~\citep{Chen2012pmclustpackage}\index{Package!\pkg{pmclust}}
 package is an \proglang{R}
 package for parallel model-based clustering based on Gaussian mixture models
 with unstructured dispersions.  The package uses data parallelism to solve one very large clustering problem, rather than the embarrassingly parallel problem of fitting many independent models to dataset(s).  This approach is especially useful for large, distributed platforms, where the data will be distributed across nodes.  And of course it is worth nothing that the package does not merely perform a local clustering operation on the local data pieces; some \code{gather} and \code{reduce} operations are necessary at some stages of the distributed EM algorithm.
 
 An expectation-gathering-maximization (EGM)
-algorithm~\citep{Chen2013}~\index{EGM}
+algorithm~\citep{Chen2013}~\index{Algorithm!EGM}
 is established for minimizing communication and data movement between nodes.
 There are four variants of EGM-like algorithms implemented in \pkg{pmclust}
-including EM, AECM~\citep{Meng1997}~\index{AECM},
-APECM~\citep{Chen2011}~\index{APECM}, and APECMa~\citep{Chen2013}~\index{APECMa}. The variants are trying to achieve
+including EM, AECM~\citep{Meng1997}~\index{Algorithm!AECM},
+APECM~\citep{Chen2011}~\index{Algorithm!APECM}, and
+APECMa~\citep{Chen2013}~\index{Algorithm!APECMa}. The variants are trying to achieve
 better convergence rates and less computing time than the original EM algorithm.
 For completeness' sake, a simple k-means algorithm is also implemented in \pkg{pmclust}.
 
@@ -94,11 +95,14 @@ is a product for the project
 ``Visual Data Exploration and Analysis of Ultra-large Climate Data''
 supported by U.S. DOE Office of Science.
 
-The \pkg{pmclust} package initially depended on \pkg{Rmpi}\index{package!\pkg{Rmpi}}, but
-designed in SPMD approach rather than in the master/worker paradigm even before
+The \pkg{pmclust} package initially depended on
+\pkg{Rmpi}\index{Package!\pkg{Rmpi}}, but
+designed in SPMD approach\index{Parallelism!SPMD}
+rather than in the master/worker paradigm even before
 \proglang{pbdR} existed.
 Later, it migrated to use \pkg{pbdMPI}~\citep{Chen2012pbdMPIpackage}
-because of performance issues with \pkg{Rmpi} on larger machines.
+because of performance issues with \pkg{Rmpi}\index{Package!\pkg{Rmpi}}
+on larger machines.
 So, by default, the package assumes data are stored in
 SPMD row-major matrix format.
 
@@ -106,7 +110,8 @@ Currently, the package also utilizes
 \pkg{pbdSLAP}~\citep{Chen2012pbdSLAPpackage},
 \pkg{pbdBASE}~\citep{Schmidt2012pbdBASEpackage}, and
 \pkg{pbdDMAT}~\citep{Schmidt2012pbdDMATpackage}
-to implement a subset of the above algorithms for data in the \code{ddmatrix} format.
+to implement a subset of the above algorithms for data in the
+\code{ddmatrix} format.\index{Class!\code{ddmatrix}}
 Table~\ref{tab:pmclust_algorithm} lists the current implementations.
 \begin{table}[h]
 \centering
@@ -168,7 +173,7 @@ iris species. It can be obtained by executing:
 R> demo(iris_overlap, 'pbdDEMO', ask = F, echo = F)
 \end{Code}
 which utilizes the \code{overlap} function of
-\pkg{MixSim}~\citep{Melnykov2012}\index{package!\pkg{MixSim}}.
+\pkg{MixSim}~\citep{Melnykov2012}\index{Package!\pkg{MixSim}}.
 The output is:
 \begin{CodeOutput}
 R> (ret <- overlap(ETA, MU, S))
@@ -212,8 +217,8 @@ We validate the results by comparing the clustering ids
 to the true class ids using adjusted Rand index
 (ARI)~\citep{Hubert1985}~\index{ARI}\index{adjusted Rand index}.
 The ARI takes values between -1 and 1, where 1 is a perfect
-match. The function \code{RRand()} in \pkg{MixSim}
-also provides the ARI.
+match. The function \code{RRand()}\index{Code!\code{RRand()}} in
+\pkg{MixSim}\index{Package!\pkg{MixSim}} also provides the ARI.
 
 The analysis in the unsupervised learning approach proceeds as follows:
 \begin{enumerate}
@@ -225,7 +230,9 @@ The analysis in the unsupervised learning approach proceeds as follows:
 This will be the general procedure whether in serial or parallel.  For example's sake, we will extend these steps 
 to offer SPMD code and \code{ddmatrix} code to show the similarity of codes.
 
-This example demonstrates that the \pkg{pmclust} package can perform analyses correctly, but is not
+This example demonstrates that the
+\pkg{pmclust} package\index{Package!\pkg{pmclust}}
+can perform analysis correctly, but is not
 meant to be a demonstration of its scalability prowess.  The \code{iris} dataset is, by any reasonable definition, tiny.  Small datasets are generally not worth the trouble of developing parallelized analysis codes for, especially since all the extra overhead costs inherent to parallelism might dominate any theoretical performance gains.  Again, the merit of the example is to show off the syntax and accuracy on a single machine; however, \pkg{pmclust} scales up nicely to very large dataset running on supercomputers.
 
 

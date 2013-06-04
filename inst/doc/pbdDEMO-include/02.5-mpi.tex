@@ -6,21 +6,48 @@
 \chapter{MPI for the R User}
 \label{chp:mpi_for_the_r_user}
 
-Cicero once said that ``If you have a garden and a library, you have everything you need.''  So in that spirit, for the next two chapters we will use the MPI library to get our hands dirty and root around in the dirt of low-level MPI programming.
+Cicero once said that ``If you have a garden and a library, you have
+everything you need.'' So in that spirit, for the next two chapters we will
+use the MPI library to get our hands dirty and root around in the dirt of
+low-level MPI programming.
 
 \section{MPI Basics}
 \index{MPI}
 
-In a sense, Cicero (in the above tortured metaphor) was quite right.  MPI is all that we \emph{need} in the same way that I might only \emph{need} bread and cheese, but really what I \emph{want} is a pizza.  MPI is somewhat low-level and can be quite fiddly, but mastering it adds a very powerful tool to the repertoire of the parallel \proglang{R} programmer, and is essential for anyone who wants to do large scale development of parallel codes.  
+In a sense, Cicero (in the above tortured metaphor) was quite right. MPI is
+all that we \emph{need} in the same way that I might only \emph{need} bread
+and cheese, but really what I \emph{want} is a pizza. MPI is somewhat
+low-level and can be quite fiddly, but mastering it adds a very powerful
+tool to the repertoire of the parallel \proglang{R} programmer, and is
+essential for anyone who wants to do large scale development of parallel
+codes.  
 
-``MPI'' stands for ``Message Passing Interface''.  How it really works goes \emph{well} beyond the scope of this document.  But at a basic level, the idea is that the user is running a code on different compute nodes that (usually) can not directly modify objects in each others' memory.  In order to have all of the nodes working together on a common problem, data and computation directives are passed around over the network (often over a specialized link called infiniband).  
+``MPI'' stands for
+``Message Passing Interface''.\index{Message Passing Interface|see{MPI}}
+How it really works
+goes \emph{well} beyond the scope of this document. But at a basic level,
+the idea is that the user is running a code on different compute nodes that (usually) can not directly modify objects in each others' memory.  In order to have all of the nodes working together on a common problem, data and computation directives are passed around over the network (often over a specialized link called infiniband).  
 
-At its core, MPI is a standard interface for managing communications (data and instructions) between different nodes or computers.  There are several major implementations of this standard, and the one you should use may depend on the machine you are using.  	But this is a compiling issue, so user programs are unaffected beyond this minor hurdle.  Some of the most well-known implementations are
-OpenMPI,\index{OpenMPI} MPICH2,\index{MPICH2} and Cray MPT.\index{MPT}
+At its core, MPI is a standard interface for managing communications
+(data and instructions) between different nodes or computers.
+There are several major implementations of this standard, and the one
+you should use may depend on the machine you are using.
+But this is a compiling issue, so user programs are unaffected beyond
+this minor hurdle. Some of the most well-known implementations are
+OpenMPI,\index{Library!OpenMPI}
+MPICH2,\index{Library!MPICH2} and
+Cray MPT.\index{Library!MPT}
 
-At the core of using MPI is the \emph{communicator}.  At a technical level, a communicator is a pretty complicated data structure, but these deep technical details are not necessary for proceeding.  We will instead think of it somewhat like the post office.  When we wish to send a letter (communication) to someone else (another processor), we merely drop the letter off at a post office mailbox (communicator) and trust that the post office (MPI) will handle things accordingly (sort of).  
+At the core of using MPI is the \emph{communicator}. At a technical level,
+a communicator is a pretty complicated data structure, but these deep
+technical details are not necessary for proceeding. We will instead think
+of it somewhat like the post office. When we wish to send a letter
+(communication) to someone else (another processor), we merely drop
+the letter off at a post office mailbox (communicator) and trust that
+the post office (MPI) will handle things accordingly (sort of).
 
-The general process for directly --- or indirectly --- utilizing MPI in SPMD programs goes something like this:
+The general process for directly --- or indirectly --- utilizing MPI in
+SPMD\index{Parallelism!SPMD} programs goes something like this:
 
 \begin{enumerate}
  \item Initialize communicator(s).
@@ -30,9 +57,13 @@ The general process for directly --- or indirectly --- utilizing MPI in SPMD pro
  \item Shut down the communicator(s).
 \end{enumerate}
 
-Some of the above steps may be swept away under a layer of abstraction for the user, but the need may arise where directly interfacing with MPI is not only beneficial, but necessary.
+Some of the above steps may be swept away under a layer of abstraction for
+the user, but the need may arise where directly interfacing with MPI is not
+only beneficial, but necessary.
 
-More details and numerous examples using MPI with \proglang{R} are available in the sections to follow, as well as in the \pkg{pbdMPI} vignette.
+More details and numerous examples using MPI with \proglang{R} are
+available in the sections to follow, as well as in the \pkg{pbdMPI}
+vignette.
 
 
 
@@ -40,35 +71,57 @@ More details and numerous examples using MPI with \proglang{R} are available in 
 
 \section{pbdMPI vs Rmpi}
 
-There is another package on the CRAN which the \proglang{R} programmer may use to interface with MPI, namely
-\pkg{Rmpi}\index{package!\pkg{Rmpi}}~\citep{Rmpi}.  There are several issues one must consider when choosing which package to use if one were to only use one of them.
+There is another package on the CRAN which the \proglang{R} programmer may
+use to interface with MPI, namely
+\pkg{Rmpi}\index{Package!\pkg{Rmpi}}~\citep{Rmpi}. There are several issues
+one must consider when choosing which package to use if one were to only
+use one of them.
 \begin{enumerate}
  \item $(+)$ \pkg{pbdMPI} is easier to install than \pkg{Rmpi}
  \item $(+)$ \pkg{pbdMPI} is easier to use than \pkg{Rmpi}
  \item\label{enum:perf} $(+)$ \pkg{pbdMPI} can often outperform \pkg{Rmpi}
- \item\label{enum:integrate} $(+)$ \pkg{pbdMPI} integrates with the rest of pbd
+ \item\label{enum:integrate} $(+)$ \pkg{pbdMPI} integrates with the rest of
+       \proglang{pbdR}
  %
  \item\label{enum:dompi} $(-)$ \pkg{Rmpi} can be used with
-\pkg{foreach}~\citep{foreach}\index{package!\pkg{foreach}} via
-\pkg{doMPI}~\citep{dompi}\index{package!\pkg{doMPI}}
+      \pkg{foreach}~\citep{foreach}\index{Package!\pkg{foreach}} via
+      \pkg{doMPI}~\citep{dompi}\index{Package!\pkg{doMPI}}
  \item $(-)$ \pkg{Rmpi} can be used in the master/worker paradigm
 \end{enumerate}
 
-We do not believe that the above can be reduced to a zero-sum game with unambiguous winner and loser.  Ultimately the needs of the user (or developer) are paramount.  We believe that pbd makes a very good case for itself, especially in the SPMD style, but it can not satisfy everyone.  However, for the remainder of this section, we will present the case for several of the, as yet, unsubstantiated pluses above.
+We do not believe that the above can be reduced to a zero-sum game with
+unambiguous winner and loser. Ultimately the needs of the user (or
+developer) are paramount. We believe that \proglang{pbdR}
+makes a very good case for itself, especially in the SPMD style,
+but it can not satisfy everyone. However, for the remainder of this
+section, we will present the case for several of the, as yet,
+unsubstantiated pluses above.
 
-In the case of ease of use, \pkg{Rmpi} uses bindings very close to the level as they are used in C's MPI API.  Specifically, whenever performing, for example, a reduction such as allreduce, you must specify the type of your data.  For example, using \pkg{Rmpi}'s API
+In the case of ease of use, \pkg{Rmpi} uses bindings very close to the
+level as they are used in C's MPI API. Specifically, whenever performing,
+for example, a reduction operation such as ``allreduce'', you must specify the
+type of your data. For example, using \pkg{Rmpi}'s API
 \begin{lstlisting}[language=rr]
 mpi.allreduce(x, type = 1)
 \end{lstlisting}
-would perform the sum allreduce if the object \code{x} consists of integer data, while
+would perform the sum allreduce if the object \code{x} consists of integer
+data, while
 \begin{lstlisting}[language=rr]
 mpi.allreduce(x, type = 2)
 \end{lstlisting}
-would be used if \code{x} consists of doubles.  However, with \pkg{pbdMPI}
+would be used if \code{x} consists of doubles. However, with \pkg{pbdMPI}
 \begin{lstlisting}[language=rr]
 allreduce(x)
 \end{lstlisting}
-is used for both by making use of \proglang{R}'s S4 system of object oriented programming.  This is not mere code golfing\footnote{See \url{https://en.wikipedia.org/wiki/Code_golf}} that we are engaging in.  The concept of what ``type'' your data is in \proglang{R} is fairly foreign to most \proglang{R} users, and misusing the \code{type} argument in \pkg{Rmpi} is a very easy way to crash your program.  Even if you are more comfortable with statically typed languages and have no problem with this concept, consider the following example:
+is used for both by making use of \proglang{R}'s S4 system of object
+oriented programming. This is not mere code
+golfing\footnote{See \url{https://en.wikipedia.org/wiki/Code_golf}}
+that we are engaging in. The concept of what ``type'' your data is
+in \proglang{R} is fairly foreign to most \proglang{R} users, and
+misusing the \code{type} argument in \pkg{Rmpi} is a very easy way
+to crash your program. Even if you are more comfortable with statically
+typed languages and have no problem with this concept, consider the
+following example:
 
 \begin{lstlisting}[language=rr,title=Types in R]
 > is.integer(1)
@@ -79,10 +132,21 @@ is used for both by making use of \proglang{R}'s S4 system of object oriented pr
 [1] TRUE
 \end{lstlisting}
 
-There are good reasons for R Core to have made this choice; that is not the point.  The point is that because objects in \proglang{R} are dynamically typed, having to know the type of your data when utilizing \pkg{Rmpi} is a needless burden.  Instead, \pkg{pbdMPI} takes the approach of adding a small abstraction layer on top (which we intend to show does not negatively impact performance) so that the user need not worry about such fiddly details.
+There are good reasons for \proglang{R} Core to have made this choice;
+that is not the point. The point is that because objects in
+\proglang{R} are dynamically typed, having to know the type of your
+data when utilizing \pkg{Rmpi} is a needless burden. Instead,
+\pkg{pbdMPI} takes the approach of adding a small abstraction
+layer on top (which we intend to show does not negatively impact
+performance) so that the user need not worry about such fiddly details.
 
-In terms of performance, \pkg{pbdMPI} can greatly outperform \pkg{Rmpi}.  We present here the results of a benchmark we performed comparing the allgather operation between the two packages \citep{pdac}.  The benchmark consisted of calling the respective allgather
-function from each package on a randomly generated $10,000 \times 10,000$ distributed matrix with entries coming from the standard normal distribution, using different numbers of processors.  
+In terms of performance, \pkg{pbdMPI} can greatly outperform \pkg{Rmpi}.
+We present here the results of a benchmark we performed comparing the
+``allgather'' operation between the two packages~\citep{pdac}.
+The benchmark consisted of calling the respective ``allgather''
+function from each package on a randomly generated
+$10,000 \times 10,000$ distributed matrix with entries coming from
+the standard normal distribution, using different numbers of processors.
 \begin{table}[h]
  \centering
  \caption[Benchmark Comparing \pkg{Rmpi} and \pkg{pbdMPI}]{Benchmark Comparing \pkg{Rmpi} and \pkg{pbdMPI}.  Run time in seconds is listed for each operation.  The speedup is relative to \pkg{Rmpi}.}
@@ -95,9 +159,12 @@ function from each package on a randomly generated $10,000 \times 10,000$ distri
   256   & 22.4       & 7.1          & 3.15 \\\hline\hline
  \end{tabular}
 \end{table}
-Table~\ref{tab:allgather} shows the results for this test, and in each case, \pkg{pbdMPI} is the clear victor.
+Table~\ref{tab:allgather} shows the results for this test, and in each
+case, \pkg{pbdMPI} is the clear victor.
 
-Whichever package you choose, whichever your favorite, for the remainder of this document we will be using (either implicitly or explicitly) \pkg{pbdMPI}.  
+Whichever package you choose, whichever your favorite, for the remainder
+of this document we will be using (either implicitly or explicitly)
+\pkg{pbdMPI}.  
 
 
 
@@ -107,22 +174,56 @@ Whichever package you choose, whichever your favorite, for the remainder of this
 \section{The SPMD Data Structure}
 \label{sec:spmdstruct}
 
-This is the boring stuff everyone hates, but like your medicine, it's ultimately better for you to just take it and get it out of the way:  data structures.  In particular, we will be discussing a distributed data structure that, for lack of a better name (and I assure you we tried), we will call the SPMD data structure.  This data structure is more paradigm or philosophy than a rigid data structure like an array or list.  Consider it a set of ``best practices'', or if nothing else, a starting place if you have no idea how to proceed.
+This is the boring stuff everyone hates, but like your medicine, it's
+ultimately better for you to just take it and get it out of the way:
+data structures. In particular, we will be discussing a distributed
+data structure that, for lack of a better name (and I assure you are
+tried), we will call the SPMD data structure.\index{SPMD data structure}
+This data structure is more paradigm or philosophy than a rigid data
+structure like an array or list. Consider it a set of ``best practices'',
+or if nothing else, a starting place if you have no idea how to proceed.
 
-The SPMD data structure is designed to fit the types of problems which are arguably most common to data science, namely tall and skinny matrices.  It will work best with these (from a computational efficiency perspective) problems, although that is not required.  In fact, very little at all is required of this data structure.  At its core, the data structure is a distributed matrix data structure, with the following rules:
+The SPMD data structure is designed to fit the types of problems which
+are arguably most common to data science, namely tall and skinny matrices.
+It will work best with these (from a computational efficiency perspective)
+problems, although that is not required. In fact, very little at all is
+required of this data structure. At its core, the data structure is a
+distributed matrix data structure, with the following rules:
   \begin{enumerate}
-    \item \code{SPMD} is \emph{distributed}.  No one processor owns all of the matrix.
+    \item \code{SPMD} is \emph{distributed}. No one processor owns all of
+          the matrix.
 %     \item \code{SPMD} is \emph{balanced}.  Every processor owns (roughly) the same amount of data.
-    \item \code{SPMD} is \emph{non-overlapping}. Any row owned by one processor is owned by no other processors.
-    \item \code{SPMD} is \emph{row-contiguous}.  If a processor owns one element of a row, it owns the entire row.
-    \item \code{SPMD} is globally \emph{row-major}\footnote{In the sense of the data decomposition.  More specifically, the global matrix is chopped up into local sub-matrices in a row-major way.}, locally \emph{column-major}\footnote{The local sub-objects are \proglang{R} matrices, which are stored in column-major fashion.}.
-    \item The last row of the local storage of a processor is adjacent (by global row) to the first row of the local storage of next processor (by communicator number) that owns data.  That is, global row-adjacency is preserved in local storage via the communicator.\label{enum:confusing}
-    \item \code{SPMD} is (relatively) easy to understand, but can lead to bottlenecks if you have many more columns than rows.
+    \item \code{SPMD} is \emph{non-overlapping}. Any row owned by one
+          processor is owned by no other processors.
+    \item \code{SPMD} is \emph{row-contiguous}. If a processor owns one
+          element of a row, it owns the entire row.
+    \item \code{SPMD} is globally \emph{row-major}\footnote{In the sense of
+          the data decomposition. More specifically, the global matrix is
+          chopped up into local sub-matrices in a row-major way.},
+          locally \emph{column-major}\footnote{The local sub-objects are
+          \proglang{R} matrices, which are stored in column-major fashion.}.
+          \index{SPMD row-major matrix}\index{SPMD column-major matrix}
+    \item The last row of the local storage of a processor is adjacent
+          (by global row) to the first row of the local storage of next
+          processor (by communicator number) that owns data. That is, global
+          row-adjacency is preserved in local storage via the
+          communicator.\label{enum:confusing}
+    \item \code{SPMD} is (relatively) easy to understand, but can lead to
+          bottlenecks if you have many more columns than rows.
   \end{enumerate}
 
-Of this list, perhaps the most difficult to understand is number~\ref{enum:confusing}.  This is a precise, albeit cumbersome explanation for a simple idea.  If two processors are adjacent and each owns data, then their local sub-matrices are adjacent row-wise as well.  For example, rows $n$ and $n+1$ of a matrix are adjacent; possible configurations for the distributed ownership are processors $q$ owns row $n$ and $q+1$ owns row $n+1$; processor $q$ owns row $n$, processor $q+1$ owns \emph{nothing}, and processor $q+2$ owns row $n+1$.
+Of this list, perhaps the most difficult to understand is
+number~\ref{enum:confusing}. This is a precise, albeit cumbersome explanation
+for a simple idea. If two processors are adjacent and each owns data,
+then their local sub-matrices are adjacent row-wise as well. For example,
+rows $n$ and $n+1$ of a matrix are adjacent; possible configurations for
+the distributed ownership are processors $q$ owns row $n$ and $q+1$ owns
+row $n+1$; processor $q$ owns row $n$, processor $q+1$ owns \emph{nothing},
+and processor $q+2$ owns row $n+1$.
 
-For some, no matter how much we try or what we write, the wall of text simply will not suffice.  So here are a few visual examples.  Suppose we have the global data matrix $x$, given as:
+For some, no matter how much we try or what we write, the wall of text
+simply will not suffice. So here are a few visual examples. Suppose we
+have the global data matrix $x$, given as:
 
 \begin{align*}
 x &= \left[
@@ -139,7 +240,10 @@ x &= \left[
       \end{array}
 \right]_{9\times 9}
 \end{align*}
-with processor array\footnote{Palette selected to be distinguishable by the color blind, taken from \url{http://jfly.iam.u-tokyo.ac.jp/color/\#pallet}} (indexing always starts at 0 not 1)
+with processor array\footnote{Palette selected to be distinguishable by
+the color blind, taken from
+\url{http://jfly.iam.u-tokyo.ac.jp/color/\#pallet}}
+(indexing always starts at 0 not 1)
 \begin{align*}
 \text{Processors = }
       \begin{array}{llllll}
@@ -202,7 +306,10 @@ With local storage view:
 \end{array}\right]_{1\times 9}
 \end{align*}
 
-This is a \emph{load balanced} approach, where we try to give each processor roughly the same amount of stuff.  Of course, that is not part of the rules of the SPMD structure, so we could just as well distribute the data like so:
+This is a \emph{load balanced} approach, where we try to give each processor
+roughly the same amount of stuff. Of course, that is not part of the
+rules of the SPMD structure, so we could just as well distribute
+the data like so:
 \begin{align*}
 x &= \left[
       \begin{array}{lllllllll}
@@ -263,9 +370,13 @@ With local storage view:
 \end{array}\right]_{2\times 9}
 \end{align*}
 
-Generally, we would recommend using a load balanced approach over this bizarre distribution, although some problems may call for very strange data distributions.
+Generally, we would recommend using a load balanced approach over this
+bizarre distribution, although some problems may call for very strange data
+distributions. For example, it is possible and common to have an empty matrix
+after some subsetting or selectation.
 
-With our first of two cumbersome data structures out of the way, we can proceed to much more interesting content: actually using MPI.
+With our first of two cumbersome data structures out of the way, we can
+proceed to much more interesting content: actually using MPI.
 
 
 
@@ -273,29 +384,44 @@ With our first of two cumbersome data structures out of the way, we can proceed 
 
 \section{Common MPI Operations}
 
-Fully explaining the process of MPI programming is a daunting task.  Thankfully, we can punt and merely highlight some key MPI operations and how one should use them with \pkg{pbdMPI}.
+Fully explaining the process of MPI programming is a daunting task.
+Thankfully, we can punt and merely highlight some key MPI operations and
+how one should use them with \pkg{pbdMPI}.
 
 
 
 \subsection{Basic Communicator Wrangling}
 
-First things first, we must examine basic communicator issues, like construction, destruction, and each processor's position within a communicator.
+First things first, we must examine basic communicator issues, like
+construction, destruction, and each processor's position within a communicator.
 
 \begin{itemize}
   \item \textbf{Managing a Communicator}:  Create and destroy communicators.\\
-  \code{init()} --- initialize communicator\\
-  \code{finalize()} --- shut down communicator(s)
+        \code{init()} --- initialize communicator\\
+        \code{finalize()} --- shut down communicator(s)
+        \index{Code!\code{init()}}\index{Code!\code{finalize()}}
   %
-  \item \textbf{Rank query}: Determine the processor's position in the communicator.\\
-  \code{comm.rank()} --- ``who am I?''\\
-  \code{comm.size()} --- ``how many of us are there?''
+  \item \textbf{Rank query}: Determine the processor's position in the
+         communicator.\\
+        \code{comm.rank()} --- ``who am I?''\\
+        \code{comm.size()} --- ``how many of us are there?''
+        \index{Code!\code{comm.rank()}}\index{Code!\code{comm.size()}}
   %
-  \item \textbf{Barrier}: No processor can proceed until \emph{all} processors can proceed.\\
-  \code{barrier()} --- ``computation wall'' that only all processors together can tear down
+  \item \textbf{Barrier}: No processor can proceed until \emph{all} processors
+        can proceed.\\
+        \code{barrier()} --- ``computation wall'' that only all processors
+        together can tear down.
+        \index{Code!\code{barrier()}}
 \end{itemize}
 
 
-One quick word before proceeding.  If a processor queries \code{comm.size()}, this will return the total number of processors in the communicators.  However, communicator indexing is like indexing in the programming language \proglang{C}.  That is, the first element is numbered 0 rather than 1.  So when the first processor queries \code{comm.rank()}, it will return 0, and when the last processor queries \code{comm.rank()}, it will return \code{comm.size() - 1}.
+One quick word before proceeding. If a processor queries
+\code{comm.size()}, this will return the total number of processors in
+the communicators. However, communicator indexing is like indexing in
+the programming language \proglang{C}. That is, the first element is
+numbered 0 rather than 1. So when the first processor queries
+\code{comm.rank()}, it will return 0, and when the last processor
+queries \code{comm.rank()}, it will return \code{comm.size() - 1}.
   
 We are finally ready to write our first MPI program:
 
@@ -309,20 +435,37 @@ print(myRank)
 finalize()
 \end{lstlisting}
 
-Unfortunately, it is not very exciting, but you have to crawl before you can drag race.  Remember that all of our programs are written in SPMD style.  So this \emph{one} single program is written, and each processor will execute the same program, but with different results, whence the name ``Single Program/Multiple Data''.  
+Unfortunately, it is not very exciting, but you have to crawl before you
+can drag race. Remember that all of our programs are written in SPMD style.
+So this \emph{one} single program is written, and each processor will
+execute the same program, but with different results, whence the name
+``Single Program/Multiple Data''.\index{Parallelism!SPMD}
 
-So what does it do?  First we initialize the MPI communicator with the call to \code{init()}.  Next, we have each processor query its rank via \code{comm.rank()}.  Since indexing of MPI communicators starts at 0, we add 1 because that is what we felt like doing.  Finally we call \proglang{R}'s \code{print()} function to print the result.  This printing is not particularly clever, and each processor will be clamoring to dump its result to the output file/terminal.  We will discuss more sophisticated means of printing later.  Finally, we shut down the MPI communicator with \code{finalize()}.
+So what does it do? First we initialize the MPI communicator with the
+call to \code{init()}. Next, we have each processor query its rank
+via \code{comm.rank()}. Since indexing of MPI communicators starts at 0,
+we add 1 because that is what we felt like doing. Finally we call
+\proglang{R}'s \code{print()} function to print the result.
+This printing is not particularly clever, and each processor will be
+clamoring to dump its result to the output file/terminal. We will discuss
+more sophisticated means of printing later. Finally, we shut down
+the MPI communicator with \code{finalize()}.
 
-If you were to save this program in the file \code{mpiex1.r} and you wished to run it with 2 processors, you would issue the command:
+If you were to save this program in the file \code{mpiex1.r} and you
+wished to run it with 2 processors, you would issue the command:
 
 \begin{Command}
 ### (Use Rscript.exe for windows system)
 mpiexec -np 2 Rscript mpiex1.r
 \end{Command}
 
-To use more processors, you modify the \code{-np} argument (``number processors'').  So if you want to use 4, you pass \code{-np 4}.
+To use more processors, you modify the \code{-np} argument
+(``number processors'').  So if you want to use 4, you pass \code{-np 4}.
 
-The above program technically, though not in spirit, bucks the trend of officially opening with a ``Hello World'' program.  So as not to incur the wrath of the programming gods, we offer a simple such example by slightly modifying the above program:
+The above program technically, though not in spirit, bucks the trend of
+officially opening with a ``Hello World'' program. So as not to incur
+the wrath of the programming gods, we offer a simple such example by
+slightly modifying the above program:
 
 \begin{lstlisting}[language=rr,title=Simple pbdMPI Example 1.5]
 library(pbdMPI, quiet = TRUE)
@@ -337,33 +480,45 @@ if (myRank == 0){
 finalize()
 \end{lstlisting}
 
-One word of general warning we offer now is that we are taking very simple approaches here for the sake of understanding, heavily relying on function argument defaults.  However, there are all kinds of crazy, needlessly complicated things you can do with these functions.  See the \pkg{pbdMPI} reference manual for full details about how one may utilize these (and other) \pkg{pbdMPI} functions.
+One word of general warning we offer now is that we are taking very simple
+approaches here for the sake of understanding, heavily relying on function
+argument defaults. However, there are all kinds of crazy, needlessly
+complicated things you can do with these functions.
+See the \pkg{pbdMPI} reference manual for full details about how one may
+utilize these (and other) \pkg{pbdMPI} functions.
 
 
 
 \subsection{Reduce, Broadcast, and Gather}
 
-Once managing a communicator is under control, you presumably want to do things with all of your processors.  The typical way you will have the processors interact is given below:
+Once managing a communicator is under control, you presumably want to do
+things with all of your processors. The typical way you will have the
+processors interact is given below:
 
 \begin{itemize}
-  \item \textbf{Reduction}:  Say each processor has a number \code{x.spmd}. Add all of them up, find the largest, find the smallest, \dots .\\
-  \code{reduce(x.spmd, op='sum')}\index{code!\code{reduce()}} ---
-    only one processor gets result (default is 0)\\
-  \code{allreduce(x.spmd, op='sum')}\index{code!\code{allreduce()}} ---
-    every processor gets result
+  \item \textbf{Reduction}: Say each processor has a number \code{x.spmd}.
+        \index{Class!\code{.spmd}}
+        Add all of them up, find the largest, find the smallest, \dots .\\
+        \code{reduce(x.spmd, op='sum')}\index{Code!\code{reduce()}} ---
+        only one processor gets result (default is 0)\\
+        \code{allreduce(x.spmd, op='sum')}\index{Code!\code{allreduce()}} ---
+        every processor gets result
   %
   \item \textbf{Gather}: Say each processor has a number.
-    Create a new object on some processor(s) containing all of those numbers.\\
-  \code{gather(x.spmd)}\index{code!\code{gather()}} ---
-    only one processor gets result\\
-  \code{allgather(x.spmd)}\index{code!\code{allgather()}} ---
-    every processor gets result
+        Create a new object on some processor(s) containing all of
+        those numbers.\\
+        \code{gather(x.spmd)}\index{Code!\code{gather()}} ---
+        only one processor gets result\\
+        \code{allgather(x.spmd)}\index{Code!\code{allgather()}} ---
+          every processor gets result
   %
-  \item \textbf{Broadcast}: One processor has a number \code{x.spmd} that every other processor should also have.\\
-  \code{bcast(x.spmd)}\index{code!\code{bcast()}}
+  \item \textbf{Broadcast}: One processor has a number \code{x.spmd} that
+        every other processor should also have.\\
+        \code{bcast(x.spmd)}\index{Code!\code{bcast()}}
 \end{itemize}
 
-Here perhaps explanations are inferior to examples; so without wasting any more time, we proceed to the next example:
+Here perhaps explanations are inferior to examples; so without wasting any
+more time, we proceed to the next example:
 
 \begin{lstlisting}[language=rr,title=Simple pbdMPI Example 2]
 library(pbdMPI, quiet = TRUE)
@@ -380,35 +535,57 @@ print(gt)
 finalize()
 \end{lstlisting}
 
-So what does it do?  First each processor samples a number from 1 to 10; it is probably true that each processor will be using a different seed for this sampling, though you should not rely on this alone to ensure good parallel seeds.  More on this particular problem in Section~\ref{sec:pbdsugar} below.
+So what does it do? First each processor samples a number from 1 to 10;
+it is probably true that each processor will be using a different seed
+for this sampling, though you should not rely on this alone to ensure
+good parallel seeds. More on this particular problem in
+Section~\ref{sec:pbdsugar} below.
 
-Next, we perform an \code{allreduce()}\index{code!\code{allreduce()}}
-on \code{n.spmd}.  Conceivably, the processors could have different values for \code{n.spmd}.  So the value of \code{n} is local to each processor.  So perhaps we want to add up all these numbers (with as many numbers as there are processors) and store them in the global value \code{sm} (for ``sum'').  Each processor will agree as to the value of \code{sm}, even if they disagree about the value of \code{n.spmd}.
+Next, we perform an \code{allreduce()}\index{Code!\code{allreduce()}}
+on \code{n.spmd}. Conceivably, the processors could have different
+values for \code{n.spmd}.\index{Class!\.spmd} So the value of \code{n} is
+local to each processor. So perhaps we want to add up all these numbers (with
+as many numbers as there are processors) and store them in the global value
+\code{sm} (for ``sum''). Each processor will agree as to the value
+of \code{sm}, even if they disagree about the value of \code{n.spmd}.
 
 Finally, we do the same but with an
-\code{allgather()}\index{code!\code{allgather()}} operation.  
+\code{allgather()}\index{Code!\code{allgather()}} operation.
 
-Try experimenting with this by running the program several times.  You should get different results each time.  To make sure we have not been lying to you about what is happening, you can even print the values of \code{n.spmd} before the reduce and gather operations.
+Try experimenting with this by running the program several times.
+You should get different results each time. To make sure we have not
+been lying to you about what is happening, you can even print the values
+of \code{n.spmd} before the reduce and gather operations.
 
 
 
 \subsection{Printing and RNG Seeds}\label{sec:pbdsugar}
 
-In addition to the above common MPI operations, which will make up the bulk of the MPI programmer's toolbox, we offer a few extra utility functions:
+In addition to the above common MPI operations, which will make up the bulk of
+the MPI programmer's toolbox, we offer a few extra utility functions:
 
 \begin{itemize}
   \item \textbf{Print}: printing with control over which processor prints.\\
-  \code{comm.print(x, \dots)}\\
-  \code{comm.cat(x, \dots)}
+        \code{comm.print(x, \dots)}\\
+        \code{comm.cat(x, \dots)}
+        \index{Code!\code{comm.print()}}\index{Code!\code{comm.cat()}}
   %
   \item \textbf{Random Seeds}: \\
-  \code{comm.set.seed(seed, diff=FALSE)}:  every processor uses the seed \code{seed}
-  \code{comm.set.seed(diff=TRUE)}: every processor uses an independent seed (via \pkg{rlecuyer})
+        \code{comm.set.seed(seed, diff=FALSE)}: every processor uses the
+        seed \code{seed}\index{Code!\code{comm.set.seed()}} \\
+        \code{comm.set.seed(diff=TRUE)}: every processor uses an independent
+        seed (via \pkg{rlecuyer})\index{Package!\pkg{rlecuyer}}
 \end{itemize}
 
-The \code{comm.print()} and \code{comm.cat()} functions are especially handy, because they are much more sophisticated than their \code{R} counterparts when using multiple processes.  These functions which processes do the printing, and if you choose to have all processes print their result, then the printing occurs in an orderly fashion, with processor 0 getting the first line, processor 1 getting the second, and so on.
+The \code{comm.print()} and \code{comm.cat()} functions are especially handy,
+because they are much more sophisticated than their \proglang{R} counterparts
+when using multiple processes. These functions which processes do the
+printing, and if you choose to have all processes print their result, then
+the printing occurs in an orderly fashion, with processor 0 getting the
+first line, processor 1 getting the second, and so on.
 
-For example, revisiting our ``Hello, world'' example, we can somewhat simplify the code with a slight modification:
+For example, revisiting our ``Hello, world'' example, we can somewhat
+simplify the code with a slight modification:
 
 \begin{lstlisting}[language=rr,title=Simple pbdMPI Example 3]
 library(pbdMPI, quiet = TRUE)
@@ -421,21 +598,34 @@ comm.print("Hello, world.")
 finalize()
 \end{lstlisting}
 
-If we want to see what each processor has to say, we can pass the optional argument \code{all,rank=TRUE} to \code{comm.print()}.  By default, each process will print its rank, then what you told it to print.  You can suppress the printing of communicator rank via the optional argument \code{quiet=TRUE} to \code{comm.print()}.
+If we want to see what each processor has to say, we can pass the optional
+argument \code{all,rank=TRUE} to \code{comm.print()}. By default, each process
+will print its rank, then what you told it to print. You can suppress the
+printing of communicator rank via the optional argument \code{quiet=TRUE}
+to \code{comm.print()}.
 
 These functions are quite handy\dots
 \begin{center}
 \colorbox{yellow}{\Huge \color{red}{\#\#\#\#\# HOWEVER \#\#\#\#\# }}  
 \end{center}
-these functions are potentially dangerous, and so some degree of care should be exercised.  Indeed, it is possible to lock up all of the active \proglang{R} sessions by incorrectly using them.  Worse, achieving this behavior is fairly easy to do.  The way this occurs is by issuing a \code{comm.print()} on an expression which requires communication.  For example, suppose we have a distributed object with local piece \code{x.spmd} and a function \code{myFunction()} which requires communication between the processors.  Then calling
+these functions are potentially dangerous, and so some degree of care
+should be exercised. Indeed, it is possible to lock up all of the
+active \proglang{R} sessions by incorrectly using them. Worse, achieving
+this behavior is fairly easy to do. The way this occurs is by issuing
+a \code{comm.print()} on an expression which requires communication.
+For example, suppose we have a distributed object with local piece
+\code{x.spmd} and a function \code{myFunction()} which requires
+communication between the processors. Then calling
 \begin{lstlisting}[language=rr,title=A Cautionary Tale of Printing in Parallel (1 of 3)]
 print(myFunction(x.spmd)) 
 \end{lstlisting}
-is just fine, but will not have the nice orderly, behaved printing style of \code{comm.print()}.  However, if we issue
+is just fine, but will not have the nice orderly, behaved printing style
+of \code{comm.print()}. However, if we issue
 \begin{lstlisting}[language=rr,title=A Cautionary Tale of Printing in Parallel (2 of 3)]
 comm.print(myFunction(x.spmd)) 
 \end{lstlisting}
-then we have just locked up all of the \proglang{R} processes.  Indeed, behind the scenes, a call somewhat akin to 
+then we have just locked up all of the \proglang{R} processes. Indeed,
+behind the scenes, a call somewhat akin to
 \begin{lstlisting}[language=rr]
 for (rank in 0:comm.size()){
   if (comm.rank() == rank){
@@ -444,15 +634,24 @@ for (rank in 0:comm.size()){
   barrier()
 }
 \end{lstlisting}
-has been ordered.  The problem arises in the ``do things'' part.  Since (in our hypothetical example) the function \code{myFunction()} requires communication between the processors, it will simply wait forever for the others to respond until the job is killed.  This is because the other processors skipped over the ``do things'' part and are waiting at the barrier.  So lonely little processor 0 has been stood up, unable to communicate with the remaining processors.
+has been ordered. The problem arises in the ``do things'' part. Since
+(in our hypothetical example) the function \code{myFunction()} requires
+communication between the processors, it will simply wait forever for
+the others to respond until the job is killed. This is because the other
+processors skipped over the ``do things'' part and are waiting at the barrier.
+So lonely little processor 0 has been stood up, unable to communicate with
+the remaining processors.
 
-To avoid this problem, make it a personal habit to only print on \emph{results}, not \emph{computations}.  We can quickly rectify the above example by doing the following:
+To avoid this problem, make it a personal habit to only print on
+\emph{results}, not \emph{computations}. We can quickly rectify the above
+example by doing the following:
 \begin{lstlisting}[language=rr,title=A Cautionary Tale of Printing in Parallel (3 of 3)]
 myResult <- myFunction(x.spmd)
 comm.print(myResult)
 \end{lstlisting}
 
-In short, printing stored objects is safe.  Printing a yet-to-be-evaluated expression is not safe.
+In short, printing stored objects is safe. Printing a yet-to-be-evaluated
+expression is not safe.
 
 
 
@@ -460,13 +659,18 @@ In short, printing stored objects is safe.  Printing a yet-to-be-evaluated expre
 
 \subsection{Apply, Lapply, and Sapply}\label{sec:pbdsugar2}
 
-But the \pkg{pbdMPI} sugar extends to more than just printing.  We also have a family of ``*ply'' functions, in the same vein as \proglang{R}'s \code{apply()}, \code{lapply()}, and \code{sapply()}:
+But the \pkg{pbdMPI} sugar extends to more than just printing. We also have a
+family of ``*ply'' functions, in the same vein as \proglang{R}'s
+\code{apply()}, \code{lapply()}, and \code{sapply()}:
 \begin{itemize}
   \item \textbf{Apply}: *ply-like functions.\\
   \code{pbdApply(X, MARGIN, FUN, \dots)} --- analogue of \code{apply()}\\
   \code{pbdLapply(X, FUN, \dots)} --- analogue of \code{lapply()}\\
   \code{pbdSapply(X, FUN, \dots)} --- analogue of \code{sapply()}\\
 \end{itemize}
+\index{Code!\code{pbdApply}}
+\index{Code!\code{pbdLapply}}
+\index{Code!\code{pbdSapply}}
 
 Here is a simple example utilizing \code{pbdLapply()}:
     
@@ -482,7 +686,11 @@ comm.print(unlist(sm))
 finalize()
 \end{lstlisting}
 
-So what does it do?  Why don't you tell us?  We're busy people, after all, and we're not going to be around forever.  Try guessing what it will do, then run the program to see if you are correct.  As you evaluate this and every parallel code, ask yourself which pieces involve communication and which pieces are local computations.
+So what does it do? Why don't you tell us? We're busy people, after all,
+and we're not going to be around forever. Try guessing what it will do,
+then run the program to see if you are correct. As you evaluate this and
+every parallel code, ask yourself which pieces involve communication and
+which pieces are local computations.
 
 
 
@@ -490,9 +698,21 @@ So what does it do?  Why don't you tell us?  We're busy people, after all, and w
 
 \section{Timing MPI Tasks}
 
-Measuring run time is a fundamental performance measure in computing.  However, in parallel computing, not all ``parallel components'' (e.g. threads, or MPI processes) will take the same amount of time to complete a task, even when all tasks are given completely identical jobs.  So measuring ``total run time'' begs the question, run time of what?
+Measuring run time is a fundamental performance measure in computing.
+However, in parallel computing, not all ``parallel components'' (e.g.
+threads, or MPI processes) will take the same amount of time to complete
+a task, even when all tasks are given completely identical jobs.
+So measuring ``total run time'' begs the question, run time of what?
 
-To help, we offer a timing function \code{demo.timer()} which can wrap segments of code much in the same way that \code{system.time()} does.  However, the three numbers reported by \code{demo.timer()} are: (1) the minimum elapsed time measured across all processes, (2) the average elapsed time measured across all processes, and (3) the maximum elapsed time across all processes.  The code for this function is listed below:
+To help, we offer a timing function \code{demo.timer()} which can wrap
+segments of code much in the same way that \code{system.time()} does.
+However, the three numbers reported by \code{demo.timer()} are:
+\begin{itemize}
+\item the minimum elapsed time measured across all processes,
+\item the average elapsed time measured across all processes, and
+\item the maximum elapsed time across all processes.
+\end{itemize}
+The code for this function is listed below:
 
 \begin{lstlisting}[language=rr,title=Timer Function]
 demo.timer <- function(timed)
@@ -514,13 +734,31 @@ demo.timer <- function(timed)
 \label{sec:mpi_for_the_r_user_exercise}
 
 \begin{enumerate}[label=\thechapter-\arabic*]
-\item Write a script that will have each processor randomly take a sample of size 1 of \code{TRUE} and \code{FALSE}.  Have each processor print its result.\label{ex:mpi1}
-\item Modify the script in Exercise~\ref{ex:mpi1} above to determine if any processors sampled \code{TRUE}.  Do the same to determine if all processors sampled \code{TRUE}.  In each case, print the result.  Compare to the functions \code{comm.all()} and \code{comm.any()}.
+\item Write a script that will have each processor randomly take a sample of
+      size 1 of \code{TRUE} and \code{FALSE}. Have each processor print its
+      result.\label{ex:mpi1}
+
+\item Modify the script in Exercise~\ref{ex:mpi1} above to determine if any
+      processors sampled \code{TRUE}. Do the same to determine if all
+      processors sampled \code{TRUE}. In each case, print the result. Compare
+      to the functions \code{comm.all()} and \code{comm.any()}.
       {\color{blue} Hint:  use \code{allreduce()}.}
+      \index{Code!\code{comm.all()}}\index{Code!\code{comm.any()}}
+
 \item In \pkg{pbdMPI}, there is a parallel sorting function called
-\code{comm.sort()} which is similar to the usual \code{sort()} of \proglang{R}.
-Implement parallel equivalents to the usual \code{order()} and \code{rank()}
-of \proglang{R}.
+      \code{comm.sort()} which is similar to the usual \code{sort()}
+      of \proglang{R}. Implement parallel equivalents to the
+      usual \code{order()} and \code{rank()} of
+      \proglang{R}.\label{ex:mpi2}\index{Code!\code{comm.sort()}}
+
+\item Time the performance of Exercise~\ref{ex:mpi2}.
+      Identify the need of MPI communications for different sorting or
+      ordering algorithms.
+
+\item There are similar functions *ply-like functions in several \proglang{R}
+      packages such as \pkg{parallel}.\index{Package!\pkg{parallel}}
+      Try to compare the difference and performance of those *ply-like
+      functions.
 
 \end{enumerate}
 

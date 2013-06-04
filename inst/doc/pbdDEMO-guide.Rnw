@@ -149,6 +149,8 @@ This publication was typeset using \LaTeX.  The illustrations were created using
 \part{Appendix}
 \appendix
 \input{./pbdDEMO-include/appendix}
+% references and indexes
+\part{Miscellany}
 
 %
 \newpage
