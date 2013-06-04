@@ -47,8 +47,8 @@ for $n = 1, 2, \ldots, N$
 indicates the membership of the observations of the data set $\bX$.
 
 
-The \pkg{mclust}~\citep{mclust}~\index{mclust} and
-\pkg{EMCluster}~\citep{Chen2012EMClusterpackage}~\index{EMCluster} packages
+The \pkg{mclust}~\citep{mclust}\index{package!\pkg{mclust}} and
+\pkg{EMCluster}~\citep{Chen2012EMClusterpackage}\index{package!\pkg{EMCluster}} packages
 are the two main \proglang{R} packages implementing the EM algorithm for the
 model-based clustering.
 The \pkg{mclust} package has several selections on different kinds of models one may fit, while \pkg{EMCluster} 
@@ -71,7 +71,8 @@ However, due to its strict assumptions, the cluster results are almost always un
 
 \subsection{Parallel Model-Based Clustering}
 
-The \pkg{pmclust}~\citep{Chen2012pmclustpackage}~\index{pmclust} package is an \proglang{R}
+The \pkg{pmclust}~\citep{Chen2012pmclustpackage}\index{package!\pkg{pmclust}}
+package is an \proglang{R}
 package for parallel model-based clustering based on Gaussian mixture models
 with unstructured dispersions.  The package uses data parallelism to solve one very large clustering problem, rather than the embarrassingly parallel problem of fitting many independent models to dataset(s).  This approach is especially useful for large, distributed platforms, where the data will be distributed across nodes.  And of course it is worth nothing that the package does not merely perform a local clustering operation on the local data pieces; some \code{gather} and \code{reduce} operations are necessary at some stages of the distributed EM algorithm.
 
@@ -93,7 +94,7 @@ is a product for the project
 ``Visual Data Exploration and Analysis of Ultra-large Climate Data''
 supported by U.S. DOE Office of Science.
 
-The \pkg{pmclust} package initially depended on \pkg{Rmpi}, but
+The \pkg{pmclust} package initially depended on \pkg{Rmpi}\index{package!\pkg{Rmpi}}, but
 designed in SPMD approach rather than in the master/worker paradigm even before
 \proglang{pbdR} existed.
 Later, it migrated to use \pkg{pbdMPI}~\citep{Chen2012pbdMPIpackage}
@@ -166,7 +167,8 @@ iris species. It can be obtained by executing:
 \begin{Code}[title=R Code]
 R> demo(iris_overlap, 'pbdDEMO', ask = F, echo = F)
 \end{Code}
-which utilizes the \code{overlap} function of \pkg{MixSim}~\citep{Melnykov2012}~\index{MixSim}.
+which utilizes the \code{overlap} function of
+\pkg{MixSim}~\citep{Melnykov2012}\index{package!\pkg{MixSim}}.
 The output is:
 \begin{CodeOutput}
 R> (ret <- overlap(ETA, MU, S))
@@ -210,7 +212,7 @@ We validate the results by comparing the clustering ids
 to the true class ids using adjusted Rand index
 (ARI)~\citep{Hubert1985}~\index{ARI}\index{adjusted Rand index}.
 The ARI takes values between -1 and 1, where 1 is a perfect
-match. The function \code{RRand} in \pkg{MixSim}
+match. The function \code{RRand()} in \pkg{MixSim}
 also provides the ARI.
 
 The analysis in the unsupervised learning approach proceeds as follows:
@@ -239,7 +241,7 @@ mpiexec -np 4 Rscript -e "demo(iris_serial, 'pbdDEMO', ask=F, echo=F)"
 
 The code is fairly self-explanatory, and well-commented besides, so we will leave it as an exercise to the reader to read through it carefully.
 
-Running this demo should produce an ouput that looks something like the following:
+Running this demo should produce an output that looks something like the following:
 \begin{Output}
  Sepal.Length   Sepal.Width  Petal.Length   Petal.Width 
 -4.480675e-16  2.035409e-16 -2.844947e-17 -3.714621e-17 
@@ -308,7 +310,7 @@ mpiexec -np 4 Rscript -e "demo(iris_spmd, 'pbdDEMO', ask=F, echo=F)"
 \end{Command}
 
 \subsubsection{Sample Outputs}
-Running this script should produce an ouput that looks something like the following:
+Running this script should produce an output that looks something like the following:
 \begin{Output}
 COMM.RANK = 0
 [1] 2.547376e-14 8.076873e-15 4.440892e-14
@@ -350,7 +352,7 @@ mpiexec -np 4 Rscript -e "demo(iris_dmat, 'pbdDEMO', ask=F, echo=F)"
 
 
 \subsubsection{Sample Outputs}
-Running this script should produce an ouput that looks something like the following:
+Running this script should produce an output that looks something like the following:
 \begin{Output}
 Using 2x2 for the default grid size
 

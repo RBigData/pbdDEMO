@@ -38,7 +38,8 @@ but now suppose that our processors form a 2-dimensional grid of size $2\times3$
 \right]
 \end{align*}
 
-with the usual MPI processor rank on the left, and the corresponding BLACS~\index{BLACS} processor grid position on the right.  But this isn't the only wrinkle.  Not only are we going to distribute our data on a 2-dimensional grid of processors (for very good reasons that are difficult to impart to the reader at this time), we are going to do so in \emph{block-cyclic} fashion.  To do this, we are going to declare a \emph{blocking factor}, which is an ordered pair, describing the decomposition size in each dimension of the matrix we wish to distribute.  The process can be difficult to imagine, so it is perhaps best to proceed with our example.
+with the usual MPI processor rank on the left, and the corresponding
+BLACS~\index{BLACS} processor grid position on the right.  But this isn't the only wrinkle.  Not only are we going to distribute our data on a 2-dimensional grid of processors (for very good reasons that are difficult to impart to the reader at this time), we are going to do so in \emph{block-cyclic} fashion.  To do this, we are going to declare a \emph{blocking factor}, which is an ordered pair, describing the decomposition size in each dimension of the matrix we wish to distribute.  The process can be difficult to imagine, so it is perhaps best to proceed with our example.
 
 To distribute this data across our 6 processors in the form of a $2\times 3$ process grid in $2\times 2$ blocks, we go in a ``round robin'' fashion, assigning $2\times 2$ submatrices of the original matrix to the appropriate processor, starting with processor $(0, 0)$.  Then, if possible, we move on to the next $2\times 2$ block of $x$ and give it to processor $(0, 1)$.  We continue in this fashion with $(0,2)$ if necessary, and if there is yet more of $x$ in that row still without ownership, we cycle back to processor $(0,0)$ and start over, continuing in this fashion until there is nothing left to distribute in that row.
 
@@ -116,14 +117,15 @@ x &= \left[
 \right]_{4\times 2}
 \end{align*}
 
-Especially at first introduction, this can be a very confusing distribution.  However, it is a very robust, useful data structure for certain kinds of linear algebra computations.  This is the data structure of ScaLAPACK,~\index{ScaLAPACK} which has more than proven itself in terms of performance.  
+Especially at first introduction, this can be a very confusing distribution.  However, it is a very robust, useful data structure for certain kinds of linear algebra computations.  This is the data structure of
+ScaLAPACK,~\index{ScaLAPACK} which has more than proven itself in terms of performance.  
 
 You \emph{could} use some more natural data distributions than the above.  However, this may have a substantial impact on performance, depending on the kinds of operations you wish to do.  For things that make extensive use of linear algebra --- particularly matrix factorizations --- you are probably much better off using the above kind of block-cyclic data distribution.  These different processor grid shapes are referred to as \emph{contexts}.  They are actually specialized MPI communicators.  By default, the recommended (easy) way of managing these contexts with \pkg{pbdDMAT} is to call
 \begin{lstlisting}[language=rr]
 library(pbdDMAT, quiet = TRUE)
 init.grid()
 \end{lstlisting}
-The call to \code{init.grid()} will initialize three such contexts, named 0, 1, and 2.  Context 0 is a communicator with processors as close to square as possible, like above.  This can be confusing if you ever need to directly manipulate this data structure, but \pkg{pbdDMAT} contains \emph{numerous} helpler methods to make this process painless, often akin to manipulating an ordinary, non-distributed \proglang{R} data structure.  Context 1 puts the processors in a 1-dimensional grid consisting of 1 row.  Continuing with our example, the processors form the grid:
+The call to \code{init.grid()} will initialize three such contexts, named 0, 1, and 2.  Context 0 is a communicator with processors as close to square as possible, like above.  This can be confusing if you ever need to directly manipulate this data structure, but \pkg{pbdDMAT} contains \emph{numerous} helper methods to make this process painless, often akin to manipulating an ordinary, non-distributed \proglang{R} data structure.  Context 1 puts the processors in a 1-dimensional grid consisting of 1 row.  Continuing with our example, the processors form the grid:
 \begin{align*}
 \text{Processors = }
 \left[
@@ -384,7 +386,10 @@ In these examples, we will examine the case where you know ahead of time what th
 
 \subsection{Constructing Simple Distributed Matrices}
 
-It is possible to construct fairly simple distributed matrices much in the same way that one can construct simple matrices in \proglang{R}.  We can do this using the functions \code{ddmatrix()} and \code{as.ddmatrix()}.  The former essentially behaves identically to \proglang{R}'s own \code{matrix()} function.  This function takes a global input vector/matrix \code{data=}, as well as the global number of rows \code{nrow=} and the global number of columns \code{ncol=}.  Additionally, the user may specify the blocking factor \code{bldim=} and the BLACS~\index{BLACS} context \code{CTXT}, and the return is a distributed matrix.  For instance, we can specify
+It is possible to construct fairly simple distributed matrices much in the same way that one can construct simple matrices in \proglang{R}.  We can do this using the functions
+\code{ddmatrix()}\index{code!\code{ddmatrix()}} and
+\code{as.ddmatrix()}.\index{code!\code{as.ddmatrix()}}
+The former essentially behaves identically to \proglang{R}'s own \code{matrix()} function.  This function takes a global input vector/matrix \code{data=}, as well as the global number of rows \code{nrow=} and the global number of columns \code{ncol=}.  Additionally, the user may specify the blocking factor \code{bldim=} and the BLACS~\index{BLACS} context \code{CTXT}, and the return is a distributed matrix.  For instance, we can specify
 \begin{lstlisting}[language=rr,title=ddmatrix()]
 dx <- ddmatrix(data=0, nrow=10, ncol=10)
 \end{lstlisting}
@@ -429,7 +434,8 @@ Other, more general combinations are possible through other means, but they are 
 
 \subsection{Diagonal Distributed Matrices}\label{sub:diag}
 
-\emph{Example:  construct \textbf{diagonal} distributed matrices of specificed global dimension.}
+\emph{Example:  construct \textbf{diagonal} distributed matrices of specified
+global dimension.}
 
 The demo command is
 \begin{Command}
@@ -545,8 +551,9 @@ So here, we assume that the local dimension is chosen appropriately by the user,
 \item
 Random number generation (RNG) is used in this Section such as \code{rnorm()}.
 In \proglang{pbdR}, we use an \proglang{R} package
-\pkg{rlecuyer}~\citep{rlecuyer} to set different streams of seed in
-parallel. Try to find and use other RNG methods and implementation
+\pkg{rlecuyer}~\citep{rlecuyer}\index{package!\pkg{rlecuyer}}
+to set different streams of seed in
+parallel. Try to find and use other RNG methods or implementations
 in \proglang{R}.
 
 \end{enumerate}

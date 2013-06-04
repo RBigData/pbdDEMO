@@ -2,9 +2,9 @@
 \label{sec:statistics_examples}
 
 This section introduces a few simple examples and explains a little about computing with 
-distributed data directly over MPI. 
+distributed data directly over MPI.\index{MPI} 
 These implemented examples/functions are partly
-selected from the Cookbook of HPSC website~\citep{hpsc2011} at
+selected from the Cookbook of HPSC website~\citep{hpsc2011}\index{HPSC} at
 \url{http://thirteen-01.stat.iastate.edu/snoweye/hpsc/?item=cookbook}.
 
 
@@ -248,8 +248,10 @@ Here, a numerical function is solved by using \code{uniroot()} to find out
 the appropriate value where the cumulative probability is less than
 or equal to the specified quantile.  Specifically, it finds the zero, or root, of the monotone \code{f.quantile()} function.  This simple example shows that with just a little effort, direct MPI methods are greatly applicable on large scale data analysis and likelihood computing.
 
-Note that in the way that the \code{uniroot()} call is used above, we are legitimately operating in parallel and on distributed
-data.  Other optimization functions such as \code{optim()} and \code{nlm()}
+Note that in the way that the \code{uniroot()}\index{code!\code{uniroot()}} call is used above, we are legitimately operating in parallel and on distributed
+data.  Other optimization functions such as
+\code{optim()}\index{code!\code{optim()}}
+and \code{nlm()}\index{code!\code{nlm()}}
 can be utilized in the same way.
 
 
@@ -318,7 +320,7 @@ While this is a fine demonstration of the power of ``getting your hands dirty'',
 has numerical stability issues.  Instead, it is generally better (although much slower) to take an orthogonal factorization of the data matrix.  See Appendix~\ref{apx:numlinalg} for details.
 
 Finally, all of the above assumes that the model matrix $\bX$ is full rank.  However, we have implemented an efficient method of solving linear least squares problems in \pkg{pbdDMAT}'s
-\code{lm.fit()}~\index{\code{lm.fit()}}
+\code{lm.fit()}~\index{code!\code{lm.fit()}}
 method for distributed matrices.  This method uses a fully parallel rank-revealing
 QR Decomposition~\index{QR}
 to find the least squares solution.  So for larger problems, and especially those where numerical accuracy is important or rank-degeneracy is a possibility, it is much better to simply convert \code{y.spmd} and \code{X.spmd} into the block-cyclic format as in Part~\ref{part:dmat} and utilize \pkg{pbdBASE} and \pkg{pbdDMAT} for all matrix computations.

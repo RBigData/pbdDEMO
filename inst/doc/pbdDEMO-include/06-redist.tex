@@ -15,7 +15,8 @@ The demo command is
 mpiexec -np 4 Rscript -e "demo(reblock,'pbdDEMO',ask=F,echo=F)"
 \end{Command}
 
-The distributed matrix class \code{ddmatrix} has two components which can be specified, and modified, by the user to drastically affect the composition of the distributed matrix.  In particular, these are the object's block-cyclic blocking factor \code{bldim}, and the BLACS~\index{BLACS} communicator number \code{CTXT} which sets the 2-dimensional processor grid.  
+The distributed matrix class \code{ddmatrix}\index{class!\code{ddmatrix}}
+has two components which can be specified, and modified, by the user to drastically affect the composition of the distributed matrix.  In particular, these are the object's block-cyclic blocking factor \code{bldim}, and the BLACS~\index{BLACS} communicator number \code{CTXT} which sets the 2-dimensional processor grid.  
 
 Thankfully, redistributing is a fairly simple process; though we would emphasize that \textbf{this is not free of cost}.  Reshaping data, especially at scale, can be much more expensive in total than even computation time.  That said, sometimes data must move.  It is better to get the job done slowly than to ``take your ball and go home'' with no results.  But we caution that if redistribution can be avoided, then it should, at all costs.
 
@@ -90,7 +91,7 @@ dx <- dx[, -1, ICTXT=2]
 result <- apply(dx, MARGIN=2, FUN=function(col) shapiro.test(col)$p, reduce=TRUE)
 \end{lstlisting}
 
-This is equvalent to explicitly calling:
+This is equivalent to explicitly calling:
 
 \begin{lstlisting}[language=rr,title=Implicit Redistributions]
 dx <- redistribute(dx, ICTXT=2)
@@ -117,9 +118,9 @@ mpiexec -np 4 Rscript -e "demo(balance,'pbdDEMO',ask=F,echo=F)"
 \end{Command}
 
 Suppose we have an unbalanced, distributed input matrix \code{X.spmd}.  We can call \code{balance.info()} on this object to store some information about how to balance the data load across all processors.  This can be useful for tracking data movement, as well as for ``unbalancing'' later, if we so choose.  Next, we call
-\code{load.balance()}~\index{\code{load.balance()}}
+\code{load.balance()}~\index{code!\code{load.balance()}}
 to obtain a load-balanced object \code{new.X.spmd}.  We can also now undo this entire process and get back to \code{X.spmd} by calling
-\code{unload.balance()}~\index{\code{unload.balance()}} on \code{new.X.spmd}.
+\code{unload.balance()}~\index{code!\code{unload.balance()}} on \code{new.X.spmd}.
 
 
 All together, the code looks something like:
@@ -196,10 +197,13 @@ Both are distributed row-wise in 4 processors.  The colors represent processors 
 \end{figure}
  
 
-The function \code{balance.info()} is extremely useful, because it will return the information used to load balance the given data \code{X.spmd}.  The return of \code{balance.info()} is a list consisting of two dataframes, \code{send} and \code{recv}, as well as two vectors, \code{N.allspmd} and \code{new.N.allspmd}.  
+The function \code{balance.info()} is extremely useful, because it will return the information used to load balance the given data \code{X.spmd}.  The return of \code{balance.info()} is a list consisting of two data frames,
+\code{send()} and \code{recv()}, as well as two vectors,
+\code{N.allspmd} and \code{new.N.allspmd}.  
 
 Here, \code{send} records the original processor rank and the destination processor rank of the unbalanced data (that which is to be transmitted by that processor).
-The \code{load.balance()} function uses this table to move the data via \pkg{pbdMPI}'s \code{isend()} function.
+The \code{load.balance()}\index{code!\code{load.balance()}}
+function uses this table to move the data via \pkg{pbdMPI}'s \code{isend()} function.
 If any ``destination rank'' is not the ``original rank'', then the corresponding data row will be moved to the appropriate processor.  On the other hand, \code{recv} records the original processor rank and the destination rank of balanced data (that which is received by that processor).
 
 The \code{N.allspmd} and \code{new.N.allspmd} objects both have length equal to the communicator containing all numbers of rows of \code{X.spmd} before and after the balancing, respectively. This is for double checking and avoiding a 0-row matrix issue.
@@ -228,7 +232,7 @@ The final redistribution challenge we will present is taking an object in SPMD f
 
 The Figure~\ref{fig:spmd_dmat} illustates an example \code{X.spmd} and \code{X.dmat} conversion.  For full details about the block-cyclic data format used for class \code{ddmatrix}, see the \pkg{pbdDMAT} vignette.  
 
-To perform such a redistribution, one simply needs to call:~\index{\code{spmd2dmat()}}\index{\code{dmat2spmd()}}
+To perform such a redistribution, one simply needs to call:~\index{code!\code{spmd2dmat()}}\index{code!\code{dmat2spmd()}}
 \begin{Code}[title=R Code]
 X.dmat <- spmd2dmat(X.spmd)
 \end{Code}
@@ -326,7 +330,7 @@ In the Sections~\ref{sec:lb_ub} and \ref{sec:spmd_dmat},
 we have seen the load balance of SPMD matrix
 and the conversion between SPMD and DMAT where SPMD matrices \code{X.spmd}
 are presumed in row-major as shown in
-the Firgures~\ref{fig:load_balance} and \ref{fig:spmd_dmat}.
+the Figures~\ref{fig:load_balance} and \ref{fig:spmd_dmat}.
 Create new functions
 \code{spmdr2spmdc()} and \code{spmdc2spmdr()} converting between
 row-major and column-major by utilizing functions \code{spmd2dmat()}

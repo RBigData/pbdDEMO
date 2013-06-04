@@ -9,12 +9,14 @@
 Cicero once said that ``If you have a garden and a library, you have everything you need.''  So in that spirit, for the next two chapters we will use the MPI library to get our hands dirty and root around in the dirt of low-level MPI programming.
 
 \section{MPI Basics}
+\index{MPI}
 
 In a sense, Cicero (in the above tortured metaphor) was quite right.  MPI is all that we \emph{need} in the same way that I might only \emph{need} bread and cheese, but really what I \emph{want} is a pizza.  MPI is somewhat low-level and can be quite fiddly, but mastering it adds a very powerful tool to the repertoire of the parallel \proglang{R} programmer, and is essential for anyone who wants to do large scale development of parallel codes.  
 
 ``MPI'' stands for ``Message Passing Interface''.  How it really works goes \emph{well} beyond the scope of this document.  But at a basic level, the idea is that the user is running a code on different compute nodes that (usually) can not directly modify objects in each others' memory.  In order to have all of the nodes working together on a common problem, data and computation directives are passed around over the network (often over a specialized link called infiniband).  
 
-At its core, MPI is a standard interface for managing communications (data and instructions) between different nodes or computers.  There are several major implementations of this standard, and the one you should use may depend on the machine you are using.  	But this is a compiling issue, so user programs are unaffected beyond this minor hurdle.  Some of the most well-known implementations are OpenMPI, MPICH2, and Cray MPT. 
+At its core, MPI is a standard interface for managing communications (data and instructions) between different nodes or computers.  There are several major implementations of this standard, and the one you should use may depend on the machine you are using.  	But this is a compiling issue, so user programs are unaffected beyond this minor hurdle.  Some of the most well-known implementations are
+OpenMPI,\index{OpenMPI} MPICH2,\index{MPICH2} and Cray MPT.\index{MPT}
 
 At the core of using MPI is the \emph{communicator}.  At a technical level, a communicator is a pretty complicated data structure, but these deep technical details are not necessary for proceeding.  We will instead think of it somewhat like the post office.  When we wish to send a letter (communication) to someone else (another processor), we merely drop the letter off at a post office mailbox (communicator) and trust that the post office (MPI) will handle things accordingly (sort of).  
 
@@ -38,14 +40,17 @@ More details and numerous examples using MPI with \proglang{R} are available in 
 
 \section{pbdMPI vs Rmpi}
 
-There is another package on the CRAN which the \proglang{R} programmer may use to interface with MPI, namely \pkg{Rmpi}\index{Rmpi} \citep{Rmpi}.  There are several issues one must consider when choosing which package to use if one were to only use one of them.
+There is another package on the CRAN which the \proglang{R} programmer may use to interface with MPI, namely
+\pkg{Rmpi}\index{package!\pkg{Rmpi}}~\citep{Rmpi}.  There are several issues one must consider when choosing which package to use if one were to only use one of them.
 \begin{enumerate}
  \item $(+)$ \pkg{pbdMPI} is easier to install than \pkg{Rmpi}
  \item $(+)$ \pkg{pbdMPI} is easier to use than \pkg{Rmpi}
  \item\label{enum:perf} $(+)$ \pkg{pbdMPI} can often outperform \pkg{Rmpi}
  \item\label{enum:integrate} $(+)$ \pkg{pbdMPI} integrates with the rest of pbd
  %
- \item\label{enum:dompi} $(-)$ \pkg{Rmpi} can be used with \pkg{foreach} \citep{foreach} via \pkg{doMPI} \citep{dompi}
+ \item\label{enum:dompi} $(-)$ \pkg{Rmpi} can be used with
+\pkg{foreach}~\citep{foreach}\index{package!\pkg{foreach}} via
+\pkg{doMPI}~\citep{dompi}\index{package!\pkg{doMPI}}
  \item $(-)$ \pkg{Rmpi} can be used in the master/worker paradigm
 \end{enumerate}
 
@@ -342,15 +347,20 @@ Once managing a communicator is under control, you presumably want to do things 
 
 \begin{itemize}
   \item \textbf{Reduction}:  Say each processor has a number \code{x.spmd}. Add all of them up, find the largest, find the smallest, \dots .\\
-  \code{reduce(x.spmd, op='sum')} --- only one processor gets result (default is 0)\\
-  \code{allreduce(x.spmd, op='sum')} --- every processor gets result
+  \code{reduce(x.spmd, op='sum')}\index{code!\code{reduce()}} ---
+    only one processor gets result (default is 0)\\
+  \code{allreduce(x.spmd, op='sum')}\index{code!\code{allreduce()}} ---
+    every processor gets result
   %
-  \item \textbf{Gather}: Say each processor has a number. Create a new object on some processor(s) containing all of those numbers.\\
-  \code{gather(x.spmd)} --- only one processor gets result\\
-  \code{allgather(x.spmd)} --- every processor gets result
+  \item \textbf{Gather}: Say each processor has a number.
+    Create a new object on some processor(s) containing all of those numbers.\\
+  \code{gather(x.spmd)}\index{code!\code{gather()}} ---
+    only one processor gets result\\
+  \code{allgather(x.spmd)}\index{code!\code{allgather()}} ---
+    every processor gets result
   %
   \item \textbf{Broadcast}: One processor has a number \code{x.spmd} that every other processor should also have.\\
-  \code{bcast(x.spmd)}
+  \code{bcast(x.spmd)}\index{code!\code{bcast()}}
 \end{itemize}
 
 Here perhaps explanations are inferior to examples; so without wasting any more time, we proceed to the next example:
@@ -372,9 +382,11 @@ finalize()
 
 So what does it do?  First each processor samples a number from 1 to 10; it is probably true that each processor will be using a different seed for this sampling, though you should not rely on this alone to ensure good parallel seeds.  More on this particular problem in Section~\ref{sec:pbdsugar} below.
 
-Next, we perform an \code{allreduce()} on \code{n.spmd}.  Conceivably, the processors could have different values for \code{n.spmd}.  So the value of \code{n} is local to each processor.  So perhaps we want to add up all these numbers (with as many numbers as there are processors) and store them in the global value \code{sm} (for ``sum'').  Each processor will agree as to the value of \code{sm}, even if they disagree about the value of \code{n.spmd}.
+Next, we perform an \code{allreduce()}\index{code!\code{allreduce()}}
+on \code{n.spmd}.  Conceivably, the processors could have different values for \code{n.spmd}.  So the value of \code{n} is local to each processor.  So perhaps we want to add up all these numbers (with as many numbers as there are processors) and store them in the global value \code{sm} (for ``sum'').  Each processor will agree as to the value of \code{sm}, even if they disagree about the value of \code{n.spmd}.
 
-Finally, we do the same but with an \code{allgather()} operation.  
+Finally, we do the same but with an
+\code{allgather()}\index{code!\code{allgather()}} operation.  
 
 Try experimenting with this by running the program several times.  You should get different results each time.  To make sure we have not been lying to you about what is happening, you can even print the values of \code{n.spmd} before the reduce and gather operations.
 

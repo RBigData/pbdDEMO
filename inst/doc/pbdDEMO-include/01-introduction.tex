@@ -4,7 +4,14 @@
 
 \section{What is pbdR?}
 
-The ``Programming with Big Data in R'' project~\citep{pbdR2012} (pbd or pbdR for short) is a project that aims to elevate the statistical programming language \proglang{R}~\citep{Rcore} to leadership-class computing platforms.  The main goal is empower data scientists by bringing flexibility and a big analytics toolbox to big data challenges, with an emphasis on productivity, portability, and performance.  We achieve this in part by mapping high-level programming syntax to portable, high-performance, scalable, parallel libraries.  In short, we make \proglang{R} scalable.
+The ``Programming with Big Data in R'' project~\citep{pbdR2012} (pbdR
+for short) is a project that aims to elevate the statistical programming
+language \proglang{R}~\citep{Rcore} to leadership-class computing platforms.
+The main goal is empower data scientists by bringing flexibility and a big
+analytics toolbox to big data challenges, with an emphasis on productivity,
+portability, and performance.  We achieve this in part by mapping high-level
+programming syntax to portable, high-performance, scalable, parallel libraries.
+In short, we make \proglang{R} scalable.
 
 \begin{figure}[h]
  \centering
@@ -13,26 +20,41 @@ The ``Programming with Big Data in R'' project~\citep{pbdR2012} (pbd or pbdR for
  \label{fig:pbdrpackages}
 \end{figure}
 
-Figure~\ref{fig:pbdrpackages} shows the current list of pbdR packages released to the CRAN, and how they depend on each other.  More explicitly, the current pbdR packages are:
+Figure~\ref{fig:pbdrpackages} shows the current list of pbdR packages released
+to the CRAN (\url{http://cran.r-project.org}), and how they depend on each
+other. More explicitly, the current \proglang{pbdR} packages are:
 
 \begin{itemize}
- \item \pkg{pbdMPI} --- an efficient interface to MPI with a focus on Single Program/Multiple Data (SPMD) parallel programming style.
- \item \pkg{pbdSLAP} --- bundles scalable dense linear algebra libraries in double precision for \pkg{R}, based on
-                         ScaLAPACK version 2.0.2~\citep{slug}.~\index{ScaLAPACK}
- \item \pkg{pbdNCDF4} --- Interface to Parallel Unidata NetCDF4 format data files~\citep{netcdf}.
+ \item \pkg{pbdMPI} --- an efficient interface to MPI~\citep{MPI1994} with a
+       focus on Single Program/Multiple Data (SPMD)\index{SPMD} parallel
+       programming style.
+ \item \pkg{pbdSLAP} --- bundles scalable dense linear algebra libraries in
+       double precision for \proglang{R}, based on ScaLAPACK
+       version 2.0.2~\citep{slug}.~\index{ScaLAPACK}
+ \item \pkg{pbdNCDF4} --- Interface to Parallel Unidata NetCDF4\index{NetCDF4}
+       format data files~\citep{netcdf}.
  \item \pkg{pbdBASE} --- low-level ScaLAPACK codes and wrappers.
- \item \pkg{pbdDMAT} --- distributed matrix classes and computational methods, with a focus on linear algebra and statistics.
- \item \pkg{pbdDEMO} --- set of package demonstrations and examples, and this unifying vignette.
+ \item \pkg{pbdDMAT} --- distributed matrix classes and computational methods,
+       with a focus on linear algebra and statistics.
+ \item \pkg{pbdDEMO} --- set of package demonstrations and examples, and this
+       unifying vignette.
 \end{itemize}
 
-To try to make this landscape a bit more clear, one could divide pbdR packages into those meant for users, developers, or something inbetween.  
+To try to make this landscape a bit more clear, one could divide
+\proglang{pbdR} packages into those meant for users, developers, or
+something in between.  
 \begin{figure}[h]
  \centering
  \includegraphics[scale=.55]{pbdDEMO-include/pics/pbdR-packages.png}
  \caption{pbdR Package Use}
  \label{fig:pbdrpackages2}
 \end{figure}
-Figure~\ref{fig:pbdrpackages2} shows a gradient scale representation, where more red means the package is more for developers, while more blue means the package is more for users.  For example, \pkg{pbdDEMP} is squarely meant for users of pbdR packages, while \pkg{pbdBASE} and \pkg{pbdSLAP} are really not meant for general use.  The other packages fall somewhere inbetween, having plenty of utility for both camps.
+Figure~\ref{fig:pbdrpackages2} shows a gradient scale representation, where
+more red means the package is more for developers, while more blue means the
+package is more for users.  For example, \pkg{pbdDEMO} is squarely meant for
+users of \proglang{pbdR} packages, while \pkg{pbdBASE} and \pkg{pbdSLAP} are
+really not meant for general use. The other packages fall somewhere
+in between, having plenty of utility for both camps.
 
 Finally, 
 \begin{figure}[h]
@@ -41,18 +63,29 @@ Finally,
  \caption{pbdR Interface to Foreign Libraries}
  \label{fig:pbdrlibs}
 \end{figure}
-Figure~\ref{fig:pbdrlibs} shows pbdR relationship to high-performance libraries.
+Figure~\ref{fig:pbdrlibs} shows \proglang{pbdR} relationship to
+high-performance libraries.
 
-In this vignette, we offer many examples using the above pbdR packages.  Many of the examples are high-level
-applications and may be commonly found in basic Statistics.  The purpose is to show how to reuse the pre-existing functions and utilities of pbdR to create minor extensions which can quickly solve problems in an efficient way.  The reader is encouraged to reuse and repurpose these functions.
+In this vignette, we offer many examples using the above \proglang{pbdR}
+packages. Many of the examples are high-level applications and may be commonly
+found in basic Statistics. The purpose is to show how to reuse the
+pre-existing functions and utilities of \proglang{pbdR} to create minor
+extensions which can quickly solve problems in an efficient way.
+The reader is encouraged to reuse and re-purpose these functions.
 
-The \pkg{pbdDEMO} package consists of two main parts.  The first is a collection of roughly 20 package demos.  These offer example uses of the various pbdR packages.  The second is this vignette, which attempts to offer detailed explanations for the demos, as well as sometimes providing some mathematical or statistical insight.  A list of all of the package demos can be found in Section~\ref{sec:demolist}.
+The \pkg{pbdDEMO} package consists of two main parts. The first is a
+collection of roughly 20+ package demos. These offer example uses of
+the various \proglang{pbdR} packages. The second is this vignette, which
+attempts to offer detailed explanations for the demos, as well as sometimes
+providing some mathematical or statistical insight. A list of all of the
+package demos can be found in Section~\ref{sec:demolist}.
 
 
 
 \section{Why Parallelism?  Why pbdR?}
 
-It is common, in a document such as this, to justify the need for parallelism.  Generally this process goes:
+It is common, in a document such as this, to justify the need for parallelism.
+Generally this process goes:
 
 \begin{quote}
 \emph{
@@ -60,9 +93,22 @@ Blah blah blah Moore's Law, blah blah Big Data, blah blah blah Concurrency.
 }
 \end{quote}
 
-How about this?  Parallelism is cool.  Any boring nerd can use one computer, but using 10,000 at once is another story.  We don't call them \emph{\textbf{supercomputers}} for nothing.
+How about this? Parallelism is cool. Any boring nerd can use one computer,
+but using 10,000 at once is another story. We don't call them
+\emph{\textbf{supercomputers}} for nothing.
 
-But unfortunately, lots of people who would otherwise be thrilled to do all kinds of cool stuff with massive behemoths of computation~--- computers with names like \textbf{KRAKEN} and \textbf{TITAN}~--- are burdened by an unfortunate reality:  it's really, really hard.  Enter pbdR.  Through our project, we put a shiny new set of clothes on high-powered compiled code, making massive-scale computation accessible to a wider audience of data scientists than ever before.  Analytics in supercomputing shouldn't just be for the elites.
+But unfortunately, lots of people who would otherwise be thrilled to do all
+kinds of cool stuff with massive behemoths of computation~--- computers with
+names like \textbf{KRAKEN}\footnote{
+\url{http://www.nics.tennessee.edu/computing-resources/kraken}
+} and \textbf{TITAN}\footnote{
+\url{http://www.olcf.ornl.gov/titan/}
+}~--- are burdened by an
+unfortunate reality:  it's really, really hard.
+Enter \proglang{pbdR}. Through our project, we put a shiny new set of
+clothes on high-powered compiled code, making massive-scale computation
+accessible to a wider audience of data scientists than ever before.
+Analytics in supercomputing shouldn't just be for the elites.
 
 
 
@@ -71,12 +117,13 @@ But unfortunately, lots of people who would otherwise be thrilled to do all kind
 
 One can download \pkg{pbdDEMO} from CRAN at
 \url{http://cran.r-project.org}, and
-the intallation can be done with the following commands
+the installation can be done with the following commands
 \begin{lstlisting}
 tar zxvf pbdDEMO_0.1-0.tar.gz
 R CMD INSTALL pbdDEMO
 \end{lstlisting}
-Since \pkg{pbdEMO} depends on other pbdR packages, please read the corresponding vignettes if installation of any of them is unsuccessful.
+Since \pkg{pbdEMO} depends on other \proglang{pbdR} packages, please read
+the corresponding vignettes if installation of any of them is unsuccessful.
 
 
 
@@ -98,7 +145,8 @@ The following subsections elaborate on the contents of the latter two.
 \subsection{List of Demos}
 \label{sec:demolist}
 
-A full list of demos contained in the \pkg{pbdDEMO} package is provided below.  We may or may not describe all of the demos in this vignette.
+A full list of demos contained in the \pkg{pbdDEMO} package is provided below.
+We may or may not describe all of the demos in this vignette.
 
 \begin{lstlisting}[title=List of Demos]
 ### (Use Rscript.exe for windows systems)
@@ -185,9 +233,15 @@ Rscript -e "demo(iris_dmat, package='pbdDEMO', ask=F, echo=F)"
 
 \subsection{List of Benchmarks}
 
-At the time of writing, there are benchmarks for computing covariance, linear models, and principal components.  The benchmarks come in two variants.  The first is an ordinary set of benchmark codes, which generate data of specified dimension(s) and time the indicated computation.  This operation is replicated for a user-specified number of times (default 10), and then the timing results are printed to the terminal.  
+At the time of writing, there are benchmarks for computing covariance, linear
+models, and principal components. The benchmarks come in two variants. The
+first is an ordinary set of benchmark codes, which generate data of specified
+dimension(s) and time the indicated computation. This operation is replicated
+for a user-specified number of times (default 10), and then the timing results
+are printed to the terminal.  
 
-From the \code{Benchmarks/} subtree, the user can run the first set of benchmarks with, for example, 4 processors by issuing any of the commands:
+From the \code{Benchmarks/} subtree, the user can run the first set of
+benchmarks with, for example, 4 processors by issuing any of the commands:
 \begin{lstlisting}
 ### (Use Rscript.exe for windows systems)
 mpiexec -np 4 Rscript cov.r
@@ -195,9 +249,18 @@ mpiexec -np 4 Rscript lmfit.r
 mpiexec -np 4 Rscript pca.r
 \end{lstlisting}
 
-The second set of benchmarks are those that try to find the ``balancing'' point where, for the indicted computation with user specified number of cores, the computation is performed faster using pbdR than using serial \proglang{R}.  In general, throwing a bunch of cores at a problem may not be the best course of action, because parallel algorithms (almost always) have inherent overhead over their serial counterparts that can make their use ill-advised for small problems.  But for sufficiently big (which is usually not very big at all) problems, that overhead should quickly be dwarfed by the increased scalability.
+The second set of benchmarks are those that try to find the ``balancing''
+point where, for the indicted computation with user specified number of
+cores, the computation is performed faster using \proglang{pbdR}
+than using serial \proglang{R}. In general, throwing a bunch of cores at
+a problem may not be the best course of action, because parallel algorithms
+(almost always) have inherent overhead over their serial counterparts that
+can make their use ill-advised for small problems. But for sufficiently
+big (which is usually not very big at all) problems, that overhead should
+quickly be dwarfed by the increased scalability.
 
-From the \code{Benchmarks/} subtree, the user can run the second set of benchmarks with, for example, 4 processors by issuing any of the commands:
+From the \code{Benchmarks/} subtree, the user can run the second set of
+benchmarks with, for example, 4 processors by issuing any of the commands:
 \begin{lstlisting}
 ### (Use Rscript.exe for windows systems)
 mpiexec -np 4 Rscript balance_cov.r
@@ -205,7 +268,17 @@ mpiexec -np 4 Rscript balance_lmfit.r
 mpiexec -np 4 Rscript balance_pca.r
 \end{lstlisting}
 
-Now we must note that there are other costs than just statistical computation.  There is of course the cost of disk IO (when dealing with real data).  However, a parallel file system should help with this, and for large datasets should actually be faster anyway.  The main cost not measured here is the cost of starting all of the R processes and loading packages.  Assuming \proglang{R} is not compiled statically (and it almost certainly is not), then this cost is non-trivial and somewhat unique to very large scale computing.  For instance, it took us well over an hour to start 12,000 \proglang{R} sessions and load the required packages on the supercomputer Kraken\footnote{See \url{https://en.wikipedia.org/wiki/Kraken_(supercomputer)}}.  This problem is not unique to \proglang{R}, however.  It affects any project that has a great deal of dynamic library loading to do.  This includes \proglang{Python}, although their community has made some impressive strides in dealing with this problem.
+Now we must note that there are other costs than just statistical
+computation. There is of course the cost of disk IO (when dealing with real
+data). However, a parallel file system should help with this, and for large
+datasets should actually be faster anyway. The main cost not measured here
+is the cost of starting all of the R processes and loading packages.
+Assuming \proglang{R} is not compiled statically (and it almost certainly
+is not), then this cost is non-trivial and somewhat unique to very large
+scale computing. For instance, it took us well over an hour to start
+12,000 \proglang{R} sessions and load the required packages on the
+supercomputer
+KRAKEN\footnote{See \url{https://en.wikipedia.org/wiki/Kraken_(supercomputer)}}.  This problem is not unique to \proglang{R}, however.  It affects any project that has a great deal of dynamic library loading to do.  This includes \proglang{Python}, although their community has made some impressive strides in dealing with this problem.
 
 
 
@@ -215,8 +288,10 @@ Now we must note that there are other costs than just statistical computation.  
 
 \begin{enumerate}[label=\thechapter-\arabic*]
 \item
-Read \pkg{pbdMPI}'s vignettes and install either OpenMPI~\index{OpenMPI} or
-MPICH2~\index{MPICH2}, and test if install correctly.
+Read \pkg{pbdMPI}'s vignettes and install either
+OpenMPI~\index{OpenMPI} (\url{http://www.open-mpi.org/}) or
+MPICH2~\index{MPICH2} (\url{http://www.mcs.anl.gov/research/projects/mpich2/}),
+ and test if installation is correct.
 \label{ex:introduction1}
 
 \item

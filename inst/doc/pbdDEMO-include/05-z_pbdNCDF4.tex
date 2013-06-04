@@ -17,7 +17,7 @@ features. The HDF5 library is available on
 the website at \url{http://www.htfgroup.org/HDF5/}.
 The both libraries provide high-performance functionalities to create, access,
 read, write, and modify NetCDF4 files.
-The \proglang{R} package \pkg{ncdf4}~\citep{ncdf4}\index{ncdf4}
+The \proglang{R} package \pkg{ncdf4}~\citep{ncdf4}\index{package!\pkg{ncdf4}}
 mainly provides interface for NetCDF4 libraries and a short summary of
 major functions is given in the Table~\ref{tab:ncdf4}
 
@@ -170,7 +170,8 @@ to the dimensions.
 \code{nc4_dmat.nc},
 write the data into the variable on the disk, and close the file.
 Line 20, 24, and 25 open the file again and read the data from the
-variable from the data and convert them to a \code{ddmatrix}.
+variable from the data and convert them to a
+\code{ddmatrix}.\index{class!\code{ddmatrix}}
 
 Note that \code{ncvar_put_dmat()} and \code{ncvar_get_dmat()} are implemented
 for 2D variable only. Please use \pkg{pbdNCDF4}/\pkg{ncdf4} primitive functions
