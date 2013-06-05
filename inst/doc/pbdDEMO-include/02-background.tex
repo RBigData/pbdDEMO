@@ -87,26 +87,35 @@ cooperation between the processors for step \ref{pseudo1:load} (in determining
 who owns what) and for the reduction in step \ref{pseudo1:reduce}. This is
 an example of using a higher-level parallel programming paradigm called
 ``Single Program/Multiple Data''\index{Single Program/Multiple Data|see{SPMD}}
-or SPMD.~\index{Parallelism!SPMD}
-We will elucidate more as to exactly what this means in the sections to follow.
+or SPMD.~\index{Parallelism!SPMD}.  We will elucidate more as to exactly what 
+this means in the sections to follow.
 
 
 
 \subsubsection{Task Parallelism}
 
 Data parallelism is one parallel programming model. By contrast, another
-important parallel programming model is
-\emph{task parallelism},\index{Parallelism!task parallelism}
-which much of the \proglang{R} community is already fairly adept at. Task
-parallelism involves, as the name implies, distributing different execution
-tasks across processors. Task parallelism is often
-\emph{embarrassingly parallel}\index{Parallelism!embarrassingly parallel} ---
-meaning the parallelism is so easy to exploit that it is embarrassing. This
-kind of situation occurs when you have complete independence, or a
-\emph{loosely coupled} problem (as opposed to something \emph{tightly coupled},
-like computing the Singular Value Decomposition
-(SVD)~\index{Singular Value Decomposition}\index{Decomposition!SVD} of a
-distributed data matrix, for example).  
+important parallel programming model is \emph{task 
+parallelism},\index{Parallelism!task parallelism} which much of the 
+\proglang{R} community is already fairly adept at, especially when using the 
+manager/worker paradigm\index{Parallelism!manager/worker paradigm} (more on this 
+later).  Common packages for this kind of work include 
+\pkg{snow}~\citep{Tierney2012}\index{Package!\pkg{snow}}, 
+\pkg{parallel}~\citep{parallel}\index{Package!\pkg{parallel}}, and 
+\pkg{Rmpi}~\citep{Rmpi}\index{Package!\pkg{Rmpi}}\footnote{For more examples, 
+see ``CRAN Task View: High-Performance and Parallel Computing with R'' at 
+\url{http://cran.r-project.org/web/views/HighPerformanceComputing.html}.}.
+
+Task parallelism involves, as the name implies, distributing different execution
+tasks across processors. Task parallelism is often \emph{embarrassingly 
+parallel}\index{Parallelism!embarrassingly parallel} --- meaning the 
+parallelism is so easy to exploit that it is embarrassing. This kind of 
+situation occurs when you have complete independence, or a \emph{loosely 
+coupled}\index{Parallelism!loosely coupled} problem (as opposed to something 
+\emph{tightly coupled}\index{Parallelism!tightly coupled}, like computing the 
+Singular Value Decomposition (SVD)~\index{Singular Value 
+Decomposition}\index{Decomposition!SVD} of a distributed data matrix, for 
+example).  
 
 As a simple example of task parallelism, say you have one dataset and four
 processing cores, and you want to fit all four different linear regression
@@ -182,6 +191,32 @@ encouraged to read the \pkg{pbdMPI} package's
 vignette~\citep{Chen2012pbdMPIvignette} first.  Ideally, readers should
 run the demos of the \pkg{pbdMPI} package, going through the code step by step.
 
+This paradigm is just one model of parallel programming, and in reality, is a sort of ``meta model'', encompassing many other parallel programming models.  The \proglang{R} community is already familiar with the manager/worker\footnote{Sometimes referred to as ``master/slave'' or ``master/worker''} programming model\index{Parallelism!manager/worker paradigm}.  This programming model is particularly well-suited to task parallelism, where generally one processor will distribute the task load to the other processors.
+
+The two are not mutually exclusive, however.  It is easy enough to engage in task parallelism from an SPMD-written program.  To do this, you essentially create a ``task-parallelism block'', where one processor
+
+\pseudocode{
+  \If {$this\_processor == manager$} \label{pseudo2:load}
+      \State distribute\_tasks()
+  \Else
+      \State receive\_tasks()
+  \EndIf
+}
+
+See Exercise~\ref{ch2:exercise:2} for more details.
+
+One other model of note is the MapReduce\index{Parallelism!MapReduce} model. 
+A well-known implementation of this is Apache's Hadoop\index{Library!Hadoop}, 
+which is really more of a poor man's distributed file system with MapReduce 
+bolted on top.  The \proglang{R} community has a strange affection for 
+MapReduce, even among people who have never used it.  MapReduce, and for 
+instance Hadoop, most certainly has its place, but one should be aware that 
+MapReduce is not very well-suited for tightly coupled problems; this difficulty 
+goes beyond the fact that tightly coupled problems are harder to parallelize 
+than their embarrassingly parallel counterparts, and is, in part, inherent to 
+MapReduce itself.  For the remainder of this document, we will not discuss 
+MapReduce further.  
+
 
 
 
@@ -237,30 +272,12 @@ objects).
 
 \begin{enumerate}[label=\thechapter-\arabic*]
 \item
-Read the SPMD wiki page at
-\url{http://en.wikipedia.org/wiki/SPMD}
-and it's related information.
+Read the SPMD wiki page at \url{http://en.wikipedia.org/wiki/SPMD} and it's related information.
 
-\item
-\proglang{R} users are focusing on task parallelism such as
-master/workers framework\index{Parallelism!master/workers framework}
-including packages
-\pkg{snow}~\citep{Tierney2012}\index{Package!\pkg{snow}},
-\pkg{parallel}~\citep{parallel}\index{Package!\pkg{parallel}}, and
-\pkg{Rmpi}~\citep{Rmpi}\index{Package!\pkg{Rmpi}}, etc.
-Try to identify other packages belongs to or related this class.
-{\color{blue}Hint:
-``CRAN Task View: High-Performance and Parallel Computing with R'' at
-\url{http://cran.r-project.org/web/views/HighPerformanceComputing.html}.
-}
+% \item
+% Many times in statistical modeling, assumptions are made that are particularly well-suited to task parallelism.  
 
-\item
-Identify particular types or assumptions of Statistical problems which is
-particularly beneficial by using the master/workers framework.
-Also, identify bottlenecks of this framework and suggest solutions
-for the problems.
-
-\item
+\item \label{ch2:exercise:2}
 \pkg{pbdMPI} provides a function \code{get.jid()}\index{Code!\code{get.jid()}}
 to divide \code{N} jobs into $n$ processors nearly equally which is best
 for homogeneous computing environment to do task parallelism.
@@ -279,15 +296,16 @@ finalize()
 \end{Code}
 
 \item
-Multi-threading\index{Parallelism!multi-threading}
-and forking\index{Parallelism!forking}
-are also popular parallelisms in personal laptop.
-The function \code{mclapply()}\index{Code!\code{mclapply()}}
-in \pkg{parallel} originated
-from \pkg{multicore}~\citep{multicore}\index{Package!\pkg{multicore}}
-is for shared memory machines by using
-\code{fork} mechanism.
-Compare this with OpenMP~\citep{OpenMP}\index{Library!OpenMP}.
+Multi-threading\index{Parallelism!multi-threading} and 
+forking\index{Parallelism!forking} are also popular methods of parallelism for 
+shared memory systems, such as in a personal laptop. The function 
+\code{mclapply()}\index{Code!\code{mclapply()}}\footnote{This method is not 
+available on Windows, because Windows has no system-level fork command.} in 
+\pkg{parallel} originated from the
+\pkg{multicore}~\citep{multicore}\index{Package!\pkg{multicore}}
+package, and is for simple parallelism on shared memory machines by using the 
+\code{fork} mechanism. Compare this with 
+OpenMP~\citep{OpenMP}\index{Library!OpenMP}.
 
 
 \end{enumerate}

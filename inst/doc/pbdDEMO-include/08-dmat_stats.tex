@@ -134,7 +134,7 @@ with some added window dressing.
 \label{sec:Compression_with_Principal_Components_Analysis}
 
 \emph{Example:  Take PCA and retain only a subset of the rotated data.}
-\index{Principal Components Analysis}\index{PCA}
+\index{Principal Components Analysis|see{PCA}}\index{PCA}
 
 The demo command is
 \begin{Command}
@@ -221,20 +221,20 @@ comm.print(submatrix(pred), quiet=T)
 
 \item
 Based on Section~\ref{sec:Verification_of_Distributed_System_Solving},
-extend the code to find $\bX$ which solves $\bA\bX = \bB$
-where $\bA$, $\bX$ and $\bB$ are matrices with
-appropriated dimensions and $\bA$ and $\bB$ are known.
+extend the code to find $\bX$ which solves $\bA\bX = \bB$ where $\bA$, $\bX$ 
+and $\bB$ are matrices with appropriated dimensions and $\bA$ and $\bB$ are 
+known.
 
 \item
-Based on Section~\ref{sec:Compression_with_Principal_Components_Analysis},
-the \code{prcomp()} also returns rotations for all components,
-prove that rotations are perpendicular.
+The \code{prcomp()} method introduced in 
+Section~\ref{sec:Compression_with_Principal_Components_Analysis}
+also returns rotations for all components.  Computationally verify with 
+several examples that these rotations are orthogonal, i.e., that their 
+crossproduct is the identity matrix.
 
 \item
-Based on Section~\ref{sec:predictions_with_linear_regression},
-find point-wised 95\% of confidence intervals for the observed data
-$\hat{\by}|\bX$ and a 95\% of predictive interval
-the prediction for a new data $\hat{y}_{new}|\bx_{new}$.
+Based on Section~\ref{sec:predictions_with_linear_regression}, find a point-wise
+95\% confidence interval for the observed data $\hat{\by}|\bX$ and a 95\% 
+predictive interval for the prediction for a new data $\hat{y}_{new}|\bx_{new}$.
 
 \end{enumerate}
-

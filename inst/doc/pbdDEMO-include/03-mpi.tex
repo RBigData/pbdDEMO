@@ -22,11 +22,13 @@ tool to the repertoire of the parallel \proglang{R} programmer, and is
 essential for anyone who wants to do large scale development of parallel
 codes.  
 
-``MPI'' stands for
-``Message Passing Interface''.\index{Message Passing Interface|see{MPI}}
-How it really works
-goes \emph{well} beyond the scope of this document. But at a basic level,
-the idea is that the user is running a code on different compute nodes that (usually) can not directly modify objects in each others' memory.  In order to have all of the nodes working together on a common problem, data and computation directives are passed around over the network (often over a specialized link called infiniband).  
+``MPI'' stands for ``Message Passing Interface''.\index{Message Passing 
+Interface|see{MPI}} How it really works goes \emph{well} beyond the scope of 
+this document. But at a basic level, the idea is that the user is running a 
+code on different compute nodes that (usually) can not directly modify objects 
+in each others' memory.  In order to have all of the nodes working together on 
+a common problem, data and computation directives are passed around over the 
+network (often over a specialized link called infiniband).  
 
 At its core, MPI is a standard interface for managing communications
 (data and instructions) between different nodes or computers.
@@ -34,8 +36,7 @@ There are several major implementations of this standard, and the one
 you should use may depend on the machine you are using.
 But this is a compiling issue, so user programs are unaffected beyond
 this minor hurdle. Some of the most well-known implementations are
-OpenMPI,\index{Library!OpenMPI}
-MPICH2,\index{Library!MPICH2} and
+OpenMPI,\index{Library!OpenMPI} MPICH2,\index{Library!MPICH2} and
 Cray MPT.\index{Library!MPT}
 
 At the core of using MPI is the \emph{communicator}. At a technical level,
@@ -86,7 +87,7 @@ use one of them.
  \item\label{enum:dompi} $(-)$ \pkg{Rmpi} can be used with
       \pkg{foreach}~\citep{foreach}\index{Package!\pkg{foreach}} via
       \pkg{doMPI}~\citep{dompi}\index{Package!\pkg{doMPI}}
- \item $(-)$ \pkg{Rmpi} can be used in the master/worker paradigm
+ \item $(-)$ \pkg{Rmpi} can be used in the manager/worker paradigm
 \end{enumerate}
 
 We do not believe that the above can be reduced to a zero-sum game with
@@ -738,27 +739,28 @@ demo.timer <- function(timed)
       size 1 of \code{TRUE} and \code{FALSE}. Have each processor print its
       result.\label{ex:mpi1}
 
-\item Modify the script in Exercise~\ref{ex:mpi1} above to determine if any
-      processors sampled \code{TRUE}. Do the same to determine if all
-      processors sampled \code{TRUE}. In each case, print the result. Compare
-      to the functions \code{comm.all()} and \code{comm.any()}.
-      {\color{blue} Hint:  use \code{allreduce()}.}
-      \index{Code!\code{comm.all()}}\index{Code!\code{comm.any()}}
+\item 
+Modify the script in Exercise~\ref{ex:mpi1} above to determine if any
+processors sampled \code{TRUE}. Do the same to determine if all processors 
+sampled \code{TRUE}. In each case, print the result. Compare to the functions 
+\code{comm.all()} and \code{comm.any()}. {\color{blue} Hint:  use 
+\code{allreduce()}.} 
+\index{Code!\code{comm.all()}}\index{Code!\code{comm.any()}}
 
-\item In \pkg{pbdMPI}, there is a parallel sorting function called
-      \code{comm.sort()} which is similar to the usual \code{sort()}
-      of \proglang{R}. Implement parallel equivalents to the
-      usual \code{order()} and \code{rank()} of
-      \proglang{R}.\label{ex:mpi2}\index{Code!\code{comm.sort()}}
+\item In \pkg{pbdMPI}, there is a parallel sorting function called      
+\code{comm.sort()} which is similar to the usual \code{sort()} of 
+\proglang{R}. Implement parallel equivalents to the usual \code{order()} 
+and \code{rank()} of \proglang{R}.\label{ex:mpi2}\index{Code!\code{comm.sort()}}
 
-\item Time the performance of Exercise~\ref{ex:mpi2}.
-      Identify the need of MPI communications for different sorting or
-      ordering algorithms.
+\item 
+Time the performance of Exercise~\ref{ex:mpi2}. Identify the need of MPI 
+communications for different sorting or ordering algorithms.
 
-\item There are similar functions *ply-like functions in several \proglang{R}
-      packages such as \pkg{parallel}.\index{Package!\pkg{parallel}}
-      Try to compare the difference and performance of those *ply-like
-      functions.
+\item 
+There are ``parallel copycat'' versions of to R's *ply functions in several 
+\proglang{R} packages, such as \code{mclapply()} (a parallel version of 
+\code{lapply()}) in the \pkg{parallel} package.\index{Package!\pkg{parallel}}
+Try to compare the difference and performance of those *ply-like functions.
 
 \end{enumerate}
 

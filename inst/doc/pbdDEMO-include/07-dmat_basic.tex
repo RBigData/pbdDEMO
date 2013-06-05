@@ -228,17 +228,18 @@ Suppose \code{dX} is as Exercise~\ref{ex:basic1}, do the following:
 \item
   \code{dX[dX[, 41] > dx[, 40], -c(1, 3, 5)] <- dX[dX[, 41] > dx[, 40], -(c(1, 3, 5) + 1)]}
 \end{itemize}
-If any of above does not work, please report the bugs.
+% If any of above does not work, please report the bugs.
 \label{ex:basic2}
 
 
 \item
-Verify Exercises~\ref{ex:basic1} and~\ref{ex:basic2} using serial version
-results.
+Verify the validity of Exercises~\ref{ex:basic1} and~\ref{ex:basic2} using 
+ordinary \proglang{R} operations (cast the matrix as global first using 
+\code{X <- as.matrix(dX)}).
 
 
 \item
-Implement SPMD row-major matrix format in 2 processors for
+Implement SPMD row-major matrix format in 2 processors for 
 Exercises~\ref{ex:basic1} and~\ref{ex:basic2}.
 
 
