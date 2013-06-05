@@ -1,5 +1,5 @@
 \documentclass[oneside,11pt]{book}
-\usepackage[margin=1.1in]{geometry}
+ \usepackage[margin=1.1in]{geometry}
 
 % Style and settings
 \input{pbdDEMO-include/style.tex}
@@ -149,6 +149,8 @@ This publication was typeset using \LaTeX.  The illustrations were created using
 \part{Appendix}
 \appendix
 \input{./pbdDEMO-include/appendix}
+% references and indexes
+\part{Miscellany}
 
 %
 \newpage

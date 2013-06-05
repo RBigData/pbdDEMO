@@ -11,6 +11,8 @@
 
 \newcommand{\pkg}[1]{{\fontseries{b}\selectfont #1}}
 
+\newcommand{\bA}{\boldsymbol{A}}
+\newcommand{\bB}{\boldsymbol{B}}
 \newcommand{\bI}{\boldsymbol{I}}
 \newcommand{\bX}{\boldsymbol{X}}
 \newcommand{\bx}{\boldsymbol{x}}
@@ -287,13 +289,17 @@
 
 \usepackage{hyperref}
 
+\definecolor{Red}{rgb}{0.5,0,0}
+\definecolor{Blue}{rgb}{0,0,0.5}
 \hypersetup{
     pdfnewwindow=true,    
     colorlinks=true,      
     linkcolor=blue,      
     citecolor=blue,      
     filecolor=magenta,   
-    urlcolor=blue      
+    linkcolor=blue,
+    citecolor=Blue,
+    urlcolor=Red
 }
 
 \usepackage[absolute]{textpos}
