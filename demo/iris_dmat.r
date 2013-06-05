@@ -7,6 +7,12 @@ init.grid()
 #if(comm.size() != 4)
 #  comm.stop("4 processors are required.")
 
+
+
+.BLDIM <- 5
+
+
+
 ### Load data
 X <- as.matrix(iris[, -5])                            # Dimension 150 by 4
 X.cid <- as.numeric(iris[, 5])                        # True id

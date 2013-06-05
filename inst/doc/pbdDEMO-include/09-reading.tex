@@ -75,7 +75,7 @@ To use a more complicated query for a database with differing structure, it shou
 \item \label{ex:read_csv}
 In Section~\ref{sec:csv_files}, we have seen an CSV reading example, however,
 this is not an efficient way for large CSV files by calling \code{read.csv()}.
-The \proglang{R} functions \code{con <- file(...)} can open a connection to
+The \proglang{R} functions \code{con <- file(\dots)} can open a connection to
 the CSV files and \code{readLines(con, n = 100000)} can access a chunk of
 data ($100,000$ lines)
 from disk more efficiently. Implement a simple function as \code{read.csv()}

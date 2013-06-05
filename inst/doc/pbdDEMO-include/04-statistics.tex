@@ -532,42 +532,50 @@ if (need2stop)
 
 \begin{enumerate}[label=\thechapter-\arabic*]
 \item
-What are assumptions for the Strong Law of Large Numbers (SLLN)
-in order to prove Statement~(\ref{eqn:as_convergence})?
+What are the assumptions used in order to invoke the Strong Law of Large 
+Numbers (SLLN) in statement~(\ref{eqn:as_convergence})?
 
 \item
 What is the Weak Law of Large Numbers (WLLN)?~\index{Weak Law of Large Numbers}\index{WLLN}
-Prove that SLLN can imply WLLN. Provide a counter example that
-WLLN does not necessary imply SLLN.
+Prove that the SLLN implies the WLLN. Provide a counter example that the WLLN 
+does not imply the SLLN.
 
 \item
-As Statement~(\ref{eqn:as_convergence}),
-prove $\bar{X}_N$ converges to $\frac{\pi}{4}$ in probability by WLLN and
-in distribution.
+In statement~(\ref{eqn:as_convergence}), we showed that $\bar{X}_N$ converges 
+to $\frac{\pi}{4}$ almost surely, a very strong form of convergence.  Show that 
+additionally, $\bar{X}_N$ converges to $\frac{\pi}{4}$ in probability by the 
+WLLN, and that the sequence converges in distribution.  (This can be as simple 
+or as complicated as you like, depending on how many big theorems you wish to 
+invoke).
 
 \item
-As Statement~(\ref{eqn:as_convergence}),
-prove $g(\bar{X}_N)$ converges to $g\left(\frac{\pi}{4}\right)$
-almost surely, in probability and
-in distribution where $g(\cdot)$ is a continuous function.
+Let $g : [0, 1] \rightarrow  \mathbb{R}$ be any continuous function, and let 
+$\bar{X}_N$ be as in statement~(\ref{eqn:as_convergence}).  Show that 
+$g(\bar{X}_N)$ converges to $g\left(\frac{\pi}{4}\right)$ almost surely (Hint: 
+use the property of continuity with respect to limits of sequences and the 
+definition of almost sure convergence).
 
 \item
 What are assumptions for Statement~(\ref{math:statslls})?
 
 \item
-Prove $\hat{\bbeta}$ of Statement~(\ref{math:ols}) is an unbiased
-estimator of $\bbeta$.
+Prove that $\hat{\bbeta}$ of statement~(\ref{math:ols}) is an unbiased
+estimator of $\bbeta$, i.e., show that $E[ \hat{\bbeta}] = \bbeta$.
 
 \item
-Prove $\bX^\top\bX$ is non-negative definite if $\bX$ has full column rank $p$,
-therefore, the inverse exists.
+Prove $\bX^\top\bX$ is non-negative definite if $\bX$ has full column rank 
+$p$ (and whence in this case, the inverse exists).
 
 \item
-Weighted least squares (WLS) as mention in Section~\ref{sec:ols}
-is an important solution to generalized linear models, see
-\url{http://en.wikipedia.org/wiki/Generalized_linear_model} for details.
-Try to either modify the code in Section~\ref{sec:ols} or implement new one
-for WLS.
+Iteratively Reweighted Least Squares (IRLS) is an important method for finding 
+solutions to generalized linear models (GLM)\footnote{See 
+\url{http://en.wikipedia.org/wiki/Generalized_linear_model} for details}.  A 
+common application of GLM's is logistic regression\footnote{See 
+\url{http://stat.psu.edu/~jiali/course/stat597e/notes2/logit.pdf}}.
 
+Implement a (not necessarily numerically stable) logistic regression function 
+using IRLS for SPMD data.  For simplicity, you may wish to assume that the 
+weighted matrix $\bX^T\textbf{W}\bX$ is full rank at each iteration.
+  
 \end{enumerate}
 
