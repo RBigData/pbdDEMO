@@ -261,6 +261,24 @@ Also, identify bottlenecks of this framework and suggest solutions
 for the problems.
 
 \item
+\pkg{pbdMPI} provides a function \code{get.jid()}\index{Code!\code{get.jid()}}
+to divide \code{N} jobs into $n$ processors nearly equally which is best
+for homogeneous computing environment to do task parallelism.
+The FAQs section of \pkg{pbdMPI}'s vignette has an example, try it as next.
+\begin{Code}
+library(pbdMPI, quiet=TRUE)
+init()
+
+id <- get.jid(N)
+
+### Using a loop
+for(i in id){
+  # put independent task i script here
+}
+finalize()
+\end{Code}
+
+\item
 Multi-threading\index{Parallelism!multi-threading}
 and forking\index{Parallelism!forking}
 are also popular parallelisms in personal laptop.
