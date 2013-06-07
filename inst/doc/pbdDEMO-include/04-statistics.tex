@@ -70,7 +70,7 @@ X &:=
 \end{align*}
 Let $V_i = U_i^2$ for $i=1, 2$. Then the expected value
 \begin{align*}
-E[X] &= P( V_1 + V_2 \leq 1 )\\
+\E[X] &= \Prob( V_1 + V_2 \leq 1 )\\
      &= \int_0^1 \int_0^{1-V_1} p(V_1, V_2)dV_2 dV_1\\
      &= \int_0^1 \int_0^{1-V_1} \left( \frac{1}{2\sqrt{V_1}} \right)
         \left( \frac{1}{2\sqrt{V_2}} \right)dV_2 dV_1\\
@@ -85,17 +85,18 @@ E[X] &= P( V_1 + V_2 \leq 1 )\\
 and by sampling observations $X_i$ for $i=1,\dots,N$, by the Strong Law of
 Large Numbers~\index{Strong Law of Large Numbers}\index{SLLN}
 \begin{equation}
-\bar{X}_N \longrightarrow^{\hspace{-.55cm} a.s.} \hspace{.1cm} \frac{\pi}{4}
+\bar{X}_N \stackrel{a.s.}{\longrightarrow} \frac{\pi}{4}
 \hspace{.4cm} \text{ as } N\rightarrow \infty
+\index{Convergence!a.s.}
 \label{eqn:as_convergence}
 \end{equation}
 In other words,
 \begin{align*}
-P\left(\lim_{N\rightarrow\infty} \bar{X}_N = \frac{\pi}{4}\right) = 1
+\Prob\left(\lim_{N\rightarrow\infty} \bar{X}_N = \frac{\pi}{4}\right) = 1
 \end{align*}
 Whence,
 \begin{align*}
-\frac{L}{N}  \longrightarrow^{\hspace{-.55cm} a.s.} \hspace{.1cm} \frac{\pi}{4} \hspace{.4cm}
+\frac{L}{N} \stackrel{a.s.}{\longrightarrow} \frac{\pi}{4} \hspace{.4cm}
 \text{ as } N\rightarrow \infty
 \end{align*}
 
@@ -255,16 +256,17 @@ a random variable $X$ is any value $\theta_q$ such
 that\footnote{This definition is due to the mathematical statistician Herman
 Rubin: \url{http://mathforum.org/kb/message.jspa?messageID=406278}}
 \begin{align*}
-P(X\leq \theta_q) &\geq q\hspace{2cm}\text{and}\\
-P(X\geq \theta_q) &\leq 1-q
+\Prob(X\leq \theta_q) &\geq q\hspace{2cm}\text{and}\\
+\Prob(X\geq \theta_q) &\leq 1-q
 \end{align*}
 Note that by this definition, a quantile neither need exist or be unique.
-Indeed, for the former, consider the standard normal distribution with
+Indeed, for the former, consider the
+standard normal distribution\index{Distribution!normal distribution} with
 $q=1$, and for the latter consider the probability 0 values of a uniform
 distribution. Perhaps to narrow the scope of these problems, another
 common definition is
 \begin{align*}
-\theta_q = \inf \{x\ |\ P(X\leq x) \geq q\}
+\theta_q = \inf \{x\ |\ \Prob(X\leq x) \geq q\}
 \end{align*}
 In this example, we will be estimating quantiles from a sample.
 Doing so requires sub-dividing the data into $q$ (almost) evenly
@@ -536,31 +538,38 @@ What are the assumptions used in order to invoke the Strong Law of Large
 Numbers (SLLN) in statement~(\ref{eqn:as_convergence})?
 
 \item
-What is the Weak Law of Large Numbers (WLLN)?~\index{Weak Law of Large Numbers}\index{WLLN}
+What is the Weak Law of Large Numbers
+(WLLN)?~\index{Weak Law of Large Numbers}\index{WLLN}
 Prove that the SLLN implies the WLLN. Provide a counter example that the WLLN 
 does not imply the SLLN.
 
 \item
 In statement~(\ref{eqn:as_convergence}), we showed that $\bar{X}_N$ converges 
-to $\frac{\pi}{4}$ almost surely, a very strong form of convergence.  Show that 
-additionally, $\bar{X}_N$ converges to $\frac{\pi}{4}$ in probability by the 
-WLLN, and that the sequence converges in distribution.  (This can be as simple 
+to $\frac{\pi}{4}$ almost surely,\index{Convergence!almost surely}
+a very strong form of convergence.  Show that 
+additionally, $\bar{X}_N$ converges to $\frac{\pi}{4}$
+in probability\index{Convergence!in probability} by the 
+WLLN, and that the sequence converges
+in distribution.\index{Convergence!in distribution} (This can be as simple 
 or as complicated as you like, depending on how many big theorems you wish to 
 invoke).
 
 \item
-Let $g : [0, 1] \rightarrow  \mathbb{R}$ be any continuous function, and let 
+Let $g : [0, 1] \rightarrow  \mathbb{R}$ be a continuous function, and let 
 $\bar{X}_N$ be as in statement~(\ref{eqn:as_convergence}).  Show that 
-$g(\bar{X}_N)$ converges to $g\left(\frac{\pi}{4}\right)$ almost surely (Hint: 
+$g(\bar{X}_N)$ converges to $g\left(\frac{\pi}{4}\right)$ almost surely
+{\color{blue} Hint: 
 use the property of continuity with respect to limits of sequences and the 
-definition of almost sure convergence).
+definition of almost sure convergence.}
 
 \item
 What are assumptions for Statement~(\ref{math:statslls})?
+{\color{blue} Hint: Gauss-Markov Theorem.}
 
 \item
 Prove that $\hat{\bbeta}$ of statement~(\ref{math:ols}) is an unbiased
-estimator of $\bbeta$, i.e., show that $E[ \hat{\bbeta}] = \bbeta$.
+estimator of $\bbeta$, i.e., show that $\E[ \hat{\bbeta}] = \bbeta$.
+\label{ex:stat1}
 
 \item
 Prove $\bX^\top\bX$ is non-negative definite if $\bX$ has full column rank 

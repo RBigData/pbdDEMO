@@ -1,0 +1,208 @@
+
+\chapter{Basic Likelihood Examples}
+\label{chp:mle}
+
+
+\section{Introduction}
+
+We first introduce general notations for likelihood function
+which is a standard method for Parametric Statistics in
+Statistical Inference~\citep{Casella2001}.
+Then, we introduce multivariate normal
+distribution\index{Distribution!multivariate normal distribution}
+as an example to construct a likelihood function.
+%Third, we apply this to linear regression model with normality assumption
+%to errors and estimate parameters by maximizing likelihood.
+%Finally, we implement a more general optimization method based on
+%profile likelihood function~\citep{}.
+
+Suppose $\bX = \{\bX_1, \bX_2, \ldots, \bX_N\}$ is a random sample,
+which means independent identically distributed
+(i.i.d.),\index{i.i.d.}
+from a population which has a distribution $\mF(\btheta)$ with unknown
+parameter $\btheta \in \bTheta$ where $\bTheta$ is the parameter space.
+Suppose further $\mF$ has a probability density function
+(pdf)\index{pdf}
+$f(\bX_n; \btheta)$ provided an appropriate support.
+The goal is to estimate $\btheta$ based on the observed data
+$\bx = \{\bx_1, \bx_2, \ldots, \bx_N\}$.
+Ideally, we want to infer what is the best chance ($\btheta$)
+that $\bx$ is observed from.
+Unlike in Mathematics, $\bx$ is known, but $\btheta$ is unknown
+to be determined in Statistics.
+
+Typically, a fancy way to estimate $\btheta$ is based on the
+likelihood function of the data $\bx$
+\begin{equation}
+L(\btheta|\bx) = \prod_{n = 1}^N f(\bx_n; \btheta)
+\label{eqn:likelihood}
+\end{equation}
+or the log likelihood function
+\begin{equation}
+\log L(\btheta|\bx) = \sum_{n = 1}^N \log f(\bx_n; \btheta).
+\label{eqn:log_likelihood}
+\end{equation}
+Note that Equation~(\ref{eqn:log_likelihood}) has some
+better properties for some distribution families and
+is more numerically stable than Equation~(\ref{eqn:likelihood}).
+We then maximize Equation~(\ref{eqn:log_likelihood})
+over $\bTheta$ to obtain maximum likelihood estimation
+(MLE)\index{MLE} $\hat{\btheta}_{ML}$ in either analytically or numerically.
+See \citet{Casella2001} for details.
+
+For example, Section~\ref{sec:ols} is one way to solve a linear model
+without parametric assumption. An alternative way is based on likelihood
+approach.
+Assume an identical normal distribution with mean zero and variance $\sigma^2$
+to the independent error terms of Equation~(\ref{math:statslls}).
+This implies a normal distribution\index{Distribution!normal distribution}
+to the response $y_n$ for $n=1,2,\ldots, N$ that
+\begin{equation}
+y_n \stackrel{i.i.d}{\sim} N(\bx_n^\top\bbeta, \sigma^2)
+\label{eqn:normal}
+\end{equation}
+where $\bTheta = \{\bbeta, \sigma^2\}$, and
+$\bbeta$ and $\bx_n$ has dimension $p\times 1$.
+One may construct a log likelihood based on the normal density function as
+\begin{equation}
+\log L(\bbeta, \sigma^2|\by) = \sum_{n = 1}^N
+\left[
+-\frac{1}{2} \log (2\pi \sigma^2) -
+\frac{(y_n - \bx_n^\top\bbeta)^2}{2\sigma^2}
+\right]
+\label{eqn:log_likelihood_normal}
+\end{equation}
+The MLEs $\hat{\beta}_{ML}$ and
+$\hat{\sigma}^2_{ML}$ can be obtained analytically for this case by
+taking the first derivatives of Equation~(\ref{eqn:log_likelihood_normal}),
+setting them to zero, and
+solving the equations.
+
+
+
+
+\section{Multivariate Normal Distribution}
+
+The limitation of the Equation~(\ref{eqn:normal}) is it's
+assumption, so we introduce a more general approach next for better
+modeling. Since the independent assumption and Multivariate Statistics, the
+Equation~(\ref{eqn:normal}) also
+implies a multivariate normal distribution
+(MVN)\index{Distribution!multivariate normal distribution}\index{Distribution!MVN}
+to response variables $\by$ with dimension $N\times 1$ that
+\begin{equation}
+\by \sim MVN(\bmu, \bSigma)
+\label{eqn:mvn_n}
+\end{equation}
+where $\bTheta = \{\bmu, \bSigma\}$, $\bmu = \bX\bbeta$ is a center with
+dimension $N\times 1$, $\bSigma = \sigma^2\bI$ is a dispersion
+and $\bI$ is an $N\times N$ identity matrix.
+
+In general, $MVN(\bmu, \bSigma)$ has a density function
+\begin{equation*}
+\displaystyle
+\phi(\by; \bmu, \bSigma) =
+(2\pi)^{-\frac{N}{2}} |\bSigma|^{-\frac{1}{2}}
+e^{-\frac{1}{2} (\by - \bmu)^\top \bSigma^{-1} (\by - \bmu)}
+\end{equation*}
+where $\bSigma$ is an unstructured dispersion but positive definite.
+Excepting over fitting problem,
+an unstructured dispersion $\bSigma$ is reasonable to
+characterize the correlation of dimensions since the estimation of
+$\bSigma$ is completely supported by observed data.
+
+For Equation~(\ref{eqn:mvn_n}), the MLEs would be the solution of
+\begin{eqnarray}
+\hat{\bbeta} & = & (\bX^\top \hat{\bSigma} \bX)^{-1}
+                   \bX^\top \hat{\bSigma} \by
+                   \label{eqn:mle_beta} \\
+\hat{\bSigma} & = & \frac{1}{N} (\by - \bX\hat{\bbeta})
+                                (\by - \bX\hat{\bbeta})^\top
+                   \label{eqn:mle_sigma}
+\end{eqnarray}
+which may require iteratively numerical updating.
+For Equation~(\ref{eqn:log_likelihood_normal}),
+the solution is reduced to
+$\hat{\bbeta}_{ML} = (\bX^\top \bX)^{-1} \bX^\top \by$ and
+$\sigma^2_{ML} = \frac{1}{N} (\by - \bar{y}\bone)^\top(\by - \bar{y}\bone)$
+where $\bar{y}$ is the average of $\by$
+and $\bone$ is an one vector with dimension $N\times 1$.
+
+
+Suppose SPMD row-major matrix format is used for $\bX$ and $\by$, then
+Equations~\ref{eqn:mle_beta} and~\ref{eqn:mle_sigma} can be implemented
+as
+\begin{Code}
+\end{Code}
+
+
+
+%\section{Numerical Optimization}
+
+% Suppose we store data in SPMD row-major matrix format for this study.
+% We implement a home-made function for log likelihood, and utilize
+% existing \proglang{R} optimization functions to find MLEs.
+
+
+
+
+%\section{Profile Likelihood}
+
+% Equation~(\label{eqn:log_likelihood_normal}) can be solve by
+% profile likelihood approach.
+
+
+
+\section{Exercises}
+\label{sec:mle_exercise}
+
+\begin{enumerate}[label=\thechapter-\arabic*]
+
+\item
+What is the definition of ``independent identical distributed''?
+
+\item
+What is the definition of ``probability density function''?
+
+\item
+Suppose $g(\cdot)$ is a continuous function provided appropriate support,
+argue that $g\left(\hat{\theta}_{ML}\right)$ is still a maximum likelihood
+estimator of $g(\theta)$.
+
+\item
+Derive MLEs from Equation~(\ref{eqn:log_likelihood_normal}).
+
+\item
+As Exercise~\ref{ex:stat1},
+argue that $\hat{\bbeta}_{ML}$ of
+Equation~(\ref{eqn:log_likelihood_normal}) is also
+an unbiased estimator of $\bbeta$.
+
+\item
+Argue that $\hat{\sigma}^2_{ML}$ of
+Equation~(\ref{eqn:log_likelihood_normal})
+is a biased estimator, but it is an asymptotic
+unbiased estimator of $\sigma^2$.
+
+\item
+Assume data are stored in SPMD row-major matrix format,
+implement an optimization function for
+Equation~(\ref{eqn:log_likelihood_normal}), numerically optimized via
+\code{optim()}\index{Code!\code{optim()}} in \proglang{R}.
+Verify the results with the analytical solution.
+
+\item
+Argue that Equation~(\ref{eqn:normal}) implies Equation~(\ref{eqn:mvn_n})
+provided appropriated assumption hold.
+
+\item
+Give an example that $X$ and $Y$ are both have a normal distribution
+but $(X, Y)$ is not a multivariate normal distribution.
+
+\item
+Give an example that $(X, Y)$ has a multivariate normal distribution,
+but $X$ and $Y$ do not have an independent normal distribution.
+
+\end{enumerate}
+
+
