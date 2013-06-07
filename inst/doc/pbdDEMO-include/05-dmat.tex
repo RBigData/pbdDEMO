@@ -1,6 +1,7 @@
 %%% ----------------------------------------------------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{The Distributed Matrix Data Structure}
+\label{chap:dmat}
 
 Before continuing, we must spend some time describing a new distributed data 
 structure.  In reality, this data structure is the merging of two different 
@@ -15,7 +16,7 @@ examine each component separately first.
                 \centering
                 \includegraphics[height=5cm,width=\textwidth]{pbdDEMO-include/pics/dmat_block}
                 \caption{Block}
-        \end{subfigure}%
+        \end{subfigure}
         \hspace{.1cm}
         \begin{subfigure}[b]{0.3\textwidth}
                 \centering
@@ -108,11 +109,45 @@ and $d\in\mathbb{N}$ (a positive integer).  Thus the grid shapes are given by:
 \end{align*}
 for each $d\ |\ n$ with $d\in\mathbb{N}$.
   
-This added complication is not for pure masochism; it has some real advantages.  For one, this 2-dimensional block-cyclic (henceforth simply referred to as ``block-cyclic'') decomposition is the data structure employed by the state of the art dense linear algebra library ScaLAPACK\index{Library!ScaLAPACK}, and if one wishes to use this library, then the use must occur on its terms.  However, there are some real performance benefits to this data structure.  For many linear algebra operations (which includes many statistical operations, in whole or in part), this data structure offers an interesting balance between communication cost and parallelism.  For very large problems, many are surprised to find that communication between processors will often dwarf the computation overhead.  This will generally become apparent at the 10,000+ processor count except for the most embarrassingly parallel problems, and the cost of communication gets \emph{much} worse the more cores are added after that.  The rate at which this scales badly will depend a great deal on the hardware, but there is no machine in existence at the time of writing for which the above vague warning will not hold true.
+This added complication is not for pure masochism; it has some real advantages.  
+For one, this 2-dimensional block-cyclic (henceforth simply referred to as 
+``block-cyclic'') decomposition is the data structure employed by the state of 
+the art dense linear algebra library ScaLAPACK\index{Library!ScaLAPACK}, and if 
+one wishes to use this library, then the use must occur on its terms.  However, 
+there are some real performance benefits to this data structure.  For many 
+linear algebra operations (which includes many statistical operations, in whole 
+or in part), this data structure offers an interesting balance between 
+communication cost and parallelism.  For very large problems, many are surprised 
+to find that communication between processors will often dwarf the computation 
+overhead.  This will generally become apparent at the 10,000+ processor count 
+except for the most embarrassingly parallel problems, and the cost of 
+communication gets \emph{much} worse the more cores are added after that.  The 
+rate at which 
+this scales badly will depend a great deal on the hardware, but there is no 
+machine in existence at the time of writing for which the above vague warning 
+will not hold true.
 
-Returning to the data structure, notice that since we have control over the processor grid shape and the blocking factor (or blocking dimension --- the number of rows/columns in the blocks for the block-decomposition), we can very directly tune the amount of parallelism, and therefore the amount of communication.  Make the blocks too small (say $1\times 1$, or single element blocks) and there will be a great deal of parallelism, in the sense that most processors will stay busy most of the time; but the processors will have to talk to each other to get \emph{anything} done.  This makes the communication cost skyrocket.  On the other hand, we could make the blocking factor so large in each dimension that it encompasses the entire matrix.  That is, the matrix would be stored in its entirety on a single processor.  In doing so, we entirely eliminate the communication, but we also elimination the parallelism.
+Returning to the data structure, notice that since we have control over the 
+processor grid shape and the blocking factor (or blocking dimension --- the 
+number of rows/columns in the blocks for the block-decomposition), we can very 
+directly tune the amount of parallelism, and therefore the amount of 
+communication.  Make the blocks too small (say $1\times 1$, or single element 
+blocks) and there will be a great deal of parallelism, in the sense that most 
+processors will stay busy most of the time; but the processors will have to talk 
+to each other to get \emph{anything} done.  This makes the communication cost 
+skyrocket.  On the other hand, we could make the blocking factor so large in 
+each dimension that it encompasses the entire matrix.  That is, the matrix would 
+be stored in its entirety on a single processor.  In doing so, we entirely 
+eliminate the communication, but we also elimination the parallelism.
 
-The fact of the matter is, hard problems require data movement and communication.  We should strive to minimize these burdens, but not so myopically that we throw out the parallelism as well.  Balancing these parameters then becomes important, and a not entirely trivial optimization problem.  The \pkg{pbdDMAT} package includes defaults for each that should be ``ok'' if you have no intuition whatsoever.  However, these defaults may not be well-suited to a specific problem, and knowing ahead of time how best to distribute the data is often more art than science.
+The fact of the matter is, hard problems require data movement and 
+communication.  We should strive to minimize these burdens, but not so 
+myopically that we throw out the parallelism as well.  Balancing these 
+parameters then becomes important, and a not entirely trivial optimization 
+problem.  The \pkg{pbdDMAT} package includes defaults for each that should be 
+``ok'' if you have no intuition whatsoever.  However, these defaults may not be 
+well-suited to a specific problem, and knowing ahead of time how best to 
+distribute the data is often more art than science.
 
 For the remainder of this chapter, we will be examining these shapes in more depth to get a better feel for the data structure.  To do so, let us return to our old friend from Section~\ref{sec:spmdstruct}:\\
 \begin{align*}
@@ -574,7 +609,10 @@ x &= \left[
 
 \section{Summary}
 
-This 2-dimensional block-cyclic data structure --- the \code{DMAT} data structure --- is fairly complicated, but can pay great dividends if some appreciation and understand is given to it.  To briefly summarize this data structure:
+This 2-dimensional block-cyclic data structure --- the \code{DMAT} data 
+structure --- is fairly complicated, but can pay great dividends if some 
+appreciation and understand is given to it.  To briefly summarize this data 
+structure:
 \begin{enumerate}
   \item \code{DMAT} is \emph{distributed}.  No one processor owns all of the matrix. \label{enum:dmat1}
   \item \code{DMAT} is \emph{non-overlapping}. Any piece owned by one processor 
@@ -586,9 +624,24 @@ other processor.
   \item \code{DMAT} is confusing, but very robust and useful for matrix algebra (and thus most non-trivial statistics).
 \end{enumerate}
 
-The only items in common between SPMD and DMAT are items \ref{enum:dmat1} and \ref{enum:dmat2}.  A full characterization can be given as follows.  Let $X$ be a distributed matrix with $n$ (global) rows and $p$ (global) columns.  Suppose we distribute this matrix onto a set of $nprocs$ processors in context 2 using a blocking factor $b=(b_1, b_2)$.  Then DMAT is a special case of SPMD \emph{if and only if} we have $b_1 > \frac{n}{nprocs}$.  Otherwise, there is no relationship between these two structures (and converting between them can be difficult).
+The only items in common between SPMD and DMAT are items \ref{enum:dmat1} and 
+\ref{enum:dmat2}.  A full characterization can be given as follows.  Let $X$ be 
+a distributed matrix with $n$ (global) rows and $p$ (global) columns.  Suppose 
+we distribute this matrix onto a set of $nprocs$ processors in context 2 using a 
+blocking factor $b=(b_1, b_2)$.  Then DMAT is a special case of SPMD \emph{if 
+and only if} we have $b_1 > \frac{n}{nprocs}$.  Otherwise, there is no 
+relationship between these two structures (and converting between them can be 
+difficult).  However, converting between different kinds of block-cyclic 
+layouts is very simple, with numerous high-level methods to assist in this.  
+This process is explained in depth in Section~\ref{sec:redist}.
 
-In the chapters to follow, we offer numerous examples utilizing this data structure.  The dedicated reader can find more information about these contexts and utilizing the DMAT data structure, see the \pkg{pbdBASE}~\citep{Schmidt2012pbdBASEvignette} and \pkg{pbdDMAT}~\citep{Schmidt2012pbdDMATvignette} vignettes.  Additionally, you can experiment more with different kinds of block-cyclic data distributions on 2-dimensional processor grids using
+In the chapters to follow, we offer numerous examples utilizing this data 
+structure. The dedicated reader can find more information about these contexts 
+and utilizing the DMAT data structure, see the 
+\pkg{pbdBASE}~\citep{Schmidt2012pbdBASEvignette} and 
+\pkg{pbdDMAT}~\citep{Schmidt2012pbdDMATvignette} vignettes.  Additionally, you 
+can experiment more with different kinds of block-cyclic data distributions on 
+2-dimensional processor grids using
 a very useful website at
 \url{http://acts.nersc.gov/scalapack/hands-on/datadist.html}.
 
@@ -599,6 +652,12 @@ a very useful website at
 \label{sec:distributed_exercise}
 
 \begin{enumerate}[label=\thechapter-\arabic*]
+
+\item
+Experiment with the 2d block-cyclic data layout using this online tool: 
+\url{http://acts.nersc.gov/scalapack/hands-on/datadist.html} and the 
+\pkg{pbdDEMO} function \code{plot.dmat()}.
+
 \item
 Read two papers given at
 \url{http://acts.nersc.gov/scalapack/hands-on/datadist.html}.
