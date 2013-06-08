@@ -5,7 +5,7 @@
 
 \section{Introduction}
 
-We first introduce general notations for likelihood function
+We introduce general notations for likelihood function
 which is a standard method for Parametric Statistics in
 Statistical Inference~\citep{Casella2001}.
 Then, we introduce multivariate normal
@@ -51,7 +51,7 @@ over $\bTheta$ to obtain maximum likelihood estimation
 See \citet{Casella2001} for details.
 
 For example, Section~\ref{sec:ols} is one way to solve a linear model
-without parametric assumption. An alternative way is based on likelihood
+without parametric assumption, while an alternative way is based on likelihood
 approach.
 Assume an identical normal distribution with mean zero and variance $\sigma^2$
 to the independent error terms of Equation~(\ref{math:statslls}).
@@ -83,10 +83,10 @@ solving the equations.
 
 \section{Multivariate Normal Distribution}
 
-The limitation of the Equation~(\ref{eqn:normal}) is it's
-assumption, so we introduce a more general approach next for better
+The assumption of Equation~(\ref{eqn:normal}) limit the modeling capability.
+We introduce a more general approach next for better
 modeling. Since the independent assumption and Multivariate Statistics, the
-Equation~(\ref{eqn:normal}) also
+Equation~(\ref{eqn:normal})
 implies a multivariate normal distribution
 (MVN)\index{Distribution!multivariate normal distribution}\index{Distribution!MVN}
 to response variables $\by$ with dimension $N\times 1$ that
@@ -97,21 +97,25 @@ to response variables $\by$ with dimension $N\times 1$ that
 where $\bTheta = \{\bmu, \bSigma\}$, $\bmu = \bX\bbeta$ is a center with
 dimension $N\times 1$, $\bSigma = \sigma^2\bI$ is a dispersion
 and $\bI$ is an $N\times N$ identity matrix.
-
-In general, $MVN(\bmu, \bSigma)$ has a density function
+In this case, the $\by$ has the likelihood function as
 \begin{equation*}
 \displaystyle
 \phi(\by; \bmu, \bSigma) =
 (2\pi)^{-\frac{N}{2}} |\bSigma|^{-\frac{1}{2}}
 e^{-\frac{1}{2} (\by - \bmu)^\top \bSigma^{-1} (\by - \bmu)}
 \end{equation*}
-where $\bSigma$ is an unstructured dispersion but positive definite.
-Excepting over fitting problem,
-an unstructured dispersion $\bSigma$ is reasonable to
-characterize the correlation of dimensions since the estimation of
-$\bSigma$ is completely supported by observed data.
+The MLEs are
+$\hat{\bbeta}_{ML} = (\bX^\top \bX)^{-1} \bX^\top \by$ and
+$\sigma^2_{ML} = \frac{1}{N} (\by - \bar{y}\bone)^\top(\by - \bar{y}\bone)$
+where $\bar{y}$ is the average of $\by$
+and $\bone$ is an one vector with dimension $N\times 1$.
 
-For Equation~(\ref{eqn:mvn_n}), the MLEs would be the solution of
+In general, $\bSigma$ could be an unstructured dispersion but positive
+definite. Excepting over fitting problem,
+an unstructured dispersion $\bSigma$ is desirable to
+characterize correlation of dimensions since the estimation of
+$\bSigma$ is completely supported by observed data.
+Under this case, the MLEs would be the solution of
 \begin{eqnarray}
 \hat{\bbeta} & = & (\bX^\top \hat{\bSigma} \bX)^{-1}
                    \bX^\top \hat{\bSigma} \by
@@ -121,19 +125,15 @@ For Equation~(\ref{eqn:mvn_n}), the MLEs would be the solution of
                    \label{eqn:mle_sigma}
 \end{eqnarray}
 which may require iteratively numerical updating.
-For Equation~(\ref{eqn:log_likelihood_normal}),
-the solution is reduced to
-$\hat{\bbeta}_{ML} = (\bX^\top \bX)^{-1} \bX^\top \by$ and
-$\sigma^2_{ML} = \frac{1}{N} (\by - \bar{y}\bone)^\top(\by - \bar{y}\bone)$
-where $\bar{y}$ is the average of $\by$
-and $\bone$ is an one vector with dimension $N\times 1$.
 
-
+We demonstrate some parallel tricks next for the general case of
+multivariate normal distribution with distributed data.
 Suppose SPMD row-major matrix format is used for $\bX$ and $\by$, then
 Equations~\ref{eqn:mle_beta} and~\ref{eqn:mle_sigma} can be implemented
 as
-\begin{Code}
-\end{Code}
+\begin{lstlisting}[language=rr,title=R Code]
+
+\end{lstlisting}
 
 
 

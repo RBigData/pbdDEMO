@@ -147,7 +147,8 @@ This publication was typeset using \LaTeX.  The illustrations were created using
 \part{Applications}
 \input{./pbdDEMO-include/a1-logL}
 \input{./pbdDEMO-include/a2-pmclust}
-\input{./pbdDEMO-include/a3-Bayes}
+\input{./pbdDEMO-include/a3-phyclust}
+\input{./pbdDEMO-include/a4-Bayes}
 % appendices
 \part{Appendix}
 \appendix

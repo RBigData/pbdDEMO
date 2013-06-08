@@ -282,7 +282,7 @@ Read the SPMD wiki page at \url{http://en.wikipedia.org/wiki/SPMD} and it's rela
 to divide \code{N} jobs into $n$ processors nearly equally which is best
 for homogeneous computing environment to do task parallelism.
 The FAQs section of \pkg{pbdMPI}'s vignette has an example, try it as next.
-\begin{Code}
+\begin{lstlisting}[language=rr,title=R Code]
 library(pbdMPI, quiet=TRUE)
 init()
 
@@ -293,7 +293,7 @@ for(i in id){
   # put independent task i script here
 }
 finalize()
-\end{Code}
+\end{lstlisting}
 
 \item
 Multi-threading\index{Parallelism!multi-threading} and 
