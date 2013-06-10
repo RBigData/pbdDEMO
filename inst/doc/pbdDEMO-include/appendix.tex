@@ -3,6 +3,15 @@
 \chapter{Numerical Linear Algebra and Linear Least Squares Problems}
 \label{apx:numlinalg}
 
+
+{\it
+``A man should keep his little brain attic stocked with all the furniture
+that he is likely to use, and the rest he can put away in the lumber-room
+of his library where he can get it if he wants.'' \\
+\--- Sherlock Holmes
+}
+
+
 For the remainder, assume that all matrices are real-valued.
 
 Let us revisit the problem of solving linear least squares problems, introduced in Section~\ref{sec:ols}.  Recall that we wish to find a solution $\bbeta$ such that
@@ -104,6 +113,14 @@ Conceptually, this is arguably the most elegant method of solving the linear lea
 
 
 \chapter{Linear Regression and Rank Degeneracy in R}
+
+
+{\it
+``When a doctor does go wrong, he is the first of criminals.
+He has the nerve and he has the knowledge.'' \\
+\--- Sherlock Holmes
+}
+
 
 In the case that $\bX$ is rank deficient, then $\bX$ (and whence $\bX^T\bX$) is not invertible, so the problem can not be solved by the method of Section~\ref{asec:nrmleq}.  Both \proglang{R} and
 \proglang{pbdR} use a QR factorization as in Section~\ref{asec:qr}, although the two systems use a slightly different approach.  While most of the linear algebra in \proglang{R} is handled by

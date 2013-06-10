@@ -32,8 +32,10 @@ George Ostrouchov\\
 {\small\emph{Computer Science and Mathematics Division, \\
 Oak Ridge National Laboratory}}
 %%%
-\\[2.5in]
+\\[2.0in]
 Version 1.1
+\\
+\date{\quad \today}
 %
 \end{minipage}
 }
@@ -56,17 +58,21 @@ Version 1.1
 % \newpage\ \newpage
 
 
-\date{}
+%\date{\today}
 \maketitle
 
 %%%%%%%%%%%%%%%%%
 \ \vfill
 
-\copyright\ 2012 pbdR Core Team.  All rights reserved.
+\copyright\ 2012-2013 pbdR Core Team.  All rights reserved.
 
-Permission is granted to make and distribute verbatim copies of this vignette and its source provided the copyright notice and this permission notice are preserved on all copies.
+Permission is granted to make and distribute verbatim copies of this vignette
+and its source provided the copyright notice and this permission notice are
+preserved on all copies.
 
-This publication was typeset using \LaTeX.  The illustrations were created using the \pkg{ggplot2} package \citep{ggplot2}, except for Figure~\ref{fig:pbdrpackages}, which was created in Microsoft Powerpoint.
+This publication was typeset using \LaTeX. Illustrations were created
+using the \pkg{ggplot2} package \citep{ggplot2}, native \proglang{R} functions,
+and Microsoft Powerpoint.
 
 %%%%%%%%%%%%%%%%%
 
@@ -93,10 +99,10 @@ This publication was typeset using \LaTeX.  The illustrations were created using
 \addcontentsline{toc}{section}{List of Tables}
 \listoftables
 
-% \newpage
-% \fancyhf[C]{}
-% \phantomsection
-% \input{./pbdDEMO-include/00-preface}
+\newpage
+\fancyhf[C]{}
+\phantomsection
+\input{./pbdDEMO-include/00-preface}
 
 % \newpage
 % \fancyhf[C]{}
@@ -109,6 +115,8 @@ This publication was typeset using \LaTeX.  The illustrations were created using
 \input{./pbdDEMO-include/00-acknowledgement}
 
 \newpage
+\fancyhf[C]{}
+\phantomsection
 \input{./pbdDEMO-include/00-warn}
 
 
@@ -124,36 +132,36 @@ This publication was typeset using \LaTeX.  The illustrations were created using
 % Body header/footer style
 \bodyheadfoot
 
-% intro
+%%% intro
 \part{Preliminaries}
-\input{./pbdDEMO-include/01-introduction}
-\input{./pbdDEMO-include/02-background}
-% spmd methods
-\part{Direct MPI Methods}
-\input{./pbdDEMO-include/03-mpi}
-\input{./pbdDEMO-include/04-statistics}
-% ddmatrix methods
-\part{Distributed Matrix Methods}\label{part:dmat}
-\input{./pbdDEMO-include/05-dmat}
-\input{./pbdDEMO-include/06-gen}
-\input{./pbdDEMO-include/07-dmat_basic}
-\input{./pbdDEMO-include/08-dmat_stats}
-% reading /managing data
-\part{Reading and Managing Data}
-\input{./pbdDEMO-include/09-reading}
-\input{./pbdDEMO-include/10-pbdNCDF4}
-\input{./pbdDEMO-include/11-redist}
-% applications
-\part{Applications}
-\input{./pbdDEMO-include/a1-logL}
-\input{./pbdDEMO-include/a2-pmclust}
+ \input{./pbdDEMO-include/01-introduction}
+ \input{./pbdDEMO-include/02-background}
+%%% spmd methods
+ \part{Direct MPI Methods}
+ \input{./pbdDEMO-include/03-mpi}
+ \input{./pbdDEMO-include/04-statistics}
+%%% ddmatrix methods
+ \part{Distributed Matrix Methods}\label{part:dmat}
+ \input{./pbdDEMO-include/05-dmat}
+ \input{./pbdDEMO-include/06-gen}
+ \input{./pbdDEMO-include/07-dmat_basic}
+ \input{./pbdDEMO-include/08-dmat_stats}
+%%% reading /managing data
+ \part{Reading and Managing Data}
+ \input{./pbdDEMO-include/09-reading}
+ \input{./pbdDEMO-include/10-pbdNCDF4}
+ \input{./pbdDEMO-include/11-redist}
+%%% applications
+ \part{Applications}
+ \input{./pbdDEMO-include/a1-logL}
+ \input{./pbdDEMO-include/a2-pmclust}
 \input{./pbdDEMO-include/a3-phyclust}
-\input{./pbdDEMO-include/a4-Bayes}
-% appendices
-\part{Appendix}
-\appendix
-\input{./pbdDEMO-include/appendix}
-% references and indexes
+ \input{./pbdDEMO-include/a4-Bayes}
+%%% appendices
+ \part{Appendix}
+ \appendix
+ \input{./pbdDEMO-include/appendix}
+%%% references and indexes
 \part{Miscellany}
 
 %

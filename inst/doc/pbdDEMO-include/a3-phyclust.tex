@@ -1,9 +1,72 @@
 
-\chapter{Model-Based Phylogenetic Clustering}
+\chapter{Phylogenetic Clustering}
 \label{chp:phyclust}
 
 
+{\it
+``What one man can invent another can discover.''\\
+\--- Sherlock Holmes
+}
+
+
 \section{Introduction}
+
+Phylogenetic Clustering (Phyloclustering)\index{phyloclustering}
+is a model-based clustering
+technique combining evolutionary models to classify DNA/RNA sequences
+~\ref{snoweye2011}.
+Note that what speaking here, regarding to ``evolutionary'',
+is a mathematical/statistical model to interpret biological targets.
+Neither religion nor theology is involved. 
+
+Phyloclustering assumes a sequence
+$\bx_n = \{x_{n1}, x_{n2},\ldots, x_{nL}\}$
+with $L$ loci
+are observed from a population, but
+may have $K$ subpopulations that similar sequence patterns are observed
+within each common subpopulation.
+Each subpopulation is represented by a common center sequence
+$\bmu_k = \{\mu_{n1}, \mu_{n2},\ldots, \mu_{nL}\}$
+with $L$ loci which may
+or may not hypothetically exits in population and has to be determined.
+Therefore, each sequence has a probability mutated/evolved from any
+center sequence. The higher the probability, the closer to the center
+sequence.
+
+The evolutionary model is based on a continuous time Markov chain (CTMC)
+for four nucleotides $\{\colorA, \colorG, \colorC, \colorT\}$
+where the mutation process is characterized by
+an instantaneously rate matrix $\bQ$ with dimension $4\times 4$.
+The mutation chance from a nucleotide $x$ to a nucleotide $y$ in time $t$ is
+$$
+\Pr_{x, y}(t) = e^{\bQ_{x, y}t}.
+$$
+Assume each locus is mutated independently, then the mutation chance or
+the transition probability from $\bmu_k$ to $\bx_n$ in time $t$ is
+$$
+p_{\bmu_k, \bx_n}(t) = \prod_{l = 1}^L \Pr_{\mu_{kl}, \bx_{nl}}(t).
+$$
+Suppose there are $K$ subpopulations with mixing proportion $\eta_k$'s, then
+the mutation chance will be
+$$
+f(\bx_n; \bTheta) = \sum_{k = 1}^K \eta_k p_{\bmu_k, \bx_n}(t)
+$$
+where $\bTheta = \{\eta_1, \eta_2, \ldots, \eta_{K-1},
+                   \bmu_1, \bmu_2, \ldots, \bmu_{K}, \bQ, t\}$.
+
+
+Suppose observed $N$ sequences $\bx = \{\bx_1, \bx_2, \ldots, \bx_N\}$
+selected from unknown $K$ subpopulations
+with mixing proportion $\boldeta$ to be estimated,
+then the log likelihood is
+$$
+\log L(\bTheta; \bx) = \sum_{k = 1}^K \log f(\bx_n; \bTheta)
+$$
+The unknown parameters are $\bmu_k$, $\bQ$, and $t$.
+
+which describes the closeness of $\bx$ and $\bmu_k$.
+The 
+
 EM
 
 model-based clustering
@@ -15,7 +78,7 @@ evolution model
 
 
 
-\section{phyclust}
+\section{Task Pull Parallelism}
 
 
 
@@ -23,11 +86,6 @@ evolution model
 \section{Bootstrap}
 
 How much clusters?
-
-
-
-
-\section{Task Parallelism}
 
 
 

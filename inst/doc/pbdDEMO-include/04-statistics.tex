@@ -1,7 +1,15 @@
 \chapter[Basic Statistics Examples]{Basic Statistics Examples}
 \label{sec:statistics_examples}
 
-This section introduces a few simple examples and explains a little about
+{\it
+``It has long been an axiom of mine that the little things are
+infinitely the most important.'' \\
+\--- Sherlock Holmes
+}
+\vspace{0.5cm}
+
+
+This chapter introduces a few simple examples and explains a little about
 computing with distributed data directly over MPI.\index{MPI} 
 These implemented examples/functions are partly
 selected from the Cookbook of HPSC website~\citep{hpsc2011}\index{HPSC} at
@@ -380,7 +388,7 @@ solution to the problem.  In this case, the classical
 % Maximum Likelihood solution
 is given by:
 \begin{align}
- \hat{\bbeta} = (\bX^T\bX)^{-1}\bX^T\by \label{math:ols}
+ \hat{\bbeta}_{ols} = (\bX^T\bX)^{-1}\bX^T\by \label{math:ols}
 \end{align}
  
 This example can be also generalized to weighted least squares (WLS),
@@ -567,8 +575,8 @@ What are assumptions for Statement~(\ref{math:statslls})?
 {\color{blue} Hint: Gauss-Markov Theorem.}
 
 \item
-Prove that $\hat{\bbeta}$ of statement~(\ref{math:ols}) is an unbiased
-estimator of $\bbeta$, i.e., show that $\E[ \hat{\bbeta}] = \bbeta$.
+Prove that $\hat{\bbeta}_{ols}$ of statement~(\ref{math:ols}) is an unbiased
+estimator of $\bbeta$, i.e., show that $\E[ \hat{\bbeta}_{ols}] = \bbeta$.
 \label{ex:stat1}
 
 \item
