@@ -12,6 +12,9 @@ pocket my fee.'' \\
 
 \section{Introduction}
 
+Observational or experimental data are selected or collected with
+interesting stories, however, deeper discovery enhances values of
+interpretations.
 Model-based clustering~\index{Model-Based Clustering}
 is an unsupervised learning technique~\index{unsupervised learning}
 and mainly based on finite mixture models to fit the data, cluster the data,
@@ -25,7 +28,8 @@ with $K$ components, which has density
 f(\bX_n; \bTheta) = \sum_{k = 1}^K \eta_k \phi_p(\bX_n; \bmu_k, \bSigma_k)
 \label{eqn:gaussian_mixture}
 \end{equation}
-where $\phi_p(\cdot;\cdot,\cdot)$ is a $p$-dimensional Gaussian density,
+where $\phi_p(\cdot;\cdot,\cdot)$ is a $p$-dimensional Gaussian/normal density
+introduced in Section~\ref{sec:mvn},
 $$
 \bTheta = \{\eta_1, \eta_2, \ldots, \eta_{K-1},
 \bmu_1, \bmu_2, \ldots, \bmu_K, \bSigma_1, \bSigma_2, \ldots, \bSigma_K\},
@@ -82,6 +86,7 @@ from the data, and sometimes have unreasonably high classification errors.
 
 
 \subsection{Parallel Model-Based Clustering}
+\label{sec:parallel_model_based_clustering}
 
 The \pkg{pmclust}~\citep{Chen2012pmclustpackage}\index{Package!\pkg{pmclust}}
 package is an \proglang{R}

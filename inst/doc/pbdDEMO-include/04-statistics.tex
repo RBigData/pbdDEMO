@@ -543,7 +543,7 @@ if (need2stop)
 \begin{enumerate}[label=\thechapter-\arabic*]
 \item
 What are the assumptions used in order to invoke the Strong Law of Large 
-Numbers (SLLN) in statement~(\ref{eqn:as_convergence})?
+Numbers (SLLN) in Statement~(\ref{eqn:as_convergence})?
 
 \item
 What is the Weak Law of Large Numbers
@@ -552,7 +552,7 @@ Prove that the SLLN implies the WLLN. Provide a counter example that the WLLN
 does not imply the SLLN.
 
 \item
-In statement~(\ref{eqn:as_convergence}), we showed that $\bar{X}_N$ converges 
+In Statement~(\ref{eqn:as_convergence}), we showed that $\bar{X}_N$ converges 
 to $\frac{\pi}{4}$ almost surely,\index{Convergence!almost surely}
 a very strong form of convergence.  Show that 
 additionally, $\bar{X}_N$ converges to $\frac{\pi}{4}$
@@ -564,7 +564,7 @@ invoke).
 
 \item
 Let $g : [0, 1] \rightarrow  \mathbb{R}$ be a continuous function, and let 
-$\bar{X}_N$ be as in statement~(\ref{eqn:as_convergence}).  Show that 
+$\bar{X}_N$ be as in Statement~(\ref{eqn:as_convergence}).  Show that 
 $g(\bar{X}_N)$ converges to $g\left(\frac{\pi}{4}\right)$ almost surely
 {\color{blue} Hint: 
 use the property of continuity with respect to limits of sequences and the 
@@ -572,12 +572,12 @@ definition of almost sure convergence.}
 
 \item
 What are assumptions for Statement~(\ref{math:statslls})?
-{\color{blue} Hint: Gauss-Markov Theorem.}
+{\color{blue} Hint: Gauss-Markov Theorem.\index{Gauss-Markov Theorem}}
 
 \item
-Prove that $\hat{\bbeta}_{ols}$ of statement~(\ref{math:ols}) is an unbiased
-estimator of $\bbeta$, i.e., show that $\E[ \hat{\bbeta}_{ols}] = \bbeta$.
-\label{ex:stat1}
+Prove that $\hat{\bbeta}_{ols}$ of Statement~(\ref{math:ols}) is an unbiased
+estimator of $\bbeta$ provided appropriate assumptions, i.e., show that
+$\E[ \hat{\bbeta}_{ols} ] = \bbeta$.\label{ex:stat1}
 
 \item
 Prove $\bX^\top\bX$ is non-negative definite if $\bX$ has full column rank 
@@ -589,10 +589,10 @@ solutions to generalized linear models (GLM)\footnote{See
 \url{http://en.wikipedia.org/wiki/Generalized_linear_model} for details}.  A 
 common application of GLM's is logistic regression\footnote{See 
 \url{http://stat.psu.edu/~jiali/course/stat597e/notes2/logit.pdf}}.
-
 Implement a (not necessarily numerically stable) logistic regression function 
 using IRLS for SPMD data.  For simplicity, you may wish to assume that the 
 weighted matrix $\bX^T\textbf{W}\bX$ is full rank at each iteration.
+{\color{blue} Hint: \citet{McCullagh1989}.}
   
 \end{enumerate}
 

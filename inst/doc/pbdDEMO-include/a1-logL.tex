@@ -1,6 +1,6 @@
 
-\chapter{Likelihood Function}
-\label{chp:mle}
+\chapter{Likelihood}
+\label{chp:likelihood}
 
 
 {\it
@@ -12,10 +12,22 @@ instead of theories to suit facts.'' \\
 
 
 \section{Introduction}
+\label{sec:likelihood_introduction}
+
+This is a preamble chapter for Chapters~\ref{chp:pmclust}
+and~\ref{chp:phyloclustering} where applications are heavily relied on
+likelihood functions\index{likelihood function} which one of the most
+important modern Statistical technique.
+The ``likelihood'' was popularized
+in mathematical statistics by R.A. Fisher in 1922:
+``On the mathematical foundations of theoretical
+statistics.''\citep{Fisher1922}
+In short, the likelihood is a way based on data to build up
+theoretical inference for the facts.
 
 We introduce general notations for likelihood function
-which is a standard method for Parametric Statistics in
-Statistical Inference~\citep{Casella2001}.
+which is a standard method for parametric statistics and is
+useful for statistical inference~\citep{Casella2001}.
 Two useful distributions are introduced.
 The normal distribution additional to linear model is applied to
 the example in Section~\ref{sec:ols}.
@@ -40,34 +52,45 @@ Unlike in Mathematics, $\bx$ is known, but $\btheta$ is unknown
 to be determined in Statistics.
 
 Typically, a fancy way to estimate $\btheta$ is based on the
-likelihood function of the data $\bx$
+likelihood function for the data $\bx$
 \begin{equation}
-L(\btheta|\bx) = \prod_{n = 1}^N f(\bx_n; \btheta)
+L(\btheta; \bx) = \prod_{n = 1}^N f(\bx_n; \btheta)
 \label{eqn:likelihood}
 \end{equation}
 or the log likelihood function
 \begin{equation}
-\log L(\btheta|\bx) = \sum_{n = 1}^N \log f(\bx_n; \btheta).
+\log L(\btheta; \bx) = \sum_{n = 1}^N \log f(\bx_n; \btheta).
 \label{eqn:log_likelihood}
 \end{equation}
-Note that Equation~(\ref{eqn:log_likelihood}) has some
+The product of Equation~(\ref{eqn:likelihood}) is due to the independent
+assumption of $\bX$, but the $L(\btheta; \bx)$ may blow to infinity
+or negative infinity quickly as sample size $N$ increased. While,
+Equation~(\ref{eqn:log_likelihood}) has some
 better properties for some distribution families and
 is more numerically stable than Equation~(\ref{eqn:likelihood}).
-We then maximize Equation~(\ref{eqn:log_likelihood})
-over $\bTheta$ to obtain maximum likelihood estimation
-(MLE)\index{MLE} $\hat{\btheta}_{ML}$ in either analytically or numerically.
-See \citet{Casella2001} for details.
+We then either analytically or numerically maximize
+Equation~(\ref{eqn:log_likelihood})
+over $\bTheta$ to obtain a maximum likelihood estimation
+(MLE)\index{MLE}
+$$
+  \hat{\btheta}_{ML} := \argmax_{\btheta\in\bTheta} \log L(\btheta; \bx)
+$$
+in fairly-wide assumptions such as regularity conditions of parameter space
+and parameter does not depend on support,
+see \citet{Casella2001} for details.
 
 
 
 
 \section{Normal Distribution}
+\label{sec:normal_distribution}
 
 Section~\ref{sec:ols} is one way to find
 $\btheta = \{\bbeta,\sigma^2\}$ for a linear model
 without parametric assumption via ordinary least square estimator
 $\hat{\btheta}_{ols} = \{\hat{\bbeta}_{ols},\hat{\sigma}_{ols}^2\}$.
-An alternative way is based on likelihood approach by
+Beside Gauss-Markov Theorem\index{Gauss-Markov Theorem},
+an alternative way is based on likelihood approach by
 assuming an identical normal distribution with mean zero and
 variance $\sigma^2$ to the independent error terms of
 Equation~(\ref{math:statslls}).
@@ -82,7 +105,7 @@ $\bbeta$ and $\bx_n$ has dimension $p\times 1$.
 
 One may construct a log likelihood based on the normal density function as
 \begin{equation}
-\log L(\bbeta, \sigma^2|\by) = \sum_{n = 1}^N
+\log L(\bbeta, \sigma^2; \by) = \sum_{n = 1}^N
 \left[
 -\frac{1}{2} \log (2\pi \sigma^2) -
 \frac{(y_n - \bx_n^\top\bbeta)^2}{2\sigma^2}
@@ -95,15 +118,16 @@ can be obtained analytically for this case by
 taking the first derivatives of Equation~(\ref{eqn:log_likelihood_normal}),
 setting them to zero, and
 solving the equations.
-The implementation for numerical solution for
-Equation~(\ref{eqn:log_likelihood_normal}) is leaved in
-Exercise~\ref{ex:likelihood1}.
+The implementations for numerical solutions (from analytical solutions)
+or numerical optimization
+of Equation~(\ref{eqn:log_likelihood_normal}) is not difficult
+and leaved in Exercise~\ref{ex:likelihood1}.
 
-The assumption of Equation~(\ref{eqn:normal}) limit the modeling capability.
+The assumption of Statement~(\ref{eqn:normal}) limit the modeling capability.
 We introduce a more general approach next for better
 modeling.
 Since the independent assumption and Multivariate Statistics, the
-Equation~(\ref{eqn:normal})
+Statement~(\ref{eqn:normal})
 implies a multivariate normal distribution
 (MVN)\index{Distribution!multivariate normal distribution}\index{Distribution!MVN}
 (introduced in Section~\ref{sec:mvn})
@@ -132,9 +156,80 @@ and $\bone$ is an one vector with length $N$.
 
 
 
+\section{Likelihood Ratio Test}
+\label{sec:lrt}
+
+An advance statistical inference tool is based on likelihood ratio test
+(LRT)\index{likelihood ratio test}\index{LRT} provided suitable assumption
+holds. Suppose we have data $\bX$ and want to test a hypothesis
+$$
+  H_0: \btheta \in \bTheta_0 \mbox{ v.s. }
+  H_a: \btheta \in \bTheta_a
+$$
+where $\bTheta_0 \neq \bTheta_a$ that two spaces are not equivalent.
+The LRT says
+\begin{equation}
+-2\log \Lambda(\btheta_0, \btheta_a; \bX) :=
+-2\log
+\frac{
+\max_{\btheta\in\bTheta_0} L(\btheta; \bX)
+}{
+\max_{\btheta\in\bTheta_0\cup\bTheta_a} L(\btheta; \bX)
+}
+\sim \chi^2_p
+\label{eqn:LRT}
+\end{equation}
+where $\btheta_0$ and $\btheta_a$ are parameters that has the maximum
+likelihoods on spaces $\bTheta_0$ and $\bTheta_0\cup\bTheta_a$, and
+$\chi^2_p$ is a chi-squared distribution\index{Distribution!chi-squared}
+with $p$ degrees of freedom. In some case, the $p$ can be simplified as
+the number of dimension difference of $\bTheta_0\cup\bTheta_a$ and
+$\bTheta_0$.
+
+For example,
+in the least square case, such as Statement~(\ref{eqn:mvn_n}),
+we may want to know
+$$
+  H_0: \bsigma^2 = 1 \mbox{ v.s. }
+  H_a: \bsigma^2 > 0 
+$$
+which means $\bTheta_0 = \{\bbeta\}$ and $\bTheta_a = \{\bbeta, \sigma^2\}$.
+Note that $\bTheta_0 \subset \bTheta_a$, so
+$\bTheta_0 \cup \bTheta_a = \bTheta_a$.
+Given the MLEs $\hat{\btheta}_{0\,ML}$ and $\hat{\btheta}_{a\,ML}$
+on two spaces $\bTheta_0$ and $\bTheta_a$, respectively.
+The LRT will be
+$$
+  -2\log \hat{\Lambda}(\hat{\btheta}_{0\,ML}, \hat{\btheta}_{a\,ML}; \bX) :=
+  -2\log
+  \frac{
+    L(\hat{\btheta}_{0\,ML}; \bX)
+  }{
+    L(\hat{\btheta}_{a\,ML}; \bX)
+  }
+  \sim \chi^2_1.
+$$
+For type I error $\alpha = 0.05$, if
+the value
+$$
+  -2\log \hat{\Lambda}(\hat{\btheta}_{0\,ML}, \hat{\btheta}_{a\,ML}; \bX)
+  > q_{\chi^2_1}(0.95) \approx 3.84
+$$
+where $q_{\chi^2_1}(0.95)$ is the 95\% quantile of chi-squared distribution
+with 1 degree of freedom, then
+we may reject $H_0: \bsigma^2 = 1$ provided type I error is no greater
+than $0.05$ level.
+
+Note that the LRT introduced here is not dependent on the types of
+distributions, but has nested parameter space restriction and some
+regular conditions of parameter space.
+See \citet{Casella2001,Ferguson1996} for more details of LRTs.
+
+
+
+
 \section{Multivariate Normal Distribution}
 \label{sec:mvn}
-
 
 Suppose $\{\bX_1,\bX_2,\ldots,\bX_N\}$ is a random sample from
 multivariate normal distribution
@@ -164,7 +259,7 @@ be an observed data matrix with dimension $N\times p$.
 The log likelihood function for $N$ observations is
 \begin{equation*}
 \displaystyle
-\log L(\bmu, \bSigma|\bx) = \sum_{n = 1}^N
+\log L(\bmu, \bSigma; \bx) = \sum_{n = 1}^N
 -\frac{1}{2}
 \left[
 p\log(2\pi) + \log|\bSigma| + (\bx_n - \bmu)^\top \bSigma^{-1} (\bx_n - \bmu)
@@ -239,7 +334,7 @@ Verify the results with the analytical solution.
 \label{ex:likelihood1}
 
 \item
-Argue that Equation~(\ref{eqn:normal}) implies Equation~(\ref{eqn:mvn_n})
+Argue that Statement~(\ref{eqn:normal}) implies Statement~(\ref{eqn:mvn_n})
 provided appropriated assumption hold.
 
 \item
@@ -249,6 +344,17 @@ but $(X, Y)$ is not a multivariate normal distribution.
 \item
 Give an example that $(X, Y)$ has a multivariate normal distribution,
 but $X$ and $Y$ do not have an independent normal distribution.
+
+\item
+Prove Statement~(\ref{eqn:LRT}).
+{\color{blue} Hint: \citet{Ferguson1996}.}
+
+\item
+Implement similar trick of Section~\ref{sec:mvn} to Principal Component
+Analysis (PCA).
+\index{Principal Components Analysis|see{PCA}}\index{PCA}
+{\color{blue} Hint: HPSC~\citep{hpsc2011}.}
+
 
 \end{enumerate}
 
