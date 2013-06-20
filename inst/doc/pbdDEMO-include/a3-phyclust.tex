@@ -124,6 +124,7 @@ in a categorical space which yields a very different E- and M-steps.
 
 
 \section{The \pkg{phyclust} Package}
+\label{sec:phyclust}
 
 The \pkg{phyclust}~\citep{Chen2011a}
 is an \proglang{R} package fully implements
@@ -136,10 +137,23 @@ predicted models for determining an appropriate number of subpopulations.
 Those functions are particular useful for Sections~\ref{sec:bootstrap}
 and~\ref{sec:task_pull}.
 
-An example of \pkg{phyclust} performing phyloclustering is given in
-Figure~\ref{fig:eiav}.
-It plots an example data set, Pony 524~\citep{Carpenter2011},
-where 146 Equine Infectious Anemia Virus (EIAV) sequences~\citep{Leroux2004}
+The \pkg{phyclust} package has several example datasets which initials by
+several longitudinal animal studies on horses about Equine Infectious Anemia
+Virus (EIAV)~\citep{Leroux2004}\index{EIAV} which infects equine and causes EIA
+similar to HIV infects human and cases AIDS.
+See~\citet{Baccam2003} for more about the studies, horses, and their stories.
+The disease EIA progresses as the immune system
+response to the viruses population change in blood which is collected
+over time and generations. Part of blood samples are sequenced to identify
+highly mutable coding regions with several overlapping reading frames. The
+sequences and regions are then associated with disease progresses for
+further analysis. Identify population structures is the critical step for
+understanding the mutation patterns and designing better medicine or vaccine.
+
+We perform phyloclustering on an example dataset,
+{\it Pony 524}~\citep{Carpenter2011},\index{Data!Pony 524}
+which is given in Figure~\ref{fig:eiav}.
+It plots an example dataset where 146 EIAV sequences
 are in y-axis and 405 loci in x-axis.
 The top row is the consensus sequence, and only mutation sites are spotted
 for 146 sequences. Colors represent \colorA, \colorC, \colorG, and
@@ -148,7 +162,7 @@ common mutation locations and types are grouped.
 \begin{figure}[h!tb]
 \centering
  \includegraphics[width=6in]{pbdDEMO-include/pics/pony524}
-\caption{146 EIAV sequences of Pony 524
+\caption{146 EIAV sequences of {\it Pony 524}
 in three clusters.}
 \label{fig:eiav}
 \end{figure}
@@ -268,9 +282,45 @@ The website
 \href{http://math.acadiau.ca/ACMMaC/Rmpi/examples.html}{
 http://math.acadiau.ca/ACMMaC/Rmpi/examples.html}
 has a general view of task parallelism and examples in \pkg{Rmpi}.
-Among three task parallel methods, task pull is the best performance and
+Among three task parallel methods, task pull has the best performance and
 suit for bootstrap methods.
-We then introduce a simplified example of task pull in SPMD next.
+
+A simplified example of task pull in SPMD can be found in the \pkg{pbdMPI}
+demo via
+\begin{lstlisting}
+### At the shell prompt, run the demo with 4 processors by
+### (Use Rscript.exe for windows system)
+mpiexec -np 4 Rscript -e "demo(task_pull,'pbdMPI',ask=F,echo=F)"
+\end{lstlisting}
+which does the following
+\begin{lstlisting}[language=rr,title=Task Pull Example]
+### Initial
+library(pbdDMPI, quiet = TRUE)
+
+### Examples
+FUN <- function(jid){
+  Sys.sleep(1)
+  jid * 10
+}
+
+ret <- task.pull(1:10, FUN)
+comm.print(ret)
+
+### Finish
+finalize()
+\end{lstlisting}
+Note that lines 5 to 8 define a major function to be evaluated on all workers,
+line 10 prepares 10 jobs from 1 to 10 where jobs can be done by any
+available worker. The \code{task.pull()} is actually a combination of two
+functions \code{task.pull.workers()} called by all workers and
+\code{task.pull.master()} only called by the master by default rank 0.
+
+
+\section{An Example Using the {\it Pony 524} Dataset}
+
+As introduced in Section~\ref{sec:phyclust}, we will fit the 
+
+
 
 
 

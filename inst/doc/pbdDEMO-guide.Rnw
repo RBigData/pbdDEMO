@@ -156,7 +156,7 @@ and Microsoft Powerpoint.
 \input{./pbdDEMO-include/a1-logL}
 \input{./pbdDEMO-include/a2-pmclust}
 \input{./pbdDEMO-include/a3-phyclust}
-\input{./pbdDEMO-include/a4-Bayes}
+% \input{./pbdDEMO-include/a4-Bayes}
 %%% appendices
 \part{Appendix}
 \appendix
