@@ -123,7 +123,7 @@ is neither continuous nor discrete space since $\bx_n$ and $\bmu_k$ are
 in a categorical space which yields a very different E- and M-steps.
 
 
-\subsection{The \pkg{phyclust} Package}
+\section{The \pkg{phyclust} Package}
 
 The \pkg{phyclust}~\citep{Chen2011a}
 is an \proglang{R} package fully implements
@@ -167,10 +167,13 @@ $H_0: K = K^\prime \mbox{ v.s. } H_a: K = K^*$ for any $K^\prime \neq K^*$.
 In mixture models, the nested parameter space is inappropriate, hence,
 the LRT introduced in Section~\ref{sec:lrt} may not appropriate.
 
-Bootstrap methods~\ref{Efron1979}\index{bootstrap}
+Bootstrap methods~\citep{Efron1979}\index{bootstrap}
 may provide an adequate solution to
-rebuild an asymptotic distribution for the likelihood ratio (LR). The bootstrap
-methods is a re-sampling technique either from data (non-parametric)
+rebuild an asymptotic distribution for the likelihood ratio (LR).
+``Asymptotic'' means ideally large sample size property.
+The bootstrap methods is a re-sampling technique\index{re-sampling technique}
+based on Monte Carlo\index{Monte Carlo} property
+either from data (non-parametric)
 or from model (parametric) to form a distribution for (LR).
 Therefore, we may obtain a p-value by comparing LR to this distribution
 rather than deriving an asymptotic distribution from LRT.
@@ -180,13 +183,13 @@ which is also particular suitable to apply the bootstrap methods to determine
 an appropriate number of subpopulations.
 For given data $\bX$ and hypothetical $K^\prime$ and $K^*$,
 we may perform parametric bootstrap as the next.
-\begin{enumerate}
-\item[Step 1:]
+\begin{enumerate}[label=Step \arabic*:]
+\item
 Based on $\bX$,
 obtain MLEs $\hat{\btheta}_{K^\prime\,ML}$ and $\hat{\btheta}_{K^*\,ML}$
 under $\bTheta_{K^\prime}$ and $\bTheta_{K^*}$, respectively.
 
-\item[Step 2:]
+\item
 Compute and let
 $
   \hat{\lambda} :=
@@ -195,17 +198,17 @@ $
    \hat{\btheta}_{K^*\,ML}; \bX).
 $
 
-\item[Step 3:]
+\item
 Sample new data $\bX^{(b)}$ from $\mF(\hat{\btheta}_{K^*\,ML})$.
 
-\item[Step 4:]
+\item
 Based on $\bX^{(b)}$,
 obtain MLEs $\hat{\btheta}^{(b)}_{K^\prime\,ML}$ and
 $\hat{\btheta}^{(b)}_{K^*\,ML}$
 under $\bTheta_{K^\prime}$ and $\bTheta_{K^*}$, respectively,
 via the EM algorithm.
 
-\item[Step 5:]
+\item
 Compute and let
 $
   \lambda^{(b)} :=
@@ -214,13 +217,13 @@ $
    \hat{\btheta}^{(b)}_{K^*\,ML}; \bX^{(b)}).
 $
 
-\item[Step 6:]
+\item
 Repeat Steps 3 to 5 for $B$ times, collect and let
 $\mF^{(B)}(\lambda) := \{\lambda^{(1)}, \lambda^{(2)}, \ldots, \lambda^{(B)}\}$
 which is an approximation distribution to $\mF(\lambda)$,
 the distribution of $\lambda$, as $B$ large enough.
 
-\item[Step 7:]
+\item
 If $\hat{\lambda}$ greater than $q_{\mF^{(B)}(\lambda)}(0.95)$, then
 we reject the $K^\prime$ model under $0.05$ level of type I error.
 
@@ -235,14 +238,15 @@ $\bTheta_{K^\prime} \cup \bTheta_{K^*}$ nor $\bTheta_{K^\prime + K^*}$.
 \section{Task Pull Parallelism}
 \label{sec:task_pull}
 
-Obviously, Step 4 will be computationaly intensive as $B$ increased,
+Obviously, Step 4 will be computationally intensive as $B$ increased,
 and no guarantee that each of $b = 1,2,\ldots, B$ bootstrap sample
 will take similar time at obtaining MLEs. It may be possible to parallelize
-the EM algorithm fully in SPMD such as
+the EM algorithm fully in SPMD\index{Parallelism!SPMD} such as
 Section~\ref{sec:parallel_model_based_clustering},
 however, in general this step is still a bottleneck of whole computation.
 
-The task parallelism as mention in Exercise~\ref{ch2:exercise:2}
+The task parallelism\index{Parallelism!task parallelism}
+as mention in Exercise~\ref{ch2:exercise:2}
 is one way to solve the problem by simply divided jobs equally likely
 to all processors.
 This is probably an optimal solution for equal loading jobs
@@ -253,8 +257,9 @@ bootstrap methods introduced in Section~\ref{sec:bootstrap}.
 Note that there are also some drawbacks for task parallelism:
 \begin{itemize}
 \item
-it requires a processor to handle job controls as the role of master in
-master/workers programming paradigm, and
+it requires a processor to handle job controls as the role of manager in
+manager/workers programming paradigm,\index{Parallelism!manager/works paradigm}
+and
 \item
 the code is not obviously and difficult to debug or generalize.
 \end{itemize}

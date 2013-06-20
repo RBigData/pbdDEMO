@@ -36,3 +36,5 @@ iris_dmat           pbdDEMO   Iris dmat code.
 iris_overlap        pbdDEMO   Iris overlap levels.
 iris_serial         pbdDEMO   Iris serial code.
 iris_spmd           pbdDEMO   Iris SPMD code.
+
+task_pull           pbdDEMO   Bootstrap phyclust results.

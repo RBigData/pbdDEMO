@@ -105,8 +105,8 @@ Data parallelism is one parallel programming model. By contrast, another
 important parallel programming model is \emph{task 
 parallelism},\index{Parallelism!task parallelism} which much of the 
 \proglang{R} community is already fairly adept at, especially when using the 
-manager/worker paradigm\index{Parallelism!manager/worker paradigm} (more on this 
-later).  Common packages for this kind of work include 
+manager/workers paradigm\index{Parallelism!manager/workers paradigm}
+(more on this later).  Common packages for this kind of work include 
 \pkg{snow}~\citep{Tierney2012}\index{Package!\pkg{snow}}, 
 \pkg{parallel}~\citep{parallel}\index{Package!\pkg{parallel}}, and 
 \pkg{Rmpi}~\citep{Rmpi}\index{Package!\pkg{Rmpi}}\footnote{For more examples, 
@@ -198,7 +198,7 @@ encouraged to read the \pkg{pbdMPI} package's
 vignette~\citep{Chen2012pbdMPIvignette} first.  Ideally, readers should
 run the demos of the \pkg{pbdMPI} package, going through the code step by step.
 
-This paradigm is just one model of parallel programming, and in reality, is a sort of ``meta model'', encompassing many other parallel programming models.  The \proglang{R} community is already familiar with the manager/worker\footnote{Sometimes referred to as ``master/slave'' or ``master/worker''} programming model\index{Parallelism!manager/worker paradigm}.  This programming model is particularly well-suited to task parallelism, where generally one processor will distribute the task load to the other processors.
+This paradigm is just one model of parallel programming, and in reality, is a sort of ``meta model'', encompassing many other parallel programming models.  The \proglang{R} community is already familiar with the manager/workers\footnote{Sometimes referred to as ``master/slaves'' or ``master/workers''} programming model\index{Parallelism!manager/workers paradigm}.  This programming model is particularly well-suited to task parallelism, where generally one processor will distribute the task load to the other processors.
 
 The two are not mutually exclusive, however.  It is easy enough to engage in task parallelism from an SPMD-written program.  To do this, you essentially create a ``task-parallelism block'', where one processor
 

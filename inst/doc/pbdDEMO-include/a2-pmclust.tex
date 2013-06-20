@@ -85,7 +85,7 @@ unrealistic, leaving the data scientist unable to draw meaningful inference
 from the data, and sometimes have unreasonably high classification errors.
 
 
-\subsection{Parallel Model-Based Clustering}
+\section{Parallel Model-Based Clustering}
 \label{sec:parallel_model_based_clustering}
 
 The \pkg{pmclust}~\citep{Chen2012pmclustpackage}\index{Package!\pkg{pmclust}}
@@ -467,6 +467,14 @@ clustering~\index{semi-supervised learning}, select some high density points
 from the generated data and labeling them as prior know information, then
 test how these information can affect algorithm performances
 by comparing ARIs.
+
+\item
+Argue that the k-means algorithm~\citep{Forgy1965}~\index{Algorithm!k-means}
+equivalently assumes
+$\eta_1 = \eta_2 = \cdots = \eta_K \equiv 1/K$ and
+$\bSigma_1 = \bSigma_2 = \cdots = \bSigma_K \equiv \bI$
+in Equation~(\ref{eqn:gaussian_mixture}), where
+$\bI$ is the identity matrix.
 
 \end{enumerate}
 

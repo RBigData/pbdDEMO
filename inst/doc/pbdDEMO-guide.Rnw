@@ -134,33 +134,33 @@ and Microsoft Powerpoint.
 
 %%% intro
 \part{Preliminaries}
-% \input{./pbdDEMO-include/01-introduction}
-% \input{./pbdDEMO-include/02-background}
+\input{./pbdDEMO-include/01-introduction}
+\input{./pbdDEMO-include/02-background}
 %%% spmd methods
-% \part{Direct MPI Methods}
-% \input{./pbdDEMO-include/03-mpi}
-% \input{./pbdDEMO-include/04-statistics}
+\part{Direct MPI Methods}
+\input{./pbdDEMO-include/03-mpi}
+\input{./pbdDEMO-include/04-statistics}
 %%% ddmatrix methods
-% \part{Distributed Matrix Methods}\label{part:dmat}
-% \input{./pbdDEMO-include/05-dmat}
-% \input{./pbdDEMO-include/06-gen}
-% \input{./pbdDEMO-include/07-dmat_basic}
-% \input{./pbdDEMO-include/08-dmat_stats}
+\part{Distributed Matrix Methods}\label{part:dmat}
+\input{./pbdDEMO-include/05-dmat}
+\input{./pbdDEMO-include/06-gen}
+\input{./pbdDEMO-include/07-dmat_basic}
+\input{./pbdDEMO-include/08-dmat_stats}
 %%% reading /managing data
-% \part{Reading and Managing Data}
-% \input{./pbdDEMO-include/09-reading}
-% \input{./pbdDEMO-include/10-pbdNCDF4}
-% \input{./pbdDEMO-include/11-redist}
+\part{Reading and Managing Data}
+\input{./pbdDEMO-include/09-reading}
+\input{./pbdDEMO-include/10-pbdNCDF4}
+\input{./pbdDEMO-include/11-redist}
 %%% applications
-% \part{Applications}
+\part{Applications}
 \input{./pbdDEMO-include/a1-logL}
-% \input{./pbdDEMO-include/a2-pmclust}
+\input{./pbdDEMO-include/a2-pmclust}
 \input{./pbdDEMO-include/a3-phyclust}
-% \input{./pbdDEMO-include/a4-Bayes}
+\input{./pbdDEMO-include/a4-Bayes}
 %%% appendices
-% \part{Appendix}
-% \appendix
-% \input{./pbdDEMO-include/appendix}
+\part{Appendix}
+\appendix
+\input{./pbdDEMO-include/appendix}
 %%% references and indexes
 \part{Miscellany}
 
