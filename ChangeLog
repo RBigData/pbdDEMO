@@ -1,7 +1,6 @@
 2013-06-20: Ver. 0.1-1
   * Expanded section on parallelism basics in vignette.
   * likelihood, pmclust, and phyclust applications added to vignette.
-  * Add task pull functions.
 
 ======================= Log Before Release =====================================
 

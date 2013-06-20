@@ -12,7 +12,5 @@ export(
   ###
   plot.dmat,
   ###
-  ncvar_put_spmd, ncvar_put_dmat, ncvar_get_spmd, ncvar_get_dmat,
-  ###
-  task.pull.workers, task.pull.master
+  ncvar_put_spmd, ncvar_put_dmat, ncvar_get_spmd, ncvar_get_dmat
 )
