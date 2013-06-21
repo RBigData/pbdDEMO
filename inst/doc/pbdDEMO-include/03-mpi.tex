@@ -675,14 +675,16 @@ family of ``*ply'' functions, in the same vein as \proglang{R}'s
   \item \textbf{Apply}: *ply-like functions.\\
   \code{pbdApply(X, MARGIN, FUN, \dots)} --- analogue of \code{apply()}\\
   \code{pbdLapply(X, FUN, \dots)} --- analogue of \code{lapply()}\\
-  \code{pbdSapply(X, FUN, \dots)} --- analogue of \code{sapply()}\\
+  \code{pbdSapply(X, FUN, \dots)} --- analogue of \code{sapply()}
 \end{itemize}
 \index{Code!\code{pbdApply}}
 \index{Code!\code{pbdLapply}}
 \index{Code!\code{pbdSapply}}
+For more efficient approach (non-barrier), one may consider use task pull
+parallelism instead of ``*ply'' functions, see Section~\ref{sec:task_pull}
+for more details.
 
 Here is a simple example utilizing \code{pbdLapply()}:
-    
 \begin{lstlisting}[language=rr,title=Example 4]
 library(pbdMPI, quiet = TRUE)
 init()
