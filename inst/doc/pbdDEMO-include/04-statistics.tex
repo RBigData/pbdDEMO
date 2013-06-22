@@ -120,17 +120,17 @@ And to everyone who found this looking for a homework solution, you're welcome.
 
 The key step of the demo code is in the following block:
 \begin{lstlisting}[language=rr,title=R Code]
-N.spmd <- 1000
-X.spmd <- matrix(runif(N.spmd * 2), ncol = 2)
-r.spmd <- sum(rowSums(X.spmd^2) <= 1)
-ret <- allreduce(c(N.spmd, r.spmd), op = "sum")
+N.gbd <- 1000
+X.gbd <- matrix(runif(N.gbd * 2), ncol = 2)
+r.gbd <- sum(rowSums(X.gbd^2) <= 1)
+ret <- allreduce(c(N.gbd, r.gbd), op = "sum")
 PI <- 4 * ret[2] / ret[1]
 comm.print(PI)
 \end{lstlisting}
 
-In line 1, we specify sample size in \code{N.spmd} for each processor,
-and $N=D\times\mbox{\code{N.spmd}}$ if $D$ processors are executed.
-In line 2, we generate samples in \code{X.spmd} for every processor.
+In line 1, we specify sample size in \code{N.gbd} for each processor,
+and $N=D\times\mbox{\code{N.gbd}}$ if $D$ processors are executed.
+In line 2, we generate samples in \code{X.gbd} for every processor.
 In line 3, we compute how many of the ``radii'' are less than or equal to $1$
 for each processors.
 In line 4, we call \code{allreduce()}\index{Code!\code{allreduce()}}
@@ -183,15 +183,15 @@ possible.
 The demo generates random data on 4 processors, then
 utilizes the \code{mpi.stat()} function:
 \begin{lstlisting}[language=rr,title=R Code]
-mpi.stat <- function(x.spmd){ 
+mpi.stat <- function(x.gbd){ 
   ### For mean(x).
-  N <- allreduce(length(x.spmd), op = "sum")
-  bar.x.spmd <- sum(x.spmd / N)
-  bar.x <- allreduce(bar.x.spmd, op = "sum")
+  N <- allreduce(length(x.gbd), op = "sum")
+  bar.x.gbd <- sum(x.gbd / N)
+  bar.x <- allreduce(bar.x.gbd, op = "sum")
 
   ### For var(x).
-  s.x.spmd <- sum(x.spmd^2 / (N - 1))
-  s.x <- allreduce(s.x.spmd, op = "sum") - bar.x^2 * (N / (N - 1))
+  s.x.gbd <- sum(x.gbd^2 / (N - 1))
+  s.x <- allreduce(s.x.gbd, op = "sum") - bar.x^2 * (N / (N - 1))
 
   list(mean = bar.x, s = s.x)
 } # End of mpi.stat().
@@ -227,11 +227,11 @@ categorical data analysis.
 The demo generates random data on 4 processors, then
 utilizes the \code{mpi.bin()} function:
 \begin{lstlisting}[language=rr,title=R Code]
-mpi.bin <- function(x.spmd, breaks = pi / 3 * (-3:3)){
-  bin.spmd <- table(cut(x.spmd, breaks = breaks))
-  bin <- as.array(allreduce(bin.spmd, op = "sum"))
-  dimnames(bin) <- dimnames(bin.spmd)
-  class(bin) <- class(bin.spmd)
+mpi.bin <- function(x.gbd, breaks = pi / 3 * (-3:3)){
+  bin.gbd <- table(cut(x.gbd, breaks = breaks))
+  bin <- as.array(allreduce(bin.gbd, op = "sum"))
+  dimnames(bin) <- dimnames(bin.gbd)
+  class(bin) <- class(bin.gbd)
   bin
 } # End of mpi.bin().
 \end{lstlisting}
@@ -301,17 +301,17 @@ to approximate a quantile and is not equivalent to the original
 work well at a large scale. The demo generates random data on 4
 processors, then utilizes the \code{mpi.quantile()}:
 \begin{lstlisting}[language=rr,title=R Code]
-mpi.quantile <- function(x.spmd, prob = 0.5){
+mpi.quantile <- function(x.gbd, prob = 0.5){
   if(sum(prob < 0 | prob > 1) > 0){
     stop("prob should be in (0, 1)")
   }
 
-  N <- allreduce(length(x.spmd), op = "sum")
-  x.max <- allreduce(max(x.spmd), op = "max")
-  x.min <- allreduce(min(x.spmd), op = "min")
+  N <- allreduce(length(x.gbd), op = "sum")
+  x.max <- allreduce(max(x.gbd), op = "max")
+  x.min <- allreduce(min(x.gbd), op = "min")
 
   f.quantile <- function(x, prob = 0.5){
-    allreduce(sum(x.spmd <= x), op = "sum") / N - prob
+    allreduce(sum(x.gbd <= x), op = "sum") / N - prob
   }
 
   uniroot(f.quantile, c(x.min, x.max), prob = prob[1])$root
@@ -339,7 +339,7 @@ can be utilized in the same way.
 \section[Ordinary Least Squares]{Ordinary Least Squares}%\medium
 \label{sec:ols}
 
-\emph{Example:  Compute ordinary least square solutions for SPMD
+\emph{Example:  Compute ordinary least square solutions for GBD
       distributed data.}
 
 The demo command is
@@ -400,15 +400,15 @@ See \url{http://en.wikipedia.org/wiki/Least_squares} and
 
 The implementation is straight forward:
 \begin{lstlisting}[language=rr,title=R Code]
-if(length(y.spmd) != nrow(X.spmd)){
-  stop("length(y.spmd) != nrow(X.spmd)")
+if(length(y.gbd) != nrow(X.gbd)){
+  stop("length(y.gbd) != nrow(X.gbd)")
 }
 
-t.X.spmd <- t(X.spmd)
-A <- allreduce(t.X.spmd %*% X.spmd, op = "sum")
-B <- allreduce(t.X.spmd %*% y.spmd, op = "sum")
+t.X.gbd <- t(X.gbd)
+A <- allreduce(t.X.gbd %*% X.gbd, op = "sum")
+B <- allreduce(t.X.gbd %*% y.gbd, op = "sum")
 
-solve(matrix(A, ncol = ncol(X.spmd))) %*% B
+solve(matrix(A, ncol = ncol(X.gbd))) %*% B
 \end{lstlisting}
 
 While this is a fine demonstration of the power of
@@ -432,7 +432,7 @@ rank-revealing QR Decomposition~\index{Decomposition!QR}
 to find the least squares solution. So for larger problems, and especially
 those where numerical accuracy is important or rank-degeneracy is
 a possibility, it is much better to simply convert
-\code{y.spmd} and \code{X.spmd}\index{Class!\code{.spmd}}
+\code{y.gbd} and \code{X.gbd}\index{Class!\code{.gbd}}
 into the block-cyclic format as
 in Part~\ref{part:dmat} and utilize \pkg{pbdBASE} and \pkg{pbdDMAT}
 for all matrix computations.
@@ -590,7 +590,7 @@ solutions to generalized linear models (GLM)\footnote{See
 common application of GLM's is logistic regression\footnote{See 
 \url{http://stat.psu.edu/~jiali/course/stat597e/notes2/logit.pdf}}.
 Implement a (not necessarily numerically stable) logistic regression function 
-using IRLS for SPMD data.  For simplicity, you may wish to assume that the 
+using IRLS for GBD data.  For simplicity, you may wish to assume that the 
 weighted matrix $\bX^T\textbf{W}\bX$ is full rank at each iteration.
 {\color{blue} Hint: \citet{McCullagh1989}.}
   

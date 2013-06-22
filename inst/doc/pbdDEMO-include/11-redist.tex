@@ -222,30 +222,30 @@ The demo command is
 mpiexec -np 4 Rscript -e "demo(balance,'pbdDEMO',ask=F,echo=F)"
 \end{Command}
 
-Suppose we have an unbalanced, distributed input matrix \code{X.spmd}.  We can 
+Suppose we have an unbalanced, distributed input matrix \code{X.gbd}.  We can 
 call \code{balance.info()} on this object to store some information about how to 
 balance the data load across all processors.  This can be useful for tracking 
 data movement, as well as for ``unbalancing'' later, if we so choose.  Next, we 
 call
 \code{load.balance()}~\index{Code!\code{load.balance()}}
-to obtain a load-balanced object \code{new.X.spmd}.  We can also now undo this entire process and get back to \code{X.spmd} by calling
-\code{unload.balance()}~\index{Code!\code{unload.balance()}} on \code{new.X.spmd}.
+to obtain a load-balanced object \code{new.X.gbd}.  We can also now undo this entire process and get back to \code{X.gbd} by calling
+\code{unload.balance()}~\index{Code!\code{unload.balance()}} on \code{new.X.gbd}.
 
 
 All together, the code looks something like:
 \begin{Code}[title=R Code]
-bal.info <- balance.info(X.spmd)
-new.X.spmd <- load.balance(X.spmd, bal.info)
-org.X.spmd <- unload.balance(new.X.spmd, bal.info)
+bal.info <- balance.info(X.gbd)
+new.X.gbd <- load.balance(X.gbd, bal.info)
+org.X.gbd <- unload.balance(new.X.gbd, bal.info)
 \end{Code}
 
 The details of this exchange are depicted in the example in Figure~\ref{fig:load_balance}.  Here, 
-\code{X.spmd} is unbalanced, and \code{new.X.spmd} is a balanced version of \code{X.spmd}.
+\code{X.gbd} is unbalanced, and \code{new.X.gbd} is a balanced version of \code{X.gbd}.
 
 \begin{figure}[h]
 \begin{center}
 \begin{tabular}{ccc}
-\code{X.spmd}(\code{org.X.spmd}) & & \code{new.X.spmd} \\
+\code{X.gbd}(\code{org.X.gbd}) & & \code{new.X.gbd} \\
 
 $
 \left[
@@ -298,7 +298,7 @@ $
 \end{center}
 \caption[Load Balancing/Unbalancing Data]{
 Load Balancing/Unbalancing Data:  $\bX$ is distributed in
-\code{X.spmd}(\code{org.X.spmd}) and \code{new.X.spmd}.
+\code{X.gbd}(\code{org.X.gbd}) and \code{new.X.gbd}.
 Both are distributed row-wise in 4 processors.  The colors represent processors {\color{p0}0},
 {\color{p1}1}, {\color{p2}2}, and {\color{p3}3}, respectively.
 }
@@ -306,16 +306,16 @@ Both are distributed row-wise in 4 processors.  The colors represent processors 
 \end{figure}
  
 
-The function \code{balance.info()} is extremely useful, because it will return the information used to load balance the given data \code{X.spmd}.  The return of \code{balance.info()} is a list consisting of two data frames,
+The function \code{balance.info()} is extremely useful, because it will return the information used to load balance the given data \code{X.gbd}.  The return of \code{balance.info()} is a list consisting of two data frames,
 \code{send()} and \code{recv()}, as well as two vectors,
-\code{N.allspmd} and \code{new.N.allspmd}.  
+\code{N.allgbd} and \code{new.N.allgbd}.  
 
 Here, \code{send} records the original processor rank and the destination processor rank of the unbalanced data (that which is to be transmitted by that processor).
 The \code{load.balance()}\index{Code!\code{load.balance()}}
 function uses this table to move the data via \pkg{pbdMPI}'s \code{isend()} function.
 If any ``destination rank'' is not the ``original rank'', then the corresponding data row will be moved to the appropriate processor.  On the other hand, \code{recv} records the original processor rank and the destination rank of balanced data (that which is received by that processor).
 
-The \code{N.allspmd} and \code{new.N.allspmd} objects both have length equal to the communicator containing all numbers of rows of \code{X.spmd} before and after the balancing, respectively. This is for double checking and avoiding a 0-row matrix issue.
+The \code{N.allgbd} and \code{new.N.allgbd} objects both have length equal to the communicator containing all numbers of rows of \code{X.gbd} before and after the balancing, respectively. This is for double checking and avoiding a 0-row matrix issue.
 
 For \code{unload.balance}, the process amounts to reversing \code{bal.info} and passing it to \code{load.balance}.
 
@@ -324,51 +324,51 @@ Finally, note that the ``balanced'' data is chosen to be balanced in a very part
 
 
 
-\section{Convert Between SPMD and DMAT}
-\label{sec:spmd_dmat}
+\section{Convert Between GBD and DMAT}
+\label{sec:gbd_dmat}
 
-\emph{Example:  Convert between SPMD and DMAT formats.}
+\emph{Example:  Convert between GBD and DMAT formats.}
 
 The demo command is
 \begin{Command}
 ### At the shell prompt, run the demo with 4 processors by
 ### (Use Rscript.exe for windows system)
-mpiexec -np 4 Rscript -e "demo(spmd_dmat,'pbdDEMO',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(gbd_dmat,'pbdDEMO',ask=F,echo=F)"
 \end{Command}
 
-The final redistribution challenge we will present is taking an object in SPMD format and putting it in the DMAT format.  More precisely, we assume the input object \code{X.spmd} is in SPMD and convert the object into an object of
+The final redistribution challenge we will present is taking an object in GBD format and putting it in the DMAT format.  More precisely, we assume the input object \code{X.gbd} is in GBD and convert the object into an object of
 class \code{ddmatrix}\index{Class!\code{ddmatrix}}
 which we will call \code{X.dmat}.
 
 
-The Figure~\ref{fig:spmd_dmat} illustrates an example \code{X.spmd} and \code{X.dmat} conversion.  For full details about the block-cyclic data format used for
+The Figure~\ref{fig:gbd_dmat} illustrates an example \code{X.gbd} and \code{X.dmat} conversion.  For full details about the block-cyclic data format used for
 class \code{ddmatrix},\index{Class!\code{ddmatrix}}
 see the \pkg{pbdDMAT} vignette.  
 
-To perform such a redistribution, one simply needs to call:~\index{Code!\code{spmd2dmat()}}\index{Code!\code{dmat2spmd()}}
+To perform such a redistribution, one simply needs to call:~\index{Code!\code{gbd2dmat()}}\index{Code!\code{dmat2gbd()}}
 \begin{Code}[title=R Code]
-X.dmat <- spmd2dmat(X.spmd)
+X.dmat <- gbd2dmat(X.gbd)
 \end{Code}
 or
 \begin{Code}[title=R Code]
-X.spmd <- dmat2spmd(X.dmat)
+X.gbd <- dmat2gbd(X.dmat)
 \end{Code}
-Here, the \code{spmd2dmat} function does the following:
+Here, the \code{gbd2dmat} function does the following:
 \begin{enumerate}
-\item Check number of columns of \code{X.spmd}.  All
+\item Check number of columns of \code{X.gbd}.  All
       processors should be the same.
-\item Row balance the SPMD matrix as necessary via \code{load.balance()} as in Section~\ref{sec:lb_ub}.
+\item Row balance the GBD matrix as necessary via \code{load.balance()} as in Section~\ref{sec:lb_ub}.
 \item Call construct a new ddmatrix object (via the \code{new()} constructor) on the balanced matrix,
       say \code{X.dmat}, in BLACS~\index{Library!BLACS} context 2 (\code{ICTXT = 2}).
 \item Redistribute \code{X.dmat} to another BLACS context as needed 
       (default \code{ICTXT = 0}) via the \code{base.reblock()} function as in Section~\ref{sec:dmatredist}.
 \end{enumerate}
-Note that the \code{load.balance()} function, as used above, is legitimately necessary here.  Indeed, this function takes a collection of distributed data and converts it into a degenerate block cyclic distribution; namely, this places the data in block ``1-cycle'' format, distributed across an $n\times 1$ processor grid.  In the context of Figure~\ref{fig:spmd_dmat} (where the aforementioned process is implicit), this is akin to first moving the data into a distributed matrix format with \code{bldim=c(3,3)} and \code{CTXT=2}.  Finally, we can take this degenerate block-cyclic distribution and again to Figure~\ref{fig:spmd_dmat} as our motivating example, we convert the data balanced data so that it has \code{bldim=c(2,2)} and \code{CTXT=0}.
+Note that the \code{load.balance()} function, as used above, is legitimately necessary here.  Indeed, this function takes a collection of distributed data and converts it into a degenerate block cyclic distribution; namely, this places the data in block ``1-cycle'' format, distributed across an $n\times 1$ processor grid.  In the context of Figure~\ref{fig:gbd_dmat} (where the aforementioned process is implicit), this is akin to first moving the data into a distributed matrix format with \code{bldim=c(3,3)} and \code{CTXT=2}.  Finally, we can take this degenerate block-cyclic distribution and again to Figure~\ref{fig:gbd_dmat} as our motivating example, we convert the data balanced data so that it has \code{bldim=c(2,2)} and \code{CTXT=0}.
 
 \begin{figure}
 \begin{center}
 \begin{tabular}{ccc}
-\code{X.spmd} & & \code{X.dmat} \\
+\code{X.gbd} & & \code{X.dmat} \\
 
 $
 \left[
@@ -391,11 +391,11 @@ $
 
 $
 \begin{array}{c}
-\mbox{\code{spmd2dmat}} \\
+\mbox{\code{gbd2dmat}} \\
 \longrightarrow \\
 \hspace{0.5cm}\\
 \longleftarrow \\
-\mbox{\code{dmat2spmd}} \\
+\mbox{\code{dmat2gbd}} \\
 \end{array}
 $
 
@@ -419,16 +419,16 @@ $
 $
 \end{tabular}
 \end{center}
-\caption[Converting Between SPMD and DMAT]{
-Converting Between SPMD and DMAT:  $\bX$ is distributed in
-\code{X.spmd} and \code{X.dmat}.
+\caption[Converting Between GBD and DMAT]{
+Converting Between GBD and DMAT:  $\bX$ is distributed in
+\code{X.gbd} and \code{X.dmat}.
 Both are distributed in 4 processors
 where colors represents processor {\color{p0}0},
 {\color{p1}1}, {\color{p2}2}, and {\color{p3}3}.
 Note that \code{X.dmat} is in block-cyclic format of
 $2\times 2$ grid with $2\times 2$ block dimension.
 }
-\label{fig:spmd_dmat}
+\label{fig:gbd_dmat}
 \end{figure}
 
 
@@ -439,48 +439,48 @@ $2\times 2$ grid with $2\times 2$ block dimension.
 \begin{enumerate}[label=\thechapter-\arabic*]
 \item
 \label{ex:convert_row_column}
-In the Sections~\ref{sec:lb_ub} and \ref{sec:spmd_dmat},
-we have seen the load balance of SPMD matrix
-and the conversion between SPMD and DMAT where SPMD matrices \code{X.spmd}
+In the Sections~\ref{sec:lb_ub} and \ref{sec:gbd_dmat},
+we have seen the load balance of GBD matrix
+and the conversion between GBD and DMAT where GBD matrices \code{X.gbd}
 are presumed in row-major as shown in
-the Figures~\ref{fig:load_balance} and \ref{fig:spmd_dmat}.
+the Figures~\ref{fig:load_balance} and \ref{fig:gbd_dmat}.
 Create new functions
-\code{spmdr2spmdc()} and \code{spmdc2spmdr()} converting between
-row-major and column-major by utilizing functions \code{spmd2dmat()}
-and \code{dmat2spmd()} and changing their option \code{spmd.major}.
+\code{gbdr2gbdc()} and \code{gbdc2gbdr()} converting between
+row-major and column-major by utilizing functions \code{gbd2dmat()}
+and \code{dmat2gbd()} and changing their option \code{gbd.major}.
 
 \item
-The demo code \code{demo/spmd_dmat.r} of \pkg{pbdDEMO} has a SPMD row-major
-matrix \code{X.spmd}.\index{SPMD row-major matrix}
+The demo code \code{demo/gbd_dmat.r} of \pkg{pbdDEMO} has a GBD row-major
+matrix \code{X.gbd}.\index{GBD row-major matrix}
 Utilize the functions developed in the
 Exercise~\ref{ex:convert_row_column}.
-Convert \code{X.spmd} to a column-major matrix \code{new.X.spmdc}
-by calling \code{spmdr2spmdc()}, then convert \code{new.X.spmdc} back to a
-row-major matrix \code{new.X.spmdr} by calling \code{spmdc2spmdr()}.
-Check if \code{new.X.spmdr} were the same as \code{X.spmd}.
+Convert \code{X.gbd} to a column-major matrix \code{new.X.gbdc}
+by calling \code{gbdr2gbdc()}, then convert \code{new.X.gbdc} back to a
+row-major matrix \code{new.X.gbdr} by calling \code{gbdc2gbdr()}.
+Check if \code{new.X.gbdr} were the same as \code{X.gbd}.
 
 \item
-In \pkg{pbdDEMO}, there are some internal functions \code{demo.spmdr2dmat()},
-\code{demo.spmdc2dmat()}, \code{demo.dmat2spmdr()}, and
-\code{demo.dmat2spmdc()} which have similar implementations as the
-functions \code{spmdr2spmdc()} and \code{spmdc2spmdr()} of the
+In \pkg{pbdDEMO}, there are some internal functions \code{demo.gbdr2dmat()},
+\code{demo.gbdc2dmat()}, \code{demo.dmat2gbdr()}, and
+\code{demo.dmat2gbdc()} which have similar implementations as the
+functions \code{gbdr2gbdc()} and \code{gbdc2gbdr()} of the
 Exercise~\ref{ex:convert_row_column}. Utilize these functions as templates.
-Create a function \code{spmd2spmd()} with an argument \code{new.major} (1, 2)
+Create a function \code{gbd2gbd()} with an argument \code{new.major} (1, 2)
 for designated row- or column-majors.
 Return warnings or errors if the input matrix is not convertible.
 
 \item
-\label{ex:nc4_spmdr}
-The demo code \code{demo/nc4_spmdc.r} of \pkg{pbdDEMO} is an example utilizing
-SPMD column-major matrix \code{X.spmdc} \index{SPMD column-major matrix}
+\label{ex:nc4_gbdr}
+The demo code \code{demo/nc4_gbdc.r} of \pkg{pbdDEMO} is an example utilizing
+GBD column-major matrix \code{X.gbdc} \index{GBD column-major matrix}
 and dumps the matrix into a NetCDF4
-file. Adjust the code. Create a SPMD row-major matrix \code{X.spmdr} and dump
-the matrix to a new NetCDF4 file \code{nc4_spmdr.nc} by utilizing the function
-\code{ncvar_put_spmd()} with option \code{spmd.major = 1}. Verify that all
-\code{TREFHT} values of both \code{nc4_spmdc.nc} and \code{nc4_spmdr.nc}
+file. Adjust the code. Create a GBD row-major matrix \code{X.gbdr} and dump
+the matrix to a new NetCDF4 file \code{nc4_gbdr.nc} by utilizing the function
+\code{ncvar_put_gbd()} with option \code{gbd.major = 1}. Verify that all
+\code{TREFHT} values of both \code{nc4_gbdc.nc} and \code{nc4_gbdr.nc}
 are identical.
 {\color{blue}Hint:
-The local matrix of a SPMD row- or column-major matrix is still
+The local matrix of a GBD row- or column-major matrix is still
 row-major as the default of \proglang{R}.
 }
 
@@ -488,7 +488,7 @@ row-major as the default of \proglang{R}.
 The \code{load.balance()} and \code{unload.balance()} have a potential bug
 when data size is small and can not fit into the desired block size of
 a block-cyclic matrix. For instance, four processes in
-a SPMD row-major format with a matrix $5\times 1$. The two functions will
+a GBD row-major format with a matrix $5\times 1$. The two functions will
 (un-) balance the data in $2\times 1$ in process 0, and $1\times 1$ in others.
 If the desired block size is $2\time 1$, then the data should be
 $2\times 1$ in processes 0 and 1, $1\times 1$ in process 2, and no

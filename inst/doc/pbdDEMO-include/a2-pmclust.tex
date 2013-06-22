@@ -128,7 +128,7 @@ rather than in the manager/worker paradigm even before
 Later, it migrated to use \pkg{pbdMPI}~\citep{Chen2012pbdMPIpackage}
 because of performance issues with \pkg{Rmpi}\index{Package!\pkg{Rmpi}}
 on larger machines. So, by default, the package assumes data are stored in
-SPMD row-major matrix format.
+GBD row-major matrix format.
 
 Currently, the package also utilizes
 \pkg{pbdSLAP}~\citep{Chen2012pbdSLAPpackage},
@@ -143,7 +143,7 @@ Table~\ref{tab:pmclust_algorithm} lists the current implementations.
 Parallel Mode-Based Clustering Algorithms in \pkg{pmclust}}
 \label{tab:pmclust_algorithm}
 \begin{tabular}{ccc} \hline\hline
-Algorithm & SPMD & \code{ddmatrix} \\ \hline
+Algorithm & GBD  & \code{ddmatrix} \\ \hline
 EM        & yes  & yes             \\
 AECM      & yes  & no              \\
 APECM     & yes  & no              \\
@@ -259,7 +259,7 @@ The analysis in the unsupervised learning approach proceeds as follows:
 \end{enumerate}
 This will be the general procedure whether in serial or parallel.
 For example's sake, we will extend these steps
-to offer SPMD code and \code{ddmatrix} code to show the similarity of codes.
+to offer GBD code and \code{ddmatrix} code to show the similarity of codes.
 
 This example demonstrates that the
 \pkg{pmclust} package\index{Package!\pkg{pmclust}}
@@ -348,14 +348,14 @@ shows the visualization created by this script.
 
 
 
-\subsection{{\it Iris} in SPMD Code}
+\subsection{{\it Iris} in GBD Code}
 
-The demo code for the SPMD Iris example can be found with the package
+The demo code for the GBD Iris example can be found with the package
 demos, and executed via:
 \begin{Command}
 ### At the shell prompt, run the demo with 4 processors by
 ### (Use Rscript.exe for windows system)
-mpiexec -np 4 Rscript -e "demo(iris_spmd, 'pbdDEMO', ask=F, echo=F)"
+mpiexec -np 4 Rscript -e "demo(iris_gbd, 'pbdDEMO', ask=F, echo=F)"
 \end{Command}
 
 \subsubsection{Sample Outputs}
@@ -369,12 +369,12 @@ null device
           1 
 \end{Output}
 
-Finally, figure~\ref{fig:iris_cluster_spmd}
+Finally, figure~\ref{fig:iris_cluster_gbd}
 \begin{figure}[h!bt]
   \centering
-  \includegraphics[width=4in]{pbdDEMO-include/pics/spmd_plot.pdf}
-  \caption{Iris Clustering Plots --- SPMD}
-  \label{fig:iris_cluster_spmd}
+  \includegraphics[width=4in]{pbdDEMO-include/pics/gbd_plot.pdf}
+  \caption{Iris Clustering Plots --- GBD}
+  \label{fig:iris_cluster_gbd}
 \end{figure}
 shows the visualization created by this script.
 
@@ -414,12 +414,12 @@ null device
           1 
 \end{Output}
 
-Finally, figure~\ref{fig:iris_cluster_spmd}
+Finally, figure~\ref{fig:iris_cluster_gbd}
 \begin{figure}[h!bt]
   \centering
   \includegraphics[width=4in]{pbdDEMO-include/pics/dmat_plot.pdf}
-  \caption{Iris Clustering Plots --- SPMD}
-  \label{fig:iris_cluster_spmd}
+  \caption{Iris Clustering Plots --- GBD}
+  \label{fig:iris_cluster_gbd}
 \end{figure}
 shows the visualization created by this script.
 
@@ -432,7 +432,7 @@ shows the visualization created by this script.
 \begin{enumerate}[label=\thechapter-\arabic*]
 
 \item
-As Figures~\ref{fig:iris_cluster_serial} and \ref{fig:iris_cluster_spmd},
+As Figures~\ref{fig:iris_cluster_serial} and \ref{fig:iris_cluster_gbd},
 none of clustering method is able to obtain the true. However, there are
 ways that may improve the final clustering and close to the true, including
 \begin{itemize}

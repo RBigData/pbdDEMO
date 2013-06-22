@@ -8,19 +8,19 @@ if(comm.size() != 4){
 }
 comm.set.seed(1234, diff = TRUE)
 
-### X.spmd can be readed from .csv files distributedly.
-N.spmd <- 1 + comm.rank()
-X.spmd <- matrix(rnorm(N.spmd * 3), ncol = 3)
+### X.gbd can be readed from .csv files distributedly.
+N.gbd <- 1 + comm.rank()
+X.gbd <- matrix(rnorm(N.gbd * 3), ncol = 3)
 
 ### Run.
-X.dmat <- spmd2dmat(X.spmd)
+X.dmat <- gbd2dmat(X.gbd)
 X <- as.matrix(X.dmat)
-new.X.spmd <- dmat2spmd(X.dmat)
+new.X.gbd <- dmat2gbd(X.dmat)
 
 ### Output.
 if(comm.rank() == 1){
-  cat("(local,part) new.X.spmd on rank = 1:\n")
-  print(new.X.spmd)
+  cat("(local,part) new.X.gbd on rank = 1:\n")
+  print(new.X.gbd)
 }
 if(comm.rank() == 2){
   cat("\n(global,all) X[4:6,] on all processors:\n")

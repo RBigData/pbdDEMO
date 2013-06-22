@@ -16,12 +16,12 @@ instead of theories to suit facts.'' \\
 
 This is a preamble chapter for Chapters~\ref{chp:pmclust}
 and~\ref{chp:phyloclustering} where applications are heavily relied on
-likelihood functions\index{likelihood function} which one of the most
+likelihood functions\index{likelihood function} which is one of the most
 important modern Statistical technique.
 The ``likelihood'' was popularized
 in mathematical statistics by R.A. Fisher in 1922:
 ``On the mathematical foundations of theoretical
-statistics.''\citep{Fisher1922}
+statistics''~\citep{Fisher1922}.
 In short, the likelihood is a way based on data to build up
 theoretical inference for the facts.
 
@@ -29,7 +29,7 @@ We introduce general notations for likelihood function
 which is a standard method for parametric statistics and is
 useful for statistical inference~\citep{Casella2001}.
 Two useful distributions are introduced.
-The normal distribution additional to linear model is applied to
+The normal distribution additional to linear model has been applied to
 the example in Section~\ref{sec:ols}.
 The multivariate normal
 distribution\index{Distribution!multivariate normal distribution}
@@ -39,7 +39,7 @@ model-based clustering in Chapter~\ref{chp:pmclust}.
 Suppose $\bX = \{\bX_1, \bX_2, \ldots, \bX_N\}$ is a random sample,
 which means independent identically distributed
 (i.i.d.),\index{i.i.d.}
-from a population which has a distribution $\mF(\btheta)$ with unknown
+from a population characterized by a distribution $\mF(\btheta)$ with unknown
 parameter $\btheta \in \bTheta$ where $\bTheta$ is the parameter space.
 Suppose further $\mF$ has a probability density function
 (pdf)\index{pdf}
@@ -52,7 +52,7 @@ Unlike in Mathematics, $\bx$ is known, but $\btheta$ is unknown
 to be determined in Statistics.
 
 Typically, a fancy way to estimate $\btheta$ is based on the
-likelihood function for the data $\bx$
+likelihood function for the observed data $\bx$
 \begin{equation}
 L(\btheta; \bx) = \prod_{n = 1}^N f(\bx_n; \btheta)
 \label{eqn:likelihood}
@@ -66,7 +66,7 @@ The product of Equation~(\ref{eqn:likelihood}) is due to the independent
 assumption of $\bX$, but the $L(\btheta; \bx)$ may blow to infinity
 or negative infinity quickly as sample size $N$ increased. While,
 Equation~(\ref{eqn:log_likelihood}) has some
-better properties for some distribution families and
+better properties for most distribution families and
 is more numerically stable than Equation~(\ref{eqn:likelihood}).
 We then either analytically or numerically maximize
 Equation~(\ref{eqn:log_likelihood})
@@ -75,7 +75,8 @@ over $\bTheta$ to obtain a maximum likelihood estimation
 $$
   \hat{\btheta}_{ML} := \argmax_{\btheta\in\bTheta} \log L(\btheta; \bx)
 $$
-in fairly-wide assumptions such as regularity conditions of parameter space
+which exists in fairly-wide assumptions
+such as regularity conditions of parameter space
 and parameter does not depend on support,
 see \citet{Casella2001} for details.
 
@@ -123,9 +124,9 @@ or numerical optimization
 of Equation~(\ref{eqn:log_likelihood_normal}) is not difficult
 and leaved in Exercise~\ref{ex:likelihood1}.
 
-The assumption of Statement~(\ref{eqn:normal}) limit the modeling capability.
+The assumptions of Statement~(\ref{eqn:normal}) limit the modeling capability.
 We introduce a more general approach next for better
-modeling.
+modeling approach.
 Since the independent assumption and Multivariate Statistics, the
 Statement~(\ref{eqn:normal})
 implies a multivariate normal distribution
@@ -223,7 +224,7 @@ than $0.05$ level.
 Note that the LRT introduced here is not dependent on the types of
 distributions, but has nested parameter space restriction and some
 regular conditions of parameter space.
-See \citet{Casella2001,Ferguson1996} for more details of LRTs.
+See \citet{Casella2001} or \citet{Ferguson1996} for more details of LRTs.
 
 
 
@@ -239,20 +240,21 @@ multivariate normal distribution
 \label{eqn:mvn_p}
 \end{equation}
 where $\btheta = \{\bmu, \bSigma\}$, $\bmu$ is a center with
-dimension $p\times 1$, and $\bSigma$ is an $p\times p$ dispersion
+dimension $p\times 1$, and $\bSigma$ is a $p\times p$ dispersion
 matrix.
 The $\bX_n$ has a density function as
 \begin{equation*}
 \displaystyle
 \phi_p(\bx_n; \bmu, \bSigma) =
 (2\pi)^{-\frac{p}{2}} |\bSigma|^{-\frac{1}{2}}
-e^{-\frac{1}{2} (\bx_n - \bmu)^\top \bSigma^{-1} (\bx_n - \bmu)}
+e^{-\frac{1}{2} (\bx_n - \bmu)^\top \bSigma^{-1} (\bx_n - \bmu)}.
 \end{equation*}
-In general, $\bSigma$ could be an unstructured dispersion and positive
-definite. Excepting over fitting problem,
-an unstructured dispersion $\bSigma$ is desirable to
+In general, $\bSigma$ could be an unstructured dispersion and must be positive
+definite. Excepting over fitting problems,
+an unstructured dispersion $\bSigma$ is desirable to fully
 characterize correlation of dimensions since the estimation of
-$\bSigma$ is completely supported by observed data.
+$\bSigma$ is completely supported by observed data and there is no
+restriction on any coordinate of parameter space.
 
 Let $\bx = (\bx_1^\top, \bx_2^\top, \ldots, \bx_N^\top)^\top$
 be an observed data matrix with dimension $N\times p$.
@@ -276,20 +278,20 @@ an efficient way is given in next
 \begin{lstlisting}[language=rr,title=R Code]
 U <- chol(SIGMA)
 logdet <- sum(log(abs(diag(U)))) * 2
-B <- sweep(X.spmd, 2, MU) %*% backsolve(U, diag(1, p))
+B <- sweep(X.gbd, 2, MU) %*% backsolve(U, diag(1, p))
 
 # The over- and under-flow need extral care after this step.
-distval.spmd <- rowSums(B * B)
+distval.gbd <- rowSums(B * B)
 
-distval <- allreduce(sum(distval.spmd))
+distval <- allreduce(sum(distval.gbd))
 total.logL <- -(p * log(2 *pi) + logdet + distval) * 0.5
 \end{lstlisting}
-where \code{X.spmd} is a SPMD row-major matrix with dimension
-\code{N.spmd} by \code{p}, \code{MU} is a vector with length \code{p}, and
+where \code{X.gbd} is a GBD row-major matrix with dimension
+\code{N.gbd} by \code{p}, \code{MU} is a vector with length \code{p}, and
 \code{SIGMA} is a \code{p} by \code{p} positive definite matrix.
-The sample size $N$ will be the sum of \code{N.spmd} across all processors.
+The sample size $N$ will be the sum of \code{N.gbd} across all processors.
 Note that this trick of computing log likelihood is an one-pass implementation
-of \code{X.spmd}, \code{MU}, and \code{SIGMA}.
+of \code{X.gbd}, \code{MU}, and \code{SIGMA}.
 See HPSC~\citep{hpsc2011} or \citet{gvl} for more details.
 
 
@@ -326,7 +328,7 @@ is a biased estimator, but it is an asymptotic
 unbiased estimator of $\sigma^2$.
 
 \item
-Assume data are stored in SPMD row-major matrix format,
+Assume data are stored in GBD row-major matrix format,
 implement an optimization function for
 Equation~(\ref{eqn:log_likelihood_normal}), numerically optimized via
 \code{optim()}\index{Code!\code{optim()}} in \proglang{R}.

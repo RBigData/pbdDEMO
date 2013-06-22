@@ -1,5 +1,5 @@
-# File name: iris_spmd.r
-# Run: mpiexec -np 4 Rscript iris_spmd.r
+# File name: iris_gbd.r
+# Run: mpiexec -np 4 Rscript iris_gbd.r
 
 rm(list = ls())                                       # Clean environment
 library(pbdMPI, quiet = TRUE)                         # Load library
@@ -12,13 +12,13 @@ X.cid <- as.numeric(iris[, 5])                        # True id
 
 ### Distribute data
 jid <- get.jid(nrow(X))
-X.spmd <- X[jid,]                                     # SPMD row-major format
+X.gbd <- X[jid,]                                      # GBD row-major format
 
 ### Standardized
-N <- allreduce(nrow(X.spmd))                          # 150
-p <- ncol(X.spmd)                                     # 4
-mu <- allreduce(colSums(X.spmd / N))
-X.std <- sweep(X.spmd, 2, mu, FUN = "-")              # Substract mean
+N <- allreduce(nrow(X.gbd))                           # 150
+p <- ncol(X.gbd)                                      # 4
+mu <- allreduce(colSums(X.gbd / N))
+X.std <- sweep(X.gbd, 2, mu, FUN = "-")               # Substract mean
 std <- sqrt(allreduce(colSums(X.std^2 / (N - 1))))
 X.std <- sweep(X.std, 2, std, FUN = "/")              # Divide standard error
 
@@ -47,12 +47,12 @@ X.prj <- do.call("rbind", allgather(X.prj))
 library(pmclust, quiet = TRUE)
 comm.set.seed(123, diff = TRUE)
 
-X.spmd <- X.std
+X.gbd <- X.std
 PARAM.org <- set.global(K = 3)                        # Preset storage
 .pmclustEnv$CONTROL$debug <- 0                        # Disable debug messages
 PARAM.org <- initial.center(PARAM.org)                # Initial parameters
 PARAM.kms <- kmeans.step(PARAM.org)                   # K-means
-X.kms.cid <- allgather(.pmclustEnv$CLASS.spmd,
+X.kms.cid <- allgather(.pmclustEnv$CLASS.gbd,
                        unlist = TRUE)
 
 PARAM.org <- set.global(K = 3)                        # Preset storage
@@ -60,14 +60,14 @@ PARAM.org <- set.global(K = 3)                        # Preset storage
 PARAM.org <- initial.em(PARAM.org,
                         MU = PARAM.kms$MU)            # Initial by K-means
 PARAM.mbc1 <- em.step(PARAM.org)                      # Model-based clustering
-X.mbc1.cid <- allgather(.pmclustEnv$CLASS.spmd,
+X.mbc1.cid <- allgather(.pmclustEnv$CLASS.gbd,
                         unlist = TRUE)
 
 PARAM.org <- set.global(K = 3, RndEM.iter = 1000)     # Preset storage
 .pmclustEnv$CONTROL$debug <- 0                        # Disable debug messages
 PARAM.org <- initial.RndEM(PARAM.org)                 # Initial by Rand-EM
 PARAM.mbc2 <- em.step(PARAM.org)                      # Model-based clustering
-X.mbc2.cid <- allgather(.pmclustEnv$CLASS.spmd,
+X.mbc2.cid <- allgather(.pmclustEnv$CLASS.gbd,
                         unlist = TRUE)
 
 ### Validation
@@ -86,7 +86,7 @@ X.mbc1.cid[tmp == 2] <- 1
 
 ### Display on first 2 components
 if(comm.rank() == 0){
-  pdf("spmd_plot.pdf")
+  pdf("gbd_plot.pdf")
   
   par(mfrow = c(2, 2))
   plot(X.prj, col = X.cid + 1, pch = X.cid,
