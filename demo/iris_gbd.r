@@ -47,7 +47,7 @@ X.prj <- do.call("rbind", allgather(X.prj))
 library(pmclust, quiet = TRUE)
 comm.set.seed(123, diff = TRUE)
 
-X.gbd <- X.std
+X.spmd <- X.std
 PARAM.org <- set.global(K = 3)                        # Preset storage
 .pmclustEnv$CONTROL$debug <- 0                        # Disable debug messages
 PARAM.org <- initial.center(PARAM.org)                # Initial parameters
