@@ -31,9 +31,9 @@ read.sql.ddmatrix <- function(dbname, table, bldim=.BLDIM, num.rdrs=1, ICTXT=0)
   
   # determine dimension on first process then scatter to others, so the db only gets queried once
   if (blacs_$MYROW==0 && blacs_$MYCOL==0){
-    nrow <- sqldf:::sqldf(paste("SELECT COUNT(*) FROM", table), dbname=dbname)
+    nrow <- sqldf::sqldf(paste("SELECT COUNT(*) FROM", table), dbname=dbname)
     # make sure columns are numeric
-    x <- sqldf:::sqldf(paste("SELECT * FROM ", table, " WHERE rowid  = 1"), dbname=dbname)
+    x <- sqldf::sqldf(paste("SELECT * FROM ", table, " WHERE rowid  = 1"), dbname=dbname)
     if(!all(unlist(lapply(seq_along(x), function(i) is.numeric(x[, i])))))
       stop("All data must be numeric")
     ncol <- ncol(x)
@@ -56,7 +56,7 @@ read.sql.ddmatrix <- function(dbname, table, bldim=.BLDIM, num.rdrs=1, ICTXT=0)
 
     query <- paste("SELECT * FROM ", table, " WHERE rowid % ", modulus, " in (", paste(myrows, collapse=", "), ")", sep="")
     
-    x <- unlist(sqldf:::sqldf(query, dbname=dbname))
+    x <- unlist(sqldf::sqldf(query, dbname=dbname))
     if (!is.double(x))
       x <- as.double(x)
 
@@ -68,7 +68,7 @@ read.sql.ddmatrix <- function(dbname, table, bldim=.BLDIM, num.rdrs=1, ICTXT=0)
   tmpbl <- c(bldim[1], dim[2])
   
   out <- new("ddmatrix", Data=Data, dim=dim, ldim=dim(Data),
-              bldim=tmpbl, CTXT=MYCTXT)
+              bldim=tmpbl, ICTXT=MYCTXT)
   
   if (ICTXT != MYCTXT || any(tmpbl != bldim) )
     out <- dmat.reblock(out, bldim=bldim, ICTXT=ICTXT)
@@ -151,7 +151,7 @@ read.csv.ddmatrix <- function(file, sep=",", nrows, ncols, header=FALSE, bldim=4
     tmpbl <- dim
     
     out <- new("ddmatrix", Data=Data, dim=dim, ldim=ldim,
-              bldim=tmpbl, CTXT=0)
+              bldim=tmpbl, ICTXT=0)
   
     if (ICTXT != 0 || any(tmpbl != bldim) )
       out <- dmat.redistribute(dx=out, bldim=bldim, ICTXT=ICTXT)
@@ -202,7 +202,9 @@ read.csv.ddmatrix <- function(file, sep=",", nrows, ncols, header=FALSE, bldim=4
     ldim <- dim(Data)
   }
   
-  out <- new("ddmatrix", Data=Data, dim=dim, ldim=ldim, bldim=tmpbl, CTXT=MYCTXT)
+  out <- new("ddmatrix", Data=Data, dim=dim, ldim=ldim, bldim=tmpbl, ICTXT=MYCTXT)
+  
+  comm.print(Data, all.rank=T)
   
   if (ICTXT != MYCTXT || any(tmpbl != bldim) )
     out <- dmat.redistribute(dx=out, bldim=bldim, ICTXT=ICTXT)
