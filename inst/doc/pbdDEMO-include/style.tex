@@ -328,6 +328,14 @@
 
 \usepackage[absolute]{textpos}
 
+%%% quotes
+\newcommand\quelle[1]{{%
+      \unskip\nobreak\hfil\penalty50
+      \hskip2em\hbox{}\nobreak\hfil\textbf{#1}%
+      \parfillskip=0pt \finalhyphendemerits=0 \par}}
+% \newcommand{\inspire}[2]{{\raggedleft{\textit{#1}}\\{{\hfill---#2}}}}
+\newcommand{\inspire}[2]{{\hfill\begin{minipage}[r]{.5\textwidth}\textit{#1}\\\quelle{---#2}\end{minipage}}}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%% Bibliography
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
