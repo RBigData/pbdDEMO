@@ -1,16 +1,16 @@
-import(methods, rlecuyer, pbdMPI, pbdSLAP, pbdBASE, pbdDMAT, sqldf)
+import(methods, rlecuyer, pbdMPI, pbdSLAP, pbdBASE, pbdDMAT)
 
 exportPattern("^demo\\.[[:alpha:]]+")
 export(
   balance.info,
   load.balance,
   unload.balance,
-  spmd2dmat,
-  dmat2spmd,
+  gbd2dmat,
+  dmat2gbd,
   ###
   read.csv.ddmatrix, read.sql.ddmatrix,
   ###
   plot.dmat,
   ###
-  ncvar_put_spmd, ncvar_put_dmat, ncvar_get_spmd, ncvar_get_dmat
+  ncvar_put_gbd, ncvar_put_dmat, ncvar_get_gbd, ncvar_get_dmat
 )

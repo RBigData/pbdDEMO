@@ -2,6 +2,12 @@
 \label{sec:introduction}
 
 
+{\it
+``There is nothing new under the sun. It has all been done before.'' \\
+\--- Sherlock Holmes
+}
+
+
 \section{What is pbdR?}
 
 The ``Programming with Big Data in R'' project~\citep{pbdR2012}
@@ -178,12 +184,12 @@ mpiexec -np 4 Rscript -e "demo(comparators, package='pbdDMAT', ask=F, echo=F)"
 		  # III Distributed Matrix Methods #
 		  # ------------------------------ #
 
-### Chapter 5
+### Chapter 6
 # Random matrix generation
 mpiexec -np 4 Rscript -e "demo(randmat_global, package='pbdDMAT', ask=F, echo=F)"
 mpiexec -np 4 Rscript -e "demo(randmat_local, package='pbdDMAT', ask=F, echo=F)"
 
-### Chapter 7
+### Chapter 8
 # Sample statistics revisited
 mpiexec -np 4 Rscript -e "demo(sample_stat_dmat, package='pbdDMAT', ask=F, echo=F)"
 # Verify solving Ax=b at scale
@@ -197,25 +203,25 @@ mpiexec -np 4 Rscript -e "demo(ols_dmat, package='pbdDMAT', ask=F, echo=F)"
 		  # IV Reading and Managing Data #
 		  # ---------------------------- #
 
-### Chapter 8
+### Chapter 9
 # Reading csv
 mpiexec -np 4 Rscript -e "demo(read_csv, package='pbdDMAT', ask=F, echo=F)"
 # Reading sql
 mpiexec -np 4 Rscript -e "demo(read_sql, package='pbdDMAT', ask=F, echo=F)"
 
-### Chapter 9
+### Chapter 10
 # Reading and writing parallel NetCDF4
 Rscript -e "demo(trefht, package="pbdDEMO", ask = F, echo = F)"
 mpiexec -np 4 Rscript -e "demo(nc4_serial, package='pbdDEMO', ask=F, echo=F)"
 mpiexec -np 4 Rscript -e "demo(nc4_parallel, package='pbdDEMO', ask=F, echo=F)"
 mpiexec -np 4 Rscript -e "demo(nc4_dmat, package='pbdDEMO', ask=F, echo=F)"
-mpiexec -np 4 Rscript -e "demo(nc4_spmdc, package='pbdDEMO', ask=F, echo=F)"
+mpiexec -np 4 Rscript -e "demo(nc4_gbdc, package='pbdDEMO', ask=F, echo=F)"
 
-### Chapter 10
+### Chapter 11
 # Loand/unload balance
 mpiexec -np 4 Rscript -e "demo(balance, package='pbdDMAT', ask=F, echo=F)"
-# SPMD to DMAT
-mpiexec -np 4 Rscript -e "demo(spmd_dmat, package='pbdDMAT', ask=F, echo=F)"
+# GBD to DMAT
+mpiexec -np 4 Rscript -e "demo(gbd_dmat, package='pbdDMAT', ask=F, echo=F)"
 # Distributed matrix redistributions
 mpiexec -np 4 Rscript -e "demo(reblock, package='pbdDMAT', ask=F, echo=F)"
 
@@ -223,12 +229,16 @@ mpiexec -np 4 Rscript -e "demo(reblock, package='pbdDMAT', ask=F, echo=F)"
 		  # V Applications               #
 		  # ---------------------------- #
 
-### Chapter 11
+### Chapter 13
 # Parallel Model-Based Clustering
 Rscript -e "demo(iris_overlap, package='pbdDEMO', ask=F, echo=F)"
 Rscript -e "demo(iris_serial, package='pbdDEMO', ask=F, echo=F)"
-Rscript -e "demo(iris_spmd, package='pbdDEMO', ask=F, echo=F)"
+Rscript -e "demo(iris_gbd, package='pbdDEMO', ask=F, echo=F)"
 Rscript -e "demo(iris_dmat, package='pbdDEMO', ask=F, echo=F)"
+
+### Chapter 14
+mpiexec -np 4 Rscript -e "demo(task_pull, package='pbdMPI', ask=F, echo=F)"
+mpiexec -np 4 Rscript -e "demo(phyclust_bootstrap, package='pbdDEMO', ask=F, echo=F)"
 
 \end{lstlisting}
 

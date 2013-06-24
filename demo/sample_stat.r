@@ -9,11 +9,11 @@ comm.set.seed(1234)
 N <- 100 * comm.size()    # Pretend N is large.
 x <- rnorm(N)
 id.get <- get.jid(N)
-x.spmd <- x[id.get]       # Distributed data.
+x.gbd <- x[id.get]        # Distributed data.
 
 ### Run.
-ret.spmd <- demo.stat(x.spmd)
+ret.gbd <- demo.stat(x.gbd)
 
 ### Output.
-comm.print(ret.spmd)
+comm.print(ret.gbd)
 finalize()

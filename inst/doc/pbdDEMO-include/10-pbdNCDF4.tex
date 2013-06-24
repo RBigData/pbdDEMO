@@ -2,6 +2,13 @@
 \chapter{Parallel NetCDF4 Files}
 \label{chp:pbdNCDF4}
 
+{\it
+``Nothing clears up a case so much as stating it to another person.'' \\
+\--- Sherlock Holmes
+}
+\vspace{0.5cm}
+
+
 \section{Introduction}
 \label{sec:pbdNCDF4_introduction}
 
@@ -60,7 +67,7 @@ Users are encouraged to read the vignette~\citep{Patel2013pbdNCDF4vignette} of
 parallel, and demonstration of parallel-enabled functions. Table~\ref{tab:ncdf4} 
 also lists the the major functions of \pkg{pbdNCDF4}.
 
-The \pkg{pbdDEMO} has an example dataset \code{TREFHT}\index{TREFHT} from a
+The \pkg{pbdDEMO} has an example dataset \code{TREFHT}\index{Data!TREFHT} from a
 Community Atmosphere Model (CAM) version 5 simulation output.
 CAM is a series of global atmosphere models originally developed at the 
 National Center for Atmospheric Research (NCAR) and currently guided by 
@@ -72,7 +79,7 @@ representation of physical processes since version 4~\citep{CAM5,CESM1}.
 The data \code{TREFHT} as shown in the Figure~\ref{fig:trefht}
 is taken from monthly averaged temperature at reference height of January 2004.
 This dataset is about three megabytes and is a tiny part of ultra-large 
-simulations conducted by Mr. Prabhat and Michael Wehner of Lawrence Berkeley 
+simulations conducted by Prabhat and Michael Wehner of Lawrence Berkeley 
 National Laboratory. The simulations run from 1987 to 2005 over 1152 longitudes 
 (lon), 768 latitudes (lat), and 30 altitudes (lev). The total amount of 
 simulation outputs is over 200 Terabytes, which are summarized and averaged 
@@ -207,14 +214,14 @@ Dump \code{TREFHT} to a slice of 3D cube and load them back to a
 \code{ddmatrix}.
 
 \item
-In the Sections~\ref{sec:lb_ub} and ~\ref{sec:spmd_dmat}, we introduce
-simple matrix distributed formats \code{spmdr} and \code{spmdc} similar to
+In the Sections~\ref{sec:lb_ub} and ~\ref{sec:gbd_dmat}, we introduce
+simple matrix distributed formats \code{gbdr} and \code{gbdc} similar to
 the BLACS~\index{Library!BLACS} contexts \code{ICTXT} 2 and 1 with very large block size.
 The demo code
-\code{demo/nc4_spmdc.r} implements similar functionality as for
-\code{ddmatrix}, but for \code{spmdc} format only. Modify the demo code for
-\code{spmdr} format.
-{\color{blue}Hint: See the Exercise~\ref{ex:nc4_spmdr}.
+\code{demo/nc4_gbdc.r} implements similar functionality as for
+\code{ddmatrix}, but for \code{gbdc} format only. Modify the demo code for
+\code{gbdr} format.
+{\color{blue}Hint: See the Exercise~\ref{ex:nc4_gbdr}.
 }
 
 \end{enumerate}

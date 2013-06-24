@@ -26,10 +26,15 @@ trefht              pbdDEMO   An example of CAM5 output.
 nc4_serial          pbdDEMO   An example searial read and write NetCDF4.
 nc4_parallel        pbdDEMO   An example parallel read and write NetCDF4.
 nc4_dmat            pbdDEMO   An example block-cyclic read and write NetCDF4.
-nc4_spmdc           pbdDEMO   An example SPMD column-major read and write NetCDF4.
+nc4_gbdc            pbdDEMO   An example GBD column-major read and write NetCDF4.
 
 balance             pbdDEMO   Simple load balance and unload balance.
-spmd_dmat           pbdDEMO   Simple convertion of SPMD and DMAT.
+gbd_dmat            pbdDEMO   Simple convertion of GBD and DMAT.
 reblock             pbdDEMO   Fiddle with ddmatrix blocking parameters.
 
+iris_dmat           pbdDEMO   Iris dmat code.
 iris_overlap        pbdDEMO   Iris overlap levels.
+iris_serial         pbdDEMO   Iris serial code.
+iris_gbd            pbdDEMO   Iris GBD code.
+
+phyclust_bootstrap  pbdDEMO   Bootstrap phyclust results.

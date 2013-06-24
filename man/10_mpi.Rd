@@ -8,22 +8,22 @@
   These functions are examples of simple statistics via MPI calls.
 }
 \usage{
-  mpi.stat(x.spmd)
-  mpi.bin(x.spmd, breaks = pi/3 * (-3:3))
-  mpi.quantile(x.spmd, prob = 0.5)
-  mpi.ols(y.spmd, X.spmd)
+  mpi.stat(x.gbd)
+  mpi.bin(x.gbd, breaks = pi/3 * (-3:3))
+  mpi.quantile(x.gbd, prob = 0.5)
+  mpi.ols(y.gbd, X.gbd)
 }
 \arguments{
-  \item{x.spmd}{a SPMD vector.}
+  \item{x.gbd}{a GBD vector.}
   \item{breaks}{a set to break data in groups.}
   \item{prob}{a desired probability for quantile.}
-  \item{y.spmd}{a SPMD vector.}
-  \item{X.spmd}{a SPMD matrix.}
+  \item{y.gbd}{a GBD vector.}
+  \item{X.gbd}{a GBD matrix.}
 }
 \details{
-  \code{x.spmd} and \code{y.spmd} are vectors with length \code{N.spmd}.
-  \code{X.spmd} is a matrix with dimension \code{N.spmd * p} and
-  exists on all processors. \code{N.spmd} may be vary across processors.
+  \code{x.gbd} and \code{y.gbd} are vectors with length \code{N.gbd}.
+  \code{X.gbd} is a matrix with dimension \code{N.gbd * p} and
+  exists on all processors. \code{N.gbd} may be vary across processors.
 
   For demonstration purpose, these objects should not contains weird values
   such \code{NA}.
@@ -53,7 +53,7 @@ mpiexec -np 4 Rscript -e "demo(sample_stat,'pbdDEMO',ask=F,echo=F)"
 mpiexec -np 4 Rscript -e "demo(binning,'pbdDEMO',ask=F,echo=F)"
 mpiexec -np 4 Rscript -e "demo(quantile,'pbdDEMO',ask=F,echo=F)"
 mpiexec -np 4 Rscript -e "demo(ols,'pbdDEMO',ask=F,echo=F)"
-mpiexec -np 4 Rscript -e "demo(spmd2dmat,'pbdDEMO',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(gbd2dmat,'pbdDEMO',ask=F,echo=F)"
 mpiexec -np 4 Rscript -e "demo(balance,'pbdDEMO',ask=F,echo=F)"
 }
 }

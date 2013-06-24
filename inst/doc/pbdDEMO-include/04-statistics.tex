@@ -1,7 +1,15 @@
 \chapter[Basic Statistics Examples]{Basic Statistics Examples}
 \label{sec:statistics_examples}
 
-This section introduces a few simple examples and explains a little about
+{\it
+``It has long been an axiom of mine that the little things are
+infinitely the most important.'' \\
+\--- Sherlock Holmes
+}
+\vspace{0.5cm}
+
+
+This chapter introduces a few simple examples and explains a little about
 computing with distributed data directly over MPI.\index{MPI} 
 These implemented examples/functions are partly
 selected from the Cookbook of HPSC website~\citep{hpsc2011}\index{HPSC} at
@@ -70,7 +78,7 @@ X &:=
 \end{align*}
 Let $V_i = U_i^2$ for $i=1, 2$. Then the expected value
 \begin{align*}
-E[X] &= P( V_1 + V_2 \leq 1 )\\
+\E[X] &= \Prob( V_1 + V_2 \leq 1 )\\
      &= \int_0^1 \int_0^{1-V_1} p(V_1, V_2)dV_2 dV_1\\
      &= \int_0^1 \int_0^{1-V_1} \left( \frac{1}{2\sqrt{V_1}} \right)
         \left( \frac{1}{2\sqrt{V_2}} \right)dV_2 dV_1\\
@@ -85,17 +93,18 @@ E[X] &= P( V_1 + V_2 \leq 1 )\\
 and by sampling observations $X_i$ for $i=1,\dots,N$, by the Strong Law of
 Large Numbers~\index{Strong Law of Large Numbers}\index{SLLN}
 \begin{equation}
-\bar{X}_N \longrightarrow^{\hspace{-.55cm} a.s.} \hspace{.1cm} \frac{\pi}{4}
+\bar{X}_N \stackrel{a.s.}{\longrightarrow} \frac{\pi}{4}
 \hspace{.4cm} \text{ as } N\rightarrow \infty
+\index{Convergence!a.s.}
 \label{eqn:as_convergence}
 \end{equation}
 In other words,
 \begin{align*}
-P\left(\lim_{N\rightarrow\infty} \bar{X}_N = \frac{\pi}{4}\right) = 1
+\Prob\left(\lim_{N\rightarrow\infty} \bar{X}_N = \frac{\pi}{4}\right) = 1
 \end{align*}
 Whence,
 \begin{align*}
-\frac{L}{N}  \longrightarrow^{\hspace{-.55cm} a.s.} \hspace{.1cm} \frac{\pi}{4} \hspace{.4cm}
+\frac{L}{N} \stackrel{a.s.}{\longrightarrow} \frac{\pi}{4} \hspace{.4cm}
 \text{ as } N\rightarrow \infty
 \end{align*}
 
@@ -111,17 +120,17 @@ And to everyone who found this looking for a homework solution, you're welcome.
 
 The key step of the demo code is in the following block:
 \begin{lstlisting}[language=rr,title=R Code]
-N.spmd <- 1000
-X.spmd <- matrix(runif(N.spmd * 2), ncol = 2)
-r.spmd <- sum(rowSums(X.spmd^2) <= 1)
-ret <- allreduce(c(N.spmd, r.spmd), op = "sum")
+N.gbd <- 1000
+X.gbd <- matrix(runif(N.gbd * 2), ncol = 2)
+r.gbd <- sum(rowSums(X.gbd^2) <= 1)
+ret <- allreduce(c(N.gbd, r.gbd), op = "sum")
 PI <- 4 * ret[2] / ret[1]
 comm.print(PI)
 \end{lstlisting}
 
-In line 1, we specify sample size in \code{N.spmd} for each processor,
-and $N=D\times\mbox{\code{N.spmd}}$ if $D$ processors are executed.
-In line 2, we generate samples in \code{X.spmd} for every processor.
+In line 1, we specify sample size in \code{N.gbd} for each processor,
+and $N=D\times\mbox{\code{N.gbd}}$ if $D$ processors are executed.
+In line 2, we generate samples in \code{X.gbd} for every processor.
 In line 3, we compute how many of the ``radii'' are less than or equal to $1$
 for each processors.
 In line 4, we call \code{allreduce()}\index{Code!\code{allreduce()}}
@@ -174,15 +183,15 @@ possible.
 The demo generates random data on 4 processors, then
 utilizes the \code{mpi.stat()} function:
 \begin{lstlisting}[language=rr,title=R Code]
-mpi.stat <- function(x.spmd){ 
+mpi.stat <- function(x.gbd){ 
   ### For mean(x).
-  N <- allreduce(length(x.spmd), op = "sum")
-  bar.x.spmd <- sum(x.spmd / N)
-  bar.x <- allreduce(bar.x.spmd, op = "sum")
+  N <- allreduce(length(x.gbd), op = "sum")
+  bar.x.gbd <- sum(x.gbd / N)
+  bar.x <- allreduce(bar.x.gbd, op = "sum")
 
   ### For var(x).
-  s.x.spmd <- sum(x.spmd^2 / (N - 1))
-  s.x <- allreduce(s.x.spmd, op = "sum") - bar.x^2 * (N / (N - 1))
+  s.x.gbd <- sum(x.gbd^2 / (N - 1))
+  s.x <- allreduce(s.x.gbd, op = "sum") - bar.x^2 * (N / (N - 1))
 
   list(mean = bar.x, s = s.x)
 } # End of mpi.stat().
@@ -218,11 +227,11 @@ categorical data analysis.
 The demo generates random data on 4 processors, then
 utilizes the \code{mpi.bin()} function:
 \begin{lstlisting}[language=rr,title=R Code]
-mpi.bin <- function(x.spmd, breaks = pi / 3 * (-3:3)){
-  bin.spmd <- table(cut(x.spmd, breaks = breaks))
-  bin <- as.array(allreduce(bin.spmd, op = "sum"))
-  dimnames(bin) <- dimnames(bin.spmd)
-  class(bin) <- class(bin.spmd)
+mpi.bin <- function(x.gbd, breaks = pi / 3 * (-3:3)){
+  bin.gbd <- table(cut(x.gbd, breaks = breaks))
+  bin <- as.array(allreduce(bin.gbd, op = "sum"))
+  dimnames(bin) <- dimnames(bin.gbd)
+  class(bin) <- class(bin.gbd)
   bin
 } # End of mpi.bin().
 \end{lstlisting}
@@ -255,16 +264,17 @@ a random variable $X$ is any value $\theta_q$ such
 that\footnote{This definition is due to the mathematical statistician Herman
 Rubin: \url{http://mathforum.org/kb/message.jspa?messageID=406278}}
 \begin{align*}
-P(X\leq \theta_q) &\geq q\hspace{2cm}\text{and}\\
-P(X\geq \theta_q) &\leq 1-q
+\Prob(X\leq \theta_q) &\geq q\hspace{2cm}\text{and}\\
+\Prob(X\geq \theta_q) &\leq 1-q
 \end{align*}
 Note that by this definition, a quantile neither need exist or be unique.
-Indeed, for the former, consider the standard normal distribution with
+Indeed, for the former, consider the
+standard normal distribution\index{Distribution!normal distribution} with
 $q=1$, and for the latter consider the probability 0 values of a uniform
 distribution. Perhaps to narrow the scope of these problems, another
 common definition is
 \begin{align*}
-\theta_q = \inf \{x\ |\ P(X\leq x) \geq q\}
+\theta_q = \inf \{x\ |\ \Prob(X\leq x) \geq q\}
 \end{align*}
 In this example, we will be estimating quantiles from a sample.
 Doing so requires sub-dividing the data into $q$ (almost) evenly
@@ -291,17 +301,17 @@ to approximate a quantile and is not equivalent to the original
 work well at a large scale. The demo generates random data on 4
 processors, then utilizes the \code{mpi.quantile()}:
 \begin{lstlisting}[language=rr,title=R Code]
-mpi.quantile <- function(x.spmd, prob = 0.5){
+mpi.quantile <- function(x.gbd, prob = 0.5){
   if(sum(prob < 0 | prob > 1) > 0){
     stop("prob should be in (0, 1)")
   }
 
-  N <- allreduce(length(x.spmd), op = "sum")
-  x.max <- allreduce(max(x.spmd), op = "max")
-  x.min <- allreduce(min(x.spmd), op = "min")
+  N <- allreduce(length(x.gbd), op = "sum")
+  x.max <- allreduce(max(x.gbd), op = "max")
+  x.min <- allreduce(min(x.gbd), op = "min")
 
   f.quantile <- function(x, prob = 0.5){
-    allreduce(sum(x.spmd <= x), op = "sum") / N - prob
+    allreduce(sum(x.gbd <= x), op = "sum") / N - prob
   }
 
   uniroot(f.quantile, c(x.min, x.max), prob = prob[1])$root
@@ -329,7 +339,7 @@ can be utilized in the same way.
 \section[Ordinary Least Squares]{Ordinary Least Squares}%\medium
 \label{sec:ols}
 
-\emph{Example:  Compute ordinary least square solutions for SPMD
+\emph{Example:  Compute ordinary least square solutions for GBD
       distributed data.}
 
 The demo command is
@@ -378,7 +388,7 @@ solution to the problem.  In this case, the classical
 % Maximum Likelihood solution
 is given by:
 \begin{align}
- \hat{\bbeta} = (\bX^T\bX)^{-1}\bX^T\by \label{math:ols}
+ \hat{\bbeta}_{ols} = (\bX^T\bX)^{-1}\bX^T\by \label{math:ols}
 \end{align}
  
 This example can be also generalized to weighted least squares (WLS),
@@ -390,15 +400,15 @@ See \url{http://en.wikipedia.org/wiki/Least_squares} and
 
 The implementation is straight forward:
 \begin{lstlisting}[language=rr,title=R Code]
-if(length(y.spmd) != nrow(X.spmd)){
-  stop("length(y.spmd) != nrow(X.spmd)")
+if(length(y.gbd) != nrow(X.gbd)){
+  stop("length(y.gbd) != nrow(X.gbd)")
 }
 
-t.X.spmd <- t(X.spmd)
-A <- allreduce(t.X.spmd %*% X.spmd, op = "sum")
-B <- allreduce(t.X.spmd %*% y.spmd, op = "sum")
+t.X.gbd <- t(X.gbd)
+A <- allreduce(t.X.gbd %*% X.gbd, op = "sum")
+B <- allreduce(t.X.gbd %*% y.gbd, op = "sum")
 
-solve(matrix(A, ncol = ncol(X.spmd))) %*% B
+solve(matrix(A, ncol = ncol(X.gbd))) %*% B
 \end{lstlisting}
 
 While this is a fine demonstration of the power of
@@ -422,7 +432,7 @@ rank-revealing QR Decomposition~\index{Decomposition!QR}
 to find the least squares solution. So for larger problems, and especially
 those where numerical accuracy is important or rank-degeneracy is
 a possibility, it is much better to simply convert
-\code{y.spmd} and \code{X.spmd}\index{Class!\code{.spmd}}
+\code{y.gbd} and \code{X.gbd}\index{Class!\code{.gbd}}
 into the block-cyclic format as
 in Part~\ref{part:dmat} and utilize \pkg{pbdBASE} and \pkg{pbdDMAT}
 for all matrix computations.
@@ -533,34 +543,41 @@ if (need2stop)
 \begin{enumerate}[label=\thechapter-\arabic*]
 \item
 What are the assumptions used in order to invoke the Strong Law of Large 
-Numbers (SLLN) in statement~(\ref{eqn:as_convergence})?
+Numbers (SLLN) in Statement~(\ref{eqn:as_convergence})?
 
 \item
-What is the Weak Law of Large Numbers (WLLN)?~\index{Weak Law of Large Numbers}\index{WLLN}
+What is the Weak Law of Large Numbers
+(WLLN)?~\index{Weak Law of Large Numbers}\index{WLLN}
 Prove that the SLLN implies the WLLN. Provide a counter example that the WLLN 
 does not imply the SLLN.
 
 \item
-In statement~(\ref{eqn:as_convergence}), we showed that $\bar{X}_N$ converges 
-to $\frac{\pi}{4}$ almost surely, a very strong form of convergence.  Show that 
-additionally, $\bar{X}_N$ converges to $\frac{\pi}{4}$ in probability by the 
-WLLN, and that the sequence converges in distribution.  (This can be as simple 
+In Statement~(\ref{eqn:as_convergence}), we showed that $\bar{X}_N$ converges 
+to $\frac{\pi}{4}$ almost surely,\index{Convergence!almost surely}
+a very strong form of convergence.  Show that 
+additionally, $\bar{X}_N$ converges to $\frac{\pi}{4}$
+in probability\index{Convergence!in probability} by the 
+WLLN, and that the sequence converges
+in distribution.\index{Convergence!in distribution} (This can be as simple 
 or as complicated as you like, depending on how many big theorems you wish to 
 invoke).
 
 \item
-Let $g : [0, 1] \rightarrow  \mathbb{R}$ be any continuous function, and let 
-$\bar{X}_N$ be as in statement~(\ref{eqn:as_convergence}).  Show that 
-$g(\bar{X}_N)$ converges to $g\left(\frac{\pi}{4}\right)$ almost surely (Hint: 
+Let $g : [0, 1] \rightarrow  \mathbb{R}$ be a continuous function, and let 
+$\bar{X}_N$ be as in Statement~(\ref{eqn:as_convergence}).  Show that 
+$g(\bar{X}_N)$ converges to $g\left(\frac{\pi}{4}\right)$ almost surely
+{\color{blue} Hint: 
 use the property of continuity with respect to limits of sequences and the 
-definition of almost sure convergence).
+definition of almost sure convergence.}
 
 \item
 What are assumptions for Statement~(\ref{math:statslls})?
+{\color{blue} Hint: Gauss-Markov Theorem.\index{Gauss-Markov Theorem}}
 
 \item
-Prove that $\hat{\bbeta}$ of statement~(\ref{math:ols}) is an unbiased
-estimator of $\bbeta$, i.e., show that $E[ \hat{\bbeta}] = \bbeta$.
+Prove that $\hat{\bbeta}_{ols}$ of Statement~(\ref{math:ols}) is an unbiased
+estimator of $\bbeta$ provided appropriate assumptions, i.e., show that
+$\E[ \hat{\bbeta}_{ols} ] = \bbeta$.\label{ex:stat1}
 
 \item
 Prove $\bX^\top\bX$ is non-negative definite if $\bX$ has full column rank 
@@ -572,10 +589,10 @@ solutions to generalized linear models (GLM)\footnote{See
 \url{http://en.wikipedia.org/wiki/Generalized_linear_model} for details}.  A 
 common application of GLM's is logistic regression\footnote{See 
 \url{http://stat.psu.edu/~jiali/course/stat597e/notes2/logit.pdf}}.
-
 Implement a (not necessarily numerically stable) logistic regression function 
-using IRLS for SPMD data.  For simplicity, you may wish to assume that the 
+using IRLS for GBD data.  For simplicity, you may wish to assume that the 
 weighted matrix $\bX^T\textbf{W}\bX$ is full rank at each iteration.
+{\color{blue} Hint: \citet{McCullagh1989}.}
   
 \end{enumerate}
 

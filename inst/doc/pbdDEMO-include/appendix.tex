@@ -3,6 +3,16 @@
 \chapter{Numerical Linear Algebra and Linear Least Squares Problems}
 \label{apx:numlinalg}
 
+
+{\it
+``A man should keep his little brain attic stocked with all the furniture
+that he is likely to use, and the rest he can put away in the lumber-room
+of his library where he can get it if he wants.'' \\
+\--- Sherlock Holmes
+}
+\vspace{0.5cm}
+
+
 For the remainder, assume that all matrices are real-valued.
 
 Let us revisit the problem of solving linear least squares problems, introduced in Section~\ref{sec:ols}.  Recall that we wish to find a solution $\bbeta$ such that
@@ -75,8 +85,8 @@ While this method is much less prone to the numerical issues discussed above, it
 
 
 \section{Using the Singular Value Decomposition}
-There is another, arguably much more well-known matrix factorization which we can use to develop yet another analytically equivalent solution to the least squares problem, namely the Singular Value Decomposition
-(SVD).~\index{Singular Value Decomposition}\index{Decomposition!SVD}  Using this factorization leads to a very elegant solution, as is so often the case with the SVD.  
+There is another, arguably much more well-known matrix factorization which we can use to develop yet another analytically equivalent solution to the least squares problem, namely the singular value decomposition
+(SVD).~\index{singular value decomposition}\index{Decomposition!SVD}  Using this factorization leads to a very elegant solution, as is so often the case with the SVD.  
 
 Note that in (\ref{math:ols2}), the quantity
 \begin{align*}
@@ -104,6 +114,15 @@ Conceptually, this is arguably the most elegant method of solving the linear lea
 
 
 \chapter{Linear Regression and Rank Degeneracy in R}
+
+
+{\it
+``When a doctor does go wrong, he is the first of criminals.
+He has the nerve and he has the knowledge.'' \\
+\--- Sherlock Holmes
+}
+\vspace{0.5cm}
+
 
 In the case that $\bX$ is rank deficient, then $\bX$ (and whence $\bX^T\bX$) is not invertible, so the problem can not be solved by the method of Section~\ref{asec:nrmleq}.  Both \proglang{R} and
 \proglang{pbdR} use a QR factorization as in Section~\ref{asec:qr}, although the two systems use a slightly different approach.  While most of the linear algebra in \proglang{R} is handled by
