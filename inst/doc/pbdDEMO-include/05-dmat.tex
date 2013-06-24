@@ -3,6 +3,15 @@
 \chapter{The Distributed Matrix Data Structure}
 \label{chap:dmat}
 
+
+{\it
+``I confess that I have been blind as a mole,
+but it is better to learn wisdom late than never to learn it at all.'' \\
+\--- Sherlock Holmes
+}
+\vspace{0.5cm}
+
+
 Before continuing, we must spend some time describing a new distributed data 
 structure.  In reality, this data structure is the merging of two different 
 kinds of distributed data structures, namely \emph{block distributions} and 
@@ -33,7 +42,7 @@ examine each component separately first.
 \end{figure}
 
 
-Figure~\ref{fig:dmat1d} shows examples of the three different distribution schemes for 4 processors.  The block scheme is simple enough; imagine chopping the matrix into nearly equal blocks and distributing those blocks to different processors.  This can be viewed as a special case of the \code{SPMD} data structure of Section~\ref{sec:spmdstruct}.  
+Figure~\ref{fig:dmat1d} shows examples of the three different distribution schemes for 4 processors.  The block scheme is simple enough; imagine chopping the matrix into nearly equal blocks and distributing those blocks to different processors.  This can be viewed as a special case of the \code{GBD} data structure of Section~\ref{sec:gbdstruct}.  
 
 For the cyclic distribution scheme, one can imagine taking each row (or column) of a matrix and sending the first to one processor, the second to the next, and so on until all processors are exhausted; if the data is not exhausted, then one merely cycles back through the processors, continuing in this fashion until all of the matrix has been distributed.
 
@@ -149,7 +158,7 @@ problem.  The \pkg{pbdDMAT} package includes defaults for each that should be
 well-suited to a specific problem, and knowing ahead of time how best to 
 distribute the data is often more art than science.
 
-For the remainder of this chapter, we will be examining these shapes in more depth to get a better feel for the data structure.  To do so, let us return to our old friend from Section~\ref{sec:spmdstruct}:\\
+For the remainder of this chapter, we will be examining these shapes in more depth to get a better feel for the data structure.  To do so, let us return to our old friend from Section~\ref{sec:gbdstruct}:\\
 \begin{align*}
 x &= \left[
       \begin{array}{lllllllll}
@@ -533,7 +542,7 @@ x &= \left[
 \right]_{9\times 9}
 \end{align*}
 
-Finally, there is context 2.  This is deceivingly similar to the SPMD data structure, but the two are, in general, not comparable.  This context puts the processors in a 1-dimensional grid consisting of one column (note the transpose):
+Finally, there is context 2.  This is deceivingly similar to the GBD data structure, but the two are, in general, not comparable.  This context puts the processors in a 1-dimensional grid consisting of one column (note the transpose):
 \begin{align*}
 \text{Processors = }
 \left[
@@ -624,11 +633,11 @@ other processor.
   \item \code{DMAT} is confusing, but very robust and useful for matrix algebra (and thus most non-trivial statistics).
 \end{enumerate}
 
-The only items in common between SPMD and DMAT are items \ref{enum:dmat1} and 
+The only items in common between GBD and DMAT are items \ref{enum:dmat1} and 
 \ref{enum:dmat2}.  A full characterization can be given as follows.  Let $X$ be 
 a distributed matrix with $n$ (global) rows and $p$ (global) columns.  Suppose 
 we distribute this matrix onto a set of $nprocs$ processors in context 2 using a 
-blocking factor $b=(b_1, b_2)$.  Then DMAT is a special case of SPMD \emph{if 
+blocking factor $b=(b_1, b_2)$.  Then DMAT is a special case of GBD \emph{if 
 and only if} we have $b_1 > \frac{n}{nprocs}$.  Otherwise, there is no 
 relationship between these two structures (and converting between them can be 
 difficult).  However, converting between different kinds of block-cyclic 

@@ -2,8 +2,19 @@
 \chapter{Model-Based Clustering}
 \label{chp:pmclust}
 
+
+{\it
+``I listen to their story, they listen to my comments, and then I
+pocket my fee.'' \\
+\--- Sherlock Holmes
+}
+
+
 \section{Introduction}
 
+Observational or experimental data are selected or collected with
+interesting stories, however, deeper discovery enhances values of
+interpretations.
 Model-based clustering~\index{Model-Based Clustering}
 is an unsupervised learning technique~\index{unsupervised learning}
 and mainly based on finite mixture models to fit the data, cluster the data,
@@ -17,7 +28,8 @@ with $K$ components, which has density
 f(\bX_n; \bTheta) = \sum_{k = 1}^K \eta_k \phi_p(\bX_n; \bmu_k, \bSigma_k)
 \label{eqn:gaussian_mixture}
 \end{equation}
-where $\phi_p(\cdot;\cdot,\cdot)$ is a $p$-dimensional Gaussian density,
+where $\phi_p(\cdot;\cdot,\cdot)$ is a $p$-dimensional Gaussian/normal density
+introduced in Section~\ref{sec:mvn},
 $$
 \bTheta = \{\eta_1, \eta_2, \ldots, \eta_{K-1},
 \bmu_1, \bmu_2, \ldots, \bmu_K, \bSigma_1, \bSigma_2, \ldots, \bSigma_K\},
@@ -73,7 +85,8 @@ unrealistic, leaving the data scientist unable to draw meaningful inference
 from the data, and sometimes have unreasonably high classification errors.
 
 
-\subsection{Parallel Model-Based Clustering}
+\section{Parallel Model-Based Clustering}
+\label{sec:parallel_model_based_clustering}
 
 The \pkg{pmclust}~\citep{Chen2012pmclustpackage}\index{Package!\pkg{pmclust}}
 package is an \proglang{R}
@@ -115,7 +128,7 @@ rather than in the manager/worker paradigm even before
 Later, it migrated to use \pkg{pbdMPI}~\citep{Chen2012pbdMPIpackage}
 because of performance issues with \pkg{Rmpi}\index{Package!\pkg{Rmpi}}
 on larger machines. So, by default, the package assumes data are stored in
-SPMD row-major matrix format.
+GBD row-major matrix format.
 
 Currently, the package also utilizes
 \pkg{pbdSLAP}~\citep{Chen2012pbdSLAPpackage},
@@ -130,7 +143,7 @@ Table~\ref{tab:pmclust_algorithm} lists the current implementations.
 Parallel Mode-Based Clustering Algorithms in \pkg{pmclust}}
 \label{tab:pmclust_algorithm}
 \begin{tabular}{ccc} \hline\hline
-Algorithm & SPMD & \code{ddmatrix} \\ \hline
+Algorithm & GBD  & \code{ddmatrix} \\ \hline
 EM        & yes  & yes             \\
 AECM      & yes  & no              \\
 APECM     & yes  & no              \\
@@ -144,7 +157,7 @@ Based on \pkg{pmclust} version 0.1-4}
 
 \section{An Example Using the {\it Iris} Dataset}
 
-The \code{iris}~\citep{Fisher1936}~\index{iris} dataset is a famous dataset
+The \code{iris}~\citep{Fisher1936}~\index{Data!iris} dataset is a famous dataset
 available in \proglang{R}
 consisting of 50 Iris flowers from each of three species of Iris,
 namely {\it Iris setosa}, {\it Iris versicolor}, and {\it Iris virginica}.
@@ -246,7 +259,7 @@ The analysis in the unsupervised learning approach proceeds as follows:
 \end{enumerate}
 This will be the general procedure whether in serial or parallel.
 For example's sake, we will extend these steps
-to offer SPMD code and \code{ddmatrix} code to show the similarity of codes.
+to offer GBD code and \code{ddmatrix} code to show the similarity of codes.
 
 This example demonstrates that the
 \pkg{pmclust} package\index{Package!\pkg{pmclust}}
@@ -335,14 +348,14 @@ shows the visualization created by this script.
 
 
 
-\subsection{{\it Iris} in SPMD Code}
+\subsection{{\it Iris} in GBD Code}
 
-The demo code for the SPMD Iris example can be found with the package
+The demo code for the GBD Iris example can be found with the package
 demos, and executed via:
 \begin{Command}
 ### At the shell prompt, run the demo with 4 processors by
 ### (Use Rscript.exe for windows system)
-mpiexec -np 4 Rscript -e "demo(iris_spmd, 'pbdDEMO', ask=F, echo=F)"
+mpiexec -np 4 Rscript -e "demo(iris_gbd, 'pbdDEMO', ask=F, echo=F)"
 \end{Command}
 
 \subsubsection{Sample Outputs}
@@ -356,12 +369,12 @@ null device
           1 
 \end{Output}
 
-Finally, figure~\ref{fig:iris_cluster_spmd}
+Finally, figure~\ref{fig:iris_cluster_gbd}
 \begin{figure}[h!bt]
   \centering
-  \includegraphics[width=4in]{pbdDEMO-include/pics/spmd_plot.pdf}
-  \caption{Iris Clustering Plots --- SPMD}
-  \label{fig:iris_cluster_spmd}
+  \includegraphics[width=4in]{pbdDEMO-include/pics/gbd_plot.pdf}
+  \caption{Iris Clustering Plots --- GBD}
+  \label{fig:iris_cluster_gbd}
 \end{figure}
 shows the visualization created by this script.
 
@@ -401,12 +414,12 @@ null device
           1 
 \end{Output}
 
-Finally, figure~\ref{fig:iris_cluster_spmd}
+Finally, figure~\ref{fig:iris_cluster_gbd}
 \begin{figure}[h!bt]
   \centering
   \includegraphics[width=4in]{pbdDEMO-include/pics/dmat_plot.pdf}
-  \caption{Iris Clustering Plots --- SPMD}
-  \label{fig:iris_cluster_spmd}
+  \caption{Iris Clustering Plots --- GBD}
+  \label{fig:iris_cluster_gbd}
 \end{figure}
 shows the visualization created by this script.
 
@@ -419,7 +432,7 @@ shows the visualization created by this script.
 \begin{enumerate}[label=\thechapter-\arabic*]
 
 \item
-As Figures~\ref{fig:iris_cluster_serial} and \ref{fig:iris_cluster_spmd},
+As Figures~\ref{fig:iris_cluster_serial} and \ref{fig:iris_cluster_gbd},
 none of clustering method is able to obtain the true. However, there are
 ways that may improve the final clustering and close to the true, including
 \begin{itemize}
@@ -454,6 +467,21 @@ clustering~\index{semi-supervised learning}, select some high density points
 from the generated data and labeling them as prior know information, then
 test how these information can affect algorithm performances
 by comparing ARIs.
+
+\item
+Argue that the k-means algorithm~\citep{Forgy1965}~\index{Algorithm!k-means}
+equivalently assumes
+$\eta_1 = \eta_2 = \cdots = \eta_K \equiv 1/K$ and
+$\bSigma_1 = \bSigma_2 = \cdots = \bSigma_K \equiv \bI$
+in Equation~(\ref{eqn:gaussian_mixture}), where
+$\bI$ is the identity matrix.
+
+\item
+The EM algorithm is a typical way to find the MLEs for mixture models.
+State the two steps (E- and M-steps) of the EM algorithm in general,
+and argue the monotonicity of log likelihood in every iteration.
+{\color{blue} Hint: Jensen's Inequality~\citep{Jensen1906}.}
+
 
 \end{enumerate}
 

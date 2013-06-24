@@ -6,6 +6,14 @@
 \chapter{MPI for the R User}
 \label{chp:mpi_for_the_r_user}
 
+
+{\it
+``I cannot live without brain-work. What else is there to live for?'' \\
+\--- Sherlock Holmes
+}
+\vspace{0.5cm}
+
+
 Cicero once said that ``If you have a garden and a library, you have
 everything you need.'' So in that spirit, for the next two chapters we will
 use the MPI library to get our hands dirty and root around in the dirt of
@@ -172,44 +180,44 @@ of this document we will be using (either implicitly or explicitly)
 
 
 
-\section{The SPMD Data Structure}
-\label{sec:spmdstruct}
+\section{The GBD Data Structure}
+\label{sec:gbdstruct}
 
 This is the boring stuff everyone hates, but like your medicine, it's
 ultimately better for you to just take it and get it out of the way:
 data structures. In particular, we will be discussing a distributed
 data structure that, for lack of a better name (and I assure you are
-tried), we will call the SPMD data structure.\index{SPMD data structure}
+tried), we will call the GBD data structure.\index{GBD data structure}
 This data structure is more paradigm or philosophy than a rigid data
 structure like an array or list. Consider it a set of ``best practices'',
 or if nothing else, a starting place if you have no idea how to proceed.
 
-The SPMD data structure is designed to fit the types of problems which
+The GBD data structure is designed to fit the types of problems which
 are arguably most common to data science, namely tall and skinny matrices.
 It will work best with these (from a computational efficiency perspective)
 problems, although that is not required. In fact, very little at all is
 required of this data structure. At its core, the data structure is a
 distributed matrix data structure, with the following rules:
   \begin{enumerate}
-    \item \code{SPMD} is \emph{distributed}. No one processor owns all of
+    \item \code{GBD} is \emph{distributed}. No one processor owns all of
           the matrix.
-%     \item \code{SPMD} is \emph{balanced}.  Every processor owns (roughly) the same amount of data.
-    \item \code{SPMD} is \emph{non-overlapping}. Any row owned by one
+%     \item \code{GBD} is \emph{balanced}.  Every processor owns (roughly) the same amount of data.
+    \item \code{GBD} is \emph{non-overlapping}. Any row owned by one
           processor is owned by no other processors.
-    \item \code{SPMD} is \emph{row-contiguous}. If a processor owns one
+    \item \code{GBD} is \emph{row-contiguous}. If a processor owns one
           element of a row, it owns the entire row.
-    \item \code{SPMD} is globally \emph{row-major}\footnote{In the sense of
+    \item \code{GBD} is globally \emph{row-major}\footnote{In the sense of
           the data decomposition. More specifically, the global matrix is
           chopped up into local sub-matrices in a row-major way.},
           locally \emph{column-major}\footnote{The local sub-objects are
           \proglang{R} matrices, which are stored in column-major fashion.}.
-          \index{SPMD row-major matrix}\index{SPMD column-major matrix}
+          \index{GBD row-major matrix}\index{GBD column-major matrix}
     \item The last row of the local storage of a processor is adjacent
           (by global row) to the first row of the local storage of next
           processor (by communicator number) that owns data. That is, global
           row-adjacency is preserved in local storage via the
           communicator.\label{enum:confusing}
-    \item \code{SPMD} is (relatively) easy to understand, but can lead to
+    \item \code{GBD} is (relatively) easy to understand, but can lead to
           bottlenecks if you have many more columns than rows.
   \end{enumerate}
 
@@ -309,7 +317,7 @@ With local storage view:
 
 This is a \emph{load balanced} approach, where we try to give each processor
 roughly the same amount of stuff. Of course, that is not part of the
-rules of the SPMD structure, so we could just as well distribute
+rules of the GBD structure, so we could just as well distribute
 the data like so:
 \begin{align*}
 x &= \left[
@@ -497,25 +505,25 @@ things with all of your processors. The typical way you will have the
 processors interact is given below:
 
 \begin{itemize}
-  \item \textbf{Reduction}: Say each processor has a number \code{x.spmd}.
-        \index{Class!\code{.spmd}}
+  \item \textbf{Reduction}: Say each processor has a number \code{x.gbd}.
+        \index{Class!\code{.gbd}}
         Add all of them up, find the largest, find the smallest, \dots .\\
-        \code{reduce(x.spmd, op='sum')}\index{Code!\code{reduce()}} ---
+        \code{reduce(x.gbd, op='sum')}\index{Code!\code{reduce()}} ---
         only one processor gets result (default is 0)\\
-        \code{allreduce(x.spmd, op='sum')}\index{Code!\code{allreduce()}} ---
+        \code{allreduce(x.gbd, op='sum')}\index{Code!\code{allreduce()}} ---
         every processor gets result
   %
   \item \textbf{Gather}: Say each processor has a number.
         Create a new object on some processor(s) containing all of
         those numbers.\\
-        \code{gather(x.spmd)}\index{Code!\code{gather()}} ---
+        \code{gather(x.gbd)}\index{Code!\code{gather()}} ---
         only one processor gets result\\
-        \code{allgather(x.spmd)}\index{Code!\code{allgather()}} ---
+        \code{allgather(x.gbd)}\index{Code!\code{allgather()}} ---
           every processor gets result
   %
-  \item \textbf{Broadcast}: One processor has a number \code{x.spmd} that
+  \item \textbf{Broadcast}: One processor has a number \code{x.gbd} that
         every other processor should also have.\\
-        \code{bcast(x.spmd)}\index{Code!\code{bcast()}}
+        \code{bcast(x.gbd)}\index{Code!\code{bcast()}}
 \end{itemize}
 
 Here perhaps explanations are inferior to examples; so without wasting any
@@ -525,12 +533,12 @@ more time, we proceed to the next example:
 library(pbdMPI, quiet = TRUE)
 init()
 
-n.spmd <- sample(1:10, size=1)
+n.gbd <- sample(1:10, size=1)
 
-sm <- allreduce(n.spmd) # default op is 'sum'
+sm <- allreduce(n.gbd) # default op is 'sum'
 print(sm)
 
-gt <- allgather(n.spmd)
+gt <- allgather(n.gbd)
 print(gt)
 
 finalize()
@@ -543,12 +551,12 @@ good parallel seeds. More on this particular problem in
 Section~\ref{sec:pbdsugar} below.
 
 Next, we perform an \code{allreduce()}\index{Code!\code{allreduce()}}
-on \code{n.spmd}. Conceivably, the processors could have different
-values for \code{n.spmd}.\index{Class!\.spmd} So the value of \code{n} is
+on \code{n.gbd}. Conceivably, the processors could have different
+values for \code{n.gbd}.\index{Class!\.gbd} So the value of \code{n} is
 local to each processor. So perhaps we want to add up all these numbers (with
 as many numbers as there are processors) and store them in the global value
 \code{sm} (for ``sum''). Each processor will agree as to the value
-of \code{sm}, even if they disagree about the value of \code{n.spmd}.
+of \code{sm}, even if they disagree about the value of \code{n.gbd}.
 
 Finally, we do the same but with an
 \code{allgather()}\index{Code!\code{allgather()}} operation.
@@ -556,7 +564,7 @@ Finally, we do the same but with an
 Try experimenting with this by running the program several times.
 You should get different results each time. To make sure we have not
 been lying to you about what is happening, you can even print the values
-of \code{n.spmd} before the reduce and gather operations.
+of \code{n.gbd} before the reduce and gather operations.
 
 
 
@@ -615,15 +623,15 @@ active \proglang{R} sessions by incorrectly using them. Worse, achieving
 this behavior is fairly easy to do. The way this occurs is by issuing
 a \code{comm.print()} on an expression which requires communication.
 For example, suppose we have a distributed object with local piece
-\code{x.spmd} and a function \code{myFunction()} which requires
+\code{x.gbd} and a function \code{myFunction()} which requires
 communication between the processors. Then calling
 \begin{lstlisting}[language=rr,title=A Cautionary Tale of Printing in Parallel (1 of 3)]
-print(myFunction(x.spmd)) 
+print(myFunction(x.gbd)) 
 \end{lstlisting}
 is just fine, but will not have the nice orderly, behaved printing style
 of \code{comm.print()}. However, if we issue
 \begin{lstlisting}[language=rr,title=A Cautionary Tale of Printing in Parallel (2 of 3)]
-comm.print(myFunction(x.spmd)) 
+comm.print(myFunction(x.gbd)) 
 \end{lstlisting}
 then we have just locked up all of the \proglang{R} processes. Indeed,
 behind the scenes, a call somewhat akin to
@@ -647,7 +655,7 @@ To avoid this problem, make it a personal habit to only print on
 \emph{results}, not \emph{computations}. We can quickly rectify the above
 example by doing the following:
 \begin{lstlisting}[language=rr,title=A Cautionary Tale of Printing in Parallel (3 of 3)]
-myResult <- myFunction(x.spmd)
+myResult <- myFunction(x.gbd)
 comm.print(myResult)
 \end{lstlisting}
 
@@ -667,14 +675,16 @@ family of ``*ply'' functions, in the same vein as \proglang{R}'s
   \item \textbf{Apply}: *ply-like functions.\\
   \code{pbdApply(X, MARGIN, FUN, \dots)} --- analogue of \code{apply()}\\
   \code{pbdLapply(X, FUN, \dots)} --- analogue of \code{lapply()}\\
-  \code{pbdSapply(X, FUN, \dots)} --- analogue of \code{sapply()}\\
+  \code{pbdSapply(X, FUN, \dots)} --- analogue of \code{sapply()}
 \end{itemize}
 \index{Code!\code{pbdApply}}
 \index{Code!\code{pbdLapply}}
 \index{Code!\code{pbdSapply}}
+For more efficient approach (non-barrier), one may consider use task pull
+parallelism instead of ``*ply'' functions, see Section~\ref{sec:task_pull}
+for more details.
 
 Here is a simple example utilizing \code{pbdLapply()}:
-    
 \begin{lstlisting}[language=rr,title=Example 4]
 library(pbdMPI, quiet = TRUE)
 init()

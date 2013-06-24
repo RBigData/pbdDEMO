@@ -1,7 +1,7 @@
-### This file contains several functions for reading and writing spmd and
+### This file contains several functions for reading and writing gbd and
 ### ddmatrix to NetCDF4 files and mainly forcus on 2D matrices.
 
-### Warning: All "vals" are presumed to be "spmd column-major" matrices
+### Warning: All "vals" are presumed to be "gbd column-major" matrices
 ###          for all functions, but may be fine with other formats in
 ###          some functions.
 
@@ -67,7 +67,7 @@ ncvar_put_dmat <- function(nc, varid, vals, verbose = FALSE,
   ### MPI information
   COMM.SIZE <- comm.size(comm)
 
-  ### redistribute data in spmd column format.
+  ### redistribute data in gbd column format.
   bldim <- c(nrow(vals), ceiling(ncol(vals) / COMM.SIZE))
   X.dmat <- dmat.reblock(vals, bldim = bldim, ICTXT = 1)
   if(base.ownany(dim(X.dmat), bldim(X.dmat), ICTXT = 1)){
@@ -79,24 +79,24 @@ ncvar_put_dmat <- function(nc, varid, vals, verbose = FALSE,
   demo.ncvar_put_2D(nc, varid, vals, verbose = verbose, comm = comm)
 } # End of ncvar_put_dmat().
 
-ncvar_put_spmd <- function(nc, varid, vals, verbose = FALSE,
-    comm = .SPMD.CT$comm, spmd.major = .DEMO.CT$spmd.major){
+ncvar_put_gbd <- function(nc, varid, vals, verbose = FALSE,
+    comm = .SPMD.CT$comm, gbd.major = .DEMO.CT$gbd.major){
   ### check
   ndim <- demo.ncvar_ndim(nc, varid)
   if(ndim > 2){
     stop("Hypercube variables are not supported.")
   }
   if(!comm.all(is.matrix(vals), comm = comm)){
-    stop("vals should be a spmd matrix")
+    stop("vals should be a gbd matrix")
   }
 
-  if(spmd.major == 1){
-    vals <- demo.spmdr2dmat(vals, comm = comm)
+  if(gbd.major == 1){
+    vals <- demo.gbdr2dmat(vals, comm = comm)
     ncvar_put_dmat(nc, varid, vals, verbose = verbose, comm = comm)
   } else{
     demo.ncvar_put_2D(nc, varid, vals, verbose = verbose, comm = comm)
   }
-} # End of ncvar_put_spmd().
+} # End of ncvar_put_gbd().
 
 
 ### get methods modified from ncvar_get().
@@ -202,9 +202,9 @@ ncvar_get_dmat <- function(nc, varid,
   dmat.reblock(X.dmat, bldim = bldim, ICTXT = ICTXT)
 } # End of ncvar_get_dmat().
 
-ncvar_get_spmd <- function(nc, varid,
+ncvar_get_gbd <- function(nc, varid,
     verbose = FALSE, signedbyte = TRUE, collapse_degen = TRUE,
-    comm = .SPMD.CT$comm, spmd.major = .DEMO.CT$spmd.major){
+    comm = .SPMD.CT$comm, gbd.major = .DEMO.CT$gbd.major){
   ### check
   ndim <- demo.ncvar_ndim(nc, varid)
   if(ndim > 2){
@@ -212,11 +212,11 @@ ncvar_get_spmd <- function(nc, varid,
   }
 
   ### get data out of file.
-  if(spmd.major == 1){
+  if(gbd.major == 1){
     vals <- ncvar_get_dmat(nc, varid, verbose = verbose,
                            signedbyte = signedbyte,
                            collapse_degen = collapse_degen, comm = comm)
-    vals <- demo.dmat2spmdr(vals, comm = comm)
+    vals <- demo.dmat2gbdr(vals, comm = comm)
   } else{
     vals <- demo.ncvar_get_2D(nc, varid,
                               verbose = verbose, signedbyte = signedbyte,
@@ -224,5 +224,5 @@ ncvar_get_spmd <- function(nc, varid,
   }
 
   vals
-} # End of ncvar_get_spmd().
+} # End of ncvar_get_gbd().
 
