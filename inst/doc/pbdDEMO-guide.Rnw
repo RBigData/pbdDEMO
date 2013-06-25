@@ -99,10 +99,10 @@ and Microsoft Powerpoint.
 \addcontentsline{toc}{section}{List of Tables}
 \listoftables
 
-\newpage
-\fancyhf[C]{}
-\phantomsection
-\input{./pbdDEMO-include/00-preface}
+%\newpage
+%\fancyhf[C]{}
+%\phantomsection
+%\input{./pbdDEMO-include/00-preface}
 
 % \newpage
 % \fancyhf[C]{}
