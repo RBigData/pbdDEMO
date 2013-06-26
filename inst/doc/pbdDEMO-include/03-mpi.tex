@@ -711,9 +711,9 @@ threads, or MPI processes) will take the same amount of time to complete
 a task, even when all tasks are given completely identical jobs.
 So measuring ``total run time'' begs the question, run time of what?
 
-To help, we offer a timing function \code{demo.timer()} which can wrap
+To help, we offer a timing function \code{timer()} which can wrap
 segments of code much in the same way that \code{system.time()} does.
-However, the three numbers reported by \code{demo.timer()} are:
+However, the three numbers reported by \code{timer()} are:
 \begin{itemize}
 \item the minimum elapsed time measured across all processes,
 \item the average elapsed time measured across all processes, and
@@ -722,7 +722,7 @@ However, the three numbers reported by \code{demo.timer()} are:
 The code for this function is listed below:
 
 \begin{lstlisting}[language=rr,title=Timer Function]
-demo.timer <- function(timed)
+timer <- function(timed)
 {
   ltime <- system.time(timed)[3]
   
