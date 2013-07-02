@@ -11,6 +11,7 @@ export(
   read.csv.ddmatrix, read.sql.ddmatrix,
   ###
   plot.dmat,
+  timer,
   ###
   ncvar_put_gbd, ncvar_put_dmat, ncvar_get_gbd, ncvar_get_dmat
 )

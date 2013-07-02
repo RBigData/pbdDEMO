@@ -51,7 +51,7 @@ Version 1.1
 \begin{figure}[h]
   \begin{minipage}[c]{8.5in}
   \hspace{-1.0in}
-  \includegraphics[width=8.25in,height=10in]{./cover/cover.pdf}
+  \includegraphics[width=8.25in,height=10in]{../cover/cover.pdf}
   \end{minipage}
 \end{figure}
 
@@ -153,10 +153,11 @@ and Microsoft Powerpoint.
 \input{./pbdDEMO-include/11-redist}
 %%% applications
 \part{Applications}
-\input{./pbdDEMO-include/a1-logL}
-\input{./pbdDEMO-include/a2-pmclust}
-\input{./pbdDEMO-include/a3-phyclust}
-%%% \input{./pbdDEMO-include/a4-Bayes}
+\input{./pbdDEMO-include/applications/a1-logL}
+\input{./pbdDEMO-include/applications/a2-pmclust}
+\input{./pbdDEMO-include/applications/a3-phyclust}
+%%% \input{./pbdDEMO-include/applications/a4-Bayes}
+\input{./pbdDEMO-include/applications/a5-ts}
 %%% appendices
 \part{Appendix}
 \appendix
