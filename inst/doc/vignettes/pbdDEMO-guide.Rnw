@@ -51,7 +51,7 @@ Version 1.1
 \begin{figure}[h]
   \begin{minipage}[c]{8.5in}
   \hspace{-1.0in}
-  \includegraphics[width=8.25in,height=10in]{./cover/cover.pdf}
+  \includegraphics[width=8.25in,height=10in]{../cover/cover.pdf}
   \end{minipage}
 \end{figure}
 
