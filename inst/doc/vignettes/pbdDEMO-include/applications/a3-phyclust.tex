@@ -343,7 +343,7 @@ comm.print(ret)
 
 if(comm.rank() == 0){
   ret.jobs <- unlist(ret)
-  ret.jobs <- ret.jobs[names(ret.jobs) == "ret"]
+  ret.jobs <- ret.jobs[names(ret.jobs) != "jid"]
   print(ret.jobs)
 }
 

@@ -2,10 +2,10 @@ Package: pbdDEMO
 Title: Programming with Big Data -- Demonstrations of pbd Packages
 Version: 0.1-1
 Date: 2013-06-20
-Depends: R (>= 2.14.0), methods, rlecuyer, pbdMPI (>= 0.1-6), 
-        pbdSLAP (>= 0.1-5), pbdBASE (>= 0.2-1), pbdDMAT(>= 0.2-1)
-Enhances: maps, RColorBrewer, pbdNCDF4 (>= 0.1-0), pmclust, MixSim, EMCluster,
-        sqldf, phyclust
+Depends: R (>= 2.14.0), methods, rlecuyer, pbdMPI (>= 0.1-6), pbdSLAP
+        (>= 0.1-5), pbdBASE (>= 0.2-1), pbdDMAT(>= 0.2-1)
+Enhances: maps, RColorBrewer, pbdNCDF4 (>= 0.1-0), pmclust, MixSim,
+        EMCluster, sqldf, phyclust
 LazyLoad: yes
 LazyData: yes
 Authors@R: c(person("Drew", "Schmidt", role = c("aut", "cre"), email =
@@ -21,7 +21,7 @@ URL: http://r-pbd.org/
 BugReports: http://group.r-pbd.org/
 MailingList: Please send questions and comments regarding pbdR to
         RBigData@gmail.com
-Packaged: 2013-02-19 19:03:51 UTC; snoweye
+Packaged: 2013-07-02 18:06:45 UTC; snoweye
 Author: Drew Schmidt [aut, cre],
   Wei-Chen Chen [aut],
   George Ostrouchov [aut],
