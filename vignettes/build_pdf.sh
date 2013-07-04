@@ -10,3 +10,6 @@ pdflatex pbdDEMO-guide.Rnw
 rm *.aux *.bbl *.blg *.log *.out *.toc *.idx *.lof *.lot *.ind *.ilg
 
 # Rscript -e "tools::compactPDF('./pbdDEMO-guide.pdf',gs_quality='ebook')"
+
+mv -f *.pdf ../inst/doc/
+cp -f *.Rnw ../inst/doc/
