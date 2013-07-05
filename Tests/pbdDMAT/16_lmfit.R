@@ -100,10 +100,7 @@ if (comm.rank()==0){
   seed <- 0
 }
 
-seed <- allreduce(seed)
-set.seed(seed)
-
-set.seed(10)
+comm.set.seed(diff=F)
 
 n <- 8
 p <- 6
