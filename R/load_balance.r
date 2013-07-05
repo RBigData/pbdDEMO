@@ -88,14 +88,14 @@ load.balance <- function(X.gbd, bal.info = NULL, comm = .SPMD.CT$comm,
       for(i in send.to){
         if(i != COMM.RANK){
           tmp <- matrix(X.gbd[bal.info$send$belong == i,], ncol = p)
-          isend(tmp, rank.dest = i, tag = COMM.RANK, comm = comm)
+          send(tmp, rank.dest = i, tag = COMM.RANK, comm = comm)
         }
       }
     } else{
       for(i in send.to){
         if(i != COMM.RANK){
           tmp <- matrix(X.gbd[, bal.info$send$belong == i], nrow = p)
-          isend(tmp, rank.dest = i, tag = COMM.RANK, comm = comm)
+          send(tmp, rank.dest = i, tag = COMM.RANK, comm = comm)
         }
       }
     }
