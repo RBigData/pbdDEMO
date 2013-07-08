@@ -10,7 +10,7 @@ export(
   ###
   read.csv.ddmatrix, read.sql.ddmatrix,
   ###
-  plot.dmat,
+  plot_dmat,
   timer,
   ###
   ncvar_put_gbd, ncvar_put_dmat, ncvar_get_gbd, ncvar_get_dmat

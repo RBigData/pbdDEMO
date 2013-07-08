@@ -23,14 +23,7 @@ N <- 250
 # M<- N<- 10
 BL <- 4
 
-comm.set.seed(diff=T, seed=as.numeric(Sys.time()))
-seed <- sample(1:1000, size=1)
-seed <- allreduce(seed, op='sum')
-
-#seed <- 1949
-comm.set.seed(seed)
-
-comm.print(seed)
+comm.set.seed(diff=F)
 
 tol <- 1e-8
 

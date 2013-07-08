@@ -1,8 +1,7 @@
-2013-07-03: Ver. 0.1-1
+2013-06-20: Ver. 0.1-1
   * Expanded section on parallelism basics in vignette.
   * likelihood, pmclust, and phyclust applications added to vignette.
   * Change SPMD/spmd to GBD/gbd.
-  * Move inst/doc/vignettes/ to vignettes/.
 
 ======================= Log Before Release =====================================
 

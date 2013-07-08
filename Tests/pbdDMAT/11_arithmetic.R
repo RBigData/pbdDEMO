@@ -20,9 +20,7 @@ N <- 250
 #M <- N <- 10
 BL <- 4
 
-seed <- sample(1:1000)
-seed <- allreduce(seed, op='sum')
-set.seed(seed)
+comm.set.seed(diff=F)
 
 
 tol <- 1e-8
