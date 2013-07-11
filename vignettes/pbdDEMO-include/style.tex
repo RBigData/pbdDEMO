@@ -1,0 +1,361 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% definitions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\makeatletter
+\newcommand\code{\bgroup\@makeother\_\@makeother\~\@makeother\$\@codex}
+\def\@codex#1{{\normalfont\ttfamily\hyphenchar\font=-1 #1}\egroup}
+\makeatother
+%%\let\code=\texttt
+\let\proglang=\textsf
+
+\newcommand{\pkg}[1]{{\fontseries{b}\selectfont #1}}
+
+\newcommand{\bA}{\boldsymbol{A}}
+\newcommand{\bB}{\boldsymbol{B}}
+\newcommand{\bD}{\boldsymbol{D}}
+\newcommand{\bI}{\boldsymbol{I}}
+\newcommand{\bQ}{\boldsymbol{Q}}
+\newcommand{\bU}{\boldsymbol{U}}
+\newcommand{\bX}{\boldsymbol{X}}
+\newcommand{\bx}{\boldsymbol{x}}
+\newcommand{\by}{\boldsymbol{y}}
+\newcommand{\bbeta}{\boldsymbol{\beta}}
+\newcommand{\bepsilon}{\boldsymbol{\epsilon}}
+\newcommand{\boldeta}{\boldsymbol{\eta}}
+\newcommand{\bTheta}{\boldsymbol{\Theta}}
+\newcommand{\btheta}{\boldsymbol{\theta}}
+\newcommand{\bmu}{\boldsymbol{\mu}}
+\newcommand{\bSigma}{\boldsymbol{\Sigma}}
+\newcommand{\bsigma}{\boldsymbol{\sigma}}
+\newcommand{\argmax}{\operatornamewithlimits{argmax}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\mF}{\mathcal F}
+\newcommand{\mS}{\mathcal{S}}
+\newcommand{\bone}{\boldsymbol{1}}
+\newcommand{\bzero}{\boldsymbol{0}}
+\newcommand{\blambda}{\boldsymbol{\lambda}}
+
+
+\newcommand{\ltwo}[1]{\left|\left| #1 \right|\right|_2}
+\newcommand{\norm}[1]{\left|\left| #1 \right|\right|}
+
+
+\newcommand\mnote[1]{\marginpar{\vspace*{-.8cm}#1}}
+
+\newcommand\easy{\mnote{\LARGE\color{green} \textbf{Easy}}}
+\newcommand\medium{\mnote{\LARGE\color{yellow2} \textbf{Medium}}}
+\newcommand\hard{\mnote{\LARGE\color{red} \textbf{Hard}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% paragraph spacing
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{parskip}
+\setlength{\parskip}{.3cm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% colors
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{xcolor}
+\usepackage{color}
+
+\definecolor{yellow2}{rgb}{1, .7, 0}
+
+\definecolor{mygreen}{RGB}{0,150,0}
+
+\definecolor{gray}{rgb}{.6,.6,.6}
+\definecolor{dkgray}{rgb}{.3,.3,.3}
+\definecolor{orange}{rgb}{1,0.5,0}
+\definecolor{grayish}{rgb}{.9, .9, .9}
+
+% % \definecolor{g11}{rgb}{0, 0, 1}
+% % \definecolor{g12}{rgb}{0, .4, 1}
+% % \definecolor{g13}{rgb}{0, .8, 1}
+% % 
+% % \definecolor{g21}{rgb}{0, .5, .3}
+% % \definecolor{g22}{rgb}{.4, .5, .3}
+% % \definecolor{g23}{rgb}{.8, .5, .3}
+
+% changed for the colorblind, taken from http://jfly.iam.u-tokyo.ac.jp/color/#pallet
+\definecolor{g11}{rgb}{.90, .60, 0}
+\definecolor{g12}{rgb}{.35, .70, .90}
+\definecolor{g13}{rgb}{0, .60, .50}
+
+\definecolor{g21}{rgb}{.80, .40, 0}
+\definecolor{g22}{rgb}{0, .45, .70}
+\definecolor{g23}{rgb}{.80, .60, .70}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\definecolor{p0}{RGB}{150,0,0}
+\definecolor{p1}{RGB}{0,150,0}
+\definecolor{p2}{RGB}{0,0,150}
+\definecolor{p3}{RGB}{150,75,0}
+
+
+\definecolor{mygreen3}{rgb}{0,0.69,0.09}
+\definecolor{mymagenta3}{rgb}{0.8,0,0.8}
+\definecolor{myblue3}{rgb}{0,0,0.8}
+\definecolor{myred}{rgb}{1,0,0}
+\newcommand{\colorA}{\mbox{\color{mygreen3} A}}
+\newcommand{\colorC}{\mbox{\color{mymagenta3} C}}
+\newcommand{\colorG}{\mbox{\color{myblue3} G}}
+\newcommand{\colorT}{\mbox{\color{myred} T}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% lstlisting
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{listings}
+
+\lstdefinelanguage{rr}{language=R, 
+                      basicstyle=\ttfamily\color{black}, 
+		      backgroundcolor=\color{grayish}, 
+		      frame=single, 
+		      breaklines=true, 
+                      keywordstyle=\color{blue},
+		      commentstyle=\color{dkgreen},
+		      stringstyle=\color{mauve},
+		      numbers=left,%none,
+		      numberstyle=\tiny\color{dkgray},
+		      stepnumber=1,       
+		      numbersep=8pt,      
+		      showspaces=false,      
+		      showstringspaces=false,  
+		      showtabs=false,     
+		      rulecolor=\color{gray},   
+		      tabsize=4,     
+		      captionpos=t,
+		      title=\lstname,
+		      escapechar=?
+% 		      escapeinside={(*@}{@*)},
+% 		      escapebegin={\begin{lrbox}{0}\minipage[t]{.3\linewidth}\raggedleft\normalfont\itshape\small\leavevmode\color{black!70}\ignorespaces},
+%                       escapeend={\endminipage\end{lrbox}\llap{\raisebox{0pt}[0pt][0pt]{\box0}\hspace{\comsep}}}
+} 
+
+
+\lstdefinelanguage{ft}{
+  language=[90]Fortran,
+  basicstyle=\ttfamily,
+                      keywordstyle=\color{blue},
+		      commentstyle=\color{dkgreen},
+  morecomment=[l]{!\ }
+}
+
+
+
+\lstset{numbers=none,numberstyle=\footnotesize\ttfamily,
+        frame=single,frameround=tttt,language=R,
+        showspaces=false,showstringspaces=false,
+        breaklines=true,breakatwhitespace=true,
+        basicstyle=\small\ttfamily}
+%\lstset{literate={<-}{{$\leftarrow$}}1}
+\makeatletter
+\let\Code\@undefined
+\let\CodeInput\@undefined
+\let\CodeOutput\@undefined
+\makeatother
+\lstnewenvironment{Command}[1][title=Shell Command]{\lstset{#1}}{}
+\lstnewenvironment{Code}[1][title=R Script]{\lstset{#1}}{}
+\lstnewenvironment{Output}[1][title=\ ]{\lstset{#1}}{}
+\lstnewenvironment{CodeOutput}[1][title=R Output]{\lstset{#1}}{}
+\lstnewenvironment{Error}[1][]{
+  \lstset{title=Error Message,basicstyle=\small\ttfamily}\color{Red}}{}
+  
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% pseudocode
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{algpseudocode}
+
+\newcommand{\pseudocode}[1]{
+  {\centering Pseudocode\\[.1cm]}
+  \fbox{\noindent
+  \begin{minipage}{\dimexpr\textwidth-2\fboxsep-2\fboxrule\relax}
+  \begin{algorithmic}[1]
+  #1
+  \end{algorithmic}
+  \end{minipage}
+  }\\
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% Chapter headings
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[Bjornstrup]{fncychap}
+% \usepackage[Lenny]{fncychap}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% Headers/footers
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{lastpage}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+
+\newcommand{\prebodyheadfoot}{
+  \fancyhf{} % clear all header and footer fields
+  \fancyfoot{}
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0pt}
+  
+  % redefinition of the plain style:
+  \fancypagestyle{plain}{%
+  \fancyhf{} % clear all header and footer fields
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0pt}}
+}
+
+\newcommand{\bodyheadfoot}{
+  \fancyhf{} % clear all header and footer fields
+%   \fancyhead[L]{\slshape \rightmark}
+  \fancyhead[L]{\slshape \leftmark}
+  \fancyhead[R]{ \thepage\ of\ \pageref{LastPage}}
+  \renewcommand{\headrulewidth}{1pt}
+  \renewcommand{\footrulewidth}{0pt}
+  
+  % redefinition of the plain style:
+  \fancypagestyle{plain}{%
+  \fancyhf{} % clear all header and footer fields
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0pt}}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% Fancy toc originally from http://tex.stackexchange.com/questions/35825/pretty-table-of-contents?lq=1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{xcolor}
+\usepackage{framed}
+\usepackage{tikz}
+\usepackage{titletoc}
+\usepackage{etoolbox}
+\usepackage{lmodern}
+
+% % definition of some personal colors
+% \definecolor{myred}{RGB}{127,0,0}
+% \definecolor{myyellow}{RGB}{169,121,69}
+% 
+% % command for the circle for the number of part entries
+% \newcommand\Circle[1]{\tikz[overlay,remember picture] 
+%   \node[draw,circle, text width=18pt,line width=1pt] {#1};}
+% 
+% % patching of \tableofcontents to use sans serif font for the tile
+% \patchcmd{\tableofcontents}{\contentsname}{\sffamily\contentsname}{}{}
+% % patching of \@part to typeset the part number inside a framed box in its own line
+% % and to add color
+% \makeatletter
+% \patchcmd{\@part}
+%   {\addcontentsline{toc}{part}{\thepart\hspace{1em}#1}}
+%   {\addtocontents{toc}{\protect\addvspace{20pt}}
+%     \addcontentsline{toc}{part}{\huge{\protect\color{myyellow}%
+%       \setlength\fboxrule{2pt}\protect\Circle{%
+%         \hfil\thepart\hfil%
+%       }%
+%     }\\[2ex]\color{myred}\sffamily#1}}{}{}
+% 
+% %\patchcmd{\@part}
+% %  {\addcontentsline{toc}{part}{\thepart\hspace{1em}#1}}
+% %  {\addtocontents{toc}{\protect\addvspace{20pt}}
+% %    \addcontentsline{toc}{part}{\huge{\protect\color{myyellow}%
+% %      \setlength\fboxrule{2pt}\protect\fbox{\protect\parbox[c][1em][c]{1.5em}{%
+% %        \hfil\thepart\hfil%
+% %      }}%
+% %    }\\[2ex]\color{myred}\sffamily#1}}{}{}
+% \makeatother
+% 
+% % this is the environment used to typeset the chapter entries in the ToC
+% % it is a modification of the leftbar environment of the framed package
+% \renewenvironment{leftbar}
+%   {\def\FrameCommand{\hspace{6em}%
+%     {\color{myyellow}\vrule width 2pt depth 6pt}\hspace{1em}}%
+%     \MakeFramed{\parshape 1 0cm \dimexpr\textwidth-6em\relax\FrameRestore}\vskip2pt%
+%   }
+%  {\endMakeFramed}
+% 
+% % using titletoc we redefine the ToC entries for parts, chapters, sections, and subsections
+% \titlecontents{part}
+%   [0em]{\centering}
+%   {\contentslabel}
+%   {}{}
+% \titlecontents{chapter}
+%   [0em]{\vspace*{2\baselineskip}}
+%   {\parbox{4.5em}{%
+%     \hfill\Huge\sffamily\bfseries\color{myred}\thecontentspage}%
+%    \vspace*{-2.3\baselineskip}\leftbar\textsc{\small\chaptername~\thecontentslabel}\\\sffamily}
+%   {}{\endleftbar}
+% \titlecontents{section}
+%   [8.4em]
+%   {\sffamily\contentslabel{3em}}{}{}
+%   {\hspace{0.5em}\nobreak\itshape\color{myred}\contentspage}
+% \titlecontents{subsection}
+%   [8.4em]
+%   {\sffamily\contentslabel{3em}}{}{}  
+%   {\hspace{0.5em}\nobreak\itshape\color{myred}\contentspage}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% misc.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \usepackage{url}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+
+\usepackage{caption}
+\usepackage{subcaption}
+
+
+\usepackage{hyperref}
+
+\definecolor{Red}{rgb}{0.5,0,0}
+\definecolor{Blue}{rgb}{0,0,0.5}
+\hypersetup{
+    pdfnewwindow=true,    
+    colorlinks=true,      
+    linkcolor=blue,      
+    citecolor=blue,      
+    filecolor=magenta,   
+    linkcolor=blue,
+    citecolor=Blue,
+    urlcolor=Blue
+}
+
+\usepackage[absolute]{textpos}
+
+%%% quotes
+\newcommand\quelle[1]{{%
+      \unskip\nobreak\hfil\penalty50
+      \hskip2em\hbox{}\nobreak\hfil\textbf{#1}%
+      \parfillskip=0pt \finalhyphendemerits=0 \par}}
+% \newcommand{\inspire}[2]{{\raggedleft{\textit{#1}}\\{{\hfill---#2}}}}
+\newcommand{\inspire}[2]{{\hfill\begin{minipage}[r]{.5\textwidth}\textit{#1}\\\quelle{---#2}\end{minipage}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% Bibliography
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[nottoc,numbib,notlof,notlot]{tocbibind}
+\usepackage[authoryear,round]{natbib}
+\usepackage{multirow}
+
+\bibliographystyle{pbdDEMO-include/jss}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% Exercise Itemize. 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{enumitem}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% Index
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{makeidx}
+\makeindex
+

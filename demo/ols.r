@@ -9,14 +9,14 @@ comm.set.seed(1234, diff = TRUE)
 N <- 100                  # Pretend N is large.
 p <- 2
 ### Distributed data.
-X.spmd <- matrix(rnorm(N * p), ncol = p)
+X.gbd <- matrix(rnorm(N * p), ncol = p)
 beta <- 1:p
 epsilon <- rnorm(N)
-y.spmd <- X.spmd %*% beta + epsilon 
+y.gbd <- X.gbd %*% beta + epsilon 
 
 ### Run.
-ret.spmd <- mpi.ols(y.spmd, X.spmd)
+ret.gbd <- mpi.ols(y.gbd, X.gbd)
 
 ### Output.
-comm.print(ret.spmd)
+comm.print(ret.gbd)
 finalize()

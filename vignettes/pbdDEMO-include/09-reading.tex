@@ -1,0 +1,100 @@
+\chapter{Reading CSV and SQL Files}
+\label{sec:reader}
+
+
+\inspire{``Data! Data! Data!'' he cried impatiently. ``I can't make bricks without clay.''}{Sherlock Holmes}
+\vspace{0.5cm}
+
+
+As we mentioned at the beginning of the discussion on distributed matrix methods, most of the hard work in using these tools is getting the data into the right format.  Once this hurdle has been overcome, the syntax will magically begin to look like native \proglang{R} syntax.  Some insights into this difficulty can be seen in the previous section, but now we tackle the problem head on:  how do you get real data into the distributed matrix format?
+
+\section{CSV Files}
+\label{sec:csv_files}
+
+\emph{Example:  Read data from a csv directly into a distributed matrix.}
+\index{CSV}
+
+The demo command is
+\begin{Command}
+### At the shell prompt, run the demo with 4 processors by
+### (Use Rscript.exe for windows system)
+mpiexec -np 4 Rscript -e "demo(read_csv,'pbdDEMO',ask=F,echo=F)"
+\end{Command}
+
+It is simple enough to read in a csv file serially and then distribute the data out to the other processors.  This process is essentially identical to one of the random generation methods in Section~\ref{subsec:rng.gl}.  For the sake of completeness, we present a simple example here:
+
+\begin{lstlisting}[language=rr]
+if (comm.rank()==0){ # only read on process 0
+  x <- read.csv("myfile.csv")
+} else {
+  x <- NULL
+}
+
+dx <- as.ddmatrix(x)
+\end{lstlisting}
+
+However, this is inefficient, especially if the user has access to a parallel file system.  In this case, several processes should be used to read parts of the file, and then distribute that data out to the larger process grid.  Although really, the user should not be using csv to store large amounts of data because it always requires a sort of inherent ``serialness''.  Regardless, a demonstration of how this is done is useful.  We can do so via the \pkg{pbdDEMO} package's function \code{read.csv.ddmatrix} on an included dataset:
+
+\begin{lstlisting}[language=rr,title=Reading a CSV with Multiple Readers]
+dx <- read.csv.ddmatrix("../extra/data/x.csv", 
+                        sep=",", nrows=10, ncols=10, 
+                        header=TRUE, bldim=4, 
+                        num.rdrs=2, ICTXT=0)
+
+print(dx)
+\end{lstlisting}
+
+The code powering the function itself is quite complicated, going well beyond the scope of this document.  To understand it, the reader should see the advanced sections of the \pkg{pbdDMAT} vignette.
+
+\section{SQL Databases}
+\label{sec:sql_db}
+
+\emph{Example:  Read data from a sql database directly into a distributed matrix.}
+\index{SQL}
+
+The demo command is
+\begin{Command}
+### At the shell prompt, run the demo with 4 processors by
+### (Use Rscript.exe for windows system)
+mpiexec -np 4 Rscript -e "demo(read_sql,'pbdDEMO',ask=F,echo=F)"
+\end{Command}
+
+Just as above, we can use a SQL database to read in our data, powered by the \pkg{sqldf} package \citep{sqldf}.  Here it is assumed that the data is stored in the database in a structure that is much the same as a csv is stored on disk.  Internally, the query performed is:
+
+\begin{lstlisting}[language=rr]
+sqldf(paste("SELECT * FROM ", table, " WHERE rowid  = 1"), dbname=dbname)
+\end{lstlisting}
+
+To use a more complicated query for a database with differing structure, it should be possible (no promises) to substitute this line of the \code{read.sql.ddmatrix()} function for the desired query.  However, as before, much of the rest of the tasks performed by this function go beyond the scope of this document.  However, they are described in the \pkg{pbdBASE} package vignette.
+
+
+
+
+
+
+
+\section{Exercises}
+\label{sec:reading_exercise}
+
+\begin{enumerate}[label=\thechapter-\arabic*]
+\item \label{ex:read_csv}
+In Section~\ref{sec:csv_files}, we have seen an CSV reading example, however,
+this is not an efficient way for large CSV files by calling \code{read.csv()}.
+The \proglang{R} functions \code{con <- file(\dots)} can open a connection to
+the CSV files and \code{readLines(con, n = 100000)} can access a chunk of
+data ($100,000$ lines)
+from disk more efficiently. Implement a simple function as \code{read.csv()}
+and compare performance.
+
+\item
+As Exercise~\ref{ex:read_csv}, implement a simple function by utilizing
+\code{writeLines()} for writing large CSV file and compare performance
+to the \code{write.csv()}.
+
+\item
+Other \proglang{R} packages can deal with fast reading for CSV format or so
+in serial. Try \pkg{ff}~\citep{ff}\index{Package!\pkg{ff}} and
+\pkg{bigmemory}~\citep{bigmemory}\index{Package!\pkg{bigmemory}}.
+ 
+
+\end{enumerate}

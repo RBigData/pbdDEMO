@@ -11,23 +11,19 @@
 
 suppressPackageStartupMessages(library(pbdDMAT, quiet=T))
 
+.SPMD.CT$msg.barrier <- T
+
 #init.grid(1, 2)
 init.grid()
 
-comm.print <- function(x) pbdMPI::comm.print(x, quiet=T)
+.SPMD.CT$print.quiet <- TRUE
 
 M <- 250
 N <- 250
- M<- N<- 10
+# M<- N<- 10
 BL <- 4
 
-seed <- sample(1:1000, size=1)
-seed <- allreduce(seed, op='sum')
-
-#seed <- 1949
-set.seed(seed)
-
-comm.print(seed)
+comm.set.seed(diff=F)
 
 tol <- 1e-8
 
@@ -48,18 +44,18 @@ tests <- function(.)
   rs1 <- rowMeans(A)
   rs2 <- as.vector(rowMeans(dA))
   comm.print(all.equal(rs1, rs2))
-  if (!is.logical(all.equal(rs1, rs2))){
-    comm.print(rs1)
-    comm.print(rs2)
-  }
+#  if (!is.logical(all.equal(rs1, rs2))){
+#    comm.print(rs1)
+#    comm.print(rs2)
+#  }
   
   out1 <- colMeans(A)
   out2 <- as.vector(colMeans(dA))
   comm.print(all.equal(out1, out2))
-  if (!is.logical(all.equal(out1, out2))){
-    comm.print(out1)
-    comm.print(out2)
-  }
+#  if (!is.logical(all.equal(out1, out2))){
+#    comm.print(out1)
+#    comm.print(out2)
+#  }
   
   out1 <- sum(A)
   out2 <- sum(dA)
@@ -72,10 +68,10 @@ tests <- function(.)
   out1 <- diag(A)
   out2 <- diag(dA)
   comm.print(all.equal(out1, out2))
-  if (!is.logical(all.equal(out1, out2))){
-    comm.print(out1)
-    comm.print(out2)
-  }
+#  if (!is.logical(all.equal(out1, out2))){
+#    comm.print(out1)
+#    comm.print(out2)
+#  }
   
   out1 <- mean(A)
   out2 <- mean(dA)

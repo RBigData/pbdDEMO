@@ -1,11 +1,10 @@
-library(pbdDEMO, quiet=T)
-
-# Initialize MPI
 library(pbdDEMO, quiet = TRUE)
+# Initialize MPI
 init.grid()
 
 # Read in example csv file
-dx <- read.csv.ddmatrix("../extra/data/x.csv", 
+file.path <- system.file("extra/data/x.csv", package = "pbdDEMO")
+dx <- read.csv.ddmatrix(file.path,
                         sep=",", nrows=10, ncols=10, header=TRUE,
                         bldim=4, num.rdrs=2, ICTXT=0)
 

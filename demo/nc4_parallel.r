@@ -28,9 +28,9 @@ if(st[2] + co[2] > ncol){
   }
 }
 if(co[2] != 0){
-  X.spmdc <- X[, st[2] - 1 + (1:co[2])]
+  X.gbdc <- X[, st[2] - 1 + (1:co[2])]
 } else{
-  X.spmdc <- matrix(0, nrow = 0, ncol = 0)
+  X.gbdc <- matrix(0, nrow = 0, ncol = 0)
 }
 
 ### define dimension and variable
@@ -42,7 +42,7 @@ var.def <- ncvar_def("TREFHT", "K", list(lon = lon, lat = lat), NULL)
 file.name <- "nc4_parallel.nc"
 nc <- nc_create_par(file.name, var.def)
 nc_var_par_access(nc, "TREFHT")
-ncvar_put(nc, "TREFHT", X.spmdc, start = st, count = co)
+ncvar_put(nc, "TREFHT", X.gbdc, start = st, count = co)
 nc_close(nc)
 if(rank == 0){
   ncdump(file.name)
@@ -54,7 +54,7 @@ if(comm.rank() == 0){
   print(nc)
 }
 nc_var_par_access(nc, "TREFHT")
-new.X.spmdc <- ncvar_get(nc, "TREFHT", start = st, count = co)
+new.X.gbdc <- ncvar_get(nc, "TREFHT", start = st, count = co)
 nc_close(nc)
 
 finalize()

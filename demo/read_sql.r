@@ -1,11 +1,11 @@
-library(pbdDEMO, quiet=T)
+library(pbdDEMO, quiet = TRUE)
 
 # Initialize MPI
-library(pbdDEMO, quiet = TRUE)
 init.grid()
 
 # Read in example csv file
-dx <- read.sql.ddmatrix(dbname="../extra/data/data", table="tabx", 
+dir.path <- system.file("extra/data", package = "pbdDEMO")
+dx <- read.sql.ddmatrix(dbname=dir.path, table="tabx", 
                         bldim=4, num.rdrs=1, ICTXT=0)
 
 print(dx)

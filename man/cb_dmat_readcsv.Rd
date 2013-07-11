@@ -6,7 +6,8 @@
   matrix.
 }
 \usage{
-  read.csv.ddmatrix(file, sep=",", nrows, ncols, header=FALSE, bldim=4, num.rdrs=1, ICTXT=0)
+  read.csv.ddmatrix(file, sep=",", nrows, ncols, header=FALSE, bldim=4, 
+                    num.rdrs=1, ICTXT=0)
 }
 \arguments{
   \item{file}{csv file name.}
