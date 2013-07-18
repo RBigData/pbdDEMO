@@ -359,3 +359,25 @@
 \usepackage{makeidx}
 \makeindex
 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% Chapter boxes
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{rotating}
+\usepackage[absolute]{textpos}
+\usepackage{everypage}
+
+%declaration of the box that will contain the colored frame and its label
+\newsavebox\chapbox
+
+%creation of the colored frame
+\newcommand\mylabel[1]{%
+  \savebox\chapbox{\colorbox{grayish}{\parbox[c][28cm][t]{1cm}{\centering\textcolor{black}{\large #1}}}}}
+
+\AddEverypageHook{%
+    \begin{textblock*}{2.4cm}(20.4cm,0cm)
+      \usebox\chapbox
+    \end{textblock*}
+} 
+ 
