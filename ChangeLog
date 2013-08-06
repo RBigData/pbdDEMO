@@ -1,4 +1,11 @@
-2013-06-20: Ver. 0.1-1
+2013-08-06: Ver. 0.1-2
+  * Add a Bayesian MCMC chapter to vignette.
+
+2013-07-10: Ver. 0.1-1
+  * Fixed load_balance() bug.
+  * Fixed vignette installation issues.
+
+2013-06-20:
   * Expanded section on parallelism basics in vignette.
   * likelihood, pmclust, and phyclust applications added to vignette.
   * Change SPMD/spmd to GBD/gbd.

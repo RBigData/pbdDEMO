@@ -136,7 +136,7 @@ and Microsoft Powerpoint.
 \part{Preliminaries}
 \input{./pbdDEMO-include/01-introduction}
 \input{./pbdDEMO-include/02-background}
-%%% gbd methods
+%% gbd methods
 \part{Direct MPI Methods}
 \input{./pbdDEMO-include/03-mpi}
 \input{./pbdDEMO-include/04-statistics}
@@ -156,7 +156,7 @@ and Microsoft Powerpoint.
 \input{./pbdDEMO-include/applications/a1-logL}
 \input{./pbdDEMO-include/applications/a2-pmclust}
 \input{./pbdDEMO-include/applications/a3-phyclust}
-%%% \input{./pbdDEMO-include/applications/a4-Bayes}
+\input{./pbdDEMO-include/applications/a4-Bayes}
 \input{./pbdDEMO-include/applications/a5-ts}
 %%% appendices
 \part{Appendix}

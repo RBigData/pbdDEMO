@@ -6,21 +6,143 @@
 
 \section{Introduction}
 
-To be done when WCC have time.
+In modern statistics, likelihood principle introduced in
+Chapter~\ref{chp:likelihood} has produced several advantages to data analysis
+and statistical modeling. However, as model getting larger and data size
+getting bigger, the maximization of likelihood function becomes infeasible
+analytically and numerically. Bayesian statistics based on Bayes theorem
+somehow relieves the burden of optimization, but it changes the way of
+statistical inference.
 
+In likelihood principle, we based on maximum likelihood
+estimators for estimations, hypothesis testings, confidence intervals, etc.
+In Bayesian framework, we make inference based on posterior distribution
+which is a composition of likelihood and prior information, for example,
+posterior means and creditable intervals. For more information about
+Bayesian statistics, readers are encouraged to
+read~\citet{Berger1993,Gelman2003}.
+
+Mathematically, we denote $\pi(\btheta|\bx)$ for posterior, $p(\bx|\btheta)$
+for likelihood, and $\pi(\btheta)$ for prior where $\bx$ is a collection of
+data and $\btheta$ is a set of interesting parameters. The idea of Bayes
+theorem says
+\begin{eqnarray*}
+\pi(\btheta|\bx)
+& = & \frac{p(\bx|\btheta) \pi(\btheta)}{\int p(\bx|\btheta) \pi(\btheta) d\btheta} \\
+& \propto & p(\bx|\btheta) \pi(\btheta)
+\end{eqnarray*}
+in short, the posterior is proportional to the product of likelihood and prior.
+
+For example, suppose $\bx = \{x_1, x_2, \ldots, x_n\}$ are random samples from
+$N(\mu, \sigma^2)$ where $\mu$ is unknown and needed to be inferred
+(i.e. $\btheta = \{\mu\}$), and
+$\sigma^2$ is known. Suppose further $\mu$ has a prior distribution
+$N(\mu_0, \sigma_0^2)$ where $\mu_0$ and $\sigma_0^2$ are known.
+After a few calculation, we have the posterior for $\mu | \bx$ in next
+denoted in a conventional syntax.
+\begin{eqnarray}
+\bx
+  & \stackrel{i.i.d.}{\sim} & N(\mu, \sigma^2) \nonumber \\
+\mu
+  & \sim & N(\mu_0, \sigma_0^2) \nonumber \\
+\mu|\bx
+  & \sim & N(\mu_n, \sigma_n^2) \label{eqn:normal_posterior}
+\end{eqnarray}
+where
+$\mu_n = \sigma_n^2
+       \left(\frac{\mu_0}{\sigma_0^2} + \frac{n\bar{x}}{\sigma^2} \right)$,
+$\sigma_n^2
+ = \left(\frac{1}{\sigma_0^2} + \frac{n}{\sigma^2} \right)^{-1}$,
+and $\bar{x} = \frac{1}{n} \sum_{i = 1}^n x_i$.
+This means the posterior mean of location parameter $\mu$ is estimated by
+weighted of sample mean $\bar{x}$ and prior mean $\mu_0$ via their precisions
+$\sigma^2$ and $\sigma_0^2$. A nice interpretation of the posterior mean is
+that it combines information of data (sample mean) and knowledge (prior)
+together into the model, Equation~(\ref{eqn:normal_posterior}).
+Further, a new prediction of $x$ given this model is also a normal
+distribution that
+\begin{equation}
+\hat{x} \sim N(\mu_n, \sigma_n^2 + \sigma^2).
+\label{eqn:normal_prediction}
+\end{equation}
+
+In this example, prior and posterior are both normal distributions, so that we
+call this kind of prior as conjugate prior.\index{conjugate prior}
+In general, a conjugate prior may
+not exist and may not have a good interpretation to the application.
+The biggest advantage is that the analytical solution is feasible for conjugate
+cases. However, a prior may be better to based on prior information such as
+previous experiments or domain knowledge. For instance, empirical Bayes
+relies on empirical data information, and non-informative priors provide
+wider range of parameters. Nevertheless,
+Markov Chain Monte Carlo (MCMC)\index{MCMC}
+is a typical solution when an analytical solution is tedious.
 
 
 \section{Metropolis-Hasting Algorithm}
 
+Metropolis-Hasting algorithm~\index{Algorithm!Metropolis-Hasting}
+is one of Markov Chain Monte Carlo method to obtain
+a sequence of random samples where a proposed distribution is difficult to
+sample from. The idea is to utilize Acceptant-Rejection Sampling
+algorithm~\index{Algorithm!Acceptant-Rejection Sampling}
+to sample from conditional distributions sequentially
+and via acceptance rejection probability to screen appropriate data
+from an equilibrium distribution.
+The computation of $\pi$ in Section~\ref{sec:monte_carlo}
+is an example of Acceptant-Rejection Sampling algorithm for
+Monte Carlo case but without Markov Chain.
+
+Suppose a stationary distribution exists for $\theta$ in the domain of
+investigation $\Theta$, then we may have
+\begin{equation}
+\pi(\theta^{(t)}) p(\theta | \theta^{(t)}) = \pi(\theta) p(\theta^{(t)} | \theta)
+\label{eqn:transition}
+\end{equation}
+where $p(\theta | \theta^{(t)})$ is a transition probability at the $t$-th step
+from the current state $\theta^{(t)}$ to a new state $\theta$ for all
+$\theta^{(t)}, \theta \in \Theta$.
+Since $p(\theta | \theta^{(t)})$ may not be easy to sample, Metropolis-Hasting
+algorithm suggests a proposal distribution $q(\theta | \theta^{(t)})$ with an
+acceptant probability $a(\theta , \theta^{(t)})$ such that
+$p(\theta | \theta^{(t)}) = q(\theta | \theta^{(t)}) a(\theta, \theta^{(t)})$.
+Equation~(\ref{eqn:transition}) becomes
+\begin{equation*}
+\frac{a(\theta , \theta^{(t)})}{a(\theta^{(t)} , \theta)}
+=
+\frac{\pi(\theta) q(\theta^{(t)} | \theta)}{\pi(\theta^{(t)}) q(\theta | \theta^{(t)})}.
+\end{equation*}
+The acceptant probability will be
+\begin{equation}
+a(\theta , \theta^{(t)}) = \min \left\{
+1,
+\frac{\pi(\theta) q(\theta^{(t)} | \theta)}{
+      \pi(\theta^{(t)}) q(\theta | \theta^{(t)})}
+\right\}
+\label{eqn:acceptant_probability}
+\end{equation}
+that
+$\theta^{(t+1)} = \theta$ if accepted, otherwise
+$\theta^{(t+1)} = \theta^{(t)}$ (new $\theta$ is rejected).
+
+
+\section[Galaxy Velocity]{Galaxy Velocity}
+\label{sec:galaxy}
+
+Velocities of 82 galaxies in the region of Corona Borealis are
+measured and reported in~\citep{Roeder1990}, and Figure~\ref{fig:galaxy}
+shows the distribution of data. The data is available in \proglang{R}.
+\begin{figure}[ht]
+\centering
+  %\includegraphics[width=5.5in]{pbdDEMO-include/pics/galaxy}
+\caption{Galaxy Velocity Distribution}
+\label{fig:galaxy}
+\end{figure}
 
 
 
-\section{Ising Model}
 
-
-
-
-\section{Quantum Monte Carlo}
+% \section{Ising Model}
 
 
 
@@ -31,7 +153,21 @@ To be done when WCC have time.
 \begin{enumerate}[label=\thechapter-\arabic*]
 
 \item
+Prove Equation~(\ref{eqn:normal_posterior}).
 
+\item
+Prove Equation~(\ref{eqn:normal_prediction}).
+
+\item
+Prove the proposal distribution $q$ with
+Equation~(\ref{eqn:acceptant_probability}) provides the desired
+distribution $p$.
+
+\item
+Section~\ref{sec:galaxy} only considers homogeneous distribution for all
+galaxy velocity. As model-based clustering in Section~\ref{chp:pmclust},
+please extend to a two clusters problem and implement it in Bayesian
+framework.
 
 \end{enumerate}
 
