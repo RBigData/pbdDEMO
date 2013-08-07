@@ -750,8 +750,7 @@ The demo command is
 mpiexec -np 4 Rscript -e "demo(comparators,'pbdDEMO',ask=F,echo=F)"
 \end{lstlisting}
 
-This final MPI example is not statistical in nature, but is very useful
-all the same, and so we include it here. The case frequently arises where
+The case frequently arises where
 the MPI programmer will need to do logical comparisons across all processes.
 The idea is to extend the very handy \code{all()} and \code{any()}
 base \proglang{R} functions to operate similarly on distributed logicals.
@@ -826,7 +825,7 @@ if (rank==0){
 need2stop <- comm.any(need2stop)
 
 if (need2stop)
-  stop("Problem :[") 
+  comm.stop("Problem :[") 
 \end{lstlisting}
 
 
