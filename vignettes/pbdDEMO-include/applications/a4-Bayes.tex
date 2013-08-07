@@ -16,9 +16,10 @@ statistical inference.
 
 In likelihood principle, we based on maximum likelihood
 estimators for estimations, hypothesis testings, confidence intervals, etc.
-In Bayesian framework, we make inference based on posterior distribution
-which is a composition of likelihood and prior information, for example,
-posterior means and creditable intervals. For more information about
+In Bayesian framework, we make inference based on posterior distribution,
+which is a composition of likelihood and prior information,
+such as for posterior means and creditable intervals.
+For more information about
 Bayesian statistics, readers are encouraged to
 read~\citet{Berger1993,Gelman2003}.
 
@@ -47,12 +48,9 @@ $N(\mu_0, \sigma_0^2)$ where $\mu_0$ and $\sigma_0^2$ are known.
 After a few calculation, we have the posterior for $\mu | \bx$ in next
 denoted in a conventional syntax.
 \begin{eqnarray}
-\bx
-  & \stackrel{i.i.d.}{\sim} & N(\mu, \sigma^2) \nonumber \\
-\mu
-  & \sim & N(\mu_0, \sigma_0^2) \nonumber \\
-\mu|\bx
-  & \sim & N(\mu_n, \sigma_n^2) \label{eqn:normal_posterior}
+\bx & \stackrel{i.i.d.}{\sim} & N(\mu, \sigma^2) \label{eqn:normal_prior} \\
+\mu & \sim & N(\mu_0, \sigma_0^2) \label{eqn:normal_likelihood} \\
+\mu|\bx & \sim & N(\mu_n, \sigma_n^2) \label{eqn:normal_posterior}
 \end{eqnarray}
 where
 $\mu_n = \sigma_n^2
@@ -72,15 +70,15 @@ distribution that
 \label{eqn:normal_prediction}
 \end{equation}
 
-In this example, prior and posterior are both normal distributions, so that we
-call this kind of prior as a conjugate prior.\index{conjugate prior}
+In this example, the prior and the posterior are both normal distributions
+that we call this kind of prior as a conjugate prior.\index{conjugate prior}
 In general, a conjugate prior may
 not exist and may not have a good interpretation to the application.
-The biggest advantage is that the analytical solution is feasible for conjugate
-cases. However, a prior may be better to based on prior information such as
+The advantage is that the analytical solution is feasible for conjugate
+cases. However, a prior may be better to based on known information such as
 previous experiments or domain knowledge. For instance, empirical Bayes
-relies on empirical data information, and non-informative priors provide
-wider range of parameters. Nevertheless,
+relies on empirical data information, or non-informative priors provide
+wider domain of parameters. Nevertheless,
 Markov Chain Monte Carlo (MCMC)\index{MCMC}
 is a typical solution when an analytical solution is tedious.
 
@@ -90,11 +88,11 @@ is a typical solution when an analytical solution is tedious.
 
 In reality, a proposed distribution may not be easy to obtain samples or
 to generate from, while Acceptant-Rejection Sampling
-algorithm~\index{Algorithm!Acceptant-Rejection Sampling} is a general method
-in Statistics to deal with this situation by generating data from a relative
-easier distribution and based on the acceptant-rejection probability to keep or
-drop the samples. See~\citet{Ross1996} for more details about
-Acceptant-Rejection Sampling algorithm.
+algorithm~\index{Algorithm!Acceptant-Rejection Sampling} is a fundamental
+method in Computational Statistics to deal with this situation by generating
+data from a relative easier distribution and based on the acceptant-rejection
+probability to keep or drop the samples. See~\citet{Ross1996} for more details
+about Acceptant-Rejection Sampling algorithm.
 
 Hastings-Metropolis algorithm~\citep{Hastings1970,Metropolis1953}
 is one of Markov Chain Monte Carlo method to obtain
@@ -167,14 +165,14 @@ $I_b = 1,000$ iterations, after that we continuously collect $\{\theta^{(i)}\}$
 for thinning every $I_t = 10$ iterations to release time dependent problems.
 Repeat the thinning process until $I_n$ samples are reached. We also repeat
 $I_c = 5$ Markov Chains with different initial values to verify the stationary.
-The determinations of $I_b$, $I_t$, $I_c$,  and $I_n$ are dependent on models,
+The determinations of $I_b$, $I_t$, $I_n$,  and $I_c$ are dependent on models,
 data, and prior, see~\citet{winbugs} for more information.
 
 Although Hastings-Metropolis algorithm can solve complex problem, larger
-number of $I_b$ and $I_c$ are required which results in time consuming
-computations. An easy way to rescue this burden is to parallelization
-the algorithm. At least three possible parallelizations for $N$ processors
-can be considered in following.
+number of $I_b$, $I_t$, $I_n$, and $I_c$ result in time consuming
+computations and large storage space. An easy way to rescue this burden is to
+parallelization the algorithm. At least three possible parallelizations for $N$
+processors can be considered in following.
 \begin{enumerate}
 \item Each Markov Chain is executed on each processor.
       Only $I_n / N$ samples are needed to be collected for each processor
@@ -188,8 +186,8 @@ can be considered in following.
       processors execute one common Markov Chain to collect $I_n$ samples.
 \end{enumerate}
 Note that the second one is only useful for short burn-in chains.
-We next use a galaxy velocity example to demonstrate the first two ways of 
-parallelizations above, and make statistical inference based on the
+We next use a galaxy velocity example to demonstrate the first
+parallelization above, and make statistical inference based on the
 Bayesian framework.
 
 
@@ -199,15 +197,36 @@ Bayesian framework.
 \label{sec:galaxy}
 
 Velocities of 82 galaxies in the region of Corona Borealis are
-measured and reported in~\citep{Roeder1990}, and Figure~\ref{fig:galaxy}
-shows the distribution of data. The data is available in \proglang{R}.
+measured and reported in~\citep{Roeder1990}, and the \code{galaxies} dataset is
+available in \pkg{MASS}~\index{Package!\pkg{MASS}} package of \proglang{R}.
+The mean is about $20,828.17$ km/sec and the standard deviation is about
+$4,563.758$ km/sec. Figure~\ref{fig:galaxy} shows the distribution of data.
 \begin{figure}[ht]
 \centering
-  %\includegraphics[width=5.5in]{pbdDEMO-include/pics/galaxy}
-\caption{Galaxy Velocity Distribution}
+  \includegraphics[width=3.0in]{pbdDEMO-include/pics/galaxy_1}
+  \includegraphics[width=3.0in]{pbdDEMO-include/pics/galaxy_2}
+\caption{Histograms of velocities of 82 galaxies. The left plot is based on
+default setting of \code{hist(galaxies)} and the right plot is based on
+\code{hist(galaxies, nclass=50)} providing more details of distribution.}
 \label{fig:galaxy}
 \end{figure}
 
+Suppose we are interesting in the mean velocity of those galaxies and want to
+model them as Equations~(\ref{eqn:normal_prior}), (\ref{eqn:normal_likelihood}),
+and (\ref{eqn:normal_posterior}).
+An example code is given in the \pkg{pbdDEMO} demo via
+\begin{lstlisting}
+### At the shell prompt, run the demo with 4 processors by
+### (Use Rscript.exe for windows system)
+mpiexec -np 4 Rscript -e "demo(galaxy_mcmc,'pbdDEMO',ask=F,echo=F)"
+\end{lstlisting}
+which provides Figure~\ref{fig:galaxy_mcmc}.
+%\begin{figure}[ht]
+%\centering
+%  \includegraphics[width=3.0in]{pbdDEMO-include/pics/galaxy_mcmc}
+%\caption{aa}
+%\label{fig:galaxy_mcmc}
+%\end{figure}
 
 
 
@@ -235,7 +254,7 @@ interval. }
 \item
 Claim that Equation~(\ref{eqn:acceptant_probability}) is the solution of
 Equation~(\ref{eqn:acceptant_rejection}).
-{\color{blue} Hint: when is $a(\theta | \theta') = 1$? }
+{\color{blue} Hint: when is $a(\theta^{(t)} | \theta) = 1$? }
 
 \item
 Prove the proposal distribution $q$ with
@@ -244,7 +263,7 @@ distribution $p$.
 {\color{blue} Hint: Acceptance-Rejection Sampling algorithm. }
 
 \item
-Claim that the upperbound of Equation~(\ref{eqn:accpetance}) controls
+Claim that the upper bound of Equation~(\ref{eqn:accpetance}) controls
 the performance of Hastings-Metropolis algorithm.
 {\color{blue} Hint: what if
 $p(\theta | \theta^{(t)}) = q(\theta | \theta^{(t)})$? }
@@ -255,8 +274,18 @@ that is an inefficient case of Hastings-Metropolis algorithm.
 {\color{blue} Hint: What are requirements of Markov Chain? }
 
 \item
+Extend the model and algorithm of galaxy velocities example
+for unknown mean and unknown variance. e.g.
+\begin{eqnarray*}
+\bx & \stackrel{i.i.d.}{\sim} & N(\mu, \sigma^2) \\
+\mu & \sim & N(\mu_0, \sigma_0^2) \\
+\sigma & \sim & Gamma(\alpha_0, \beta_0)
+\end{eqnarray*}
+Find the 95\% creditable region for $(\mu|\bx, \sigma|\bx)$.
+
+\item
 Section~\ref{sec:galaxy} only considers homogeneous distribution for all
-galaxy velocity. As model-based clustering in Section~\ref{chp:pmclust},
+galaxy velocities. As model-based clustering in Section~\ref{chp:pmclust},
 please extend to a two clusters problem and implement it in Bayesian
 framework.
 

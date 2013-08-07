@@ -38,3 +38,5 @@ iris_serial         pbdDEMO   Iris serial code.
 iris_gbd            pbdDEMO   Iris GBD code.
 
 phyclust_bootstrap  pbdDEMO   Bootstrap phyclust results.
+
+galaxy_mcmc         pbdDEMO   Galaxy MCMC example.
