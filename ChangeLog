@@ -1,5 +1,6 @@
 2013-08-06: Ver. 0.1-2
   * Add a Bayesian MCMC chapter to vignette.
+  * Add a galaxy velocity example to demo.
 
 2013-07-10: Ver. 0.1-1
   * Fixed load_balance() bug.
