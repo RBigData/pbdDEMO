@@ -19,8 +19,7 @@ estimators for estimations, hypothesis testings, confidence intervals, etc.
 In Bayesian framework, we make inference based on posterior distribution,
 which is a composition of likelihood and prior information,
 such as for posterior means and creditable intervals.
-For more information about
-Bayesian statistics, readers are encouraged to
+For more information about Bayesian statistics, readers are encouraged to
 read~\citet{Berger1993,Gelman2003}.
 
 Mathematically, we denote $\pi(\btheta|\bx)$ for posterior, $p(\bx|\btheta)$
@@ -37,16 +36,16 @@ theorem says
 in short, the posterior is proportional to the product of likelihood and prior.
 Note that the integral denominator of Equation~(\ref{eqn:bayes_theorem}) can be
 seen as a normalizing constant, and is usually ignorable in most of Bayesian
-methods, then Equation~(\ref{eqn:propto}) provides great reduction tricks for
-analytical and simulated solutions. 
+calculation, then Equation~(\ref{eqn:propto}) provides great reduction tricks
+for analytical and simulated solutions. 
 
 For example, suppose $\bx = \{x_1, x_2, \ldots, x_n\}$ are random samples from
 $N(\mu, \sigma^2)$ where $\mu$ is unknown and needed to be inferred
 (i.e. $\btheta = \{\mu\}$), and
 $\sigma^2$ is known. Suppose further $\mu$ has a prior distribution
-$N(\mu_0, \sigma_0^2)$ where $\mu_0$ and $\sigma_0^2$ are known.
-After a few calculation, we have the posterior for $\mu | \bx$ in next
-denoted in a conventional syntax.
+$N(\mu_0, \sigma_0^2)$ where $\mu_0$ and $\sigma_0^2$ are hypothetically known.
+After a few calculation, we have the posterior for $\mu | \bx$
+denoted by conventional syntaxes next.
 \begin{eqnarray}
 \bx & \stackrel{i.i.d.}{\sim} & N(\mu, \sigma^2) \label{eqn:normal_prior} \\
 \mu & \sim & N(\mu_0, \sigma_0^2) \label{eqn:normal_likelihood} \\
@@ -59,10 +58,10 @@ $\sigma_n^2
  = \left(\frac{1}{\sigma_0^2} + \frac{n}{\sigma^2} \right)^{-1}$,
 and $\bar{x} = \frac{1}{n} \sum_{i = 1}^n x_i$.
 This means the posterior mean of location parameter $\mu$ is estimated by
-weighted of sample mean $\bar{x}$ and prior mean $\mu_0$ via their precisions
-$\sigma^2$ and $\sigma_0^2$. A nice interpretation of the posterior mean is
-that it combines information of data (sample mean) and knowledge (prior)
-together into the model, Equation~(\ref{eqn:normal_posterior}).
+weighted the sample mean $\bar{x}$ and the prior mean $\mu_0$ via their
+precisions $\sigma^2$ and $\sigma_0^2$. A nice interpretation of the posterior
+mean is that it combines information of data (sample mean) and knowledge (prior)
+together into the model Equation~(\ref{eqn:normal_posterior}).
 Further, a new prediction of $x$ given this model is also a normal
 distribution that
 \begin{equation}
@@ -75,10 +74,10 @@ that we call this kind of prior as a conjugate prior.\index{conjugate prior}
 In general, a conjugate prior may
 not exist and may not have a good interpretation to the application.
 The advantage is that the analytical solution is feasible for conjugate
-cases. However, a prior may be better to based on known information such as
+cases. However, a prior may be better to borrow from known information such as
 previous experiments or domain knowledge. For instance, empirical Bayes
 relies on empirical data information, or non-informative priors provide
-wider domain of parameters. Nevertheless,
+wider range of parameters. Nevertheless,
 Markov Chain Monte Carlo (MCMC)\index{MCMC}
 is a typical solution when an analytical solution is tedious.
 
@@ -109,40 +108,41 @@ Suppose a stationary distribution exists for $\theta$ in the domain of
 investigation $\Theta$. Provided the Markov Chain is adequate
 (periodic, irreducible, time reversible, ...), we may have
 \begin{equation}
-\pi(\theta^{(t)}) p(\theta | \theta^{(t)}) =
-\pi(\theta) p(\theta^{(t)} | \theta)
+\pi(\theta^{(i)}) p(\theta | \theta^{(i)}) =
+\pi(\theta) p(\theta^{(i)} | \theta)
 \label{eqn:transition}
 \end{equation}
-where $p(\theta | \theta^{(t)})$ is a transition probability at the $t$-th step
-from the current state $\theta^{(t)}$ to a new state $\theta$ for all
-$\theta^{(t)}, \theta \in \Theta$.
-Since $p(\theta | \theta^{(t)})$ may not be easy to sample, Hastings-Metropolis
-algorithm suggests a proposal distribution $q(\theta | \theta^{(t)})$ with an
-acceptant probability $a(\theta | \theta^{(t)})$ such that
+where $p(\theta | \theta^{(i)})$ is a transition probability at the $i$-th step
+from the current state $\theta^{(i)}$ to a new state $\theta$ for all
+$\theta^{(i)}, \theta \in \Theta$.
+Since $p(\theta | \theta^{(i)})$ may not be easy to sample, Hastings-Metropolis
+algorithm suggests a proposal distribution $q(\theta | \theta^{(i)})$ with an
+acceptant probability $a(\theta | \theta^{(i)})$ such that
 \begin{equation}
-a(\theta | \theta^{(t)}) =
-\frac{p(\theta | \theta^{(t)})}{q(\theta | \theta^{(t)})}.
+a(\theta | \theta^{(i)}) =
+\frac{p(\theta | \theta^{(i)})}{q(\theta | \theta^{(i)})}.
 \label{eqn:accpetance}
 \end{equation}
 Equation~(\ref{eqn:transition}) becomes
 \begin{equation}
-\frac{a(\theta | \theta^{(t)})}{a(\theta^{(t)} | \theta)}
+\frac{a(\theta | \theta^{(i)})}{a(\theta^{(i)} | \theta)}
 =
-\frac{\pi(\theta) q(\theta^{(t)} | \theta)}{\pi(\theta^{(t)}) q(\theta | \theta^{(t)})}.
+\frac{\pi(\theta) q(\theta^{(i)} | \theta)}{
+      \pi(\theta^{(i)}) q(\theta | \theta^{(i)})}.
 \label{eqn:acceptant_rejection}
 \end{equation}
 The acceptant probability will be
 \begin{equation}
-a(\theta | \theta^{(t)}) = \min \left\{
+a(\theta | \theta^{(i)}) = \min \left\{
 1,
-\frac{\pi(\theta) q(\theta^{(t)} | \theta)}{
-      \pi(\theta^{(t)}) q(\theta | \theta^{(t)})}
+\frac{\pi(\theta) q(\theta^{(i)} | \theta)}{
+      \pi(\theta^{(i)}) q(\theta | \theta^{(i)})}
 \right\}
 \label{eqn:acceptant_probability}
 \end{equation}
 that
-$\theta^{(t+1)} = \theta$ if accepted, otherwise
-$\theta^{(t+1)} = \theta^{(t)}$ (new $\theta$ is rejected).
+$\theta^{(i+1)} = \theta$ if accepted, otherwise
+$\theta^{(i+1)} = \theta^{(i)}$ (new $\theta$ is rejected).
 
 The steps of Hastings-Metropolis Algorithm are summarized next:
 \begin{enumerate}[label=Step \arabic*:]
@@ -168,10 +168,10 @@ $I_c = 5$ Markov Chains with different initial values to verify the stationary.
 The determinations of $I_b$, $I_t$, $I_n$,  and $I_c$ are dependent on models,
 data, and prior, see~\citet{winbugs} for more information.
 
-Although Hastings-Metropolis algorithm can solve complex problem, larger
-number of $I_b$, $I_t$, $I_n$, and $I_c$ result in time consuming
+Although Hastings-Metropolis algorithm may solve complex problem, larger
+number of $I_b$, $I_t$, $I_n$, and $I_c$ also result in time consuming
 computations and large storage space. An easy way to rescue this burden is to
-parallelization the algorithm. At least three possible parallelizations for $N$
+parallelize the algorithm. At least three possible parallelizations for $N$
 processors can be considered in following.
 \begin{enumerate}
 \item Each Markov Chain is executed on each processor.
@@ -218,14 +218,14 @@ An example code is given in the \pkg{pbdDEMO} demo via
 \begin{lstlisting}
 ### At the shell prompt, run the demo with 4 processors by
 ### (Use Rscript.exe for windows system)
-mpiexec -np 4 Rscript -e "demo(galaxy_mcmc,'pbdDEMO',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(mcmc_galaxy,'pbdDEMO',ask=F,echo=F)"
 \end{lstlisting}
-which provides Figure~\ref{fig:galaxy_mcmc}.
+which provides Figure~\ref{fig:mcmc_galaxy}.
 %\begin{figure}[ht]
 %\centering
 %  \includegraphics[width=3.0in]{pbdDEMO-include/pics/galaxy_mcmc}
 %\caption{aa}
-%\label{fig:galaxy_mcmc}
+%\label{fig:mcmc_galaxy}
 %\end{figure}
 
 
@@ -254,7 +254,7 @@ interval. }
 \item
 Claim that Equation~(\ref{eqn:acceptant_probability}) is the solution of
 Equation~(\ref{eqn:acceptant_rejection}).
-{\color{blue} Hint: when is $a(\theta^{(t)} | \theta) = 1$? }
+{\color{blue} Hint: when is $a(\theta^{(i)} | \theta) = 1$? }
 
 \item
 Prove the proposal distribution $q$ with
@@ -266,7 +266,7 @@ distribution $p$.
 Claim that the upper bound of Equation~(\ref{eqn:accpetance}) controls
 the performance of Hastings-Metropolis algorithm.
 {\color{blue} Hint: what if
-$p(\theta | \theta^{(t)}) = q(\theta | \theta^{(t)})$? }
+$p(\theta | \theta^{(i)}) = q(\theta | \theta^{(i)})$? }
 
 \item
 Discuss when Hastings-Metropolis algorithm fails. Provide an example

@@ -39,4 +39,4 @@ iris_gbd            pbdDEMO   Iris GBD code.
 
 phyclust_bootstrap  pbdDEMO   Bootstrap phyclust results.
 
-galaxy_mcmc         pbdDEMO   Galaxy MCMC example.
+mcmc_galaxy         pbdDEMO   Galaxy MCMC example.
