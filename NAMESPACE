@@ -2,16 +2,30 @@ import(methods, rlecuyer, pbdMPI, pbdSLAP, pbdBASE, pbdDMAT)
 
 exportPattern("^demo\\.[[:alpha:]]+")
 export(
+  ### pbdMPI demo functions
+  mpi.bin,
+  mpi.ols,
+  mpi.stat,
+  mpi.quantile,
+  ### data movers
   balance.info,
   load.balance,
   unload.balance,
   gbd2dmat,
   dmat2gbd,
-  ###
-  read.csv.ddmatrix, read.sql.ddmatrix,
-  ###
+  ### dumb readers
+  read.csv.ddmatrix, 
+  read.sql.ddmatrix,
+  ### netcdf gbd/dmat
+  ncvar_put_gbd, 
+  ncvar_put_dmat, 
+  ncvar_get_gbd, 
+  ncvar_get_dmat,
+  ### misc
   plot_dmat,
   timer,
-  ###
-  ncvar_put_gbd, ncvar_put_dmat, ncvar_get_gbd, ncvar_get_dmat
+  verify.svd,
+  verify.chol,
+  verify.inverse,
+  verify.solve
 )
