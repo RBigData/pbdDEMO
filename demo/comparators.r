@@ -3,7 +3,7 @@
 ### Setup environment.
 suppressPackageStartupMessages(library(pbdDEMO, quiet = TRUE))
 if(comm.size() != 4){
-  stop("This example requries 4 processors.")
+  comm.stop("This example requries 4 processors.")
 }
 
 rank <- comm.rank()
@@ -37,7 +37,7 @@ if (rank==0){
 need2stop <- comm.any(need2stop)
 
 if (need2stop)
-  stop("NOT AN ERROR, stopping here is the correct behavior of this demo.  See source for details.")
+  comm.stop("NOT AN ERROR, stopping here is the correct behavior of this demo.  See source for details.")
 
 
 finalize()

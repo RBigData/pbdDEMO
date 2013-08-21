@@ -3,7 +3,7 @@
 ### Setup environment.
 library(pbdDEMO, quiet = TRUE)
 if(comm.size() != 4){
-  stop("This example requries 4 processors.")
+  comm.stop("This example requries 4 processors.")
 }
 comm.set.seed(1234, diff = TRUE)
 

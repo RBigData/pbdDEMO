@@ -136,7 +136,7 @@ and Microsoft Powerpoint.
 \part{Preliminaries}
 \input{./pbdDEMO-include/01-introduction}
 \input{./pbdDEMO-include/02-background}
-%%% gbd methods
+%% gbd methods
 \part{Direct MPI Methods}
 \input{./pbdDEMO-include/03-mpi}
 \input{./pbdDEMO-include/04-statistics}

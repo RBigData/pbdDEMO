@@ -12,7 +12,7 @@ id.get <- get.jid(N)
 x.gbd <- x[id.get]        # Distributed data.
 
 ### Run.
-ret.gbd <- demo.stat(x.gbd)
+ret.gbd <- mpi.stat(x.gbd)
 
 ### Output.
 comm.print(ret.gbd)

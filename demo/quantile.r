@@ -10,7 +10,7 @@ N <- 100                  # Pretend N is large.
 x.gbd <- rnorm(N)         # Distributed data.
 
 ### Run.
-ret.gbd <- demo.quantile(x.gbd)
+ret.gbd <- mpi.quantile(x.gbd)
 
 ### Output.
 comm.print(ret.gbd)
