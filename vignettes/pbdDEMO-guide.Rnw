@@ -11,7 +11,7 @@
 
 \title{\Huge Speaking Serial R with a Parallel Accent\\[.3cm] 
   {\LARGE \proglang{pbdR} Package Examples and Demonstrations
-  (Ver. \demoversion)}}
+  \normalsize (Ver. \demoversion)}}
 
 \author{
 \begin{minipage}{\textwidth}
@@ -35,8 +35,8 @@ George Ostrouchov\\
 {\small\emph{Computer Science and Mathematics Division, \\
 Oak Ridge National Laboratory}}
 %%%
-\\[2.0in]
-Version 1.1
+%\\[2.0in]
+%Version 1.1
 \\
 \date{\quad \today}
 %
