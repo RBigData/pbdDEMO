@@ -22,7 +22,7 @@ N <- 250
 BL <- 4
 #BL <- 2
 
-comm.set.seed(diff=F)
+comm.set.seed(seed=1234, diff=F)
 
 tol <- 1e-8
 
@@ -32,12 +32,14 @@ tol <- 1e-8
 
 tests <- function(.)
 {
-  out1 <- scale(A)
-  out2 <- as.matrix( scale(dA) )
+  out1 <- scale(A, T, T)
+  out2 <- as.matrix( scale(dA, T, T) )
   comm.print(all.equal(out1, out2))
   
-  out1 <- prcomp(A)$sdev
-  out2 <- prcomp(dA)$sdev
+  center <- F
+  scale. <- F
+  out1 <- prcomp(A, center=center, scale.=scale.)$sdev
+  out2 <- prcomp(dA, center=center, scale.=scale.)$sdev
   comm.print(all.equal(out1, out2))
   
   out1 <- cov(A)
@@ -71,7 +73,6 @@ comm.print("       Row")
 A <- matrix(rnorm(1*N, 10, 100), 1, N)
 dA <- as.ddmatrix(A, BL)
 tests()
-
 
 
 #comm.print(out1)

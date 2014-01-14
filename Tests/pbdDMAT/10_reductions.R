@@ -23,7 +23,7 @@ N <- 250
 # M<- N<- 10
 BL <- 4
 
-comm.set.seed(diff=F)
+comm.set.seed(seed=1234, diff=F)
 
 tol <- 1e-8
 
