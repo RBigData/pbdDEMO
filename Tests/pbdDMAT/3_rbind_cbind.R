@@ -13,7 +13,7 @@ library(pbdDMAT, quiet=T)
 
 init.grid()
 
-comm.set.seed(diff=F) # uniform seed on all processors
+comm.set.seed(seed=1234, diff=F) # uniform seed on all processors
 
 n <- 1e2
 p <- 25

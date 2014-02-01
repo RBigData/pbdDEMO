@@ -41,10 +41,10 @@ check.mdl <- function(x, y, bldim=2)
   out2 <- as.vector(mdl2$coefficients)
   tests[2] <- all.equal(out1, out2)
 
-  out1 <- mdl1$effects
-  names(out1) <- NULL
-  out2 <- as.vector(mdl2$effects)
-  tests[2] <- all.equal(out1, out2)
+#  out1 <- mdl1$effects
+#  names(out1) <- NULL
+#  out2 <- as.vector(mdl2$effects)
+#  tests[2] <- all.equal(out1, out2)
 
   out1 <- mdl1$residuals
   names(out1) <- NULL
@@ -94,13 +94,7 @@ check.mdl <- function(x, y, bldim=2)
 
 
 
-if (comm.rank()==0){
-  seed <- sample(1:1e7, size=1)
-} else{
-  seed <- 0
-}
-
-comm.set.seed(diff=F)
+comm.set.seed(seed=1234, diff=F)
 
 n <- 8
 p <- 6
@@ -128,10 +122,11 @@ genmat(n, p)
 x[,1] <- x[,3] <- x[,4] <- x[,5]
 check.mdl(x, y)
 
-#genmat(n, p)
-#x[,1] <- x[,2] <- x[,3] <- x[,4] <- x[,5] <- x[,6]
-#check.mdl(x, y)
-#comm.print("ok to disagree", quiet=T)
+
+####genmat(n, p)
+####x[,1] <- x[,2] <- x[,3] <- x[,4] <- x[,5] <- x[,6]
+####check.mdl(x, y)
+####comm.print("ok to disagree", quiet=T)
 
 
 

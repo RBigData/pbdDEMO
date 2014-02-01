@@ -9,7 +9,7 @@ library(pbdDMAT , quiet=T)
 init.grid()
 
 
-comm.set.seed(diff=F)
+comm.set.seed(seed=1234, diff=F)
 
 mean <- 10
 sd <- 100

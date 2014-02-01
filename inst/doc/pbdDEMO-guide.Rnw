@@ -1,8 +1,6 @@
 \documentclass[oneside,11pt]{book}
  \usepackage[margin=1.1in]{geometry}
 
-\newcommand{\demoversion}{0.1-2}
-
 % Style and settings
 \input{pbdDEMO-include/style.tex}
 
@@ -10,8 +8,7 @@
 %\VignetteIndexEntry{pbdDEMO-Guide}
 
 \title{\Huge Speaking Serial R with a Parallel Accent\\[.3cm] 
-  {\LARGE \proglang{pbdR} Package Examples and Demonstrations
-  \normalsize (Ver. \demoversion)}}
+  {\LARGE \proglang{pbdR} Package Examples and Demonstrations}}
 
 \author{
 \begin{minipage}{\textwidth}
@@ -35,8 +32,8 @@ George Ostrouchov\\
 {\small\emph{Computer Science and Mathematics Division, \\
 Oak Ridge National Laboratory}}
 %%%
-%\\[2.0in]
-%Version 1.1
+\\[2.0in]
+Version 1.1
 \\
 \date{\quad \today}
 %
@@ -60,22 +57,14 @@ Oak Ridge National Laboratory}}
 
 % \newpage\ \newpage
 
-
 %\date{\today}
 \maketitle
 
+\input{./pbdDEMO-include/01-copyright}
+
+
 %%%%%%%%%%%%%%%%%
-\ \vfill
 
-\copyright\ 2012-2013 pbdR Core Team.  All rights reserved.
-
-Permission is granted to make and distribute verbatim copies of this vignette
-and its source provided the copyright notice and this permission notice are
-preserved on all copies.
-
-This publication was typeset using \LaTeX. Illustrations were created
-using the \pkg{ggplot2} package \citep{ggplot2}, native \proglang{R} functions,
-and Microsoft Powerpoint.
 
 %%%%%%%%%%%%%%%%%
 
@@ -136,35 +125,35 @@ and Microsoft Powerpoint.
 \bodyheadfoot
 
 %%% intro
- \part{Preliminaries}
- \input{./pbdDEMO-include/01-introduction}
- \input{./pbdDEMO-include/02-background}
+\part{Preliminaries}
+\input{./pbdDEMO-include/01-introduction}
+\input{./pbdDEMO-include/02-background}
 %% gbd methods
- \part{Direct MPI Methods}
- \input{./pbdDEMO-include/03-mpi}
- \input{./pbdDEMO-include/04-statistics}
+\part{Direct MPI Methods}
+\input{./pbdDEMO-include/03-mpi}
+\input{./pbdDEMO-include/04-statistics}
 %%% ddmatrix methods
- \part{Distributed Matrix Methods}\label{part:dmat}
- \input{./pbdDEMO-include/05-dmat}
- \input{./pbdDEMO-include/06-gen}
- \input{./pbdDEMO-include/07-dmat_basic}
- \input{./pbdDEMO-include/08-dmat_stats}
+\part{Distributed Matrix Methods}\label{part:dmat}
+\input{./pbdDEMO-include/05-dmat}
+\input{./pbdDEMO-include/06-gen}
+\input{./pbdDEMO-include/07-dmat_basic}
+\input{./pbdDEMO-include/08-dmat_stats}
 %%% reading /managing data
- \part{Reading and Managing Data}
- \input{./pbdDEMO-include/09-reading}
- \input{./pbdDEMO-include/10-pbdNCDF4}
- \input{./pbdDEMO-include/11-redist}
+\part{Reading and Managing Data}
+\input{./pbdDEMO-include/09-reading}
+\input{./pbdDEMO-include/10-pbdNCDF4}
+\input{./pbdDEMO-include/11-redist}
 %%% applications
- \part{Applications}
- \input{./pbdDEMO-include/applications/a1-logL}
- \input{./pbdDEMO-include/applications/a2-pmclust}
- \input{./pbdDEMO-include/applications/a3-phyclust}
- \input{./pbdDEMO-include/applications/a4-bayes}
-% \input{./pbdDEMO-include/applications/a5-ts}
+\part{Applications}
+\input{./pbdDEMO-include/applications/a1-logL}
+\input{./pbdDEMO-include/applications/a2-pmclust}
+\input{./pbdDEMO-include/applications/a3-phyclust}
+%%% \input{./pbdDEMO-include/applications/a4-Bayes}
+\input{./pbdDEMO-include/applications/a5-ts}
 %%% appendices
- \part{Appendix}
- \appendix
- \input{./pbdDEMO-include/appendix}
+\part{Appendix}
+\appendix
+\input{./pbdDEMO-include/appendix}
 %%% references and indexes
 \part{Miscellany}
 

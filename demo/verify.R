@@ -5,6 +5,6 @@ init.grid()
 comm.set.seed(diff = TRUE)
 
 # verify system solving at scale
-demo.verify.solve(nrows=1e3)
+verify.solve(nrows=1e3)
 
 finalize()

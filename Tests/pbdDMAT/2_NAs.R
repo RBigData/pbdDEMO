@@ -9,7 +9,7 @@
 # unsuccessful (produced the incorrect value).
 
 
-library(pbdDMAT, quiet=T)
+library(pbdDMAT, quietly=T)
 
 init.grid()
 
@@ -32,13 +32,7 @@ f <- function(n)
 }
 
 
-#seed <- allreduce(sample(1:10, 1), op='prod')
-#seed <- 600
-
-seed <- 10
-seed <- as.numeric(Sys.time())
-seed <- allreduce(seed, op='min')
-set.seed(seed)
+comm.set.seed(seed=1234, diff=FALSE)
 
 tol <- 1e-8
 
