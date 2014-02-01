@@ -100,9 +100,10 @@ sample from. The idea is to utilize Acceptant-Rejection Sampling algorithm
 to sample sequentially from conditional distributions provided relative
 easier than the proposed distribution, and via acceptance rejection
 probability to screen appropriate data from an equilibrium distribution.
-The computation of $\pi$ in Section~\ref{sec:monte_carlo}
-is an example of Acceptant-Rejection Sampling algorithm for
-Monte Carlo case but without Markov Chain.
+The computation of $\pi$
+(the ratio of a circle's circumference to its diameter, not prior)
+in Section~\ref{sec:monte_carlo} is an example of Acceptant-Rejection Sampling
+algorithm for Monte Carlo case but without Markov Chain.
 
 Suppose a stationary distribution exists for $\theta$ in the domain of
 investigation $\Theta$. Provided the Markov Chain is adequate
@@ -177,15 +178,19 @@ processors can be considered in following.
 \item Each Markov Chain is executed on each processor.
       Only $I_n / N$ samples are needed to be collected for each processor
       provided every Markov Chain is burn-in.
+      {\color{red} Caution:} In a distributed environment, the uniform random
+      variable of Step 4 above may need an extra communication that
+      \code{bcast()} from a head processor. Also, independent or nearly
+      independent random number streams should be considered carefully.
 \item Execute one Markov Chain on one processor. Until the Markov Chain
       is burn-in, then the burn-in state is broad casted to all processors.
       Set different random seeds on all processors, then all processors
       proceed the Markov Chain until $I_n / N$ samples are collected for each
       processor.
+      Note that the approach is probably useful for short burn-in chains.
 \item For large size problem, distributing data is unavoidable, then $N$
       processors execute one common Markov Chain to collect $I_n$ samples.
 \end{enumerate}
-Note that the second one is only useful for short burn-in chains.
 We next use a galaxy velocity example to demonstrate the first
 parallelization above, and make statistical inference based on the
 Bayesian framework.
@@ -298,5 +303,6 @@ framework.
 %\item Sparse matrix computation.
 %\item pbdPROF.
 %\item comm.wirte and comm.read.
+%\item lmt in parallel.
 %\end{itemize}
 
