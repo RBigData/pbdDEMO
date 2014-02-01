@@ -92,9 +92,16 @@ As Exercise~\ref{ex:read_csv}, implement a simple function by utilizing
 to the \code{write.csv()}.
 
 \item
+\pkg{pbdMPI} since version 0.2-2 has new functions for simple data input
+and output (I/O) that functions \code{comm.read*()} and \code{comm.write*()}
+can do either serial or parallel I/O to and from text or csv files.
+Modify the example of Section~\ref{sec:csv_files} and
+compare performance from the above Exercise with those functions in
+\pkg{pbdMPI}.
+
+\item
 Other \proglang{R} packages can deal with fast reading for CSV format or so
 in serial. Try \pkg{ff}~\citep{ff}\index{Package!\pkg{ff}} and
 \pkg{bigmemory}~\citep{bigmemory}\index{Package!\pkg{bigmemory}}.
- 
 
 \end{enumerate}

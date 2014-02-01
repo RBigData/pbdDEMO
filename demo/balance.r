@@ -12,12 +12,16 @@ N.gbd <- 1 + comm.rank()
 X.gbd <- matrix(rnorm(N.gbd * 3), ncol = 3)
 comm.cat("X.gbd on rank 2:\n", quiet = TRUE)
 comm.print(X.gbd, rank.print = 2, quiet = TRUE)
+comm.cat("X.gbd on rank 3:\n", quiet = TRUE)
+comm.print(X.gbd, rank.print = 3, quiet = TRUE)
 
 ### Run
 bal.info <- balance.info(X.gbd)
 new.X.gbd <- load.balance(X.gbd, bal.info)
 org.X.gbd <- unload.balance(new.X.gbd, bal.info)
 
+comm.cat("\nnew.X.gbd on rank 1:\n", quiet = TRUE)
+comm.print(new.X.gbd, rank.print = 1, quiet = TRUE)
 comm.cat("\nnew.X.gbd on rank 2:\n", quiet = TRUE)
 comm.print(new.X.gbd, rank.print = 2, quiet = TRUE)
 

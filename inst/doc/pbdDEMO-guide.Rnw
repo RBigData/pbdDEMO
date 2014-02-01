@@ -1,6 +1,8 @@
 \documentclass[oneside,11pt]{book}
  \usepackage[margin=1.1in]{geometry}
 
+\newcommand{\demoversion}{1.2}
+
 % Style and settings
 \input{pbdDEMO-include/style.tex}
 
@@ -8,7 +10,8 @@
 %\VignetteIndexEntry{pbdDEMO-Guide}
 
 \title{\Huge Speaking Serial R with a Parallel Accent\\[.3cm] 
-  {\LARGE \proglang{pbdR} Package Examples and Demonstrations}}
+  {\LARGE \proglang{pbdR} Package Examples and Demonstrations}
+  {\small (Ver. \demoversion)}}
 
 \author{
 \begin{minipage}{\textwidth}
@@ -17,23 +20,23 @@
 % The pbdR Core Team\\[.8cm]
 %
 Drew Schmidt\\
-{\small\emph{Remote Data Analysis and Visualization Center,\\
-University of Tennessee, Knoxville}}\\[.4cm]
+{\small\emph{National Institute for Computational Sciences,\\
+University of Tennessee, Knoxville, TN, USA}}\\[.4cm]
 %%%
 Wei-Chen Chen\\
-{\small\emph{Computer Science and Mathematics Division, \\
-Oak Ridge National Laboratory}}\\[.4cm]
+{\small\emph{Department of Ecology and Evolutionary Biology,\\
+University of Tennessee, Knoxville, TN, USA}}\\[.4cm]
 %%%
 Pragneskumar Patel\\
-{\small\emph{Remote Data Analysis and Visualization Center,\\
-University of Tennessee, Knoxville}}\\[.4cm]
+{\small\emph{National Institute for Computational Sciences,\\
+University of Tennessee, Knoxville, TN, USA}}\\[.4cm]
 %
 George Ostrouchov\\
 {\small\emph{Computer Science and Mathematics Division, \\
 Oak Ridge National Laboratory}}
 %%%
 \\[2.0in]
-Version 1.1
+Version \demoversion
 \\
 \date{\quad \today}
 %
@@ -148,7 +151,7 @@ Version 1.1
 \input{./pbdDEMO-include/applications/a1-logL}
 \input{./pbdDEMO-include/applications/a2-pmclust}
 \input{./pbdDEMO-include/applications/a3-phyclust}
-%%% \input{./pbdDEMO-include/applications/a4-Bayes}
+\input{./pbdDEMO-include/applications/a4-Bayes}
 \input{./pbdDEMO-include/applications/a5-ts}
 %%% appendices
 \part{Appendix}
