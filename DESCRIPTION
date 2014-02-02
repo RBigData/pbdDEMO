@@ -1,11 +1,11 @@
 Package: pbdDEMO
 Title: Programming with Big Data -- Demonstrations of pbd Packages
 Version: 0.1-2
-Date: 2013-06-20
-Depends: R (>= 2.14.0), methods, rlecuyer, pbdMPI (>= 0.1-8), 
-        pbdSLAP (>= 0.1-6), pbdBASE (>= 0.2-2), pbdDMAT(>= 0.2-2)
-Enhances: maps, RColorBrewer, pbdNCDF4 (>= 0.1-0), pmclust, MixSim, EMCluster,
-        sqldf, phyclust
+Date: 2014-02-01
+Depends: R (>= 3.0.0), methods, rlecuyer, pbdMPI (>= 0.2-2), pbdSLAP
+        (>= 0.1-7), pbdBASE (>= 0.2-3), pbdDMAT(>= 0.2-3)
+Enhances: maps, RColorBrewer, pbdNCDF4 (>= 0.1-1), pmclust, MixSim,
+        EMCluster, sqldf, phyclust, MASS
 LazyLoad: yes
 LazyData: yes
 Authors@R: c(person("Drew", "Schmidt", role = c("aut", "cre"), email =
@@ -14,14 +14,15 @@ Authors@R: c(person("Drew", "Schmidt", role = c("aut", "cre"), email =
         person("Pragneshkumar", "Patel", role = "aut"))
 Description: pbdDEMO is a set of demos of pbdR packages, with a useful,
         unifying vignette.
-SystemRequirements: OpenMPI (>= 1.5.4) on Linux and Mac, MPICH2 (>=
-        1.4.1p1) on Windows
+SystemRequirements: OpenMPI (>= 1.5.4) on Solaris, Linux, Mac, and
+        FreeBSD. MS-MPI (Microsoft HPC Pack 2012) or MPICH2 (>=
+        1.4.1p1) on Windows.
 License: GPL (>= 2)
 URL: http://r-pbd.org/
 BugReports: http://group.r-pbd.org/
 MailingList: Please send questions and comments regarding pbdR to
         RBigData@gmail.com
-Packaged: 2013-02-19 19:03:51 UTC; snoweye
+Packaged: 2014-02-02 02:55:02 UTC; snoweye
 Author: Drew Schmidt [aut, cre],
   Wei-Chen Chen [aut],
   George Ostrouchov [aut],

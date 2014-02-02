@@ -78,7 +78,7 @@ vignette.
 
 There is another package on the CRAN which the \proglang{R} programmer may
 use to interface with MPI, namely
-\pkg{Rmpi}\index{Package!\pkg{Rmpi}}~\citep{Rmpi}. There are several issues
+\pkg{Rmpi}\index{Package!\pkg{Rmpi}}~\citep{Yu2002}. There are several issues
 one must consider when choosing which package to use if one were to only
 use one of them.
 \begin{enumerate}
@@ -673,9 +673,9 @@ family of ``*ply'' functions, in the same vein as \proglang{R}'s
   \code{pbdLapply(X, FUN, \dots)} --- analogue of \code{lapply()}\\
   \code{pbdSapply(X, FUN, \dots)} --- analogue of \code{sapply()}
 \end{itemize}
-\index{Code!\code{pbdApply}}
-\index{Code!\code{pbdLapply}}
-\index{Code!\code{pbdSapply}}
+\index{Code!\code{pbdApply()}}
+\index{Code!\code{pbdLapply()}}
+\index{Code!\code{pbdSapply()}}
 For more efficient approach (non-barrier), one may consider use task pull
 parallelism instead of ``*ply'' functions, see Section~\ref{sec:task_pull}
 for more details.
@@ -750,7 +750,8 @@ The demo command is
 mpiexec -np 4 Rscript -e "demo(comparators,'pbdDEMO',ask=F,echo=F)"
 \end{lstlisting}
 
-The case frequently arises where
+This final MPI example is not statistical in nature, but is very useful
+all the same, and so we include it here. The case frequently arises where
 the MPI programmer will need to do logical comparisons across all processes.
 The idea is to extend the very handy \code{all()} and \code{any()}
 base \proglang{R} functions to operate similarly on distributed logicals.
@@ -825,7 +826,7 @@ if (rank==0){
 need2stop <- comm.any(need2stop)
 
 if (need2stop)
-  comm.stop("Problem :[") 
+  stop("Problem :[") 
 \end{lstlisting}
 
 

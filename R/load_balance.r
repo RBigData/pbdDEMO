@@ -1,7 +1,7 @@
 ### This file contains functions to load balance of data X.gbd.
 
 balance.info <- function(X.gbd, comm = .SPMD.CT$comm,
-    gbd.major = .DEMO.CT$gbd.major, method = .DEMO.CT$divide.method){
+    gbd.major = .DEMO.CT$gbd.major, method = .DEMO.CT$divide.method[1]){
   COMM.SIZE <- spmd.comm.size(comm)
   COMM.RANK <- spmd.comm.rank(comm)
 
@@ -14,17 +14,16 @@ balance.info <- function(X.gbd, comm = .SPMD.CT$comm,
   } else if(gbd.major == 2){
     N.gbd <- ncol(X.gbd)
   } else{
-    stop("gbd.major = 1 or 2.")
+    comm.stop("gbd.major = 1 or 2.", comm = comm)
   }
   N.allgbd <- spmd.allgather.integer(as.integer(N.gbd), integer(COMM.SIZE),
-                                      comm = comm)
+                                     comm = comm)
   N <- sum(N.allgbd)
 
   if(method[1] == "block.cyclic"){
     ### This can cause problems.
     # n <- ceiling(N / COMM.SIZE)
     # new.N.allgbd <- c(rep(n, COMM.SIZE - 1), N - n * (COMM.SIZE - 1))
-    # rank.org <- rep(0:(COMM.SIZE - 1), N.allgbd)
     # rank.belong <- rep(0:(COMM.SIZE - 1), each = n)[1:N]
 
     ### Try again.
@@ -36,9 +35,8 @@ balance.info <- function(X.gbd, comm = .SPMD.CT$comm,
     }
     if(length(new.N.allgbd) < COMM.SIZE){
       new.N.allgbd <- c(new.N.allgbd,
-                         rep(0, COMM.SIZE - length(new.N.allgbd)))
+                        rep(0, COMM.SIZE - length(new.N.allgbd)))
     }
-    rank.org <- rep(0:(COMM.SIZE - 1), N.allgbd)
     rank.belong <- rep(0:(COMM.SIZE - 1), new.N.allgbd) 
   } else if(method[1] == "block0"){
     ### Try block0 method which is a better way to balance data. However,
@@ -46,12 +44,13 @@ balance.info <- function(X.gbd, comm = .SPMD.CT$comm,
     n <- floor(N / COMM.SIZE)
     n.residual <- N %% COMM.SIZE
     new.N.allgbd <- rep(n, COMM.SIZE) +
-                     rep(c(1, 0), c(n.residual, COMM.SIZE - n.residual))
-    rank.org <- rep(0:(COMM.SIZE - 1), N.allgbd)
+                    rep(c(1, 0), c(n.residual, COMM.SIZE - n.residual))
     rank.belong <- rep(0:(COMM.SIZE - 1), new.N.allgbd)
   } else{
-    comm.stop("method is not found.")
+    comm.stop("method is not found.", comm = comm)
   }
+
+  rank.org <- rep(0:(COMM.SIZE - 1), N.allgbd)
 
   ### Build send and recv information if any.
   send.info <- data.frame(org = rank.org[rank.org == COMM.RANK],
@@ -79,7 +78,7 @@ load.balance <- function(X.gbd, bal.info = NULL, comm = .SPMD.CT$comm,
   } else if(gbd.major == 2){
     p <- nrow(X.gbd)
   } else{
-    stop("gbd.major = 1 or 2.")
+    comm.stop("gbd.major = 1 or 2.", comm = comm)
   }
 
   storage.mode(X.gbd) <- "double"
@@ -116,7 +115,7 @@ load.balance <- function(X.gbd, bal.info = NULL, comm = .SPMD.CT$comm,
         } else{
           tmp <- matrix(X.gbd[bal.info$send$belong == i,], ncol = p)
         }
-        ret <- base:::rbind(ret, tmp)
+        ret <- base::rbind(ret, tmp)
       }
     } else{
       for(i in recv.from){
@@ -128,7 +127,7 @@ load.balance <- function(X.gbd, bal.info = NULL, comm = .SPMD.CT$comm,
         } else{
           tmp <- matrix(X.gbd[, bal.info$send$belong == i], nrow = p)
         }
-        ret <- base:::cbind(ret, tmp)
+        ret <- base::cbind(ret, tmp)
       }
     }
   } else{

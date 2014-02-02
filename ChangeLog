@@ -1,5 +1,13 @@
-2014-1-14:
+2014-02-01: Ver. 0.1-2
+  * Add more applications to Vignettes.
+  * Finish Bayesian and MCMC applications.
+
+2014-01-14: Ver. 0.1-2
   * Vignetted copyright updated.
+
+2013-08-06: Ver. 0.1-2
+  * Add a Bayesian MCMC chapter to vignette.
+  * Add a galaxy velocity example to demo.
 
 2013-7-10: Ver. 0.1-1
   * Fixed load_balance() bug.
