@@ -178,10 +178,6 @@ processors can be considered in following.
 \item Each Markov Chain is executed on each processor.
       Only $I_n / N$ samples are needed to be collected for each processor
       provided every Markov Chain is burn-in.
-      {\color{red} Caution:} In a distributed environment, the uniform random
-      variable of Step 4 above may need an extra communication that
-      \code{bcast()} from a head processor. Also, independent or nearly
-      independent random number streams should be considered carefully.
 \item Execute one Markov Chain on one processor. Until the Markov Chain
       is burn-in, then the burn-in state is broad casted to all processors.
       Set different random seeds on all processors, then all processors
@@ -196,8 +192,6 @@ parallelization above, and make statistical inference based on the
 Bayesian framework.
 
 
-
-
 \section[Galaxy Velocity]{Galaxy Velocity}
 \label{sec:galaxy}
 
@@ -210,7 +204,7 @@ $4,563.758$ km/sec. Figure~\ref{fig:galaxy} shows the distribution of data.
 \centering
   \includegraphics[width=3.0in]{pbdDEMO-include/pics/galaxy_1}
   \includegraphics[width=3.0in]{pbdDEMO-include/pics/galaxy_2}
-\caption{Histograms of velocities of 82 galaxies. The left plot is based on
+\caption[Histograms of velocities of 82 galaxies]{The left plot is based on
 default setting of \code{hist(galaxies)} and the right plot is based on
 \code{hist(galaxies, nclass=50)} providing more details of distribution.}
 \label{fig:galaxy}
@@ -225,15 +219,92 @@ An example code is given in the \pkg{pbdDEMO} demo via
 ### (Use Rscript.exe for windows system)
 mpiexec -np 4 Rscript -e "demo(mcmc_galaxy,'pbdDEMO',ask=F,echo=F)"
 \end{lstlisting}
-which provides Figure~\ref{fig:mcmc_galaxy}.
-%\begin{figure}[ht]
-%\centering
-%  \includegraphics[width=3.0in]{pbdDEMO-include/pics/galaxy_mcmc}
-%\caption{aa}
-%\label{fig:mcmc_galaxy}
-%\end{figure}
+The example has outputs next that it updates 11000 iterations
+in total, collects samples in every 10 iterations after 1000 burnin iterations,
+and 1000 samples totally collected for inference. The posterior mean of
+$\mu$ (velocity of those galaxies) is about $20,820.92$ km/sec and
+$95\%$ credible interval is $(19816.91, 21851.07)$ km/sec.
+\begin{CodeOutput}
+Total iterations: 11000
+Burnin: 1000
+Thinning: 10
+Total samples: 1000
+Posterior mean: 20820.92
+95% credible interval:
+    2.5%    97.5% 
+19816.91 21851.07 
+\end{CodeOutput}
+Also, Figure~\ref{fig:mcmc_galaxy} provides the MCMC trace and
+posterior distribution of $\mu$ based on those 1000 samples.
+\begin{figure}[ht]
+\centering
+  \includegraphics[width=6.0in]{pbdDEMO-include/pics/galaxy_mcmc}
+\caption[MCMC results of velocities of 82 galaxies]{
+The left plot shows the MCMC trace of 11,000 iterations.
+The right plot displays the posterior distribution of $\mu$ in 1000 samples
+and red line indicates the posterior mean.}
+\label{fig:mcmc_galaxy}
+\end{figure}
 
 
+\section{Parallel Random Number Generator}
+\label{sec:prng}
+\index{RNG!Parallel Random Number Generator}
+
+We demonstrate a simple MCMC example to fit a
+Gaussian model to Galaxy dataset in Section~\ref{sec:galaxy}, but
+intend to raise an important issue ``parallel random number generator''
+to simulation technique especially in distributed environment.
+Even there is no need to use parallel random number generator, but the
+purpose here is to explain when to synchronize the random number
+if models are getting more complex.
+
+\pkg{pbdMPI} builds in parallel random number generator via
+\pkg{rlecuyer}~\citep{rlecuyer}~\index{Package!\pkg{rlecuyer}},
+and \code{comm.set.seed(..., diff = TRUE)} is setting different
+streams of random numbers to all processors. Suppose different streams
+provide independent (or closely) random variables, then every processor
+can perform MCMC on local data independently. However,
+new parameters and the decision for the new parameters,
+should be consistent in all processors so that synchronization is necessary
+in some stages of each MCMC iteration.
+
+The Galaxy demo code uses 4 processors to
+hold the dataset and every processor start from the different seed to generate
+new $\mu$ and uniform random variable $U$ for rejection ratio, but only the
+values on rank 0 are \code{bcast()} and used by all other ranks.
+\begin{lstlisting}[language=rr,title=Hastings-Metropolis MCMC]
+ret <- NULL
+ret.all <- NULL
+mu.org <- rnorm(1, mean = mu.0, sd = sigma.0)
+# No need to synchronize if diff = FALSE in comm.set.seed().
+mu.org <- bcast(mu.org)
+for(i in 1:(I.b + I.t * I.n)){
+  mu.new <- rnorm(1, mean = mu.0, sd = sigma.0)
+  # No need to synchronize if diff = FALSE in comm.set.seed().
+  mu.new <- bcast(mu.new)
+
+  a <- acceptance(x.gbd, mu.new, mu.org)
+  U <- runif(1)
+  # No need to synchronize if diff = FALSE in comm.set.seed().
+  U <- bcast(U)
+
+  if(U <= a){
+    mu.org <- mu.new
+  }
+
+  ret.all <- c(ret.all, mu.org)
+  if(i > I.b && (i %% I.t == 0)){
+    ret <- c(ret, mu.org)
+  }
+}
+\end{lstlisting}
+Although we can use \code{comm.set.seed(..., diff = FALSE)} as default,
+the parameter $\mu$ and $U$ are tiny and in common of all ranks so that
+the cost of communication is relative small. For more complex models,
+we may consider to distribute parameters as well and make decision locally,
+then we can reduce the cost further. In such cases, parallel random
+number generators are better solutions.
 
 
 
@@ -291,18 +362,12 @@ galaxy velocities. As model-based clustering in Section~\ref{chp:pmclust},
 please extend to a two clusters problem and implement it in Bayesian
 framework.
 
-\end{enumerate}
+\item
+At the end of Section~\ref{sec:prng}, we mention a potential case to avoid
+communication for generating new parameters of complex MCMC models.
+Given an example and implement in two different ways, one uses parallel
+random numbers and the other uses traditional random numbers plus
+synchronization.
 
-%TBD:
-%\begin{itemize}
-%\item Ising model.
-%\item random number generator.
-%\item 64bits and long vectors.
-%\item task.pull introduction with pbdLapply, pbdApply, ... etc.
-%\item Multinomial logistic regression.
-%\item Sparse matrix computation.
-%\item pbdPROF.
-%\item comm.wirte and comm.read.
-%\item lmt in parallel.
-%\end{itemize}
+\end{enumerate}
 

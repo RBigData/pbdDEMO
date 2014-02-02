@@ -152,7 +152,7 @@ Version \demoversion
 \input{./pbdDEMO-include/applications/a2-pmclust}
 \input{./pbdDEMO-include/applications/a3-phyclust}
 \input{./pbdDEMO-include/applications/a4-Bayes}
-\input{./pbdDEMO-include/applications/a5-ts}
+% \input{./pbdDEMO-include/applications/a5-ts}
 %%% appendices
 \part{Appendix}
 \appendix
