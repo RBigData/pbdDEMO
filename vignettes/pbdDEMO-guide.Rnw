@@ -63,7 +63,7 @@ Version \demoversion
 %\date{\today}
 \maketitle
 
-\input{./pbdDEMO-include/01-copyright}
+\input{./pbdDEMO-include/frontmatter/00-copyright}
 
 
 %%%%%%%%%%%%%%%%%
