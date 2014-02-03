@@ -10,43 +10,44 @@
 \label{sec:likelihood_introduction}
 
 This is a preamble chapter for Chapters~\ref{chp:pmclust}
-and~\ref{chp:phyloclustering} where applications are heavily relied on
-likelihood functions\index{likelihood function} which is one of the most
-important modern Statistical technique.
-The ``likelihood'' was popularized
-in mathematical statistics by R.A. Fisher in 1922:
+and~\ref{chp:phyloclustering}, each of which heavily rely on
+likelihood functions\index{likelihood function}.  In a very real sense, 
+likelihoods form the dividing line that separates statistics from other 
+fields, and as such is one of the most important Statistical 
+techniques.  The concept of likelihood was popularized
+in mathematical statistics by R.A. Fisher in 1922 in his landmark paper
 ``On the mathematical foundations of theoretical
 statistics''~\citep{Fisher1922}.
-In short, the likelihood is a way based on data to build up
-theoretical inference for the facts.
+In condensed, broad strokes, likelihood is a tool for developing theoretical 
+inference based on observed data.
 
-We introduce general notations for likelihood function
-which is a standard method for parametric statistics and is
+We introduce general notations for likelihood functions,
+which is a standard method for parametric statistics, and is
 useful for statistical inference~\citep{Casella2001}.
 Two useful distributions are introduced.
 The normal distribution additional to linear model has been applied to
 the example in Section~\ref{sec:ols}.
 The multivariate normal
 distribution\index{Distribution!multivariate normal distribution}
-is also popular to model high dimensional data such as
-model-based clustering in Chapter~\ref{chp:pmclust}.
+is also popular to model high dimensional data, and is often used in methods 
+such as model-based clustering in Chapter~\ref{chp:pmclust}.
 
 Suppose $\bX = \{\bX_1, \bX_2, \ldots, \bX_N\}$ is a random sample,
-which means independent identically distributed
+which means the observations are independent and identically distributed
 (i.i.d.),\index{i.i.d.}
 from a population characterized by a distribution $\mF(\btheta)$ with unknown
-parameter $\btheta \in \bTheta$ where $\bTheta$ is the parameter space.
+parameter $\btheta \in \bTheta$, where $\bTheta$ is the parameter space.
 Suppose further $\mF$ has a probability density function
-(pdf)\index{pdf}
-$f(\bX_n; \btheta)$ provided an appropriate support.
+(pdf for short)\index{pdf}
+$f(\bX_n; \btheta)$, with appropriate support.
 The goal is to estimate $\btheta$ based on the observed data
 $\bx = \{\bx_1, \bx_2, \ldots, \bx_N\}$.
 Ideally, we want to infer what is the best candidate of $\btheta$
-where $\bx$ is observed from.
+from which we observed $\bx$.
 Unlike in Mathematics, $\bx$ is known, but $\btheta$ is unknown
 to be determined in Statistics.
 
-Typically, a fancy way to estimate $\btheta$ is based on the
+A fancy way to estimate $\btheta$ is based on the
 likelihood function for the observed data $\bx$
 \begin{equation}
 L(\btheta; \bx) = \prod_{n = 1}^N f(\bx_n; \btheta)
@@ -57,23 +58,29 @@ or the log likelihood function
 \log L(\btheta; \bx) = \sum_{n = 1}^N \log f(\bx_n; \btheta).
 \label{eqn:log_likelihood}
 \end{equation}
-The product of Equation~(\ref{eqn:likelihood}) is due to the independent
-assumption of $\bX$, but the $L(\btheta; \bx)$ may blow to infinity
-or negative infinity quickly as sample size $N$ increased. While,
-Equation~(\ref{eqn:log_likelihood}) has some
-better properties for most distribution families and
+The product on the right hand side of Equation~(\ref{eqn:likelihood}) is due to 
+the independence assumption of $\bX$, but the value of $L(\btheta; \bx)$ may 
+``blow up'' to infinity
+or negative infinity quickly as sample size $N$ increased. Note that typically, 
+one does not work with the likelihood function in the form of 
+Equation~(\ref{eqn:likelihood}), but rather the log likelihood of
+Equation~(\ref{eqn:log_likelihood}).  The reason for this is that the latter 
+has some nicer properties for most distribution families and
 is more numerically stable than Equation~(\ref{eqn:likelihood}).
-We then either analytically or numerically maximize
-Equation~(\ref{eqn:log_likelihood})
-over $\bTheta$ to obtain a maximum likelihood estimation
-(MLE)\index{MLE}
+
+Statistical methods that deal (directly) with likelihoods involve 
+maximizing (analytically or numerically if the former is not possible or 
+impractical) Equation~(\ref{eqn:log_likelihood})
+over the parameter space $\bTheta$ to obtain a so-called maximum likelihood 
+estimation, or MLE\index{MLE}
 $$
   \hat{\btheta}_{ML} := \argmax_{\btheta\in\bTheta} \log L(\btheta; \bx)
 $$
-which exists in fairly-wide assumptions
-such as regularity conditions of parameter space
-and parameter does not depend on support,
-see \citet{Casella2001} for details.
+Note that the MLE may not exist.  There 
+are some additional constraints that are often imposed which make a MLE more 
+well-behaved in some regards, such as regularity conditions of parameter space, 
+or that the parameter $\btheta$ does not depend on the pdf's support.  See 
+\citet{Casella2001} for details.
 
 
 
@@ -81,25 +88,26 @@ see \citet{Casella2001} for details.
 \section{Normal Distribution}
 \label{sec:normal_distribution}
 
-Section~\ref{sec:ols} is one way to find
+Section~\ref{sec:ols} offers one way to find
 $\btheta = \{\bbeta,\sigma^2\}$ for a linear model
 without parametric assumption via ordinary least square estimator
 $\hat{\btheta}_{ols} = \{\hat{\bbeta}_{ols},\hat{\sigma}_{ols}^2\}$.
-Beside Gauss-Markov Theorem\index{Gauss-Markov Theorem},
+Aside from the Gauss-Markov Theorem\index{Gauss-Markov Theorem},
 an alternative way is based on likelihood approach by
 assuming an identical normal distribution with mean zero and
 variance $\sigma^2$ to the independent error terms of
 Equation~(\ref{math:statslls}).
 This implies a normal distribution\index{Distribution!normal distribution}
-to the response $y_n$ for $n=1,2,\ldots, N$ that
+to the response $y_n$ for $n=1,2,\ldots, N$.  More precisely,
 \begin{equation}
 y_n \stackrel{i.i.d.}{\sim} N(\bx_n^\top\bbeta, \sigma^2)
 \label{eqn:normal}
 \end{equation}
 where $\btheta = \{\bbeta, \sigma^2\}$, and
-$\bbeta$ and $\bx_n$ has dimension $p\times 1$.
+$\bbeta$ and $\bx_n$ each have dimension $p\times 1$.
 
-One may construct a log likelihood based on the normal density function as
+By merely mechanically inserting symbols, one may construct a log likelihood 
+function based on the normal density function:
 \begin{equation}
 \log L(\bbeta, \sigma^2; \by) = \sum_{n = 1}^N
 \left[
@@ -117,24 +125,23 @@ solving the equations.
 The implementations for numerical solutions (from analytical solutions)
 or numerical optimization
 of Equation~(\ref{eqn:log_likelihood_normal}) is not difficult
-and leaved in Exercise~\ref{ex:likelihood1}.
+and left for the reader in Exercise~\ref{ex:likelihood1}.
 
-The assumptions of Statement~(\ref{eqn:normal}) limit the modeling capability.
-We introduce a more general approach next for better
-modeling approach.
-Since the independent assumption and Multivariate Statistics, the
-Statement~(\ref{eqn:normal})
-implies a multivariate normal distribution
-(MVN)\index{Distribution!multivariate normal distribution}\index{Distribution!MVN}
-(introduced in Section~\ref{sec:mvn})
-to response variables $\by$ with dimension $N\times 1$ that
+The assumptions of Statement~(\ref{eqn:normal}) limit the scope of modeling 
+capability, and so next we introduce a more general approach.
+From the independence assumption and basic multivariate statistics, 
+statement~(\ref{eqn:normal})
+implies a multivariate normal distribution\footnote{introduced in 
+Section~\ref{sec:mvn}}\index{Distribution!multivariate normal 
+distribution}\index{Distribution!MVN}
+to the response variable $\by$ with dimension $N\times 1$:
 \begin{equation}
 \by \sim MVN_N(\bmu, \bSigma).
 \label{eqn:mvn_n}
 \end{equation}
 where $\bmu = \bX\bbeta$ with length $N$,
 $\bSigma = \sigma^2 \bI$ and $\bI$ is an $N\times N$ identity matrix.
-In this case, the $\by$ has a density function as
+In this case, $\by$ has density function
 \begin{equation*}
 \displaystyle
 \phi_N(\by; \bmu, \bSigma) =
@@ -145,9 +152,9 @@ and the log likelihood can reduce to
 Equation~(\ref{eqn:log_likelihood_normal}).
 The MLEs are
 $\hat{\bbeta}_{ML} = (\bX^\top \bX)^{-1} \bX^\top \by$ and
-$\sigma^2_{ML} = \frac{1}{N} (\by - \bar{y}\bone)^\top(\by - \bar{y}\bone)$
+$\sigma^2_{ML} = \frac{1}{N} (\by - \bar{y}\bone)^\top(\by - \bar{y}\bone)$,
 where $\bar{y}$ is the average of $\by$,
-and $\bone$ is an one vector with length $N$.
+and $\bone$ is the vector of length $N$ whose entries are all 1.
 
 
 
@@ -155,14 +162,21 @@ and $\bone$ is an one vector with length $N$.
 \section{Likelihood Ratio Test}
 \label{sec:lrt}
 
-An advance statistical inference tool is based on likelihood ratio test
-(LRT)\index{likelihood ratio test}\index{LRT} provided suitable assumption
-holds. Suppose we have data $\bX$ and want to test a hypothesis
-$$
-  H_0: \btheta \in \bTheta_0 \mbox{ v.s. }
+A very important statistical inference tool based on the likelihood 
+methods discussed so far is the Likelihood Ratio Test
+(LRT)\index{likelihood ratio test}\index{LRT}. 
+Provided suitable assumptions hold, this test can be used to compare the fit 
+of two competing models. 
+
+Suppose we have data $\bX$ and want to test the hypothesis
+\begin{align*}
+  H_0: \btheta \in \bTheta_0
+\end{align*}
+against the alternative
+\begin{align*}
   H_a: \btheta \in \bTheta_a
-$$
-where $\bTheta_0 \neq \bTheta_a$ that two spaces are not equivalent.
+\end{align*}
+where the two spaces $\bTheta_0$ and $\bTheta_a$ are not equivalent.
 The LRT says
 \begin{equation}
 -2\log \Lambda(\btheta_0, \btheta_a; \bX) :=
@@ -175,26 +189,25 @@ The LRT says
 \sim \chi^2_p
 \label{eqn:LRT}
 \end{equation}
-where $\btheta_0$ and $\btheta_a$ are parameters that has the maximum
-likelihoods on spaces $\bTheta_0$ and $\bTheta_0\cup\bTheta_a$, and
+where $\btheta_0$ and $\btheta_a$ are parameters that have maximum
+likelihoods in spaces $\bTheta_0$ and $\bTheta_0\cup\bTheta_a$ respectively, and
 $\chi^2_p$ is a chi-squared distribution\index{Distribution!chi-squared}
-with $p$ degrees of freedom. In some case, the $p$ can be simplified as
-the number of dimension difference of $\bTheta_0\cup\bTheta_a$ and
-$\bTheta_0$.
+with $p$ degrees of freedom. In some cases, $p$ is simply
+the difference in dimension between $\bTheta_0\cup\bTheta_a$ and
+$\bTheta_0$ (see example below).
 
 For example,
-in the least square case, such as Statement~(\ref{eqn:mvn_n}),
-we may want to know
+in the least squares case of statement~(\ref{eqn:mvn_n}),
+we may want to test
 $$
-  H_0: \bsigma^2 = 1 \mbox{ v.s. }
+  H_0: \bsigma^2 = 1 \mbox{\hspace{.4cm} v.s.\hspace{.4cm}}
   H_a: \bsigma^2 > 0 
 $$
 which means $\bTheta_0 = \{\bbeta\}$ and $\bTheta_a = \{\bbeta, \sigma^2\}$.
 Note that $\bTheta_0 \subset \bTheta_a$, so
 $\bTheta_0 \cup \bTheta_a = \bTheta_a$.
 Given the MLEs $\hat{\btheta}_{0\,ML}$ and $\hat{\btheta}_{a\,ML}$
-on two spaces $\bTheta_0$ and $\bTheta_a$, respectively.
-The LRT will be
+for the two spaces $\bTheta_0$ and $\bTheta_a$, the LRT will be
 $$
   -2\log \hat{\Lambda}(\hat{\btheta}_{0\,ML}, \hat{\btheta}_{a\,ML}; \bX) :=
   -2\log
@@ -212,9 +225,8 @@ $$
   > q_{\chi^2_1}(0.95) \approx 3.84
 $$
 where $q_{\chi^2_1}(0.95)$ is the 95\% quantile of chi-squared distribution
-with 1 degree of freedom, then
-we may reject $H_0: \bsigma^2 = 1$ provided type I error is no greater
-than $0.05$ level.
+with 1 degree of freedom.  Then we may reject $H_0: \bsigma^2 = 1$ provided 
+type I error is no greater than $0.05$ level.
 
 Note that the LRT introduced here is not dependent on the types of
 distributions, but has nested parameter space restriction and some
@@ -237,12 +249,12 @@ multivariate normal distribution
 where $\btheta = \{\bmu, \bSigma\}$, $\bmu$ is a center with
 dimension $p\times 1$, and $\bSigma$ is a $p\times p$ dispersion
 matrix.
-The $\bX_n$ has a density function as
+Then $\bX_n$ has density function
 \begin{equation*}
 \displaystyle
 \phi_p(\bx_n; \bmu, \bSigma) =
 (2\pi)^{-\frac{p}{2}} |\bSigma|^{-\frac{1}{2}}
-e^{-\frac{1}{2} (\bx_n - \bmu)^\top \bSigma^{-1} (\bx_n - \bmu)}.
+\exp\left(-\frac{1}{2} (\bx_n - \bmu)^\top \bSigma^{-1} (\bx_n - \bmu)\right).
 \end{equation*}
 In general, $\bSigma$ could be an unstructured dispersion and must be positive
 definite. Excepting over fitting problems,
@@ -254,22 +266,24 @@ restriction on any coordinate of parameter space.
 Let $\bx = (\bx_1^\top, \bx_2^\top, \ldots, \bx_N^\top)^\top$
 be an observed data matrix with dimension $N\times p$.
 The log likelihood function for $N$ observations is
-\begin{equation*}
+\begin{equation}
 \displaystyle
 \log L(\bmu, \bSigma; \bx) = \sum_{n = 1}^N
 -\frac{1}{2}
 \left[
 p\log(2\pi) + \log|\bSigma| + (\bx_n - \bmu)^\top \bSigma^{-1} (\bx_n - \bmu)
-\right].
+\right]
 \label{eqn:log_likelihood_mvn_p}
-\end{equation*}
-The problem is the computing time grows as $N$ and $p$ increased.
-In some numerically cases, such as model-based clustering
-in Chapter~\ref{chp:pmclust}, the total log likelihood is
-repeated computed in each iteration for all samples and all components.
+\end{equation}
+Note that if we wish to numerically compute the log likelihood found in 
+Equation~\ref{eqn:log_likelihood_mvn_p}, the computing time grows as both $N$ 
+and $p$ are increased.  In some cases, such as model-based clustering
+in Chapter~\ref{chp:pmclust}, the total log likelihood is computed in each 
+iteration for all samples and all components.
 
-Suppose $\bmu$ and $\bSigma$ are known, and no over- and under-flow,
-an efficient way is given in next
+Suppose $\bmu$ and $\bSigma$ are known.
+%FIXME what? , and no over- and under-flow,
+We can efficiently compute the desired quantity using \pbdR:
 \begin{lstlisting}[language=rr,title=R Code]
 U <- chol(SIGMA)
 logdet <- sum(log(abs(diag(U)))) * 2
@@ -282,10 +296,10 @@ distval <- allreduce(sum(distval.gbd))
 total.logL <- -(p * log(2 *pi) + logdet + distval) * 0.5
 \end{lstlisting}
 where \code{X.gbd} is a GBD row-major matrix with dimension
-\code{N.gbd} by \code{p}, \code{MU} is a vector with length \code{p}, and
+\code{N.gbd} by \code{p}, \code{MU} is a vector of length \code{p}, and
 \code{SIGMA} is a \code{p} by \code{p} positive definite matrix.
 The sample size $N$ will be the sum of \code{N.gbd} across all processors.
-Note that this trick of computing log likelihood is an one-pass implementation
+Note that this trick of computing log likelihood is a one-pass implementation
 of \code{X.gbd}, \code{MU}, and \code{SIGMA}.
 See HPSC~\citep{hpsc2011} or \citet{gvl} for more details.
 
@@ -304,51 +318,57 @@ What is the definition of ``independent identical distributed''?
 What is the definition of ``probability density function''?
 
 \item
-Suppose $g(\cdot)$ is a continuous function provided appropriate support,
-argue that $g\left(\hat{\theta}_{ML}\right)$ is still a maximum likelihood
+Suppose $g(\cdot)$ is a continuous function with appropriate support.  Argue 
+that $g\left(\hat{\theta}_{ML}\right)$ is still a maximum likelihood
 estimator of $g(\theta)$.
 
 \item
 Derive MLEs from Equation~(\ref{eqn:log_likelihood_normal}).
 
 \item
-As Exercise~\ref{ex:stat1}, argue that $\hat{\bbeta}_{ML}$ of
+As in Exercise~\ref{ex:stat1}, argue that $\hat{\bbeta}_{ML}$ of
 Equation~(\ref{eqn:log_likelihood_normal}) is also
 an unbiased estimator of $\bbeta$.
 
 \item
-Argue that $\hat{\sigma}^2_{ML}$ of
-Equation~(\ref{eqn:log_likelihood_normal})
-is a biased estimator, but it is an asymptotic
-unbiased estimator of $\sigma^2$.
+Show that:
+\begin{itemize}
+	\item $\hat{\sigma}^2_{ML}$ of
+	Equation~(\ref{eqn:log_likelihood_normal})
+	is a biased estimator of $\sigma^2$
+	\item $\hat{\sigma}^2_{ML}$  is an asymptotically unbiased estimator of 
+$\sigma^2$.
+\end{itemize}
 
 \item
-Assume data are stored in GBD row-major matrix format,
-implement an optimization function for
+Assume data are stored in GBD row-major matrix format. Implement an 
+optimization function for
 Equation~(\ref{eqn:log_likelihood_normal}), numerically optimized via
 \code{optim()}\index{Code!\code{optim()}} in \proglang{R}.
 Verify the results with the analytical solution.
 \label{ex:likelihood1}
 
 \item
-Argue that Statement~(\ref{eqn:normal}) implies Statement~(\ref{eqn:mvn_n})
-provided appropriated assumption hold.
+Argue that Statement~(\ref{eqn:normal}) implies Statement~(\ref{eqn:mvn_n}),
+provided appropriated assumption hold. 
+% FIXME this is too vague for a real exercise
 
 \item
-Give an example that $X$ and $Y$ are both have a normal distribution
-but $(X, Y)$ is not a multivariate normal distribution.
+Give an example of random variables $X$ and $Y$ which are each normally 
+distributed, but $(X, Y)$ is not a multivariate normal distribution. 
+{\color{blue} Hint: See Exercise~\ref{exercise:normality}.}
 
-\item
-Give an example that $(X, Y)$ has a multivariate normal distribution,
-but $X$ and $Y$ do not have an independent normal distribution.
+\item\label{exercise:normality}
+Show that if $X$ and $Y$ independent random variables which are normally 
+distributed, then $(X, Y)$ has a multivariate normal distribution.
 
 \item
 Prove Statement~(\ref{eqn:LRT}).
 {\color{blue} Hint: \citet{Ferguson1996}.}
 
 \item
-Implement similar trick of Section~\ref{sec:mvn} to Principal Component
-Analysis (PCA).
+Use a similar trick to that of Section~\ref{sec:mvn} to implement Principal 
+Component Analysis (PCA).
 \index{Principal Components Analysis|see{PCA}}\index{PCA}
 {\color{blue} Hint: HPSC~\citep{hpsc2011}.}
 
