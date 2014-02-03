@@ -33,7 +33,7 @@ University of Tennessee, Knoxville, TN, USA}}\\[.4cm]
 %
 George Ostrouchov\\
 {\small\emph{Computer Science and Mathematics Division, \\
-Oak Ridge National Laboratory}}
+Oak Ridge National Laboratory, Oak Ridge, TN, USA}}
 %%%
 \\[2.0in]
 Version \demoversion
