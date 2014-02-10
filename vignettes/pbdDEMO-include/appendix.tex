@@ -69,7 +69,9 @@ This amounts to solving the triangular system
 R\bbeta = Q^T\by
 \end{align*}
 As noted in Section~\ref{asec:nrmleq}, solving this system can be done in a numerically stable fashion (and the high performance libraries employed by both \proglang{R} and
-\proglang{pbdR} use stable implementations).  The key difference here is that the QR factorization is of $\bX$, not $\bX^T\bX$, and so we need only worry about the conditioning of $\bX$ (as opposed to its squared condition number).
+\pbdR use stable implementations).  The key difference here is that the QR 
+factorization is of $\bX$, not $\bX^T\bX$, and so we need only worry about the 
+conditioning of $\bX$ (as opposed to its squared condition number).
 
 While this method is much less prone to the numerical issues discussed above, it is much slower computationally.  Additionally, we note that unlike the method in forming the normal equations, this method can be extended to the rank degenerate case.
 
@@ -113,19 +115,32 @@ Conceptually, this is arguably the most elegant method of solving the linear lea
 
 
 In the case that $\bX$ is rank deficient, then $\bX$ (and whence $\bX^T\bX$) is not invertible, so the problem can not be solved by the method of Section~\ref{asec:nrmleq}.  Both \proglang{R} and
-\proglang{pbdR} use a QR factorization as in Section~\ref{asec:qr}, although the two systems use a slightly different approach.  While most of the linear algebra in \proglang{R} is handled by
+\pbdR use a QR factorization as in Section~\ref{asec:qr}, although the two 
+systems use a slightly different approach.  While most of the linear algebra in 
+\proglang{R} is handled by
 LAPACK~\citep{lug},~\index{Library!LAPACK} arguably the most important numerical function in all of \proglang{R}, namely \code{lm.fit()} used by \code{lm()} to fit linear regression models, uses LINPACK \citep{linpack}.  By comparison to LAPACK,
 LINPACK~\index{Library!LINPACK} is much less sophisticated.  However,
-\proglang{pbdR} uses level 3
+\pbdR uses level 3
 PBLAS~\index{Library!PBLAS} and ScaLAPACK (the distributed equivalent of using level 3 BLAS and LAPACK) to fit linear regression models.
 
 The LINPACK routines used by \proglang{R} are \code{DQRLS}, which calls a modified \code{DQRDC2} to compute a rank-revealing
 QR factorization\index{Decomposition!QR}
 with a ``limited pivoting strategy'' (more on this later).  Finally, \code{DQRSL} is called to apply the output of the QR factorization to compute the least squares soluations.  By contrast,
-\proglang{pbdR} uses a modified \code{PDGELS} routine, which uses a version of \code{PDGEQPF} modified to use \proglang{R}'s ``limited pivoting strategy'', and then calls \code{PDORMQR} to fit the least squares solution.
+\pbdR uses a modified \code{PDGELS} routine, which uses a version of 
+\code{PDGEQPF} modified to use \proglang{R}'s ``limited pivoting strategy'', and 
+then calls \code{PDORMQR} to fit the least squares solution.
 
 Neither approach assumes that the model matrix is full rank.  Instead, the methods are \emph{rank-revealing}, in that they attempt to discover the numerical rank while computing the orthogonal factorization.  However, both \proglang{R} and (for the sake of consistency)
-\proglang{pbdR} use a ``limited pivoting strategy'' (with language, we believe, due to Ross Ihaka) in determining numerical rank.  Generally when computing a QR with pivoting, for the sake of numerical stability one chooses the column with largest partial norm while forming the Householder reflections.  However, in doing so it is possible to permute the columns in such a way that a desired statistical interpretation (such as in an ANOVA) is destroyed.  The solution employed by \proglang{R} is to merely iterate over the columns and choose the current column as the pivot each time.  When a column is detected to have ``small'' partial norm, it is pushed to the back.  The author of these modification writes:
+\pbdR use a ``limited pivoting strategy'' (with language, we believe, due to 
+Ross Ihaka) in determining numerical rank.  Generally when computing a QR with 
+pivoting, for the sake of numerical stability one chooses the column with 
+largest partial norm while forming the Householder reflections.  However, in 
+doing so it is possible to permute the columns in such a way that a desired 
+statistical interpretation (such as in an ANOVA) is destroyed.  The solution 
+employed by \proglang{R} is to merely iterate over the columns and choose the 
+current column as the pivot each time.  When a column is detected to have 
+``small'' partial norm, it is pushed to the back.  The author of these 
+modification writes:
 \begin{quote}
      a limited column pivoting strategy based on the 2-norms 
      of the reduced columns moves columns with near-zero norm to the 
@@ -141,5 +156,5 @@ Neither approach assumes that the model matrix is full rank.  Instead, the metho
 So in this way, if a model matrix is full rank, then the estimates coming from \proglang{R} should be considered at least as trustworthy as probably every other statistical software package of note.  If it is not, then this method presents a possible numerical stability issue; although to what degree, if any at all, this is actually a problem, the authors at present have no real knowledge.  If numerical precision is absolutely paramount, consider using the SVD to solve the least squares problem; though do be aware that this is hands down the slowest possible approach.
 
 We again note that the limited pivoting strategy of \proglang{R} is employed by
-\proglang{pbdR} in the \code{lm.fit()} method for
+\pbdR in the \code{lm.fit()} method for
 class \code{ddmatrix}.\index{Class!\code{ddmatrix}}

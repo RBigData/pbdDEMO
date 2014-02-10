@@ -1,15 +1,21 @@
-2014-02-01: Ver. 0.1-2
+2014-02-02:
+ * Incorporated pbdR latex macro.
+ * Fixed multiply-defined label problem in vignette.
+
+2014-02-01:
   * Add more applications to Vignettes.
   * Finish Bayesian and MCMC applications.
 
-2014-01-14: Ver. 0.1-2
+2014-01-14:
   * Vignetted copyright updated.
 
-2013-08-06: Ver. 0.1-2
+2013-08-06:
   * Add a Bayesian MCMC chapter to vignette.
   * Add a galaxy velocity example to demo.
 
-2013-7-10: Ver. 0.1-1
+pbdDEMO 0.1-1 (2013-7-11) --------------------------------------------------
+
+2013-7-10:
   * Fixed load_balance() bug.
   * Fixed vignette installation issues.
 
@@ -18,7 +24,7 @@
   * likelihood, pmclust, and phyclust applications added to vignette.
   * Change SPMD/spmd to GBD/gbd.
 
-======================= Log Before Release =====================================
+pbdDEMO 0.1-0 (2013-3-25) --------------------------------------------------
 
 2013-03-12:
   * Added cover to vignette.
