@@ -199,7 +199,7 @@ This paradigm is just one model of parallel programming, and in reality, is a so
 The two are not mutually exclusive, however.  It is easy enough to engage in task parallelism from an SPMD-written program.  To do this, you essentially create a ``task-parallelism block'', where one processor
 
 \pseudocode{
-  \If {$this\_processor == manager$}
+  \If {$this\_processor == manager$} \label{pseudo2:load}
       \State distribute\_tasks()
   \Else
       \State receive\_tasks()

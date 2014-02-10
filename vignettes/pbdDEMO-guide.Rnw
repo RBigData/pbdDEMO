@@ -33,7 +33,7 @@ University of Tennessee, Knoxville, TN, USA}}\\[.4cm]
 %
 George Ostrouchov\\
 {\small\emph{Computer Science and Mathematics Division, \\
-Oak Ridge National Laboratory, Oak Ridge, TN, USA}}
+Oak Ridge National Laboratory}}
 %%%
 \\[2.0in]
 Version \demoversion
@@ -63,7 +63,7 @@ Version \demoversion
 %\date{\today}
 \maketitle
 
-\input{./pbdDEMO-include/frontmatter/00-copyright}
+\input{./pbdDEMO-include/01-copyright}
 
 
 %%%%%%%%%%%%%%%%%
@@ -107,12 +107,12 @@ Version \demoversion
 \newpage
 \fancyhf[C]{}
 \phantomsection
-\input{./pbdDEMO-include/frontmatter/00-acknowledgement}
+\input{./pbdDEMO-include/00-acknowledgement}
 
 \newpage
 \fancyhf[C]{}
 \phantomsection
-\input{./pbdDEMO-include/frontmatter/00-warn}
+\input{./pbdDEMO-include/00-warn}
 
 
 % ----------------------

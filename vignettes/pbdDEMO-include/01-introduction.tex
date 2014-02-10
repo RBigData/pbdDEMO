@@ -51,8 +51,10 @@
 
 
 \section{What is pbdR?}
+
 The ``Programming with Big Data in R'' project~\citep{pbdR2012}
-(\pbdR for short) is a project that aims to elevate the statistical programming
+(\proglang{pbd} or \proglang{pbdR}
+for short) is a project that aims to elevate the statistical programming
 language \proglang{R}~\citep{Rcore} to leadership-class computing platforms.
 The main goal is empower data scientists by bringing flexibility and a big
 analytics toolbox to big data challenges, with an emphasis on productivity,
@@ -67,10 +69,10 @@ In short, we make \proglang{R} scalable.
  \label{fig:pbdrpackages}
 \end{figure}
 
-Figure~\ref{fig:pbdrpackages} shows the current list of \pbdR
+Figure~\ref{fig:pbdrpackages} shows the current list of \proglang{pbdR}
 packages released
 to the CRAN (\url{http://cran.r-project.org}), and how they depend on each
-other. More explicitly, the current \pbdR packages
+other. More explicitly, the current \proglang{pbdR} packages
 \citep{Chen2012pbdMPIpackage,Chen2012pbdSLAPpackage,Schmidt2012pbdBASEpackage,
 Schmidt2012pbdDMATpackage,Patel2013pbdNCDF4package,Schmidt2013pbdDEMOpackage}
 are:
@@ -92,7 +94,7 @@ are:
 \end{itemize}
 
 To try to make this landscape a bit more clear, one could divide
-\pbdR packages into those meant for users, developers, or
+\proglang{pbdR} packages into those meant for users, developers, or
 something in-between.  
 \begin{figure}[h]
  \centering
@@ -103,7 +105,7 @@ something in-between.
 Figure~\ref{fig:pbdrpackages2} shows a gradient scale representation, where
 more red means the package is more for developers, while more blue means the
 package is more for users.  For example, \pkg{pbdDEMO} is squarely meant for
-users of \pbdR packages, while \pkg{pbdBASE} and \pkg{pbdSLAP} are
+users of \proglang{pbdR} packages, while \pkg{pbdBASE} and \pkg{pbdSLAP} are
 really not meant for general use. The other packages fall somewhere
 in-between, having plenty of utility for both camps.
 
@@ -114,19 +116,19 @@ Finally,
  \caption{pbdR Interface to Foreign Libraries}
  \label{fig:pbdrlibs}
 \end{figure}
-Figure~\ref{fig:pbdrlibs} shows \pbdR relationship to
+Figure~\ref{fig:pbdrlibs} shows \proglang{pbdR} relationship to
 high-performance libraries.
 
-In this vignette, we offer many examples using the above \pbdR
+In this vignette, we offer many examples using the above \proglang{pbdR}
 packages. Many of the examples are high-level applications and may be commonly
 found in basic Statistics. The purpose is to show how to reuse the
-preexisting functions and utilities of \pbdR to create minor
+preexisting functions and utilities of \proglang{pbdR} to create minor
 extensions which can quickly solve problems in an efficient way.
 The reader is encouraged to reuse and re-purpose these functions.
 
 The \pkg{pbdDEMO} package consists of two main parts. The first is a
 collection of roughly 20+ package demos. These offer example uses of
-the various \pbdR packages. The second is this vignette, which
+the various \proglang{pbdR} packages. The second is this vignette, which
 attempts to offer detailed explanations for the demos, as well as sometimes
 providing some mathematical or statistical insight. A list of all of the
 package demos can be found in Section~\ref{sec:demolist}.
@@ -156,7 +158,7 @@ names like \textbf{KRAKEN}\footnote{
 \url{http://www.olcf.ornl.gov/titan/}
 }~--- are burdened by an
 unfortunate reality:  it's really, really hard.
-Enter \pbdR. Through our project, we put a shiny new set of
+Enter \proglang{pbdR}. Through our project, we put a shiny new set of
 clothes on high-powered compiled code, making massive-scale computation
 accessible to a wider audience of data scientists than ever before.
 Analytics in supercomputing shouldn't just be for the elites.
@@ -173,7 +175,7 @@ the installation can be done with the following commands
 tar zxvf pbdDEMO_0.1-0.tar.gz
 R CMD INSTALL pbdDEMO
 \end{lstlisting}
-Since \pkg{pbdEMO} depends on other \pbdR packages, please read
+Since \pkg{pbdEMO} depends on other \proglang{pbdR} packages, please read
 the corresponding vignettes if installation of any of them is unsuccessful.
 
 
@@ -308,7 +310,7 @@ mpiexec -np 4 Rscript pca.r
 
 The second set of benchmarks are those that try to find the ``balancing''
 point where, for the indicted computation with user specified number of
-cores, the computation is performed faster using \pbdR
+cores, the computation is performed faster using \proglang{pbdR}
 than using serial \proglang{R}. In general, throwing a bunch of cores at
 a problem may not be the best course of action, because parallel algorithms
 (almost always) have inherent overhead over their serial counterparts that
@@ -358,6 +360,6 @@ MPICH2~\index{Library!MPICH2}
 
 \item
 After completing Exercise~\ref{ex:introduction2},
-install all \pbdR packages and run each package's demo codes.
+install all \proglang{pbdR} packages and run each package's demo codes.
 \end{enumerate}
 
