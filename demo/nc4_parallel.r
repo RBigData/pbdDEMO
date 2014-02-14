@@ -1,5 +1,5 @@
-library(pbdDEMO, quiet = TRUE)
-library(pbdNCDF4, quiet = TRUE)
+library(pbdDEMO, quietly = TRUE)
+library(pbdNCDF4, quietly = TRUE)
 
 # -------------------------------------
 # Parallel write and read NetCDF4 file

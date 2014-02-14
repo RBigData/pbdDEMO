@@ -1,4 +1,4 @@
-library(pbdDEMO, quiet = TRUE)
+library(pbdDEMO, quietly = TRUE)
 
 if(comm.size() != 4){
   comm.stop("This example requries 4 processors.")

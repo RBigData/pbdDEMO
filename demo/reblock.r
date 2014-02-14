@@ -1,4 +1,4 @@
-library(pbdDEMO, quiet=TRUE)
+library(pbdDEMO, quietly=TRUE)
 
 init.grid(nprow=2, npcol=2)
 

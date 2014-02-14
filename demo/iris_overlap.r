@@ -1,4 +1,4 @@
-library(MixSim)
+library(MixSim, quietly=TRUE)
 
 ### iris data
 X <- as.matrix(iris[, -5])                                 # Iris matrix
