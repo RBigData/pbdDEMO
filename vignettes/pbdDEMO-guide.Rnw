@@ -1,47 +1,38 @@
+%%% Required by R CMD check
+%\VignetteIndexEntry{pbdDEMO-Guide}
 \documentclass[oneside,11pt]{book}
  \usepackage[margin=1.1in]{geometry}
 
-\newcommand{\demoversion}{1.2}
 
-% Style and settings
-\input{pbdDEMO-include/style.tex}
+\input{./pbdDEMO-include/preamble}
+\input{./pbdDEMO-include/style}
 
-%%% Required by R CMD check
-%\VignetteIndexEntry{pbdDEMO-Guide}
 
-\title{\Huge Speaking Serial R with a Parallel Accent\\[.3cm] 
-  {\LARGE \proglang{pbdR} Package Examples and Demonstrations}
-  {\small (Ver. \demoversion)}}
-
-\author{
-\begin{minipage}{\textwidth}
+\myversion{0.2-0}
+\mytitle{Speaking Serial R with a Parallel Accent}
+\mysubtitle{\proglang{pbdR} Package Examples and Demonstrations}
+\myauthor{
 \centering
+Drew Schmidt \\
+\textit{National Institute for Computational Sciences \\
+University of Tennessee}
+\\[.4cm]
 %
-% The pbdR Core Team\\[.8cm]
+Wei-Chen Chen \\
+\textit{Department of Ecology and Evolutionary Biology \\
+University of Tennessee}
+\\[.4cm]
 %
-Drew Schmidt\\
-{\small\emph{National Institute for Computational Sciences,\\
-University of Tennessee, Knoxville, TN, USA}}\\[.4cm]
-%%%
-Wei-Chen Chen\\
-{\small\emph{Department of Ecology and Evolutionary Biology,\\
-University of Tennessee, Knoxville, TN, USA}}\\[.4cm]
-%%%
-Pragneskumar Patel\\
-{\small\emph{National Institute for Computational Sciences,\\
-University of Tennessee, Knoxville, TN, USA}}\\[.4cm]
+George Ostrouchov \\
+\textit{Computer Science and Mathematics Division, \\
+Oak Ridge National Laboratory}
+\\[.4cm]
 %
-George Ostrouchov\\
-{\small\emph{Computer Science and Mathematics Division, \\
-Oak Ridge National Laboratory, Oak Ridge, TN, USA}}
-%%%
-\\[2.0in]
-Version \demoversion
-\\
-\date{\quad \today}
-%
-\end{minipage}
+Pragneshkumar Patel \\
+\textit{National Institute for Computational Sciences \\
+University of Tennessee}
 }
+
 
 \begin{document}
 
@@ -58,74 +49,19 @@ Version \demoversion
   \end{minipage}
 \end{figure}
 
-% \newpage\ \newpage
-
-%\date{\today}
-\maketitle
-
-\input{./pbdDEMO-include/frontmatter/00-copyright}
-
-
-%%%%%%%%%%%%%%%%%
-
-
-%%%%%%%%%%%%%%%%%
-
-\pagenumbering{roman}
-\newpage
-\fancyhf[C]{CONTENTS}
-\fancyhf[R]{\thepage }
-\fancyfoot{}
-\tableofcontents
-
-% ----------------------
-% Pre-body (roman numeral pages)
-% ----------------------
-
-\newpage
-\fancyhf[C]{}
-\cleardoublepage
-\phantomsection
-\addcontentsline{toc}{section}{List of Figures}
-\listoffigures
-
-\newpage
-\phantomsection
-\addcontentsline{toc}{section}{List of Tables}
-\listoftables
-
-%\newpage
-%\fancyhf[C]{}
-%\phantomsection
-%\input{./pbdDEMO-include/00-preface}
-
-% \newpage
-% \fancyhf[C]{}
-% \phantomsection
-% \input{./pbdDEMO-include/00-foreword}
-
-\newpage
-\fancyhf[C]{}
-\phantomsection
-\input{./pbdDEMO-include/frontmatter/00-acknowledgement}
-
-\newpage
-\fancyhf[C]{}
-\phantomsection
-\input{./pbdDEMO-include/frontmatter/00-warn}
-
-
 % ----------------------
 % Body
 % ----------------------
 
-\newpage
-\pagenumbering{arabic}
-\setcounter{page}{1}
-\pagestyle{fancy}
+\makefirstfew
 
-% Body header/footer style
-\bodyheadfoot
+% \newpage
+% \pagenumbering{arabic}
+% \setcounter{page}{1}
+% \pagestyle{fancy}
+% 
+% % Body header/footer style
+% \bodyheadfoot
 
 %%% intro
 \part{Preliminaries}
@@ -173,7 +109,6 @@ Version \demoversion
 %     \vskip 40\p@ % space after the title
 %   }}
 % \makeatother
-
 \renewcommand{\thechapter}{}
 
 \cleardoublepage
