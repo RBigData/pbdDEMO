@@ -1,4 +1,5 @@
 2014-02-14:
+ * Fixed broken demos.
  * Made vignette cover page conformable with other pbd packages.
  * Updated vignette quotes.
  * Removed experimental vignette features.
