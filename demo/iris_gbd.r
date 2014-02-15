@@ -2,7 +2,7 @@
 # Run: mpiexec -np 4 Rscript iris_gbd.r
 
 rm(list = ls())                                       # Clean environment
-library(pbdMPI, quiet = TRUE)                         # Load library
+library(pbdMPI, quietly = TRUE)                         # Load library
 if(comm.size() != 4)
   comm.stop("4 processors are required.")
 

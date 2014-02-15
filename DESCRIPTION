@@ -1,6 +1,6 @@
 Package: pbdDEMO
 Title: Programming with Big Data -- Demonstrations of pbd Packages
-Version: 0.1-2
+Version: 0.2-0
 Date: 2014-02-01
 Depends: R (>= 3.0.0), methods, rlecuyer, pbdMPI (>= 0.2-2), pbdSLAP
         (>= 0.1-7), pbdBASE (>= 0.2-3), pbdDMAT(>= 0.2-3)
@@ -22,7 +22,7 @@ URL: http://r-pbd.org/
 BugReports: http://group.r-pbd.org/
 MailingList: Please send questions and comments regarding pbdR to
         RBigData@gmail.com
-Packaged: 2014-02-13 19:08:34 UTC; snoweye
+Packaged: 2014-02-15 20:20:48 UTC; snoweye
 Author: Drew Schmidt [aut, cre],
   Wei-Chen Chen [aut],
   George Ostrouchov [aut],

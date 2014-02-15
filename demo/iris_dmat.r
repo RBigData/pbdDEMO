@@ -2,7 +2,7 @@
 # Run: mpiexec -np 4 Rscript iris_dmat.r
 
 rm(list = ls())                                       # Clean environment
-library(pbdDMAT, quiet = TRUE)                        # Load library
+library(pbdDMAT, quietly = TRUE)                        # Load library
 init.grid()
 #if(comm.size() != 4)
 #  comm.stop("4 processors are required.")

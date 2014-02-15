@@ -1,5 +1,5 @@
 ### Initial library
-library(pbdMPI, quiet = TRUE)
+library(pbdMPI, quietly = TRUE)
 comm.set.seed(1234, diff = TRUE)                         # set different stream
 
 ### Set configurations. 

@@ -1,5 +1,5 @@
 # Initialize MPI
-suppressPackageStartupMessages(library(pbdDEMO, quiet = TRUE))
+suppressPackageStartupMessages(library(pbdDEMO, quietly = TRUE))
 init.grid()
 
 # Number of rows/columns

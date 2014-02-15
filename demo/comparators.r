@@ -1,7 +1,7 @@
 ### SHELL> mpiexec -np 4 Rscript --vanilla [...].r
 
 ### Setup environment.
-suppressPackageStartupMessages(library(pbdDEMO, quiet = TRUE))
+suppressPackageStartupMessages(library(pbdDEMO, quietly = TRUE))
 if(comm.size() != 4){
   comm.stop("This example requries 4 processors.")
 }

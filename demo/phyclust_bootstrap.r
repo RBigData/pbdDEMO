@@ -1,6 +1,6 @@
 ### Initial
-library(pbdDEMO, quiet = TRUE)
-library(phyclust, quiet = TRUE)
+library(pbdDEMO, quietly = TRUE)
+library(phyclust, quietly = TRUE)
 
 ### Load data
 data.path <- paste(.libPaths()[1], "/phyclust/data/pony524.phy", sep = "")
