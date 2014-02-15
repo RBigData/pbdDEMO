@@ -8,8 +8,8 @@
 ### Utility function.
 demo.ncvar_ndim <- function(nc, varid, verbose = FALSE){
   ### get variable id from the nc header
-  idobj <- pbdNCDF4:::vobjtovarid4(nc, varid, verbose = verbose,
-                                   allowdimvar = TRUE)
+  idobj <- pbdNCDF4::vobjtovarid4(nc, varid, verbose = verbose,
+                                  allowdimvar = TRUE)
 
   ### obtain storage dimension
   length(nc$var[[idobj$list_index]]$dim)
@@ -104,8 +104,8 @@ demo.ncvar_get_2D <- function(nc, varid, start = NA, count = NA,
     verbose = FALSE, signedbyte = TRUE, collapse_degen = TRUE,
     comm = .SPMD.CT$comm){
   ### get variable id from the nc header
-  idobj <- pbdNCDF4:::vobjtovarid4(nc, varid, verbose = verbose,
-                                   allowdimvar = TRUE)
+  idobj <- pbdNCDF4::vobjtovarid4(nc, varid, verbose = verbose,
+                                  allowdimvar = TRUE)
 
   ### obtain storage dimension
   ndim <- length(nc$var[[idobj$list_index]]$dim)
