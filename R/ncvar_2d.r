@@ -46,8 +46,8 @@ demo.ncvar_put_2D <- function(nc, varid, vals, start = NA, count = NA,
   }
 
   ### parallel write
-  pbdNCDF4:::nc_var_par_access(nc, varid, verbose = verbose)
-  pbdNCDF4:::ncvar_put(nc, varid, as.vector(vals),
+  pbdNCDF4::nc_var_par_access(nc, varid, verbose = verbose)
+  pbdNCDF4::ncvar_put(nc, varid, as.vector(vals),
                        start = start, count = count, verbose = verbose)
 
   invisible()
@@ -149,8 +149,8 @@ demo.ncvar_get_2D <- function(nc, varid, start = NA, count = NA,
   }
 
   ### parallel read
-  pbdNCDF4:::nc_var_par_access(nc, varid)
-  vals <- try(pbdNCDF4:::ncvar_get(nc, varid, start = start, count = count,
+  pbdNCDF4::nc_var_par_access(nc, varid)
+  vals <- try(pbdNCDF4::ncvar_get(nc, varid, start = start, count = count,
                                    verbose = verbose, signedbyte = signedbyte,
                                    collapse_degen = collapse_degen),
               silent = TRUE)
