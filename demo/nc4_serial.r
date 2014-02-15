@@ -1,5 +1,5 @@
-library(pbdDEMO, quiet = TRUE)
-library(pbdNCDF4, quiet = TRUE)
+library(pbdDEMO, quietly = TRUE)
+library(pbdNCDF4, quietly = TRUE)
 
 # -------------------------------------
 # Serial write and read NCDF4 file

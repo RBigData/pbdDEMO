@@ -1,4 +1,4 @@
-library(pbdDEMO, quiet = TRUE)
+library(pbdDEMO, quietly = TRUE)
 
 # -------------------------------------
 # Read example file
