@@ -3,7 +3,10 @@
 \label{chp:pmclust}
 
 
-\inspire{I listen to their story, they listen to my comments, and then I pocket my fee.}{Sherlock Holmes}
+\inspire%
+{If people do not believe that mathematics is simple, it is only because they do not realize how 
+complicated life is.}%
+{John von Neumann}
 
 
 \section{Introduction}
@@ -108,7 +111,7 @@ EM algorithm. For completeness' sake, a simple k-means algorithm is also
 implemented in \pkg{pmclust}.
 
 The \pkg{pmclust} package is the first
-\proglang{pbdR} application, and the first
+\pbdR application, and the first
 \proglang{R} package in SPMD to analyze distributed data in Gigabyte scale.
 It was originally designed for analyzing Climate simulation outputs (CAM5),
 as discussed in Section~\ref{sec:pbdNCDF4_introduction}, and
@@ -120,7 +123,7 @@ The \pkg{pmclust} package initially depended on
 \pkg{Rmpi}\index{Package!\pkg{Rmpi}}, but
 designed in SPMD approach\index{Parallelism!SPMD}
 rather than in the manager/worker paradigm even before
-\proglang{pbdR} existed.
+\pbdR existed.
 Later, it migrated to use \pkg{pbdMPI}~\citep{Chen2012pbdMPIpackage}
 because of performance issues with \pkg{Rmpi}\index{Package!\pkg{Rmpi}}
 on larger machines. So, by default, the package assumes data are stored in
@@ -415,7 +418,7 @@ Finally, figure~\ref{fig:iris_cluster_gbd}
   \centering
   \includegraphics[width=4in]{pbdDEMO-include/pics/dmat_plot.pdf}
   \caption{Iris Clustering Plots --- GBD}
-  \label{fig:iris_cluster_gbd}
+  \label{fig:iris_cluster_dmat}
 \end{figure}
 shows the visualization created by this script.
 

@@ -1,44 +1,38 @@
+%%% Required by R CMD check
+%\VignetteIndexEntry{pbdDEMO-Guide}
 \documentclass[oneside,11pt]{book}
  \usepackage[margin=1.1in]{geometry}
 
-% Style and settings
-\input{pbdDEMO-include/style.tex}
 
-%%% Required by R CMD check
-%\VignetteIndexEntry{pbdDEMO-Guide}
+\input{./pbdDEMO-include/preamble}
+\input{./pbdDEMO-include/style}
 
-\title{\Huge Speaking Serial R with a Parallel Accent\\[.3cm] 
-  {\LARGE \proglang{pbdR} Package Examples and Demonstrations}}
 
-\author{
-\begin{minipage}{\textwidth}
+\myversion{0.2-0}
+\mytitle{Speaking Serial R with a Parallel Accent}
+\mysubtitle{\proglang{pbdR} Package Examples and Demonstrations}
+\myauthor{
 \centering
+Drew Schmidt \\
+\textit{National Institute for Computational Sciences \\
+University of Tennessee}
+\\[.4cm]
 %
-% The pbdR Core Team\\[.8cm]
+Wei-Chen Chen \\
+\textit{Department of Ecology and Evolutionary Biology \\
+University of Tennessee}
+\\[.4cm]
 %
-Drew Schmidt\\
-{\small\emph{Remote Data Analysis and Visualization Center,\\
-University of Tennessee, Knoxville}}\\[.4cm]
-%%%
-Wei-Chen Chen\\
-{\small\emph{Computer Science and Mathematics Division, \\
-Oak Ridge National Laboratory}}\\[.4cm]
-%%%
-Pragneskumar Patel\\
-{\small\emph{Remote Data Analysis and Visualization Center,\\
-University of Tennessee, Knoxville}}\\[.4cm]
+George Ostrouchov \\
+\textit{Computer Science and Mathematics Division, \\
+Oak Ridge National Laboratory}
+\\[.4cm]
 %
-George Ostrouchov\\
-{\small\emph{Computer Science and Mathematics Division, \\
-Oak Ridge National Laboratory}}
-%%%
-\\[2.0in]
-Version 1.1
-\\
-\date{\quad \today}
-%
-\end{minipage}
+Pragneshkumar Patel \\
+\textit{National Institute for Computational Sciences \\
+University of Tennessee}
 }
+
 
 \begin{document}
 
@@ -55,82 +49,19 @@ Version 1.1
   \end{minipage}
 \end{figure}
 
-% \newpage\ \newpage
-
-
-%\date{\today}
-\maketitle
-
-%%%%%%%%%%%%%%%%%
-\ \vfill
-
-\copyright\ 2012-2013 pbdR Core Team.  All rights reserved.
-
-Permission is granted to make and distribute verbatim copies of this vignette
-and its source provided the copyright notice and this permission notice are
-preserved on all copies.
-
-This publication was typeset using \LaTeX. Illustrations were created
-using the \pkg{ggplot2} package \citep{ggplot2}, native \proglang{R} functions,
-and Microsoft Powerpoint.
-
-%%%%%%%%%%%%%%%%%
-
-\pagenumbering{roman}
-\newpage
-\fancyhf[C]{CONTENTS}
-\fancyhf[R]{\thepage }
-\fancyfoot{}
-\tableofcontents
-
-% ----------------------
-% Pre-body (roman numeral pages)
-% ----------------------
-
-\newpage
-\fancyhf[C]{}
-\cleardoublepage
-\phantomsection
-\addcontentsline{toc}{section}{List of Figures}
-\listoffigures
-
-\newpage
-\phantomsection
-\addcontentsline{toc}{section}{List of Tables}
-\listoftables
-
-%\newpage
-%\fancyhf[C]{}
-%\phantomsection
-%\input{./pbdDEMO-include/00-preface}
-
-% \newpage
-% \fancyhf[C]{}
-% \phantomsection
-% \input{./pbdDEMO-include/00-foreword}
-
-\newpage
-\fancyhf[C]{}
-\phantomsection
-\input{./pbdDEMO-include/00-acknowledgement}
-
-\newpage
-\fancyhf[C]{}
-\phantomsection
-\input{./pbdDEMO-include/00-warn}
-
-
 % ----------------------
 % Body
 % ----------------------
 
-\newpage
-\pagenumbering{arabic}
-\setcounter{page}{1}
-\pagestyle{fancy}
+\makefirstfew
 
-% Body header/footer style
-\bodyheadfoot
+% \newpage
+% \pagenumbering{arabic}
+% \setcounter{page}{1}
+% \pagestyle{fancy}
+% 
+% % Body header/footer style
+% \bodyheadfoot
 
 %%% intro
 \part{Preliminaries}
@@ -156,8 +87,8 @@ and Microsoft Powerpoint.
 \input{./pbdDEMO-include/applications/a1-logL}
 \input{./pbdDEMO-include/applications/a2-pmclust}
 \input{./pbdDEMO-include/applications/a3-phyclust}
-%%% \input{./pbdDEMO-include/applications/a4-Bayes}
-\input{./pbdDEMO-include/applications/a5-ts}
+\input{./pbdDEMO-include/applications/a4-Bayes}
+% \input{./pbdDEMO-include/applications/a5-ts}
 %%% appendices
 \part{Appendix}
 \appendix
@@ -178,7 +109,6 @@ and Microsoft Powerpoint.
 %     \vskip 40\p@ % space after the title
 %   }}
 % \makeatother
-
 \renewcommand{\thechapter}{}
 
 \cleardoublepage

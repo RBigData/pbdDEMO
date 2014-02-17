@@ -2,7 +2,10 @@
 \label{sec:bg}
 
 
-\inspire{My name is Sherlock Holmes. It is my business to know what other people don't know.}{Sherlock Holmes}
+\inspire%
+{We stand at the threshold of a many core world. The hardware community is ready to cross this 
+threshold. The parallel software community is not.}%
+{Tim Mattson}
 
 
 \section{Parallelism}
@@ -105,7 +108,7 @@ manager/workers paradigm\index{Parallelism!manager/workers paradigm}
 (more on this later).  Common packages for this kind of work include 
 \pkg{snow}~\citep{Tierney2012}\index{Package!\pkg{snow}}, 
 \pkg{parallel}~\citep{parallel}\index{Package!\pkg{parallel}}, and 
-\pkg{Rmpi}~\citep{Rmpi}\index{Package!\pkg{Rmpi}}\footnote{For more examples, 
+\pkg{Rmpi}~\citep{Yu2002}\index{Package!\pkg{Rmpi}}\footnote{For more examples, 
 see ``CRAN Task View: High-Performance and Parallel Computing with R'' at 
 \url{http://cran.r-project.org/web/views/HighPerformanceComputing.html}.}.
 
@@ -199,7 +202,7 @@ This paradigm is just one model of parallel programming, and in reality, is a so
 The two are not mutually exclusive, however.  It is easy enough to engage in task parallelism from an SPMD-written program.  To do this, you essentially create a ``task-parallelism block'', where one processor
 
 \pseudocode{
-  \If {$this\_processor == manager$} \label{pseudo2:load}
+  \If {$this\_processor == manager$}
       \State distribute\_tasks()
   \Else
       \State receive\_tasks()

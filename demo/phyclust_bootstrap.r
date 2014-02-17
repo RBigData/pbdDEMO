@@ -1,6 +1,6 @@
 ### Initial
-library(pbdDEMO, quiet = TRUE)
-library(phyclust, quiet = TRUE)
+library(pbdDEMO, quietly = TRUE)
+library(phyclust, quietly = TRUE)
 
 ### Load data
 data.path <- paste(.libPaths()[1], "/phyclust/data/pony524.phy", sep = "")
@@ -47,7 +47,6 @@ FUN <- function(jid){
 ret <- task.pull(1:100, FUN)
 if(comm.rank() == 0){
   LRT.B <- unlist(ret) 
-  LRT.B <- LRT.B[names(LRT.B) == "ret"]
   cat("K0: ", K0, "\n",
       "Ka: ", Ka, "\n",
       "logL K0: ", ret.K0$logL, "\n",

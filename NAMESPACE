@@ -13,15 +13,9 @@ export(
   unload.balance,
   gbd2dmat,
   dmat2gbd,
-  ### dumb readers
-  read.csv.ddmatrix, 
-  read.sql.ddmatrix,
-  ### netcdf gbd/dmat
-  ncvar_put_gbd, 
-  ncvar_put_dmat, 
-  ncvar_get_gbd, 
-  ncvar_get_dmat,
-  ### misc
+  ###
+  read.csv.ddmatrix, read.sql.ddmatrix,
+  ###
   plot_dmat,
   timer,
   verify.svd,

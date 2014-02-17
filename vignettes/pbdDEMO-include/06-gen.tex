@@ -4,7 +4,10 @@
 \chapter{Constructing Distributed Matrices}
 \label{chap:makedmat}
 
-\inspire{I never make exceptions. An exception disproves the rule.}{Sherlock Holmes}
+\inspire%
+{Truth is ever to be found in the simplicity, and not in the multiplicity and confusion of things. 
+}%
+{Sir Isaac Newton}
 \vspace{0.5cm}
 
 
@@ -296,12 +299,12 @@ blocking factor that will divide the number of local rows or columns.
 
 
 \section{Exercises}
-\label{sec:statistics_exercise}
+\label{sec:gen_exercise}
 
 \begin{enumerate}[label=\thechapter-\arabic*]
 \item
 Random number generation (RNG) is used in this Section such as \code{rnorm()}.
-In \proglang{pbdR}, we use an \proglang{R} package
+In \pbdR, we use an \proglang{R} package
 \pkg{rlecuyer}~\citep{rlecuyer}\index{Package!\pkg{rlecuyer}}
 to set different streams of seed in
 parallel. Try to find and use other RNG methods or implementations

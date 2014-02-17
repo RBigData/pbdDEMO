@@ -9,7 +9,7 @@
 }
 \usage{
   balance.info(X.gbd, comm = .SPMD.CT$comm, gbd.major = .DEMO.CT$gbd.major,
-               method = .DEMO.CT$divide.method)
+               method = .DEMO.CT$divide.method[1])
   load.balance(X.gbd, bal.info = NULL, comm = .SPMD.CT$comm, 
                gbd.major = .DEMO.CT$gbd.major)
   unload.balance(new.X.gbd, bal.info, comm = .SPMD.CT$comm)

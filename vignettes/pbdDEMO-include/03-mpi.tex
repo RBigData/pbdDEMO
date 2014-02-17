@@ -1,12 +1,10 @@
-
-%%% ----------------------------------------------------------------------
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 \chapter{MPI for the R User}
 \label{chp:mpi_for_the_r_user}
 
-\inspire{I cannot live without brain-work. What else is there to live for?}{Sherlock Holmes}
+\inspire%
+{Everybody who learns concurrency thinks they understand it, ends up finding mysterious races they 
+thought weren't possible, and discovers that they didn't actually understand it yet after all.}%
+{Herb Sutter}
 \vspace{0.5cm}
 
 
@@ -78,7 +76,7 @@ vignette.
 
 There is another package on the CRAN which the \proglang{R} programmer may
 use to interface with MPI, namely
-\pkg{Rmpi}\index{Package!\pkg{Rmpi}}~\citep{Rmpi}. There are several issues
+\pkg{Rmpi}\index{Package!\pkg{Rmpi}}~\citep{Yu2002}. There are several issues
 one must consider when choosing which package to use if one were to only
 use one of them.
 \begin{enumerate}
@@ -86,7 +84,7 @@ use one of them.
  \item $(+)$ \pkg{pbdMPI} is easier to use than \pkg{Rmpi}
  \item\label{enum:perf} $(+)$ \pkg{pbdMPI} can often outperform \pkg{Rmpi}
  \item\label{enum:integrate} $(+)$ \pkg{pbdMPI} integrates with the rest of
-       \proglang{pbdR}
+       \pbdR
  %
  \item\label{enum:dompi} $(-)$ \pkg{Rmpi} can be used with
       \pkg{foreach}~\citep{foreach}\index{Package!\pkg{foreach}} via
@@ -96,7 +94,7 @@ use one of them.
 
 We do not believe that the above can be reduced to a zero-sum game with
 unambiguous winner and loser. Ultimately the needs of the user (or
-developer) are paramount. We believe that \proglang{pbdR}
+developer) are paramount. We believe that \pbdR
 makes a very good case for itself, especially in the SPMD style,
 but it can not satisfy everyone. However, for the remainder of this
 section, we will present the case for several of the, as yet,
@@ -673,9 +671,9 @@ family of ``*ply'' functions, in the same vein as \proglang{R}'s
   \code{pbdLapply(X, FUN, \dots)} --- analogue of \code{lapply()}\\
   \code{pbdSapply(X, FUN, \dots)} --- analogue of \code{sapply()}
 \end{itemize}
-\index{Code!\code{pbdApply}}
-\index{Code!\code{pbdLapply}}
-\index{Code!\code{pbdSapply}}
+\index{Code!\code{pbdApply()}}
+\index{Code!\code{pbdLapply()}}
+\index{Code!\code{pbdSapply()}}
 For more efficient approach (non-barrier), one may consider use task pull
 parallelism instead of ``*ply'' functions, see Section~\ref{sec:task_pull}
 for more details.
@@ -750,7 +748,8 @@ The demo command is
 mpiexec -np 4 Rscript -e "demo(comparators,'pbdDEMO',ask=F,echo=F)"
 \end{lstlisting}
 
-The case frequently arises where
+This final MPI example is not statistical in nature, but is very useful
+all the same, and so we include it here. The case frequently arises where
 the MPI programmer will need to do logical comparisons across all processes.
 The idea is to extend the very handy \code{all()} and \code{any()}
 base \proglang{R} functions to operate similarly on distributed logicals.
@@ -825,7 +824,7 @@ if (rank==0){
 need2stop <- comm.any(need2stop)
 
 if (need2stop)
-  comm.stop("Problem :[") 
+  stop("Problem :[") 
 \end{lstlisting}
 
 

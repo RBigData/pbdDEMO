@@ -1,6 +1,11 @@
-library(pbdDEMO, quiet = TRUE)
-# Initialize MPI
+library(pbdDEMO, quietly = TRUE)
+
+if(comm.size() != 4){
+  comm.stop("This example requries 4 processors.")
+}
+
 init.grid()
+
 
 # Read in example csv file
 file.path <- system.file("extra/data/x.csv", package = "pbdDEMO")

@@ -204,6 +204,7 @@ read.csv.ddmatrix <- function(file, sep=",", nrows, ncols, header=FALSE, bldim=4
   
   out <- new("ddmatrix", Data=Data, dim=dim, ldim=ldim, bldim=tmpbl, ICTXT=MYCTXT)
   
+  print(out)
   comm.print(Data, all.rank=T)
   
   if (ICTXT != MYCTXT || any(tmpbl != bldim) )
