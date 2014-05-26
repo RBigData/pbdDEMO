@@ -24,13 +24,14 @@ the observations of the same group are more similar in characteristics with
 each other than those between different groups.
 
 
-\subsection{Distributed Distance and Comparisons}
+\section{Distributed Distance and Comparisons}
 
 Suppose $x$ and $y$ are two observations and $d(x, y)$ is a distance or
 a comparison of $x$ and $y$.
 Although, it is efficient to compute a distance of any two observations
 in \proglang{R} via \code{dist()} serially, it becomes non-trivial to
 compute distance of distributed observations in parallel.
+
 The potential problems are:
 \begin{itemize}
 \item
@@ -39,14 +40,50 @@ are not located within the same processor.
 \item
 The resulting distance matrix may be too big
 to held in one processor as data size increased even only a half (lower
-triangular of the matrix is stored.
+triangular matrix is stored as row-major in a vector.)
 \item
 Compute all comparisons may be too time consuming even for small data sets. 
 \end{itemize}
 
-The \code{dist()} only supports a few distance methods and assume
+Distributed situations of observations and computed results (distance
+matrix) are categorized next.
+\begin{itemize}
+\item Both observations and distance matrix are in one node and may both be
+      in serial or in parallel within the node, typically SMP via OpenMP.
+\item Observations are in common in all processors
+      and distance matrix is distributed across nodes.
+\item Observations are distributed across nodes
+      and distance matrix is in common in all nodes.
+\item Both observations and distance matrix are distributed
+      across nodes.
+\end{itemize}
+Here, we may presume the distribution method is GBD row-major matrix (or
+row-block major) as introduced in Section~\ref{sec:gbdstruct} since most of
+native \proglang{R} functions can be extend and reused in such a way.
+
+Note that the \code{dist()} only supports a few distance methods and assume
 distance is symmetric by definition. However,
 in practice, a more general measure may not be necessarily
 symmetric of two observations. i.e. $d(x, y) \neq d(y, x)$.
-In some cases, $d(x, x) \neq 0$.
+In some cases, $d(x, x) \neq 0$ and the distance may also be dependent
+on other measurements or conditions.
+
+
+\section{Hierarchical Clustering}
+
+
+
+\section{Phylogenetic Tree}
+
+
+
+\section{Exercises}
+\label{sec:pairwise_exercise}
+
+\begin{enumerate}[label=\thechapter-\arabic*]
+
+\item
+
+\end{enumerate}
+
 
