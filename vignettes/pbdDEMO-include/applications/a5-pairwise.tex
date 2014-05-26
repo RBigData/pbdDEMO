@@ -1,0 +1,52 @@
+\chapter{Pairwise Distance and Comparisons}
+\label{chp:pairwise}
+
+\inspire%
+{An approximate answer to the right problem is worth a good deal more than
+an exact answer to an approximate problem.}%
+{John Tukey}
+
+
+\section{Introduction}
+
+Distance is not only a tool in geometry, but also appears in statistics. For
+example, least square method in regression can be simply derived and computed
+via Euclidean distance. The solution line is an approximate answer
+in terms of minimum distance to all observations. Distance is also related
+to a measure of two observations which describes relationship of both.
+Usually, the smaller the closer. For example, the higher probability of
+one virus evolving to a mutant means the smaller distance of two viruses
+as described in Chapter~\ref{chp:phyloclustering}.
+Further, distance method is simple to apply on clustering problems
+and easy to visualize data structures such as K-means algorithm
+introduced in Chapter~\ref{chp:pmclust}. For instance,
+the observations of the same group are more similar in characteristics with
+each other than those between different groups.
+
+
+\subsection{Distributed Distance and Comparisons}
+
+Suppose $x$ and $y$ are two observations and $d(x, y)$ is a distance or
+a comparison of $x$ and $y$.
+Although, it is efficient to compute a distance of any two observations
+in \proglang{R} via \code{dist()} serially, it becomes non-trivial to
+compute distance of distributed observations in parallel.
+The potential problems are:
+\begin{itemize}
+\item
+Communication must be evoked between processors when any two observations
+are not located within the same processor.
+\item
+The resulting distance matrix may be too big
+to held in one processor as data size increased even only a half (lower
+triangular of the matrix is stored.
+\item
+Compute all comparisons may be too time consuming even for small data sets. 
+\end{itemize}
+
+The \code{dist()} only supports a few distance methods and assume
+distance is symmetric by definition. However,
+in practice, a more general measure may not be necessarily
+symmetric of two observations. i.e. $d(x, y) \neq d(y, x)$.
+In some cases, $d(x, x) \neq 0$.
+

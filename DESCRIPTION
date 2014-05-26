@@ -15,14 +15,14 @@ Authors@R: c(person("Drew", "Schmidt", role = c("aut", "cre"), email =
 Description: pbdDEMO is a set of demos of pbdR packages, with a useful,
         unifying vignette.
 SystemRequirements: OpenMPI (>= 1.5.4) on Solaris, Linux, Mac, and
-        FreeBSD. MS-MPI (Microsoft HPC Pack 2012 R2 MS-MPI Redistributable
-        Package) on Windows.
+        FreeBSD. MS-MPI (Microsoft HPC Pack 2012 R2 MS-MPI
+        Redistributable Package) on Windows.
 License: GPL (>= 2)
 URL: http://r-pbd.org/
 BugReports: http://group.r-pbd.org/
 MailingList: Please send questions and comments regarding pbdR to
         RBigData@gmail.com
-Packaged: 2014-02-15 20:20:48 UTC; snoweye
+Packaged: 2014-05-24 20:21:25 UTC; snoweye
 Author: Drew Schmidt [aut, cre],
   Wei-Chen Chen [aut],
   George Ostrouchov [aut],
