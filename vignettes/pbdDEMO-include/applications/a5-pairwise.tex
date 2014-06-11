@@ -27,18 +27,27 @@ each other than those between different groups.
 
 Potentially, compute distance of several observations involve half of
 pairwise comparisons if distance is symmetric, and involve all pairwise
-comparison if distance is not symmetric. Also, if number of observations
+comparisons if distance is not symmetric. Also, if number of observations
 is small, then most of distance methods can be compute efficient within
 one core. For moderate number of observations or complex distance systems,
 the computing can be parallelized wisely in several levels. For example,
-one may utilize multiple threads, co-processors, or distributed parallelization
+one may utilize multiple threads or co-processors
 to archive performance gains.
+For large number of observations, the computing is not trivial if
+data are distributed across cores. Further, the dimension of resulting
+distance array may be much larger the number of observations and
+can only be held distributed across cores.
+Note that for some models or iterative algorithms, it is not wise to dump the
+distance array into disk since that decreases performance due to overhead
+cost for I/O. For example, one may utilize
+distributed parallelization to avoid these restrictions.
 
 In the context of \pbdR,
 we focus on distributed methods and abstract
 computing of distance to allow user-defined comparison (dissimilarity)
 functions of any two observations.
-We introduce issues and methods of distributed distance and comparisons first,
+We briefly introduce issues and methods of distributed distance and
+comparisons first,
 and followed by demonstration of hierarchical clusterings on the
 \code{iris}\index{Data!iris}
 dataset of Chapter~\ref{chp:pmclust}. Then, we provide a biological
@@ -53,6 +62,8 @@ evolutionary models to compute probability distance.
 
 Suppose $x$ and $y$ are two observations and $d(x, y)$ is a distance or
 a comparison of $x$ and $y$.
+Note that $x$, $y$, and $d(\dot, \dot)$ could be very generic as long as
+they are well defined.
 Although, it is efficient to compute a distance of any two observations
 in \proglang{R} via \code{dist()}\index{Code!\code{dist()}}
 serially, it becomes non-trivial to
