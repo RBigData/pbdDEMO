@@ -60,28 +60,33 @@ compute distance of distributed observations in parallel.
 
 The potential problems include:
 \begin{itemize}
-\item
-Communication must be evoked between processors when any two observations
-are not located within the same processor.
-\item
-The resulting distance matrix may be too big
-to held in one processor as data size increased even only a half (lower
-triangular matrix is stored as row-major in a vector.)
-\item
-Compute all comparisons may be too time consuming even for small data sets. 
+\item[(P1)]
+      Communication must be evoked between processors when any two observations
+      are not located within the same processor.
+\item[(P2)]
+      The resulting distance matrix may be too big
+      to held in one processor as data size increased even only a half (lower
+      triangular matrix is stored as row-major in a vector.)
+\item[(P3)]
+      Compute all comparisons may be too time consuming even for small data
+      sets. 
 \end{itemize}
 
 Distributed situations of observations and computed results (distance
 matrix) are categorized next.
 \begin{itemize}
-\item Both observations and distance matrix are in one node and may both be
+\item[(C1)]
+      Both observations and distance matrix are in one node and may both be
       in serial or in parallel within the node, typically via
       OpenMP~\citep{OpenMP}\index{Library!OpenMP}.
-\item Observations are in common in all processors
+\item[(C2)]
+      Observations are in common in all processors
       and distance matrix is distributed across nodes.
-\item Observations are distributed across nodes
+\item[(C3)]
+      Observations are distributed across nodes
       and distance matrix is in common in all nodes.
-\item Both observations and distance matrix are distributed
+\item[(C4)]
+      Both observations and distance matrix are distributed
       across nodes.
 \end{itemize}
 Here, we may presume the distribution method is GBD row-major matrix (or
@@ -108,12 +113,12 @@ The method option ``average'' linkage is equivalent to
 UPGMA (Unweighted Pair Group Method with Arithmetic Mean)\index{UPGMA}
 method~\citep{Sokal1985} one of popular methods in ecology for classification.
 
-For example, the iris dataset used in Chapter~\ref{chp:pmclust} can be
-clustered in hierarchical clustering. First, we distribute 150 iris data
+For example, the \code{iris} dataset used in Chapter~\ref{chp:pmclust} can be
+clustered in hierarchical clustering. First, we distribute 150 observations
 in four cores and compute Euclidean distances in four dimensional space.
 We compute the dissimilarity matrix in distributed manners via a
 utility function \code{comm.dist()}\index{Code!\code{comm.dist()}}
-in \pkg{pbdMPI}~\citep{Chen2012pbdMPIpackage}
+of \pkg{pbdMPI}~\citep{Chen2012pbdMPIpackage}
 and store the result in a common matrix across all cores. We based on
 the matrix to perform a UPGMA clustering. The example in SPMD can be
 found in demo via
@@ -134,11 +139,43 @@ and it returns a dendrogram as Figure~\ref{fig:dist_iris}.
 
 \section{Phylogenetic Tree}
 
-In some sense, Figure~\ref{fig:dist_iris} is an rooted tree and the
+In some sense, Figure~\ref{fig:dist_iris} is a rooted tree and the
 ``average'' method as well as UPGMA assumes a constant rate of evolution
 (molecular clock hypothesis). However, these assumption may not be
-appropriate to most biological topics.
+appropriate to most sequence evolutionary topics where a gene tree should
+be more suitable to interpret relation of sequences and species.
+We introduce a common approach in evolution biology and build a
+phylogenetic tree for {\it Pony 524} dataset\index{Data!Pony 524}.
+We select JC69 evolutionary model\ref{}
+to compute for distance of 146 EIAV sequences and
+use a neighbor-joining tree\ref{} to build an unrooted tree.
 
+The purpose is to design a wrapper function, says \code{my.dist(x, y)},
+that takes a pairs of observations \code{x} and \code{y} as inputs, and
+returns a user-defined distance of given data.
+The utility function \code{comm.pairwise()}\index{Code!\code{comm.pairwise()}}
+of \pkg{pbdMPI}~\citep{Chen2012pbdMPIpackage}
+is more flexible than \code{comm.dist()}.
+Through the options \code{pairid.gbd} and \code{FUN = my.dist}, the
+function can evaluate \code{my.dist()} on the given dataset \code{X} in
+row major blocks.
+For {\it Pony 524}, the \code{X} is the DNA sequences and \code{my.dist()}
+is a wrapper of \code{phyclust.edist}\index{Code!\code{phyclust.edist()}}.
+
+The example in SPMD can be found in demo via
+\begin{lstlisting}
+### At the shell prompt, run the demo with 4 processors by
+### (Use Rscript.exe for windows system)
+mpiexec -np 4 Rscript -e "demo(dist_pony,'pbdDEMO',ask=F,echo=F)"
+\end{lstlisting}
+and it returns a neighbor-joining tree as Figure~\ref{fig:dist_pony}.
+
+% \begin{figure}[h!tb]
+% \centering
+%  \includegraphics[width=5.5in]{pbdDEMO-include/pics/dist_iris}
+% \caption{Neighbor-joining tree result of {\it Pony 524} dataset.}
+% \label{fig:dist_iris}
+% \end{figure}
 
 
 \section{Exercises}
@@ -154,6 +191,18 @@ covariance matrices.
 \item
 Prove that the ``average'' method of \code{hclust()} is equivalent to the
 UPGMA method.
+
+\item
+Given $n$ observations or taxa, find numbers of rooted and unrooted trees
+analytically .
+
+\item
+What are potential limitations of distance approaches?
+
+\item
+As number of observations increases, the data and the distance matrix are
+both distributed. State potential problems of implementations and costs
+of communications.
 
 \end{enumerate}
 
