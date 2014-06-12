@@ -132,7 +132,7 @@ takes a dissimilarity structure as
 produced by \code{dist()} and returns a tree object can be visualized.
 The method option ``average'' linkage is equivalent to
 UPGMA (Unweighted Pair Group Method with Arithmetic Mean)\index{UPGMA}
-method~\citep{Sokal1985} which is one of popular methods in ecology for
+method~\citep{Sokal1958} which is one of popular methods in ecology for
 classification.
 
 For example, the \code{iris} dataset used in Chapter~\ref{chp:pmclust} can be
@@ -159,7 +159,7 @@ are potentially overlapped and differ from ``Setosa'' (in red).
 \begin{figure}[h!tb]
 \centering
  \includegraphics[width=6.5in]{pbdDEMO-include/pics/dist_iris}
-\caption{Hierarchical clustering result of \code{iris} dataset.}
+\caption{Hierarchical clustering result of \code{iris}\ dataset.}
 \label{fig:dist_iris}
 \end{figure}
 
@@ -175,7 +175,8 @@ We introduce a popular approach in evolution biology and build a
 evolutionary tree for {\it Pony 524} dataset\index{Data!Pony 524}.
 We select JC69 evolutionary model~\citep{Jukes1969} as a probability measure
 to compute for distance (evolution time) of 146 EIAV sequences and
-use a neighbor joining tree~\citep{Saitou1987} to build an unrooted tree.
+use a neighbor joining tree~\citep{Saitou1987}\index{Algorithm!neighbor-joining}
+to build an unrooted tree.
 
 The purpose is to design a wrapper function, says \code{my.dist(x, y)},
 that takes a pairs of sequences \code{x} and \code{y} as inputs, and
@@ -197,12 +198,13 @@ mpiexec -np 4 Rscript -e "demo(dist_pony,'pbdDEMO',ask=F,echo=F)"
 \end{lstlisting}
 and it returns a neighbor-joining tree as Figure~\ref{fig:dist_pony}.
 
-% \begin{figure}[h!tb]
-% \centering
-%  \includegraphics[width=5.5in]{pbdDEMO-include/pics/dist_pony}
-% \caption{Neighbor-joining tree result of {\it Pony 524} dataset.}
-% \label{fig:dist_iris}
-% \end{figure}
+\begin{figure}[h!tb]
+\centering
+ \includegraphics[width=4.5in]{pbdDEMO-include/pics/dist_pony}
+\caption{Neighbor-joining tree of {\it Pony 524} dataset colored by three
+         clusters.}
+\label{fig:dist_pony}
+\end{figure}
 
 
 \section{Exercises}

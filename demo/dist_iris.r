@@ -20,8 +20,8 @@ X.dist.common <- comm.dist(X.gbd)
 X.dist.gbd <- comm.dist(X.gbd, return.type = "gbd")
 
 ### Verify
-X.dist <- unlist(allgather(X.dist.gbd[, 3]))
-n.diff <- sum(X.dist.common != X.dist)
+X.dist.gbd <- unlist(allgather(X.dist.gbd[, 3]))
+n.diff <- sum(X.dist.common != X.dist.gbd)
 
 ### Hierarchical clustering
 X.hc <- hclust(X.dist.common, method = "average")
