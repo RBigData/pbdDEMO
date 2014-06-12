@@ -9,24 +9,26 @@ an exact answer to an approximate problem.}%
 
 \section{Introduction}
 
-Distance is not only a tool in geometry, but also appears in statistics. For
+Distance method is not only a fundamental tool in geometry, but also appears
+in statistics and other applied disciplines. For
 example, least square method in regression can be simply derived and computed
 via Euclidean distance. The resulting line is an approximate answer
 in terms of minimum total distance to all observations. Distance is also
-related to a similarity measure of two observations which describes
-relationship of both.
+related to a similarity measure of two observations describing
+relationship of the two.
 Usually, the smaller of distance the closer of relation. For example, the
 higher probability (probability is a measure) of
-one virus evolving to a mutant means the smaller distance of two viruses
-as described in Chapter~\ref{chp:phyloclustering}.
+one virus evolving to a mutant means the smaller distance (related closely)
+of two viruses as described in Chapter~\ref{chp:phyloclustering}.
 Further, distance method is simple to apply on clustering problems
 and easy to visualize data structures such as K-means algorithm
+a special case of model-based clustering
 introduced in Chapter~\ref{chp:pmclust}. For instance,
 the observations of the same group are more similar in characteristics with
 each other than those between different groups.
 
-Potentially, compute distance of several observations involve half of
-pairwise comparisons if distance is symmetric, and involve all pairwise
+Potentially, computing distance of several observations involves half of
+pairwise comparisons if distance is symmetric, and involves all pairwise
 comparisons if distance is not symmetric. Also, if number of observations
 is small, then most of distance methods can be compute efficient within
 one core. For moderate number of observations or complex distance systems,
@@ -50,11 +52,14 @@ We briefly introduce issues and methods of distributed distance and
 comparisons first,
 and followed by demonstration of hierarchical clusterings on the
 \code{iris}\index{Data!iris}
-dataset of Chapter~\ref{chp:pmclust}. Then, we provide a biological
+dataset of Chapter~\ref{chp:pmclust}. This example can be done using
+exists distance function in \proglang{R}. Further, we provide a biological
 application of building phylogenetic trees on the
 {\it Pony 524} dataset\index{Data!Pony 524}
 of Chapter~\ref{chp:phyloclustering} utilizing
 evolutionary models to compute probability distance.
+This example demonstrate how user-defined function can be defined and used
+to obtain special distance.
 
 
 
@@ -195,6 +200,9 @@ and it returns a neighbor-joining tree as Figure~\ref{fig:dist_pony}.
 \begin{enumerate}[label=\thechapter-\arabic*]
 
 \item
+What are potential limitations of distance approaches?
+
+\item
 Prove that clustering based on Euclidean distance is equivalent to that
 clustering based on multivariate Normal distributions with identity variance
 covariance matrices.
@@ -206,9 +214,6 @@ UPGMA method.
 \item
 Given $n$ observations or taxa, find numbers of rooted and unrooted trees
 analytically .
-
-\item
-What are potential limitations of distance approaches?
 
 \item
 As number of observations increases, the data and the distance matrix are
