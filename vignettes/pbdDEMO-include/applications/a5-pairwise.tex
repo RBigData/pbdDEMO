@@ -21,7 +21,7 @@ higher probability (probability is a measure) of
 one virus evolving to a mutant means the smaller distance (related closely)
 of two viruses as described in Chapter~\ref{chp:phyloclustering}.
 Further, distance method is simple to apply on clustering problems
-and easy to visualize data structures such as K-means algorithm
+and easy to visualize data structures such as K-means algorithm which is
 a special case of model-based clustering
 introduced in Chapter~\ref{chp:pmclust}. For instance,
 the observations of the same group are more similar in characteristics with
@@ -38,7 +38,7 @@ to archive performance gains.
 For large number of observations, the computing is not trivial if
 data are distributed across cores. Further, the dimension of resulting
 distance array may be much larger the number of observations and
-can only be held distributed across cores.
+may only be held distributed across cores.
 Note that for some models or iterative algorithms, it is not wise to dump the
 distance array into disk since that decreases performance due to overhead
 cost for I/O. For example, one may utilize
@@ -60,6 +60,7 @@ of Chapter~\ref{chp:phyloclustering} utilizing
 evolutionary models to compute probability distance.
 This example demonstrate how user-defined function can be defined and used
 to obtain special distance.
+In general, the function can be extended to multiple comparisons and tests.
 
 
 
@@ -107,28 +108,32 @@ matrix) are categorized next.
 \end{itemize}
 Here, we may presume the distribution method is GBD row-major matrix (or
 row-block major) as introduced in Section~\ref{sec:gbdstruct} since most of
-native \proglang{R} functions can be extend and reused in such a way.
+native \proglang{R} functions can be extended and reused in such a
+similar way.
 
 Note that the \code{dist()} only supports a few distance methods and assume
 distance is symmetric by definition. However,
 in practice, a more general measure may not be necessarily
 symmetric of two observations. i.e. $d(x, y) \neq d(y, x)$.
 In some cases, $d(x, x) \neq 0$ and the distance may also be dependent
-on other measurements or conditions.
+on other measurements or conditions. In general, a function for comparing
+any two $x$ and $y$ is possible to replace \code{dist()}.
+
 
 
 \section{Hierarchical Clustering}
 
-Hierarchical clustering is a popular statistical tools in fundamental
-multivariate statistics and is heavily based on distance matrix to classify
-data. Several algorithms are proposed to build dendrograms or trees, and
+Hierarchical clustering is a popular statistical tool in fundamental
+multivariate statistics and is heavily relied on a distance matrix to classify
+data. Several algorithms are proposed to build dendrograms or trees, then
 prune branches of the resulting trees to identify possible subgroups.
 The basic function \code{hclust()}\index{Code!\code{hclust()}}
 takes a dissimilarity structure as
 produced by \code{dist()} and returns a tree object can be visualized.
 The method option ``average'' linkage is equivalent to
 UPGMA (Unweighted Pair Group Method with Arithmetic Mean)\index{UPGMA}
-method~\citep{Sokal1985} one of popular methods in ecology for classification.
+method~\citep{Sokal1985} which is one of popular methods in ecology for
+classification.
 
 For example, the \code{iris} dataset used in Chapter~\ref{chp:pmclust} can be
 clustered in hierarchical clustering. First, we distribute 150 observations
@@ -147,31 +152,33 @@ found in demo via
 ### (Use Rscript.exe for windows system)
 mpiexec -np 4 Rscript -e "demo(dist_iris,'pbdDEMO',ask=F,echo=F)"
 \end{lstlisting}
-and it returns a dendrogram as Figure~\ref{fig:dist_iris}.
+and it returns a dendrogram as Figure~\ref{fig:dist_iris}
+where species ``Versicolor'' (in green) and ``Virginica'' (in blue)
+are potentially overlapped and differ from ``Setosa'' (in red).
 
-% \begin{figure}[h!tb]
-% \centering
-%  \includegraphics[width=5.5in]{pbdDEMO-include/pics/dist_iris}
-% \caption{Hierarchical clustering result of \code{iris} dataset.}
-% \label{fig:dist_iris}
-% \end{figure}
+\begin{figure}[h!tb]
+\centering
+ \includegraphics[width=6.5in]{pbdDEMO-include/pics/dist_iris}
+\caption{Hierarchical clustering result of \code{iris} dataset.}
+\label{fig:dist_iris}
+\end{figure}
 
 
-\section{Neighbor Joining Tree}
+\section{Neighbor Joining}
 
 In some sense, Figure~\ref{fig:dist_iris} is a rooted tree and the
 ``average'' method as well as UPGMA assumes a constant rate of evolution
 (molecular clock hypothesis). However, these assumption may not be
 appropriate to most sequence evolutionary topics where a gene tree should
-be more suitable to interpret relation of sequences and species.
-We introduce a common approach in evolution biology and build a
+be more suitable to interpret relation of sequences or species.
+We introduce a popular approach in evolution biology and build a
 evolutionary tree for {\it Pony 524} dataset\index{Data!Pony 524}.
 We select JC69 evolutionary model~\citep{Jukes1969} as a probability measure
 to compute for distance (evolution time) of 146 EIAV sequences and
 use a neighbor joining tree~\citep{Saitou1987} to build an unrooted tree.
 
 The purpose is to design a wrapper function, says \code{my.dist(x, y)},
-that takes a pairs of observations \code{x} and \code{y} as inputs, and
+that takes a pairs of sequences \code{x} and \code{y} as inputs, and
 returns a user-defined distance of given data.
 The utility function \code{comm.pairwise()}\index{Code!\code{comm.pairwise()}}
 of \pkg{pbdMPI}~\citep{Chen2012pbdMPIpackage}
@@ -216,13 +223,17 @@ Prove that the ``average'' method of \code{hclust()} is equivalent to the
 UPGMA method.
 
 \item
-Given $n$ observations or taxa, find total numbers of possible rooted and
-unrooted trees analytically, $(2n-5)!!$ and $(2n-3)!!$.
+Given $n$ observations or taxa, analytically find total numbers of possible
+rooted and unrooted trees, $(2n-5)!!$ and $(2n-3)!!$, respectively.
 
 \item
 As number of observations increases, the data and the distance matrix are
 both distributed as the category (C4). State potential problems of
 implementations and minimum costs of communications.
+
+\item
+Discuss the difficulties and problems of designing tree algorithms on a
+distributed manner.
 
 \end{enumerate}
 
