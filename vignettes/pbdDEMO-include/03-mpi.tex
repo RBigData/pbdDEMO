@@ -576,7 +576,7 @@ the MPI programmer's toolbox, we offer a few extra utility functions:
   \item \textbf{Random Seeds}: \\
         \code{comm.set.seed(seed, diff=FALSE)}: every processor uses the
         seed \code{seed}\index{Code!\code{comm.set.seed()}} \\
-        \code{comm.set.seed(seed, diff=TRUE)}: every processor uses an independent
+        \code{comm.set.seed(diff=TRUE)}: every processor uses an independent
         seed (via \pkg{rlecuyer})\index{Package!\pkg{rlecuyer}}
 \end{itemize}
 
@@ -863,7 +863,71 @@ There are ``parallel copycat'' versions of to R's *ply functions in several
 \code{lapply()}) in the \pkg{parallel} package.\index{Package!\pkg{parallel}}
 Try to compare the difference and performance of those *ply-like functions.
 
+\item
+Be aware that in SPMD programming,
+calling stack in-balance may result crashes, message truncations, and wrong
+results especially when condition operations involved with MPI communications.
+Suggesting correct ways to the following example.
+\begin{lstlisting}[language=rr,title=R Code]
+if(comm.rank() == 0){
+  ret <- reduce(1)
+  ret.1 <- allreduce(2)
+} else{
+  ret <- allreduce(2)
+  ret.1 <- reduce(1)
+}
+\end{lstlisting}
+
+\item
+Also, in SPMD programming, point to point communications are the basic way
+to send and receive data from other processors. However, blocked calls may
+result dead locks of entire MPI communicator, then hang R programs without
+further warnings. Suggesting correct ways to the following example.
+\begin{lstlisting}[language=rr,title=R Code]
+if(comm.rank() == 0){
+  ret <- send(1, rank.dest = 1)
+} else if(comm.rank() == 1){
+  ret <- recv(2, rank.source = 0)
+}
+\end{lstlisting}
+
+\item
+Further, in SPMD programming, data type and date size to MPI communicating
+functions are very sensitive especially when lower level functions involved
+for gaining performance. On other hand, R has less sensitive to data type
+and data size, and sometimes it converts data internally.
+Suggesting correct ways to the following example.
+\begin{lstlisting}[language=rr,title=R Code]
+if(comm.rank() == 0){
+  ret <- spmd.send.double(1:2)
+} else{
+  ret <- spmd.recv.double(2.0)
+}
+\end{lstlisting}
+
+\item
+Note that unprotected objects in R may be recycled (garbage collection, see
+\code{gc()} for details) at any time from memory. This is a nice mechanism for
+memory managements; however, it also issues a problem for non-blocked
+communication which can avoid dead lock problems. The problem typically occurs
+when sending large number of small buffers where unprotected buffers can
+either be released from R or overwrote by other R objects before actual
+communications are finished. Suggesting better ways to the following example.
+\begin{lstlisting}[language=rr,title=R Code]
+if(comm.rank() == 0){
+  for(i in 1:100){
+    ret <- spmd.isend.integer(i, rank.dest = 1)
+  }
+  ### Further computation unreleated to "i".
+  wait()
+} else if(comm.rank() == 1){
+  for(i in 1:100){
+    ret <- spmd.recv.integer(i)
+    print(ret)
+  }
+}
+\end{lstlisting}
+
+
 \end{enumerate}
-
-
 

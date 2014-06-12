@@ -79,7 +79,7 @@ We also offer numerous in-place transformations, such as the various \code{log()
 library(pbdDMAT, quiet = TRUE)
 init.grid()
 
-comm.set.seed(1234, diff = TRUE)
+comm.set.seed(diff = TRUE)
 
 dx <- ddmatrix(data=-3:3, nrow=10, ncol=10)
 
@@ -142,7 +142,7 @@ So for example:
 library(pbdDEMO, quiet = TRUE)
 init.grid()
 
-comm.set.seed(1234, diff = TRUE)
+comm.set.seed(diff = TRUE)
 
 dx <- ddmatrix("rnorm", nrow=10, ncol=10, bldim=2)
 

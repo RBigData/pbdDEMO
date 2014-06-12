@@ -67,7 +67,7 @@ verify.chol <- function(nrows=1e3, mean=0, sd=1, bldim=8, tol=1e-7, ICTXT=.DEMO.
   comm.cat(paste("Generating a ", nrows, "x", nrows, " distributed matrix X of random normal data, 'symmetrizing' it by computing X <- t(X)%*%X, computing the Cholesky factorization, and then multiplying the factorization back together and comparing it to the original matrix\n", sep=""), quiet=T)
   
   time_data <- timer({
-    x <- ddmatrix("rnorm", nrow=nrows, ncol=nrows, bldim=bldim, mean=mean, sd=sd, ICTXT=ICTXT)
+    x <- ddmatrix("rnorm", nrow=nrow, ncol=nrows, bldim=bldim, mean=mean, sd=sd, ICTXT=ICTXT)
   })
   
   # symmetrize x

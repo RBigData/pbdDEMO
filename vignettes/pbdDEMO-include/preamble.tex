@@ -1,3 +1,44 @@
+\input{./pbdDEMO-include/titlepage.tex}
+
+\newcommand{\makefirstfew}{%
+\prebodyheadfoot
+\restoregeometry
+  
+  
+\titleGP
+\newpage
+
+\vfill
+\input{./pbdDEMO-include/frontmatter/00-copyright}
+\newpage
+\pagenumbering{roman}
+\tableofcontents
+\newpage
+\fancyhf[C]{}
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{section}{List of Figures}
+\listoffigures
+\newpage
+\phantomsection
+\addcontentsline{toc}{section}{List of Tables}
+\listoftables
+\newpage
+\input{./pbdDEMO-include/frontmatter/00-acknowledgement}
+\newpage
+\input{./pbdDEMO-include/frontmatter/00-warn}
+
+
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+
+\bodyheadfoot
+\pagenumbering{arabic}
+\setcounter{page}{1}
+\pagestyle{fancy}
+}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%% definitions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -182,54 +223,6 @@
   \renewcommand{\headrulewidth}{0pt}
   \renewcommand{\footrulewidth}{0pt}}
 }
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%% Title page
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\input{./pbdDEMO-include/titlepage.tex}
-
-\newcommand{\makefirstfew}{%
-\prebodyheadfoot
-\restoregeometry
-  
-  
-\titleGP
-\newpage
-
-\vfill
-\input{./pbdDEMO-include/frontmatter/00-copyright}
-\newpage
-\pagenumbering{roman}
-\tableofcontents
-\newpage
-\fancyhf[C]{}
-\cleardoublepage
-\phantomsection
-\addcontentsline{toc}{section}{List of Figures}
-\listoffigures
-\newpage
-\phantomsection
-\addcontentsline{toc}{section}{List of Tables}
-\listoftables
-\newpage
-\input{./pbdDEMO-include/frontmatter/00-acknowledgement}
-\newpage
-\input{./pbdDEMO-include/frontmatter/00-warn}
-
-
-\pagenumbering{arabic}
-\setcounter{page}{1}
-
-
-\bodyheadfoot
-\pagenumbering{arabic}
-\setcounter{page}{1}
-\pagestyle{fancy}
-}
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%% misc.
