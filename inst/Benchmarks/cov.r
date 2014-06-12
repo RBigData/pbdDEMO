@@ -4,7 +4,7 @@ library(pbdDMAT, quiet = TRUE)
 
 init.grid()
 
-comm.set.seed(diff = TRUE)
+comm.set.seed(1234, diff = TRUE)
 
 # size
 #N <- 10000
