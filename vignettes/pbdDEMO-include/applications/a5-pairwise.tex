@@ -67,7 +67,7 @@ to obtain special distance.
 
 Suppose $x$ and $y$ are two observations and $d(x, y)$ is a distance or
 a comparison of $x$ and $y$.
-Note that $x$, $y$, and $d(\dot, \dot)$ could be very generic as long as
+Note that $x$, $y$, and $d(\cdot, \cdot)$ could be very generic as long as
 they are well defined.
 Although, it is efficient to compute a distance of any two observations
 in \proglang{R} via \code{dist()}\index{Code!\code{dist()}}
@@ -120,8 +120,9 @@ on other measurements or conditions.
 \section{Hierarchical Clustering}
 
 Hierarchical clustering is a popular statistical tools in fundamental
-multivariate statistics and is heavily based on distance matrix to cluster
-data. Several algorithms are proposed to build dendrograms or trees.
+multivariate statistics and is heavily based on distance matrix to classify
+data. Several algorithms are proposed to build dendrograms or trees, and
+prune branches of the resulting trees to identify possible subgroups.
 The basic function \code{hclust()}\index{Code!\code{hclust()}}
 takes a dissimilarity structure as
 produced by \code{dist()} and returns a tree object can be visualized.
@@ -131,7 +132,10 @@ method~\citep{Sokal1985} one of popular methods in ecology for classification.
 
 For example, the \code{iris} dataset used in Chapter~\ref{chp:pmclust} can be
 clustered in hierarchical clustering. First, we distribute 150 observations
-in four cores and compute Euclidean distances in four dimensional space.
+in four cores and compute Euclidean distances in four dimensional space
+(`Sepal.Length', `Sepal.Width', `Petal.Length', and `Petal.Width').
+Note that the distance may not be meaningful to the data, but preserve
+some (dis-) similarity of the observations.
 We compute the dissimilarity matrix in distributed manners via a
 utility function \code{comm.dist()}\index{Code!\code{comm.dist()}}
 of \pkg{pbdMPI}~\citep{Chen2012pbdMPIpackage}
@@ -153,7 +157,7 @@ and it returns a dendrogram as Figure~\ref{fig:dist_iris}.
 % \end{figure}
 
 
-\section{Phylogenetic Tree}
+\section{Neighbor Joining Tree}
 
 In some sense, Figure~\ref{fig:dist_iris} is a rooted tree and the
 ``average'' method as well as UPGMA assumes a constant rate of evolution
@@ -161,10 +165,10 @@ In some sense, Figure~\ref{fig:dist_iris} is a rooted tree and the
 appropriate to most sequence evolutionary topics where a gene tree should
 be more suitable to interpret relation of sequences and species.
 We introduce a common approach in evolution biology and build a
-phylogenetic tree for {\it Pony 524} dataset\index{Data!Pony 524}.
-We select JC69 evolutionary model~\citep{Jukes1969}
-to compute for distance of 146 EIAV sequences and
-use a neighbor-joining tree~\citep{Saitou1987} to build an unrooted tree.
+evolutionary tree for {\it Pony 524} dataset\index{Data!Pony 524}.
+We select JC69 evolutionary model~\citep{Jukes1969} as a probability measure
+to compute for distance (evolution time) of 146 EIAV sequences and
+use a neighbor joining tree~\citep{Saitou1987} to build an unrooted tree.
 
 The purpose is to design a wrapper function, says \code{my.dist(x, y)},
 that takes a pairs of observations \code{x} and \code{y} as inputs, and
@@ -188,7 +192,7 @@ and it returns a neighbor-joining tree as Figure~\ref{fig:dist_pony}.
 
 % \begin{figure}[h!tb]
 % \centering
-%  \includegraphics[width=5.5in]{pbdDEMO-include/pics/dist_iris}
+%  \includegraphics[width=5.5in]{pbdDEMO-include/pics/dist_pony}
 % \caption{Neighbor-joining tree result of {\it Pony 524} dataset.}
 % \label{fig:dist_iris}
 % \end{figure}
@@ -212,8 +216,8 @@ Prove that the ``average'' method of \code{hclust()} is equivalent to the
 UPGMA method.
 
 \item
-Given $n$ observations or taxa, find numbers of rooted and unrooted trees
-analytically .
+Given $n$ observations or taxa, find total numbers of possible rooted and
+unrooted trees analytically, $(2n-5)!!$ and $(2n-3)!!$.
 
 \item
 As number of observations increases, the data and the distance matrix are
