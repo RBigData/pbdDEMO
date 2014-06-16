@@ -140,6 +140,7 @@ University of Tennessee}
 \makeatother
 
 \bibliography{./pbdDEMO-include/pbdDEMO}
+\bibliographystyle{plainnat}
 
 \printindex
 
