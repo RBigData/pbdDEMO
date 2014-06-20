@@ -2,10 +2,10 @@ Package: pbdDEMO
 Title: Programming with Big Data -- Demonstrations of pbd Packages
 Version: 0.3-0
 Date: 2014-06-12
-Depends: R (>= 3.0.0), methods, rlecuyer, pbdMPI (>= 0.2-4), pbdSLAP
-        (>= 0.1-9), SEXPtools (>= 0.1-0), pbdBASE (>= 0.3-0), pbdDMAT(>= 0.3-0)
+Depends: R (>= 3.0.0), methods, pbdMPI (>= 0.2-4), pbdBASE(>= 0.3-0),
+        pbdDMAT(>= 0.3-0)
 Enhances: maps, RColorBrewer, pbdNCDF4 (>= 0.1-2), pmclust, MixSim,
-        EMCluster, sqldf, phyclust, MASS
+        EMCluster, phyclust, MASS
 LazyLoad: yes
 LazyData: yes
 Authors@R: c(person("Drew", "Schmidt", role = c("aut", "cre"), email =

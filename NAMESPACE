@@ -1,4 +1,4 @@
-import(methods, rlecuyer, pbdMPI, pbdSLAP, SEXPtools, pbdBASE, pbdDMAT)
+import(methods, pbdMPI, pbdBASE, pbdDMAT)
 
 exportPattern("^demo\\.[[:alpha:]]+")
 export(

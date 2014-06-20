@@ -19,7 +19,6 @@ ols_dmat            pbdDEMO   Ordinary least squares with pbdDMAT.
 
 
 read_csv            pbdDEMO   Read a csv into ddmatrix format.
-read_sql            pbdDEMO   Read a database into ddmatrix format.
 read_ncdf           pbdDEMO   Read and write ddmatrix to netcdf4 format.
 
 trefht              pbdDEMO   An example of CAM5 output.
