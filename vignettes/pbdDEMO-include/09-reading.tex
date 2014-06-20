@@ -48,32 +48,6 @@ print(dx)
 
 The code powering the function itself is quite complicated, going well beyond the scope of this document.  To understand it, the reader should see the advanced sections of the \pkg{pbdDMAT} vignette.
 
-\section{SQL Databases}
-\label{sec:sql_db}
-
-\emph{Example:  Read data from a sql database directly into a distributed matrix.}
-\index{SQL}
-
-The demo command is
-\begin{Command}
-### At the shell prompt, run the demo with 4 processors by
-### (Use Rscript.exe for windows system)
-mpiexec -np 4 Rscript -e "demo(read_sql,'pbdDEMO',ask=F,echo=F)"
-\end{Command}
-
-Just as above, we can use a SQL database to read in our data, powered by the \pkg{sqldf} package \citep{sqldf}.  Here it is assumed that the data is stored in the database in a structure that is much the same as a csv is stored on disk.  Internally, the query performed is:
-
-\begin{lstlisting}[language=rr]
-sqldf(paste("SELECT * FROM ", table, " WHERE rowid  = 1"), dbname=dbname)
-\end{lstlisting}
-
-To use a more complicated query for a database with differing structure, it should be possible (no promises) to substitute this line of the \code{read.sql.ddmatrix()} function for the desired query.  However, as before, much of the rest of the tasks performed by this function go beyond the scope of this document.  However, they are described in the \pkg{pbdBASE} package vignette.
-
-
-
-
-
-
 
 \section{Exercises}
 \label{sec:reading_exercise}

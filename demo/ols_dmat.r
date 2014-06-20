@@ -4,11 +4,9 @@
 library(pbdDEMO, quietly = TRUE)
 init.grid()
 if(comm.size() != 4){
-  stop("This example requries 4 processors.")
+  comm.stop("This example requries 4 processors.")
 }
 
-
-init.grid()
 
 n <- 1250
 p <- 40

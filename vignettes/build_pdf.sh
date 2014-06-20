@@ -1,5 +1,9 @@
 #!/bin/sh
 
+PKGVER=`grep "Version:" ../DESCRIPTION | sed -e "s/Version: //"`
+sed -i -e "s/myversion{.*}/myversion{${PKGVER}}/" pbdDEMO-guide.Rnw
+
+
 rm *.aux *.bbl *.blg *.log *.out *.toc *.idx *.lof *.lot *.ind *.ilg
 pdflatex pbdDEMO-guide.Rnw
 bibtex pbdDEMO-guide
