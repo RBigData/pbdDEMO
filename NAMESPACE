@@ -14,7 +14,7 @@ export(
   gbd2dmat,
   dmat2gbd,
   ###
-  read.csv.ddmatrix, read.sql.ddmatrix,
+  read.csv.ddmatrix, 
   ###
   plot_dmat,
   timer,
