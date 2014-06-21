@@ -44,7 +44,7 @@ X.prj <- A[, 1:2]                                     # Only useful for plot
 X.prj <- do.call("rbind", allgather(X.prj))
 
 ### Clustering
-library(pmclust, quiet = TRUE)
+library(pmclust, quietly = TRUE)
 comm.set.seed(123, diff = TRUE)
 
 X.spmd <- X.std
@@ -52,7 +52,7 @@ PARAM.org <- set.global(K = 3)                        # Preset storage
 .pmclustEnv$CONTROL$debug <- 0                        # Disable debug messages
 PARAM.org <- initial.center(PARAM.org)                # Initial parameters
 PARAM.kms <- kmeans.step(PARAM.org)                   # K-means
-X.kms.cid <- allgather(.pmclustEnv$CLASS.gbd,
+X.kms.cid <- allgather(.pmclustEnv$CLASS.spmd,
                        unlist = TRUE)
 
 PARAM.org <- set.global(K = 3)                        # Preset storage
@@ -60,14 +60,14 @@ PARAM.org <- set.global(K = 3)                        # Preset storage
 PARAM.org <- initial.em(PARAM.org,
                         MU = PARAM.kms$MU)            # Initial by K-means
 PARAM.mbc1 <- em.step(PARAM.org)                      # Model-based clustering
-X.mbc1.cid <- allgather(.pmclustEnv$CLASS.gbd,
+X.mbc1.cid <- allgather(.pmclustEnv$CLASS.spmd,
                         unlist = TRUE)
 
 PARAM.org <- set.global(K = 3, RndEM.iter = 1000)     # Preset storage
 .pmclustEnv$CONTROL$debug <- 0                        # Disable debug messages
 PARAM.org <- initial.RndEM(PARAM.org)                 # Initial by Rand-EM
 PARAM.mbc2 <- em.step(PARAM.org)                      # Model-based clustering
-X.mbc2.cid <- allgather(.pmclustEnv$CLASS.gbd,
+X.mbc2.cid <- allgather(.pmclustEnv$CLASS.spmd,
                         unlist = TRUE)
 
 ### Validation
