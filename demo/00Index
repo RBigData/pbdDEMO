@@ -19,7 +19,6 @@ ols_dmat            pbdDEMO   Ordinary least squares with pbdDMAT.
 
 
 read_csv            pbdDEMO   Read a csv into ddmatrix format.
-read_sql            pbdDEMO   Read a database into ddmatrix format.
 read_ncdf           pbdDEMO   Read and write ddmatrix to netcdf4 format.
 
 trefht              pbdDEMO   An example of CAM5 output.
@@ -40,3 +39,6 @@ iris_gbd            pbdDEMO   Iris GBD code.
 phyclust_bootstrap  pbdDEMO   Bootstrap phyclust results.
 
 mcmc_galaxy         pbdDEMO   Galaxy MCMC example.
+
+dist_iris           pbdDEMO   Hierarchical clustering of iris.
+dist_pony           pbdDEMO   Neighbor-joining tree of Pony 524.

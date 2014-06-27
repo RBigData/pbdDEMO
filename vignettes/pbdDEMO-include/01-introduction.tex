@@ -41,8 +41,9 @@ are:
  \item \pkg{pbdSLAP} --- bundles scalable dense linear algebra libraries in
        double precision for \proglang{R}, based on ScaLAPACK
        version 2.0.2~\citep{slug}.~\index{Library!ScaLAPACK}
- \item \pkg{pbdNCDF4} --- Interface to Parallel Unidata
+ \item \pkg{pbdNCDF4} --- interface to Parallel Unidata
        NetCDF4\index{Library!NetCDF4} format data files~\citep{netcdf}.
+ \item \pkg{SEXPtools} --- SEXP tools~\citep{SEXPtools}.
  \item \pkg{pbdBASE} --- low-level ScaLAPACK codes and wrappers.
  \item \pkg{pbdDMAT} --- distributed matrix classes and computational methods,
        with a focus on linear algebra and statistics.
@@ -203,10 +204,7 @@ mpiexec -np 4 Rscript -e "demo(ols_dmat, package='pbdDMAT', ask=F, echo=F)"
 		  # ---------------------------- #
 
 ### Chapter 9
-# Reading csv
 mpiexec -np 4 Rscript -e "demo(read_csv, package='pbdDMAT', ask=F, echo=F)"
-# Reading sql
-mpiexec -np 4 Rscript -e "demo(read_sql, package='pbdDMAT', ask=F, echo=F)"
 
 ### Chapter 10
 # Reading and writing parallel NetCDF4
@@ -241,6 +239,11 @@ mpiexec -np 4 Rscript -e "demo(phyclust_bootstrap, package='pbdDEMO', ask=F, ech
 
 ### Chapter 15
 mpiexec -np 4 Rscript -e "demo(mcmc_galaxy, package='pbdDEMO', ask=F, echo=F)"
+
+### Chapter 16
+mpiexec -np 4 Rscript -e "demo(dist_iris, package='pbdDEMO', ask=F, echo=F)"
+mpiexec -np 4 Rscript -e "demo(dist_pony, package='pbdDEMO', ask=F, echo=F)"
+
 \end{lstlisting}
 
 

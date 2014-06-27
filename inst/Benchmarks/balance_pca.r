@@ -5,7 +5,7 @@ library(rbenchmark)
 
 init.grid()
 
-comm.set.seed(diff = TRUE)
+comm.set.seed(1234, diff = TRUE)
 
 # biggest size to check
 start <- 100

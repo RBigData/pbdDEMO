@@ -3,14 +3,11 @@
 ### Initial MPI.
 library(pbdDEMO, quietly = TRUE)
 init.grid()
-if(comm.size() != 4){
-  stop("This example requries 4 processors.")
+if(comm.size() != 2){
+  comm.stop("This example requries 2 processors.")
 }
 
 comm.set.seed(1234, diff = TRUE)
-
-
-init.grid()
 
 # --------------------------
 # set up distributed matrix
@@ -24,8 +21,9 @@ sd <- 25
 
 bldim <- c(2,2)
 
-dx <- ddmatrix("rnorm", nrow=n, ncol=p, bldim=bldim, mean=mean, sd=sd)
-
+#dx <- ddmatrix("rnorm", nrow=n, ncol=p, bldim=bldim, mean=mean, sd=sd)
+x <- matrix(rnorm(n*p), n, p)
+dx <- as.ddmatrix(x)
 
 # --------------------------
 # sample statistics

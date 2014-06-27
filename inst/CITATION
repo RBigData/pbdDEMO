@@ -16,14 +16,14 @@ citEntry(
 
 citEntry(
   entry = "Manual",
-  title = "Speaking Serial R with a Parallel Accent (Ver. 1.2)",
+  title = "Speaking Serial R with a Parallel Accent (Ver. 0.3-0)",
   author = personList(as.person("Drew Schmidt"),
                       as.person("Wei-Chen Chen"),
                       as.person("Pragneshkumar Patel"),
                       as.person("George Ostrouchov")),
   year = "2014",
   note = "R Vignette, URL http://cran.r-project.org/package=pbdDEMO",
-  textVersion = "Schmidt, D., Chen, W.-C., Patel, P., and Ostrouchov, G. (2014) Speaking Serial R with a Parallel Accent (Ver. 1.2). R Vignette, URL http://cran.r-project.org/package=pbdDEMO",
+  textVersion = "Schmidt, D., Chen, W.-C., Patel, P., and Ostrouchov, G. (2014) Speaking Serial R with a Parallel Accent (Ver. 0.3-0). R Vignette, URL http://cran.r-project.org/package=pbdDEMO",
   key = "Schmidt2014pbdDEMOvignette"
 )
 

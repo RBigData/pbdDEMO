@@ -8,9 +8,9 @@
 \input{./pbdDEMO-include/style}
 
 
-\myversion{0.2-0}
-\mytitle{Speaking Serial R with a Parallel Accent}
-\mysubtitle{\proglang{pbdR} Package Examples and Demonstrations}
+\myversion{0.3-0}
+\mytitle{Speaking Serial R with a Parallel Accent {\normalsize (Ver. \demoversion)}}
+\mysubtitle{\pbdR Package Examples and Demonstrations}
 \myauthor{
 \centering
 Drew Schmidt \\
@@ -88,6 +88,7 @@ University of Tennessee}
 \input{./pbdDEMO-include/applications/a2-pmclust}
 \input{./pbdDEMO-include/applications/a3-phyclust}
 \input{./pbdDEMO-include/applications/a4-Bayes}
+\input{./pbdDEMO-include/applications/a5-pairwise}
 % \input{./pbdDEMO-include/applications/a5-ts}
 %%% appendices
 \part{Appendix}
@@ -139,6 +140,7 @@ University of Tennessee}
 \makeatother
 
 \bibliography{./pbdDEMO-include/pbdDEMO}
+\bibliographystyle{plainnat}
 
 \printindex
 

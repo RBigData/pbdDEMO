@@ -1,4 +1,4 @@
-import(methods, rlecuyer, pbdMPI, pbdSLAP, pbdBASE, pbdDMAT)
+import(methods, pbdMPI, pbdBASE, pbdDMAT)
 
 exportPattern("^demo\\.[[:alpha:]]+")
 export(
@@ -14,7 +14,7 @@ export(
   gbd2dmat,
   dmat2gbd,
   ###
-  read.csv.ddmatrix, read.sql.ddmatrix,
+  read.csv.ddmatrix, 
   ###
   plot_dmat,
   timer,
