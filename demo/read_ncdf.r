@@ -35,7 +35,7 @@ init.grid()
 
 x <- matrix(as.double(x), dim(x)[1L], dim(x)[2L])
 
-dx <- new("ddmatrix", Data=x, dim=c(n, p), ldim=dim(x), bldim=dim(x), CTXT=2)
+dx <- new("ddmatrix", Data=x, dim=c(n, p), ldim=dim(x), bldim=dim(x), ICTXT=2)
 
 dx <- redistribute(dx, bldim=c(2,2), ICTXT=0)
 

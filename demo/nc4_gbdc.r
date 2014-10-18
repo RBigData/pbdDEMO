@@ -25,7 +25,7 @@ var.def <- ncvar_def("TREFHT", "K", list(lon = lon, lat = lat), NULL)
 ### parallel write
 file.name <- "nc4_gbdc.nc"
 nc <- nc_create_par(file.name, var.def)
-ncvar_put_gbd(nc, "TREFHT", X.gbdc, gbd.major = 2)
+demo.ncvar_put_gbd(nc, "TREFHT", X.gbdc, gbd.major = 2)
 nc_close(nc)
 if(comm.rank() == 0){
   ncdump(file.name)
@@ -36,7 +36,7 @@ nc <- nc_open_par(file.name)
 if(comm.rank() == 0){
   print(nc)
 }
-new.X.gbdc <- ncvar_get_gbd(nc, "TREFHT", gbd.major = 2)
+new.X.gbdc <- demo.ncvar_get_gbd(nc, "TREFHT", gbd.major = 2)
 nc_close(nc)
 
 finalize()

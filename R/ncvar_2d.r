@@ -53,7 +53,7 @@ demo.ncvar_put_2D <- function(nc, varid, vals, start = NA, count = NA,
   invisible()
 } # End of demo.ncvar_put_2D().
 
-ncvar_put_dmat <- function(nc, varid, vals, verbose = FALSE,
+demo.ncvar_put_dmat <- function(nc, varid, vals, verbose = FALSE,
     comm = .SPMD.CT$comm){
   ### check
   ndim <- demo.ncvar_ndim(nc, varid)
@@ -77,9 +77,9 @@ ncvar_put_dmat <- function(nc, varid, vals, verbose = FALSE,
   }
 
   demo.ncvar_put_2D(nc, varid, vals, verbose = verbose, comm = comm)
-} # End of ncvar_put_dmat().
+} # End of demo.ncvar_put_dmat().
 
-ncvar_put_gbd <- function(nc, varid, vals, verbose = FALSE,
+demo.ncvar_put_gbd <- function(nc, varid, vals, verbose = FALSE,
     comm = .SPMD.CT$comm, gbd.major = .DEMO.CT$gbd.major){
   ### check
   ndim <- demo.ncvar_ndim(nc, varid)
@@ -92,11 +92,11 @@ ncvar_put_gbd <- function(nc, varid, vals, verbose = FALSE,
 
   if(gbd.major == 1){
     vals <- demo.gbdr2dmat(vals, comm = comm)
-    ncvar_put_dmat(nc, varid, vals, verbose = verbose, comm = comm)
+    demo.ncvar_put_dmat(nc, varid, vals, verbose = verbose, comm = comm)
   } else{
     demo.ncvar_put_2D(nc, varid, vals, verbose = verbose, comm = comm)
   }
-} # End of ncvar_put_gbd().
+} # End of demo.ncvar_put_gbd().
 
 
 ### get methods modified from ncvar_get().
@@ -166,7 +166,7 @@ demo.ncvar_get_2D <- function(nc, varid, start = NA, count = NA,
   vals
 } # End of demo.ncvar_get_2D().
 
-ncvar_get_dmat <- function(nc, varid,
+demo.ncvar_get_dmat <- function(nc, varid,
     verbose = FALSE, signedbyte = TRUE, collapse_degen = TRUE,
     bldim = .DEMO.CT$bldim, ICTXT = .DEMO.CT$ictxt, comm = .SPMD.CT$comm){
   ### check
@@ -196,13 +196,13 @@ ncvar_get_dmat <- function(nc, varid,
                                           comm = comm))
   }
   X.dmat <- new("ddmatrix", Data = vals,
-                dim = dim, ldim = ldim, bldim = bldim.org, CTXT = 1)
+                dim = dim, ldim = ldim, bldim = bldim.org, ICTXT = 1)
 
   ### redistribute data in ddmatrix format.
   dmat.reblock(X.dmat, bldim = bldim, ICTXT = ICTXT)
-} # End of ncvar_get_dmat().
+} # End of demo.ncvar_get_dmat().
 
-ncvar_get_gbd <- function(nc, varid,
+demo.ncvar_get_gbd <- function(nc, varid,
     verbose = FALSE, signedbyte = TRUE, collapse_degen = TRUE,
     comm = .SPMD.CT$comm, gbd.major = .DEMO.CT$gbd.major){
   ### check
@@ -213,9 +213,9 @@ ncvar_get_gbd <- function(nc, varid,
 
   ### get data out of file.
   if(gbd.major == 1){
-    vals <- ncvar_get_dmat(nc, varid, verbose = verbose,
-                           signedbyte = signedbyte,
-                           collapse_degen = collapse_degen, comm = comm)
+    vals <- demo.ncvar_get_dmat(nc, varid, verbose = verbose,
+                                signedbyte = signedbyte,
+                                collapse_degen = collapse_degen, comm = comm)
     vals <- demo.dmat2gbdr(vals, comm = comm)
   } else{
     vals <- demo.ncvar_get_2D(nc, varid,
@@ -224,5 +224,5 @@ ncvar_get_gbd <- function(nc, varid,
   }
 
   vals
-} # End of ncvar_get_gbd().
+} # End of demo.ncvar_get_gbd().
 

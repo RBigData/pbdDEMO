@@ -19,12 +19,12 @@ University of Tennessee}
 \\[.4cm]
 %
 Wei-Chen Chen \\
-\textit{Department of Ecology and Evolutionary Biology \\
-University of Tennessee}
+\textit{Center for Biologics Evaluation and Research \\
+Food and Drug Adminstration}
 \\[.4cm]
 %
 George Ostrouchov \\
-\textit{Computer Science and Mathematics Division, \\
+\textit{Computer Science and Mathematics Division \\
 Oak Ridge National Laboratory}
 \\[.4cm]
 %
