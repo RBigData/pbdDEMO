@@ -1,22 +1,22 @@
 \name{Parallel NetCDF4}
-\alias{ncvar_get_dmat}
-\alias{ncvar_get_gbd}
-\alias{ncvar_put_dmat}
-\alias{ncvar_put_gbd}
+\alias{demo.ncvar_get_dmat}
+\alias{demo.ncvar_get_gbd}
+\alias{demo.ncvar_put_dmat}
+\alias{demo.ncvar_put_gbd}
 \title{Read and Write Parallel NetCDF4 Files in GBD and ddmatrix Format}
 \description{
   These functions write and read NetCDF4 files in GBD and ddmatrix format.
 }
 \usage{
-ncvar_get_dmat(nc, varid, verbose = FALSE, signedbyte = TRUE,
+demo.ncvar_get_dmat(nc, varid, verbose = FALSE, signedbyte = TRUE,
     collapse_degen = TRUE, bldim = .DEMO.CT$bldim,
     ICTXT = .DEMO.CT$ictxt, comm = .SPMD.CT$comm)
-ncvar_get_gbd(nc, varid, verbose = FALSE, signedbyte = TRUE,
+demo.ncvar_get_gbd(nc, varid, verbose = FALSE, signedbyte = TRUE,
     collapse_degen = TRUE, comm = .SPMD.CT$comm,
     gbd.major = .DEMO.CT$gbd.major)
-ncvar_put_dmat(nc, varid, vals, verbose = FALSE,
+demo.ncvar_put_dmat(nc, varid, vals, verbose = FALSE,
     comm = .SPMD.CT$comm)
-ncvar_put_gbd(nc, varid, vals, verbose = FALSE,
+demo.ncvar_put_gbd(nc, varid, vals, verbose = FALSE,
     comm = .SPMD.CT$comm, gbd.major = .DEMO.CT$gbd.major)
 }
 \arguments{
@@ -36,15 +36,15 @@ ncvar_put_gbd(nc, varid, vals, verbose = FALSE,
   \item{comm}{a communicator number.}
 }
 \details{
-  \code{ncvar_get_*} are similar to \code{ncvar_get} of \pkg{pbdNCDF4},
+  \code{demo.ncvar_get_*} are similar to \code{ncvar_get} of \pkg{pbdNCDF4},
   but focus on 2D arrays and return a ddmatrix or GBD matrix.
 
-  \code{ncvar_put_*} are also similar to \code{ncvar_put} of \pkg{pbdNCDF4},
+  \code{demo.ncvar_put_*} are also similar to \code{ncvar_put} of \pkg{pbdNCDF4},
   but only dump 2D arrays.
 }
 \value{
-  \code{ncvar_get_dmat} returns a \code{ddmatrix}, and
-  \code{ncvar_get_gbd} returns a GBD matrix in either row- or column
+  \code{demo.ncvar_get_dmat} returns a \code{ddmatrix}, and
+  \code{demo.ncvar_get_gbd} returns a GBD matrix in either row- or column
   major specified by \code{gbd.major}.
 }
 \references{
