@@ -148,13 +148,18 @@ demo.ncvar_get_2D <- function(nc, varid, start = NA, count = NA,
         count[2] <-  ncol - start[2] + 1
       }
       if(start[2] > ncol){
-        start <- c(1, 1)
+        start <- c(1, ncol)
         count <- c(0, 0)
       }
     }
   }
   if(comm.any(length(start) != ndim || length(count) != ndim, comm = comm)){
     comm.stop("start and count should be specified correctly for a hypercube.")
+  }
+  check.zero.count <- FALSE
+  if(any(count == 0)){
+    count <- rep(1, length(count))
+    check.zero.count <- TRUE
   }
 
   ### parallel read
@@ -163,15 +168,23 @@ demo.ncvar_get_2D <- function(nc, varid, start = NA, count = NA,
                                    verbose = verbose, signedbyte = signedbyte,
                                    collapse_degen = collapse_degen),
               silent = TRUE)
-  if(class(vals) == "try-error"){
+
+  if(class(vals) == "try-error" || check.zero.count){
     if(ndim == 1){
       vals <- vector(0, length = 0)
-    } else if(ndim == 2){
+    }
+    if(ndim == 2){
       vals <- matrix(0, nrow = 0, ncol = 0)
-    } else{
-      vals <- array(0, rep(0, ndim))
+    }
+  } else{
+    if(ndim == 1){
+      vals <- as.vector(vals)
+    }
+    if(ndim == 2){
+      vals <- as.matrix(vals)
     }
   }
+
   vals
 } # End of demo.ncvar_get_2D().
 
