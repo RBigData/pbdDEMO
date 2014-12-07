@@ -1,5 +1,5 @@
-library(pbdDEMO, quietly = TRUE)
-library(pbdNCDF4, quietly = TRUE)
+suppressMessages(library(pbdDEMO, quietly = TRUE))
+suppressMessages(library(pbdNCDF4, quietly = TRUE))
 
 # -------------------------------------
 # Parallel write and read NetCDF4 file
