@@ -213,6 +213,10 @@ mpiexec -np 4 Rscript -e "demo(nc4_serial, package='pbdDEMO', ask=F, echo=F)"
 mpiexec -np 4 Rscript -e "demo(nc4_parallel, package='pbdDEMO', ask=F, echo=F)"
 mpiexec -np 4 Rscript -e "demo(nc4_dmat, package='pbdDEMO', ask=F, echo=F)"
 mpiexec -np 4 Rscript -e "demo(nc4_gbdc, package='pbdDEMO', ask=F, echo=F)"
+mpiexec -np 4 Rscript -e "demo(nc4_par_write_1d, package='pbdDEMO', ask=F, echo=F)"
+mpiexec -np 4 Rscript -e "demo(nc4_par_write_2d, package='pbdDEMO', ask=F, echo=F)"
+mpiexec -np 4 Rscript -e "demo(nc4_par_read_1d, package='pbdDEMO', ask=F, echo=F)"
+mpiexec -np 4 Rscript -e "demo(nc4_par_read_2d, package='pbdDEMO', ask=F, echo=F)"
 
 ### Chapter 11
 # Loand/unload balance

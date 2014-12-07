@@ -19,7 +19,7 @@ demo.ncvar_ndim <- function(nc, varid, verbose = FALSE){
 ### put methods.
 demo.ncvar_put_2D <- function(nc, varid, vals, start = NA, count = NA,
     verbose = FALSE, comm = .SPMD.CT$comm){
-  ### check
+  ### check and rebuild if start or count is NA
   ndim <- demo.ncvar_ndim(nc, varid)
   if(comm.any(is.na(start) || is.na(count), comm = comm)){
     COMM.RANK <- comm.rank(comm)
@@ -126,15 +126,15 @@ demo.ncvar_get_2D <- function(nc, varid, start = NA, count = NA,
     start <- NULL
     count <- NULL
     if(ndim == 1){
-      ncol <- nc$var[[idobj$list_index]]$dim[[1]]$len
-      ncol.per.rank <- ceiling(ncol / COMM.SIZE)
-      start <- c(1 + ncol.per.rank * COMM.RANK)
-      count <- c(ncol.per.rank)
-      if(start + count > ncol){
-        count <- ncol - start + 1
+      ndata <- nc$var[[idobj$list_index]]$dim[[1]]$len
+      ndata.per.rank <- ceiling(ndata / COMM.SIZE)
+      start <- 1 + ndata.per.rank * COMM.RANK
+      count <- ndata.per.rank
+      if(start + count > ndata){
+        count <- ndata - start + 1
       }
-      if(start > ncol){
-        start <- 1
+      if(start > ndata){
+        start <- ndata 
         count <- 0
       }
     }
@@ -158,7 +158,7 @@ demo.ncvar_get_2D <- function(nc, varid, start = NA, count = NA,
   }
   check.zero.count <- FALSE
   if(any(count == 0)){
-    count <- rep(1, length(count))
+    count <- rep(1, ndim)
     check.zero.count <- TRUE
   }
 
@@ -171,7 +171,7 @@ demo.ncvar_get_2D <- function(nc, varid, start = NA, count = NA,
 
   if(class(vals) == "try-error" || check.zero.count){
     if(ndim == 1){
-      vals <- vector(0, length = 0)
+      vals <- vector(mode = "numeric", length = 0)
     }
     if(ndim == 2){
       vals <- matrix(0, nrow = 0, ncol = 0)
@@ -181,7 +181,7 @@ demo.ncvar_get_2D <- function(nc, varid, start = NA, count = NA,
       vals <- as.vector(vals)
     }
     if(ndim == 2){
-      vals <- as.matrix(vals)
+      dim(vals) <- count
     }
   }
 
@@ -201,24 +201,35 @@ demo.ncvar_get_dmat <- function(nc, varid,
   vals <- demo.ncvar_get_2D(nc, varid,
                             verbose = verbose, signedbyte = signedbyte,
                             collapse_degen = collapse_degen)
-  
+
   ### block-cyclic in context 1.
   if(ndim == 1){
+    dim(vals) <- c(length(vals), 1)
     ldim <- as.integer(c(length(vals), 1))
-    dim <- c(ldim[1], 1)
+    dim <- c(spmd.allreduce.integer(ldim[1], integer(1), op = "sum",
+                                    comm = comm),
+             1)
     bldim.org <- c(spmd.allreduce.integer(ldim[1], integer(1), op = "max",
-                                          comm = comm),
+                                    comm = comm),
                    1)
+    ICTXT.org <- 2
   } else{
     ldim <- as.integer(dim(vals))
-    dim <- c(ldim[1], spmd.allreduce.integer(ldim[2], integer(1), op = "sum",
-                                             comm = comm))
-    bldim.org <- c(ldim[1],
+    dim <- c(spmd.allreduce.integer(ldim[1], integer(1), op = "max",
+                                    comm = comm),
+             spmd.allreduce.integer(ldim[2], integer(1), op = "sum",
+                                    comm = comm))
+    bldim.org <- c(dim[1],
                    spmd.allreduce.integer(ldim[2], integer(1), op = "max",
                                           comm = comm))
+    ICTXT.org <- 1
   }
+  if(any(ldim == 0)){
+    ldim <- c(1, 1)
+  }
+
   X.dmat <- new("ddmatrix", Data = vals,
-                dim = dim, ldim = ldim, bldim = bldim.org, ICTXT = 1)
+                dim = dim, ldim = ldim, bldim = bldim.org, ICTXT = ICTXT.org)
 
   ### redistribute data in ddmatrix format.
   dmat.reblock(X.dmat, bldim = bldim, ICTXT = ICTXT)
