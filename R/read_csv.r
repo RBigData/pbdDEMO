@@ -1,4 +1,52 @@
-read.csv.ddmatrix <- function(file, sep=",", nrows, ncols, header=FALSE, bldim=4, num.rdrs=1, ICTXT=0)
+linecount <- function(file)
+{
+  .Call(pbddemo_linecount, file)
+}
+
+
+
+get_ncols <- function(file, sep, start)
+{
+  if (comm.rank()==0)
+    ncols <- length(scan(file=file, skip=start, sep=sep, nlines=1L, quiet=TRUE))
+  else 
+    ncols <- 0L
+  
+  ncols <- pbdMPI::allreduce(ncols, op='sum')
+  
+  return(ncols)
+}
+
+
+
+get_nrows <- function(ncols, header, file, sep, exact.linecount)
+{
+  if (comm.rank()==0)
+  {
+    if (exact.linecount)
+      nrows <- linecount(file)
+    else
+    {
+      sepsize <- (length(unlist(strsplit(sep, split=""))))
+      seps <- ncols * sepsize - 1L
+      
+      skip <- if (header) 1L else 0L
+      chars_per_line <- length(unlist(strsplit(scan(file=file, skip=skip, sep=sep, nlines=1L, quiet=TRUE, what='character'), split="")))
+      
+      nrows <- ceiling( file.info(file)[1L] / (chars_per_line + seps) )
+    }
+  }
+  else
+    nrows <- 0L
+  
+  nrows <- pbdMPI::allreduce(nrows, op='sum')
+  
+  return(nrows)
+}
+
+
+
+read.csv.ddmatrix <- function(file, sep=",", nrows, ncols, header=FALSE, bldim=4, num.rdrs=1, ICTXT=0, exact.linecount=TRUE)
 {
   if (length(bldim)==1)
     bldim <- rep(bldim, 2)
@@ -12,11 +60,7 @@ read.csv.ddmatrix <- function(file, sep=",", nrows, ncols, header=FALSE, bldim=4
   if (missing(ncols))
   {
     msng <- TRUE
-    if (comm.rank()==0)
-      ncols <- length(scan(file=file, skip=start, sep=sep, nlines=1L, quiet=T))
-    else 
-      ncols <- 0L
-    ncols <- pbdMPI::allreduce(ncols, op='sum')
+    ncols <- get_ncols(file=file, sep=sep, start=start)
   }
   
   # estimate number of rows based on number columns and file size in bytes
@@ -24,14 +68,7 @@ read.csv.ddmatrix <- function(file, sep=",", nrows, ncols, header=FALSE, bldim=4
   if (missing(nrows))
   {
     msng <- TRUE
-    if (comm.rank()==0){
-      seps <- ncols * (length(unlist(strsplit(sep, split="")))) - 1
-      x <- length(unlist(strsplit(scan(file=file, sep=sep, nlines=1L, quiet=T, what='character'), split="")))
-      nrows <- ceiling( file.info(file)[1] / (x+seps) )#(ncols + seps) ) # adjust for sep character
-    } else {
-      nrows <- 0L
-    }
-    nrows <- pbdMPI::allreduce(nrows, op='sum')
+    nrows <- get_nrows(ncols=ncols, header=header, file=file, sep=sep, exact.linecount=exact.linecount)
   }
   
   dim <- c(nrows, ncols)
@@ -93,8 +130,9 @@ read.csv.ddmatrix <- function(file, sep=",", nrows, ncols, header=FALSE, bldim=4
   if (blacs_$MYROW != -1)
   {
     skip <- comm.rank() * nlines + start
-    x <- scan(file=file, skip=skip, sep=sep, nlines=nlines, quiet=T)
-  } else
+    x <- scan(file=file, skip=skip, sep=sep, nlines=nlines, quiet=TRUE)
+  } 
+  else
     x <- NULL
   
   # determine true dimensions based on loaded data size --- recall
@@ -112,7 +150,7 @@ read.csv.ddmatrix <- function(file, sep=",", nrows, ncols, header=FALSE, bldim=4
     else 
     {
       ldim <- c(ldim, ncols)
-      Data <- matrix(x, nrow=ldim[1L], ncol=ldim[2L], byrow=T)
+      Data <- matrix(x, nrow=ldim[1L], ncol=ldim[2L], byrow=TRUE)
     }
   } 
   else 
@@ -120,7 +158,7 @@ read.csv.ddmatrix <- function(file, sep=",", nrows, ncols, header=FALSE, bldim=4
     if (is.null(x) || length(x)==0L)
       Data <- matrix(0)
     else 
-      Data <- matrix(x, ncol=dim[2L], byrow=T)
+      Data <- matrix(x, ncol=dim[2L], byrow=TRUE)
     
     ldim <- dim(Data)
   }

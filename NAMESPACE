@@ -1,3 +1,5 @@
+useDynLib(pbdDEMO, pbddemo_linecount)
+
 import(methods, pbdMPI, pbdBASE, pbdDMAT)
 
 exportPattern("^demo\\.[[:alpha:]]+")

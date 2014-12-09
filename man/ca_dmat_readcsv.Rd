@@ -20,6 +20,11 @@
   the matrix across the process grid}
   \item{num.rdrs}{numer of processes to be used to read in the table}
   \item{ICTXT}{BLACS context number for return}
+  \item{exact.linecount}{In the event that \code{nrows} is missing,
+  this determines whether or not the exact number of rows should
+  be determined (which requires a file read), or if an estimate
+  should be used.  Default is \code{TRUE}, meaning that the
+  file will be scanned.}
 }
 \details{
   The function reads in data from a csv file into a distributed 

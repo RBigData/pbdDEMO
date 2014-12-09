@@ -19,7 +19,7 @@ demo.ncvar_ndim <- function(nc, varid, verbose = FALSE){
 ### put methods.
 demo.ncvar_put_2D <- function(nc, varid, vals, start = NA, count = NA,
     verbose = FALSE, comm = .SPMD.CT$comm){
-  ### check
+  ### check and rebuild if start or count is NA
   ndim <- demo.ncvar_ndim(nc, varid)
   if(comm.any(is.na(start) || is.na(count), comm = comm)){
     COMM.RANK <- comm.rank(comm)
@@ -29,20 +29,29 @@ demo.ncvar_put_2D <- function(nc, varid, vals, start = NA, count = NA,
     start <- NULL
     if(ndim == 1){
       count <- nrow * ncol
-      start <- c(1,
-                 1 + cumsum(allgather(count, comm = comm)))[COMM.RANK + 1]
+      cumsum.count <- 1 + cumsum(allgather(count, comm = comm))
+      start <- c(1, cumsum.count)[COMM.RANK + 1]
+      if(count == 0 && start == max(cumsum.count)){
+        start <- max(cumsum.count) - 1
+      }
     }
     if(ndim == 2){
       count <- c(nrow, ncol)
-      start <- c(1,
-                 c(1, 1 + cumsum(allgather(ncol, comm = comm)))[COMM.RANK + 1])
+      cumsum.ncol <- 1 + cumsum(allgather(ncol, comm = comm))
+      start <- c(1, cumsum.ncol)[COMM.RANK + 1]
+      if(any(count == 0) && start == max(cumsum.ncol)){
+        start <- max(cumsum.ncol) - 1
+      }
+      start <- c(1, start)
     }
   }
   if(comm.any(length(start) != ndim || length(count) != ndim, comm = comm)){
-    stop("start and count should be specified for hypercube variables.")
+    comm.stop("start and count should be specified for hypercube variables.")
   }
-  if(comm.any(prod(count[count != 0]) != length(vals), comm = comm)){
-    stop("dim(vals) and count are not consistent.")
+  tl.flag <- (length(vals) == 0 && all(count != 0)) ||
+             (length(vals) != 0 && length(vals) != prod(count))
+  if(comm.any(tl.flag, comm = comm)){
+    comm.stop("dim(vals) and count are not consistent.")
   }
 
   ### parallel write
@@ -58,10 +67,10 @@ demo.ncvar_put_dmat <- function(nc, varid, vals, verbose = FALSE,
   ### check
   ndim <- demo.ncvar_ndim(nc, varid)
   if(ndim > 2){
-    stop("Hypercube variables are not supported.")
+    comm.stop("Hypercube variables are not supported.")
   }
   if(!is.ddmatrix(vals)){
-    stop("vals should be a ddmatrix.")
+    comm.stop("vals should be a ddmatrix.")
   }
 
   ### MPI information
@@ -84,10 +93,10 @@ demo.ncvar_put_gbd <- function(nc, varid, vals, verbose = FALSE,
   ### check
   ndim <- demo.ncvar_ndim(nc, varid)
   if(ndim > 2){
-    stop("Hypercube variables are not supported.")
+    comm.stop("Hypercube variables are not supported.")
   }
   if(!comm.all(is.matrix(vals), comm = comm)){
-    stop("vals should be a gbd matrix")
+    comm.stop("vals should be a gbd matrix")
   }
 
   if(gbd.major == 1){
@@ -117,15 +126,15 @@ demo.ncvar_get_2D <- function(nc, varid, start = NA, count = NA,
     start <- NULL
     count <- NULL
     if(ndim == 1){
-      ncol <- nc$var[[idobj$list_index]]$dim[[1]]$len
-      ncol.per.rank <- ceiling(ncol / COMM.SIZE)
-      start <- c(1 + ncol.per.rank * COMM.RANK)
-      count <- c(ncol.per.rank)
-      if(start + count > ncol){
-        count <- ncol - start + 1
+      ndata <- nc$var[[idobj$list_index]]$dim[[1]]$len
+      ndata.per.rank <- ceiling(ndata / COMM.SIZE)
+      start <- 1 + ndata.per.rank * COMM.RANK
+      count <- ndata.per.rank
+      if(start + count > ndata){
+        count <- ndata - start + 1
       }
-      if(start > ncol){
-        start <- 1
+      if(start > ndata){
+        start <- ndata 
         count <- 0
       }
     }
@@ -139,13 +148,18 @@ demo.ncvar_get_2D <- function(nc, varid, start = NA, count = NA,
         count[2] <-  ncol - start[2] + 1
       }
       if(start[2] > ncol){
-        start <- c(1, 1)
+        start <- c(1, ncol)
         count <- c(0, 0)
       }
     }
   }
   if(comm.any(length(start) != ndim || length(count) != ndim, comm = comm)){
-    stop("start and count should be specified correctly for a hypercube.")
+    comm.stop("start and count should be specified correctly for a hypercube.")
+  }
+  check.zero.count <- FALSE
+  if(any(count == 0)){
+    count <- rep(1, ndim)
+    check.zero.count <- TRUE
   }
 
   ### parallel read
@@ -154,15 +168,23 @@ demo.ncvar_get_2D <- function(nc, varid, start = NA, count = NA,
                                    verbose = verbose, signedbyte = signedbyte,
                                    collapse_degen = collapse_degen),
               silent = TRUE)
-  if(class(vals) == "try-error"){
+
+  if(class(vals) == "try-error" || check.zero.count){
     if(ndim == 1){
-      vals <- vector(0, length = 0)
-    } else if(ndim == 2){
+      vals <- vector(mode = "numeric", length = 0)
+    }
+    if(ndim == 2){
       vals <- matrix(0, nrow = 0, ncol = 0)
-    } else{
-      vals <- array(0, rep(0, ndim))
+    }
+  } else{
+    if(ndim == 1){
+      vals <- as.vector(vals)
+    }
+    if(ndim == 2){
+      dim(vals) <- count
     }
   }
+
   vals
 } # End of demo.ncvar_get_2D().
 
@@ -172,31 +194,42 @@ demo.ncvar_get_dmat <- function(nc, varid,
   ### check
   ndim <- demo.ncvar_ndim(nc, varid)
   if(ndim > 2){
-    stop("Hypercube variables are not supported.")
+    comm.stop("Hypercube variables are not supported.")
   }
 
   ### get data out of file.
   vals <- demo.ncvar_get_2D(nc, varid,
                             verbose = verbose, signedbyte = signedbyte,
                             collapse_degen = collapse_degen)
-  
+
   ### block-cyclic in context 1.
   if(ndim == 1){
+    dim(vals) <- c(length(vals), 1)
     ldim <- as.integer(c(length(vals), 1))
-    dim <- c(ldim[1], 1)
+    dim <- c(spmd.allreduce.integer(ldim[1], integer(1), op = "sum",
+                                    comm = comm),
+             1)
     bldim.org <- c(spmd.allreduce.integer(ldim[1], integer(1), op = "max",
-                                          comm = comm),
+                                    comm = comm),
                    1)
+    ICTXT.org <- 2
   } else{
     ldim <- as.integer(dim(vals))
-    dim <- c(ldim[1], spmd.allreduce.integer(ldim[2], integer(1), op = "sum",
-                                             comm = comm))
-    bldim.org <- c(ldim[1],
+    dim <- c(spmd.allreduce.integer(ldim[1], integer(1), op = "max",
+                                    comm = comm),
+             spmd.allreduce.integer(ldim[2], integer(1), op = "sum",
+                                    comm = comm))
+    bldim.org <- c(dim[1],
                    spmd.allreduce.integer(ldim[2], integer(1), op = "max",
                                           comm = comm))
+    ICTXT.org <- 1
   }
+  if(any(ldim == 0)){
+    ldim <- c(1, 1)
+  }
+
   X.dmat <- new("ddmatrix", Data = vals,
-                dim = dim, ldim = ldim, bldim = bldim.org, ICTXT = 1)
+                dim = dim, ldim = ldim, bldim = bldim.org, ICTXT = ICTXT.org)
 
   ### redistribute data in ddmatrix format.
   dmat.reblock(X.dmat, bldim = bldim, ICTXT = ICTXT)
@@ -208,7 +241,7 @@ demo.ncvar_get_gbd <- function(nc, varid,
   ### check
   ndim <- demo.ncvar_ndim(nc, varid)
   if(ndim > 2){
-    stop("Hypercube variables are not supported.")
+    comm.stop("Hypercube variables are not supported.")
   }
 
   ### get data out of file.
