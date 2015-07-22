@@ -1,11 +1,59 @@
-### This file contains several functions for reading and writing gbd and
-### ddmatrix to NetCDF4 files and mainly forcus on 2D matrices.
+#' Read and Write Parallel NetCDF4 Files in GBD and ddmatrix Format
+#' 
+#' These functions write and read NetCDF4 files in GBD and ddmatrix format.
+#' 
+#' \code{demo.ncvar_get_*} are similar to \code{ncvar_get} of \pkg{pbdNCDF4},
+#' but focus on 2D arrays and return a ddmatrix or GBD matrix.
+#' 
+#' \code{demo.ncvar_put_*} are also similar to \code{ncvar_put} of
+#' \pkg{pbdNCDF4}, but only dump 2D arrays.
+#' 
+#' @param nc 
+#' an object of class \code{ncdf4} (as returned by either function
+#' \code{nc_open_par} or function \code{nc_create_par}), indicating what file
+#' to read from.
+#' @param varid 
+#' See \code{ncvar_get} for details.
+#' @param verbose 
+#' See \code{ncvar_get} for details.
+#' @param signedbyte 
+#' See \code{ncvar_get} for details.
+#' @param collapse_degen 
+#' See \code{ncvar_get} for details.
+#' @param vals 
+#' See \code{ncvar_put} for details.
+#' @param gbd.major 
+#' a GBD major, either 1 for row-major or 2 for column-major.
+#' @param bldim 
+#' the blocking dimension for block-cyclically distributing the
+#' matrix across the process grid.
+#' @param ICTXT 
+#' BLACS context number for return.
+#' @param comm 
+#' a communicator number.
+#' 
+#' @return 
+#' \code{demo.ncvar_get_dmat} returns a \code{ddmatrix}, and
+#' \code{demo.ncvar_get_gbd} returns a GBD matrix in either row- or column
+#' major specified by \code{gbd.major}.
+#' 
+#' @examples
+#' \dontrun{
+#' ### Under command mode, run the demo with 4 processors by
+#' ### (Use Rscript.exe for windows system)
+#' mpiexec -np 4 Rscript -e "demo(nc4_serial,'pbdDEMO',ask=F,echo=F)"
+#' mpiexec -np 4 Rscript -e "demo(nc4_parallel,'pbdDEMO',ask=F,echo=F)"
+#' mpiexec -np 4 Rscript -e "demo(nc4_dmat,'pbdDEMO',ask=F,echo=F)"
+#' mpiexec -np 4 Rscript -e "demo(nc4_gbdc,'pbdDEMO',ask=F,echo=F)"
+#' }
+#' 
+#' @seealso \code{.DEMO.CT}.
+#' @keywords programming
+#' @rdname ncvar
+NULL
 
-### Warning: All "vals" are presumed to be "gbd column-major" matrices
-###          for all functions, but may be fine with other formats in
-###          some functions.
 
-### Utility function.
+
 demo.ncvar_ndim <- function(nc, varid, verbose = FALSE){
   ### get variable id from the nc header
   idobj <- pbdNCDF4::vobjtovarid4(nc, varid, verbose = verbose,
@@ -14,6 +62,7 @@ demo.ncvar_ndim <- function(nc, varid, verbose = FALSE){
   ### obtain storage dimension
   length(nc$var[[idobj$list_index]]$dim)
 } # End of demo.ncvar_ndim().
+
 
 
 ### put methods.
@@ -62,6 +111,10 @@ demo.ncvar_put_2D <- function(nc, varid, vals, start = NA, count = NA,
   invisible()
 } # End of demo.ncvar_put_2D().
 
+
+
+#' @rdname ncvar
+#' @export
 demo.ncvar_put_dmat <- function(nc, varid, vals, verbose = FALSE,
     comm = .SPMD.CT$comm){
   ### check
@@ -88,6 +141,10 @@ demo.ncvar_put_dmat <- function(nc, varid, vals, verbose = FALSE,
   demo.ncvar_put_2D(nc, varid, vals, verbose = verbose, comm = comm)
 } # End of demo.ncvar_put_dmat().
 
+
+
+#' @rdname ncvar
+#' @export
 demo.ncvar_put_gbd <- function(nc, varid, vals, verbose = FALSE,
     comm = .SPMD.CT$comm, gbd.major = .DEMO.CT$gbd.major){
   ### check
@@ -175,6 +232,10 @@ demo.ncvar_get_2D <- function(nc, varid, start = NA, count = NA,
   vals
 } # End of demo.ncvar_get_2D().
 
+
+
+#' @rdname ncvar
+#' @export
 demo.ncvar_get_dmat <- function(nc, varid,
     verbose = FALSE, signedbyte = TRUE, collapse_degen = TRUE,
     bldim = .DEMO.CT$bldim, ICTXT = .DEMO.CT$ictxt, comm = .SPMD.CT$comm){
@@ -211,6 +272,10 @@ demo.ncvar_get_dmat <- function(nc, varid,
   dmat.reblock(X.dmat, bldim = bldim, ICTXT = ICTXT)
 } # End of demo.ncvar_get_dmat().
 
+
+
+#' @export
+#' @rdname ncvar
 demo.ncvar_get_gbd <- function(nc, varid,
     verbose = FALSE, signedbyte = TRUE, collapse_degen = TRUE,
     comm = .SPMD.CT$comm, gbd.major = .DEMO.CT$gbd.major){
