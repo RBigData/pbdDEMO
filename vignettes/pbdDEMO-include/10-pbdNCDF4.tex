@@ -149,7 +149,7 @@ var.def <- ncvar_def("TREFHT", "K", list(lon = lon, lat = lat), NULL)
 ### parallel write
 file.name <- "nc4_dmat.nc"
 nc <- nc_create_par(file.name, var.def)
-ncvar_put_dmat(nc, "TREFHT", dx)
+demo.ncvar_put_dmat(nc, "TREFHT", dx)
 nc_close(nc)
 if(comm.rank() == 0){
   ncdump(file.name)
@@ -160,7 +160,8 @@ nc <- nc_open_par(file.name)
 if(comm.rank() == 0){
   print(nc)
 }
-new.dx <- ncvar_get_dmat(nc, "TREFHT", bldim = bldim(dx), ICTXT = ctxt(dx))
+new.dx <- demo.ncvar_get_dmat(nc, "TREFHT", bldim = bldim(dx),
+                              ICTXT = dmat.ictxt(dx))
 nc_close(nc)
 \end{lstlisting}
 
@@ -176,12 +177,41 @@ Line 20, 24, and 25 open the file again and read the data from the
 variable from the data and convert them to a
 \code{ddmatrix}.\index{Class!\code{ddmatrix}}
 
-Note that \code{ncvar_put_dmat()} and \code{ncvar_get_dmat()} are implemented
-for 2D variables only. Please use \pkg{pbdNCDF4}/\pkg{ncdf4} primitive functions
+Note that \code{demo.ncvar_put_dmat()} and \code{demo.ncvar_get_dmat()} are
+implemented for 2D variables only. Please use \pkg{pbdNCDF4}/\pkg{ncdf4}
+primitive functions
 \code{ncvar_put()} and \code{ncvar_get()} via arguments \code{start}
 and \code{count} for more complicated cases. For example, we may write
 the \code{TREFHT} into a slice of a hypercube according to it's time step
 (Jan. 2004).
+
+
+\emph{Example: Dump and read 9 by 9 (1D and 2D) ddmatrices in paralle NetCDF4.}
+
+The demo command is
+\begin{Command}
+### At the shell prompt, run the demo with 4 processors by
+### (Use Rscript.exe for windows system)
+mpiexec -np 4 Rscript -e "demo(nc4_par_write_1d,'pbdDEMO',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(nc4_par_write_2d,'pbdDEMO',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(nc4_par_read_1d,'pbdDEMO',ask=F,echo=F)"
+mpiexec -np 4 Rscript -e "demo(nc4_par_read_2d,'pbdDEMO',ask=F,echo=F)"
+\end{Command}
+
+These examples create a subdirectory \code{./nc4_data} first,
+then generate 81 1D NetCDF4 parallel files \code{./nc4_data/1d_*_*.nc},
+and 81 2D NetCDF4 parallel files \code{./nc4_data/2d_*_*.nc},
+and then read them back in. Both reading and writing are in \code{ddmatrix}
+and in parallel NetCDF4 formats. Note that the storing formate of nc files
+are in row major, but \proglang{R} use column major to store a matrix.
+However, these examples will not have conflicts since they define rows
+as the frist variable, so transpose matrices will be actually seen
+from \code{ncdump}. As long as read and write are in the same order,
+everything is fine. Further, the \code{ddmatrix} is actually convert
+to \code{gbdr} or \code{gbdc} formats, then dump to or read from the
+NetCDF4 files in parallel. This could be inefficient for a large matrix,
+so use with caution!
+
 
 
 \section{Exercises}
@@ -204,8 +234,10 @@ and distribute data later manually. Modify the demo code
 comparisons.
 
 \item
-Implement functions or add arguments to \code{ncvar_put_dmat()} and
-\code{ncvar_get_dmat()} to enable writing and reading high dimension data,
+Implement functions or add arguments to the put method,
+\code{demo.ncvar_put_dmat()}, and the get method,
+\code{demo.ncvar_get_dmat()},
+to enable writing and reading high dimension data,
 for example, $(lon, lat, time)$ is 2D in time (3D cube) or
 $(lon, lat, lev, time)$ is 3D in time (4D hypercube).
 Dump \code{TREFHT} to a slice of 3D cube and load them back to a

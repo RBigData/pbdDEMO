@@ -1,5 +1,5 @@
-library(pbdDEMO, quietly = TRUE)
-library(pbdNCDF4, quietly = TRUE)
+suppressMessages(library(pbdDEMO, quietly = TRUE))
+suppressMessages(library(pbdNCDF4, quietly = TRUE))
 
 # -------------------------------------
 # Write and read NetCDF4 file in ddmatrix
