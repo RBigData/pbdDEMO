@@ -52,6 +52,7 @@ image_dmat <- function(nrow, ncol, nprow, npcol, bldim, ..., labeling="blacs")
 #' col R plots color argument
 #' 
 #' @keywords Distributing Data
+#' @export
 plot_dmat <- function(nrow, ncol, nprow, npcol, bldim, ..., labeling="blacs", col="rainbow")
 {
   if (length(bldim) == 1)
