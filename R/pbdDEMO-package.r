@@ -6,6 +6,9 @@
 #' GPL\cr LazyLoad: \tab yes\cr } This package requires an MPI library
 #' (OpenMPI, MPICH2, or LAM/MPI).
 #' 
+#' @import methods, pbdMPI, pbdBASE, pbdDMAT
+#' @useDynLib pbdDEMO, pbddemo_linecount
+#' 
 #' @name pbdDEMO-package
 #' @docType package
 #' @author Drew Schmidt \email{schmidt AT math.utk.edu}, Wei-Chen Chen, George
