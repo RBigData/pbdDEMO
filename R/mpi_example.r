@@ -39,6 +39,7 @@
 #' }
 #' 
 #' @keywords programming
+#' @name mpi_example
 #' @rdname mpi_example
 NULL
 

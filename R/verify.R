@@ -30,6 +30,7 @@
 #' BLACS context
 #' 
 #' @keywords Timing
+#' @name verify
 #' @rdname verify
 NULL
 

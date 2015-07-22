@@ -89,6 +89,7 @@
 #' }
 #' 
 #' @keywords programming
+#' @name load_balance
 #' @rdname load_balance
 NULL
 

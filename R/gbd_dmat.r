@@ -44,6 +44,7 @@
 #' }
 #' 
 #' @keywords programming
+#' @name gbd_dmat
 #' @rdname gbd_dmat
 NULL
 

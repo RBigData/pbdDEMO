@@ -49,6 +49,7 @@
 #' 
 #' @seealso \code{.DEMO.CT}.
 #' @keywords programming
+#' @name ncvar
 #' @rdname ncvar
 NULL
 
