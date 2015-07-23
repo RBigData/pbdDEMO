@@ -46,6 +46,51 @@ get_nrows <- function(ncols, header, file, sep, exact.linecount)
 
 
 
+#' A Simple Parallel CSV Reader
+#' 
+#' Read in a table from a CSV file in parallel as a distributed matrix.
+#' 
+#' The function reads in data from a csv file into a distributed matrix.  This
+#' function sits somewhere between \code{scan()} and \code{read.csv()}, but for
+#' parallel reads into a distributed matrix.
+#' 
+#' The arguments \code{nrow=} and \code{ncol=} are optional.  In the case that
+#' they are left blank, they will be determined.  However, note that doing so
+#' is costly, so knowing the dimensions beforehand can greatly improve
+#' performance.
+#' 
+#' Although frankly, the performance-minded should not be using csv's in the
+#' first place.  Consider using the \code{pbdNCDF4} package for managing data.
+#' 
+#' @param file
+#' csv file name.
+#' @param sep 
+#' separator character.
+#' @param nrows,ncols 
+#' dimensions of the csv file. Allowed to be missing in
+#' function call.
+#' @param header 
+#' logical indicating presence/absence of character header for
+#' file.
+#' @param bldim 
+#' the blocking dimension for block-cyclically distributing the
+#' matrix across the process grid
+#' @param num.rdrs 
+#' numer of processes to be used to read in the table
+#' @param ICTXT 
+#' BLACS context number for return
+#' @param exact.
+#' linecount In the event that \code{nrows} is missing, this
+#' determines whether or not the exact number of rows should be determined
+#' (which requires a file read), or if an estimate should be used.  Default is
+#' \code{TRUE}, meaning that the file will be scanned.
+#' 
+#' @return 
+#' Returns a distributed matrix.
+#' 
+#' @keywords Distributing Data
+#' @name read.csv.ddmatrix
+#' @rdname read.csv.ddmatrix
 read.csv.ddmatrix <- function(file, sep=",", nrows, ncols, header=FALSE, bldim=4, num.rdrs=1, ICTXT=0, exact.linecount=TRUE)
 {
   if (length(bldim)==1)

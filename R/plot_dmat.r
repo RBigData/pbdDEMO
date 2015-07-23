@@ -28,6 +28,31 @@ image_dmat <- function(nrow, ncol, nprow, npcol, bldim, ..., labeling="blacs")
 }
 
 
+
+#' Visualizing the DMAT Data Structure
+#' 
+#' Plot a (small) global matrix as though it had been chopped up into pieces in
+#' the block-cyclic fashion.
+#' 
+#' This function helps the user visualize 2-d block-cyclic distributed data.
+#' 
+#' @param nrow,ncol 
+#' Number of global rows/columns of the matrix.
+#' @param nprow,npcol 
+#' Number of processor rows/columns in the BLACS grid.
+#' @param bldim 
+#' The blocking factor for the data distribution.
+#' @param ... 
+#' Additional arguments
+#' @param labeling 
+#' Character argument; should be "blacs" or "mpi".  This
+#' determines how the processor labeling should be, either in the 2-d BLACS
+#' way, or in the 1-d MPI way.
+#' @param 
+#' col R plots color argument
+#' 
+#' @keywords Distributing Data
+#' @export
 plot_dmat <- function(nrow, ncol, nprow, npcol, bldim, ..., labeling="blacs", col="rainbow")
 {
   if (length(bldim) == 1)
