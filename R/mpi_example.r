@@ -9,7 +9,7 @@
 #' For demonstration purpose, these objects should not contains weird values
 #' such \code{NA}.
 #' 
-#' @param x
+#' @param x.gbd
 #' gbd a GBD vector.
 #' @param breaks 
 #' a set to break data in groups.
