@@ -132,7 +132,7 @@ demo.ncvar_put_dmat <- function(nc, varid, vals, verbose = FALSE,
 
   ### redistribute data in gbd column format.
   bldim <- c(nrow(vals), ceiling(ncol(vals) / COMM.SIZE))
-  X.dmat <- dmat.reblock(vals, bldim = bldim, ICTXT = 1)
+  X.dmat <- pbdDMAT::reblock(vals, bldim = bldim, ICTXT = 1)
   if(base.ownany(dim(X.dmat), bldim(X.dmat), ICTXT = 1)){
     vals <- X.dmat@Data
   } else{
@@ -294,7 +294,7 @@ demo.ncvar_get_dmat <- function(nc, varid,
                 dim = dim, ldim = ldim, bldim = bldim.org, ICTXT = ICTXT.org)
 
   ### redistribute data in ddmatrix format.
-  dmat.reblock(X.dmat, bldim = bldim, ICTXT = ICTXT)
+  pbdDMAT::reblock(X.dmat, bldim = bldim, ICTXT = ICTXT)
 } # End of demo.ncvar_get_dmat().
 
 

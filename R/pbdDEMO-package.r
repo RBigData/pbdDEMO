@@ -7,6 +7,9 @@
 #' (OpenMPI, MPICH2, or LAM/MPI).
 #' 
 #' @import methods pbdMPI pbdBASE pbdDMAT
+#' @importFrom graphics image
+#' @importFrom stats uniroot
+#' @importFrom utils read.csv
 #' @useDynLib pbdDEMO, pbddemo_linecount
 #' 
 #' @name pbdDEMO-package
