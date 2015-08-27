@@ -6,7 +6,10 @@
 #' GPL\cr LazyLoad: \tab yes\cr } This package requires an MPI library
 #' (OpenMPI, MPICH2, or LAM/MPI).
 #' 
-#' @import methods, pbdMPI, pbdBASE, pbdDMAT
+#' @import methods pbdMPI pbdBASE pbdDMAT
+#' @importFrom graphics image
+#' @importFrom stats uniroot
+#' @importFrom utils read.csv
 #' @useDynLib pbdDEMO, pbddemo_linecount
 #' 
 #' @name pbdDEMO-package

@@ -17,6 +17,8 @@ mpi.quantile(x.gbd, prob = 0.5)
 mpi.ols(y.gbd, X.gbd)
 }
 \arguments{
+\item{x.gbd}{gbd a GBD vector.}
+
 \item{breaks}{a set to break data in groups.}
 
 \item{prob}{a desired probability for quantile.}
@@ -24,8 +26,6 @@ mpi.ols(y.gbd, X.gbd)
 \item{y.gbd}{a GBD vector.}
 
 \item{X.gbd}{a GBD matrix.}
-
-\item{x}{gbd a GBD vector.}
 }
 \value{
 \code{mpi.stat} returns sample mean and sample variance.
