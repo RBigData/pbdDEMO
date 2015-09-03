@@ -77,7 +77,7 @@ demo.gbdr2dmat <- function(X.gbd, skip.balance = FALSE, comm = .SPMD.CT$comm,
                 dim = c(N, p), ldim = ldim, bldim = bldim.org, ICTXT = 2)
 
   ### reblock to any context and block size.
-  X.dmat <- dmat.reblock(X.dmat, bldim = bldim, ICTXT = ICTXT)
+  X.dmat <- pbdDMAT::reblock(X.dmat, bldim = bldim, ICTXT = ICTXT)
 
   X.dmat
 } # End of demo.gbdr2dmat().
@@ -110,7 +110,7 @@ demo.gbdc2dmat <- function(X.gbd, skip.balance = FALSE, comm = .SPMD.CT$comm,
                 dim = c(p, N), ldim = ldim, bldim = bldim.org, ICTXT = 1)
 
   ### reblock to any context and block size.
-  X.dmat <- dmat.reblock(X.dmat, bldim = bldim, ICTXT = ICTXT)
+  X.dmat <- pbdDMAT::reblock(X.dmat, bldim = bldim, ICTXT = ICTXT)
 
   X.dmat
 } # End of demo.gbdc2dmat().
@@ -145,7 +145,7 @@ demo.dmat2gbdr <- function(X.dmat, bal.info = NULL, comm = .SPMD.CT$comm){
 
   ### block-cyclic in context 2.
   bldim.new <- c(ceiling(nrow(X.dmat) / COMM.SIZE), ncol(X.dmat))
-  X.dmat <- dmat.reblock(X.dmat, bldim = bldim.new, ICTXT = 2)
+  X.dmat <- pbdDMAT::reblock(X.dmat, bldim = bldim.new, ICTXT = 2)
 
   ### copy to gbd.
   if(base.ownany(dim(X.dmat), bldim(X.dmat), ICTXT = 2)){
@@ -177,7 +177,7 @@ demo.dmat2gbdc <- function(X.dmat, bal.info = NULL, comm = .SPMD.CT$comm){
 
   ### block-cyclic in context 1.
   bldim.new <- c(nrow(X.dmat), ceiling(ncol(X.dmat) / COMM.SIZE))
-  X.dmat <- dmat.reblock(X.dmat, bldim = bldim.new, ICTXT = 1)
+  X.dmat <- pbdDMAT::reblock(X.dmat, bldim = bldim.new, ICTXT = 1)
 
   ### copy to gbd.
   if(base.ownany(dim(X.dmat), bldim(X.dmat), ICTXT = 1)){

@@ -25,7 +25,7 @@ matrix across the process grid}
 
 \item{ICTXT}{BLACS context number for return}
 
-\item{exact.}{linecount In the event that \code{nrows} is missing, this
+\item{exact.linecount}{linecount In the event that \code{nrows} is missing, this
 determines whether or not the exact number of rows should be determined
 (which requires a file read), or if an estimate should be used.  Default is
 \code{TRUE}, meaning that the file will be scanned.}

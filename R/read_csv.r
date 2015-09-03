@@ -79,7 +79,7 @@ get_nrows <- function(ncols, header, file, sep, exact.linecount)
 #' numer of processes to be used to read in the table
 #' @param ICTXT 
 #' BLACS context number for return
-#' @param exact.
+#' @param exact.linecount
 #' linecount In the event that \code{nrows} is missing, this
 #' determines whether or not the exact number of rows should be determined
 #' (which requires a file read), or if an estimate should be used.  Default is
@@ -149,7 +149,7 @@ read.csv.ddmatrix <- function(file, sep=",", nrows, ncols, header=FALSE, bldim=4
               bldim=tmpbl, ICTXT=0)
   
     if (ICTXT != 0 || any(tmpbl != bldim) )
-      out <- dmat.redistribute(dx=out, bldim=bldim, ICTXT=ICTXT)
+      out <- pbdDMAT::redistribute(dx=out, bldim=bldim, ICTXT=ICTXT)
     
     return(out)
     
@@ -211,7 +211,7 @@ read.csv.ddmatrix <- function(file, sep=",", nrows, ncols, header=FALSE, bldim=4
   out <- new("ddmatrix", Data=Data, dim=dim, ldim=ldim, bldim=tmpbl, ICTXT=MYCTXT)
   
   if (ICTXT != MYCTXT || any(tmpbl != bldim))
-    out <- dmat.redistribute(dx=out, bldim=bldim, ICTXT=ICTXT)
+    out <- pbdDMAT::redistribute(dx=out, bldim=bldim, ICTXT=ICTXT)
   
   if (newgrid)
     gridexit(MYCTXT)
