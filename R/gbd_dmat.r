@@ -1,4 +1,52 @@
-### This file contains functions to convert "X.gbd" and "X.dmat".
+#' GBD Matrix to Distributed Dense Matrix and vice versa
+#' 
+#' This function convert a GBD matrix and a distributed dense matrix.
+#' 
+#' \code{X.gbd} is a matrix with dimension \code{N.gbd * p} and exists on all
+#' processors. \code{N.gbd} may be vary across processors.
+#' 
+#' If \code{skip.balance = TRUE}, then \code{load.balance} will not be called
+#' and \code{X.gbd} is preassumed to be balanced.
+#' 
+#' For demonstration purpose, these objects should not contains weird values
+#' such as \code{NA}.
+#' 
+#' \code{dmat2gbd} is supposed returned a balanced gbd matrix if
+#' \code{bal.info} is not supplied.
+#' 
+#' @param X.gbd 
+#' a GBD matrix.
+#' @param skip.balance 
+#' if \code{load.balance} were skipped.
+#' @param comm 
+#' a communicator number.
+#' @param bldim 
+#' the blocking dimension for block-cyclically distributing the
+#' matrix across the process grid.
+#' @param gbd.major 
+#' 1 for row-major storage, 2 for column-major.
+#' @param ICTXT 
+#' BLACS context number for return.
+#' @param X.dmat 
+#' a ddmatrix matrix.
+#' @param bal.info 
+#' a returned object from \code{balance.info}.
+#' 
+#' @return 
+#' \code{gbd2dmat} returns a ddmatrix object.  \code{dmat2gbd} returns
+#' a (balanced) gbd matrix.
+#' 
+#' @examples
+#' \dontrun{
+#' ### Under command mode, run the demo with 4 processors by
+#' ### (Use Rscript.exe for windows system)
+#' mpiexec -np 4 Rscript -e "demo(gbd_dmat,'pbdDEMO',ask=F,echo=F)"
+#' }
+#' 
+#' @keywords programming
+#' @name gbd_dmat
+#' @rdname gbd_dmat
+NULL
 
 demo.gbdr2dmat <- function(X.gbd, skip.balance = FALSE, comm = .SPMD.CT$comm,
     bldim = .DEMO.CT$bldim, ICTXT = .DEMO.CT$ictxt){
@@ -29,7 +77,7 @@ demo.gbdr2dmat <- function(X.gbd, skip.balance = FALSE, comm = .SPMD.CT$comm,
                 dim = c(N, p), ldim = ldim, bldim = bldim.org, ICTXT = 2)
 
   ### reblock to any context and block size.
-  X.dmat <- dmat.reblock(X.dmat, bldim = bldim, ICTXT = ICTXT)
+  X.dmat <- pbdDMAT::reblock(X.dmat, bldim = bldim, ICTXT = ICTXT)
 
   X.dmat
 } # End of demo.gbdr2dmat().
@@ -62,11 +110,14 @@ demo.gbdc2dmat <- function(X.gbd, skip.balance = FALSE, comm = .SPMD.CT$comm,
                 dim = c(p, N), ldim = ldim, bldim = bldim.org, ICTXT = 1)
 
   ### reblock to any context and block size.
-  X.dmat <- dmat.reblock(X.dmat, bldim = bldim, ICTXT = ICTXT)
+  X.dmat <- pbdDMAT::reblock(X.dmat, bldim = bldim, ICTXT = ICTXT)
 
   X.dmat
 } # End of demo.gbdc2dmat().
 
+
+#' @rdname gbd_dmat
+#' @export
 gbd2dmat <- function(X.gbd, skip.balance = FALSE, comm = .SPMD.CT$comm,
     gbd.major = .DEMO.CT$gbd.major, bldim = .DEMO.CT$bldim,
     ICTXT = .DEMO.CT$ictxt){
@@ -94,7 +145,7 @@ demo.dmat2gbdr <- function(X.dmat, bal.info = NULL, comm = .SPMD.CT$comm){
 
   ### block-cyclic in context 2.
   bldim.new <- c(ceiling(nrow(X.dmat) / COMM.SIZE), ncol(X.dmat))
-  X.dmat <- dmat.reblock(X.dmat, bldim = bldim.new, ICTXT = 2)
+  X.dmat <- pbdDMAT::reblock(X.dmat, bldim = bldim.new, ICTXT = 2)
 
   ### copy to gbd.
   if(base.ownany(dim(X.dmat), bldim(X.dmat), ICTXT = 2)){
@@ -126,7 +177,7 @@ demo.dmat2gbdc <- function(X.dmat, bal.info = NULL, comm = .SPMD.CT$comm){
 
   ### block-cyclic in context 1.
   bldim.new <- c(nrow(X.dmat), ceiling(ncol(X.dmat) / COMM.SIZE))
-  X.dmat <- dmat.reblock(X.dmat, bldim = bldim.new, ICTXT = 1)
+  X.dmat <- pbdDMAT::reblock(X.dmat, bldim = bldim.new, ICTXT = 1)
 
   ### copy to gbd.
   if(base.ownany(dim(X.dmat), bldim(X.dmat), ICTXT = 1)){
@@ -146,6 +197,9 @@ demo.dmat2gbdc <- function(X.dmat, bal.info = NULL, comm = .SPMD.CT$comm){
   X.gbd
 } # End of demo.dmat2gbdc().
 
+
+#' @rdname gbd_dmat
+#' @export
 dmat2gbd <- function(X.dmat, bal.info = NULL, comm = .SPMD.CT$comm,
     gbd.major = .DEMO.CT$gbd.major){
   if(gbd.major == 1){

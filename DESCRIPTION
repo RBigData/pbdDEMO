@@ -1,7 +1,7 @@
 Package: pbdDEMO
-Title: Programming with Big Data -- Demonstrations of pbd Packages
+Title: Programming with Big Data -- Demonstrations and Examples Using
+        'pbdR' Packages
 Version: 0.3-0
-Date: 2014-10-17
 Depends: R (>= 3.0.0), methods, pbdMPI (>= 0.2-4), pbdBASE(>= 0.3-0),
         pbdDMAT(>= 0.3-0)
 Enhances: maps, RColorBrewer, pbdNCDF4 (>= 0.1-2), pmclust, MixSim,
@@ -11,11 +11,11 @@ LazyData: yes
 ByteCompile: yes
 NeedsCompilation: yes
 Authors@R: c(person("Drew", "Schmidt", role = c("aut", "cre"), email =
-        "schmidt@math.utk.edu"), person("Wei-Chen", "Chen", role =
-        "aut"), person("George", "Ostrouchov", role = "aut"),
-        person("Pragneshkumar", "Patel", role = "aut"))
-Description: pbdDEMO is a set of demos of pbdR packages, with a useful,
-        unifying vignette.
+    "schmidt@math.utk.edu"), person("Wei-Chen", "Chen", role =
+    "aut"), person("George", "Ostrouchov", role = "aut"),
+    person("Pragneshkumar", "Patel", role = "aut"))
+Description: A set of demos of 'pbdR' packages, together with a useful,
+    unifying vignette.
 SystemRequirements: OpenMPI (>= 1.5.4) on Solaris, Linux, Mac, and
         FreeBSD. MS-MPI (Microsoft HPC Pack 2012 R2 MS-MPI
         Redistributable Package) on Windows.
@@ -25,8 +25,8 @@ BugReports: http://group.r-pbd.org/
 MailingList: Please send questions and comments regarding pbdR to
         RBigData@gmail.com
 Maintainer: Drew Schmidt <schmidt@math.utk.edu>
+Packaged: 2015-07-24 11:47:59 UTC; snoweye
 Author: Drew Schmidt [aut, cre],
   Wei-Chen Chen [aut],
   George Ostrouchov [aut],
   Pragneshkumar Patel [aut]
-Packaged: 2014-12-07 22:59:45 UTC; snoweye
