@@ -7,8 +7,9 @@
 #' (OpenMPI, MPICH2, or LAM/MPI).
 #' 
 #' @import methods 
-#' @importFrom pbdMPI comm.cat comm.print comm.stop comm.allreduce 
-#'   allgather 
+#' @importFrom pbdMPI comm.cat comm.print comm.stop allreduce 
+#'   allgather comm.size comm.rank comm.stop spmd.allreduce.integer
+#'   comm.any comm.all comm.warning spmd.allgather.integer
 #' @import pbdBASE pbdDMAT
 #' @importFrom graphics image
 #' @importFrom stats uniroot
