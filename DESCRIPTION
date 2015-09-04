@@ -1,13 +1,11 @@
 Package: pbdDEMO
-Title: Programming with Big Data -- Demonstrations and Examples Using 'pbdR' Packages
+Title: Programming with Big Data -- Demonstrations and Examples Using
+        'pbdR' Packages
 Version: 0.3-0
-Depends: R (>= 3.0.0),
-    methods, 
-    pbdMPI (>= 0.2-4), 
-    pbdBASE(>= 0.3-0),
-    pbdDMAT(>= 0.3-0)
+Depends: R (>= 3.0.0), methods, pbdMPI (>= 0.2-4), pbdBASE(>= 0.3-0),
+        pbdDMAT(>= 0.3-0)
 Enhances: maps, RColorBrewer, pbdNCDF4 (>= 0.1-2), pmclust, MixSim,
-    EMCluster, phyclust, MASS
+        EMCluster, phyclust, MASS
 LazyLoad: yes
 LazyData: yes
 ByteCompile: yes
@@ -19,11 +17,16 @@ Authors@R: c(person("Drew", "Schmidt", role = c("aut", "cre"), email =
 Description: A set of demos of 'pbdR' packages, together with a useful,
     unifying vignette.
 SystemRequirements: OpenMPI (>= 1.5.4) on Solaris, Linux, Mac, and
-    FreeBSD. MS-MPI (Microsoft HPC Pack 2012 R2 MS-MPI Redistributable Package)
-    on Windows.
+        FreeBSD. MS-MPI (Microsoft HPC Pack 2012 R2 MS-MPI
+        Redistributable Package) on Windows.
 License: GPL (>= 2)
 URL: http://r-pbd.org/
 BugReports: http://group.r-pbd.org/
 MailingList: Please send questions and comments regarding pbdR to
-    RBigData@gmail.com
+        RBigData@gmail.com
 Maintainer: Drew Schmidt <schmidt@math.utk.edu>
+Packaged: 2015-07-24 11:47:59 UTC; snoweye
+Author: Drew Schmidt [aut, cre],
+  Wei-Chen Chen [aut],
+  George Ostrouchov [aut],
+  Pragneshkumar Patel [aut]
