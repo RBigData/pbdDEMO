@@ -20,7 +20,7 @@ University of Tennessee}
 %
 Wei-Chen Chen \\
 \textit{Center for Biologics Evaluation and Research \\
-Food and Drug Adminstration}
+Food and Drug Administration}
 \\[.4cm]
 %
 George Ostrouchov \\
