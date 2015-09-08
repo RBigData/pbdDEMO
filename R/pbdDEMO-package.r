@@ -1,8 +1,9 @@
 #' Demonstrations and Examples for the pbd Project
 #' 
-#' Demos
+#' A set of demos of pbdR packages, together with a useful,
+#' unifying vignette.
 #' 
-#' \tabular{ll}{ Package: \tab pbdDMAC\cr Type: \tab Package\cr License: \tab
+#' \tabular{ll}{ Package: \tab pbdDEMO\cr Type: \tab Package\cr License: \tab
 #' GPL\cr LazyLoad: \tab yes\cr } This package requires an MPI library
 #' (OpenMPI, MPICH2, or LAM/MPI).
 #' 
