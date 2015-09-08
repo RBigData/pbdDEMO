@@ -2,8 +2,8 @@ Package: pbdDEMO
 Title: Programming with Big Data -- Demonstrations and Examples Using
         'pbdR' Packages
 Version: 0.3-0
-Depends: R (>= 3.0.0), methods, pbdMPI (>= 0.2-4), pbdBASE(>= 0.3-0),
-        pbdDMAT(>= 0.3-0)
+Depends: R (>= 3.0.0), methods, pbdMPI (>= 0.3-0), pbdBASE(>= 0.4-3),
+        pbdDMAT(>= 0.4-0)
 Enhances: maps, RColorBrewer, pbdNCDF4 (>= 0.1-2), pmclust, MixSim,
         EMCluster, phyclust, MASS
 LazyLoad: yes

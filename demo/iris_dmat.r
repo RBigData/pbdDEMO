@@ -9,7 +9,7 @@ init.grid()
 
 
 
-.BLDIM <- 5
+dmat_opts$BLDIM <- 5
 
 
 
