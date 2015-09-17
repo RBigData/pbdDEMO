@@ -19,8 +19,7 @@ University of Tennessee}
 \\[.4cm]
 %
 Wei-Chen Chen \\
-\textit{Center for Biologics Evaluation and Research \\
-Food and Drug Adminstration}
+\textit{pbdR Core Team}
 \\[.4cm]
 %
 George Ostrouchov \\
