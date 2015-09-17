@@ -98,8 +98,8 @@ NULL
 #' @export
 balance.info <- function(X.gbd, comm = .SPMD.CT$comm,
     gbd.major = .DEMO.CT$gbd.major, method = .DEMO.CT$divide.method[1]){
-  COMM.SIZE <- spmd.comm.size(comm)
-  COMM.RANK <- spmd.comm.rank(comm)
+  COMM.SIZE <- comm.size(comm)
+  COMM.RANK <- comm.rank(comm)
 
   if(!is.matrix(X.gbd)){
     X.gbd <- as.matrix(X.gbd)
@@ -112,7 +112,7 @@ balance.info <- function(X.gbd, comm = .SPMD.CT$comm,
   } else{
     comm.stop("gbd.major = 1 or 2.", comm = comm)
   }
-  N.allgbd <- spmd.allgather.integer(as.integer(N.gbd), integer(COMM.SIZE),
+  N.allgbd <- pbdMPI::spmd.allgather.integer(as.integer(N.gbd), integer(COMM.SIZE),
                                      comm = comm)
   N <- sum(N.allgbd)
 
@@ -165,7 +165,7 @@ balance.info <- function(X.gbd, comm = .SPMD.CT$comm,
 #' @export
 load.balance <- function(X.gbd, bal.info = NULL, comm = .SPMD.CT$comm,
     gbd.major = .DEMO.CT$gbd.major){
-  COMM.RANK <- spmd.comm.rank(comm)
+  COMM.RANK <- comm.rank(comm)
   if(is.null(bal.info)){
     bal.info <- balance.info(X.gbd, comm = comm, gbd.major = gbd.major)
   }
@@ -189,14 +189,14 @@ load.balance <- function(X.gbd, bal.info = NULL, comm = .SPMD.CT$comm,
       for(i in send.to){
         if(i != COMM.RANK){
           tmp <- matrix(X.gbd[bal.info$send$belong == i,], ncol = p)
-          spmd.isend.double(tmp, rank.dest = i, tag = COMM.RANK, comm = comm)
+          pbdMPI::spmd.isend.double(tmp, rank.dest = i, tag = COMM.RANK, comm = comm)
         }
       }
     } else{
       for(i in send.to){
         if(i != COMM.RANK){
           tmp <- matrix(X.gbd[, bal.info$send$belong == i], nrow = p)
-          spmd.isend.double(tmp, rank.dest = i, tag = COMM.RANK, comm = comm)
+          pbdMPI::spmd.isend.double(tmp, rank.dest = i, tag = COMM.RANK, comm = comm)
         }
       }
     }
@@ -209,7 +209,7 @@ load.balance <- function(X.gbd, bal.info = NULL, comm = .SPMD.CT$comm,
       for(i in recv.from){
         if(i != COMM.RANK){
           total.row <- sum(bal.info$recv$org == i)
-          tmp <- spmd.recv.double(double(total.row * p),
+          tmp <- pbdMPI::spmd.recv.double(double(total.row * p),
                                   rank.source = i, tag = i, comm = comm)
           dim(tmp) <- c(total.row, p)
         } else{
@@ -221,7 +221,7 @@ load.balance <- function(X.gbd, bal.info = NULL, comm = .SPMD.CT$comm,
       for(i in recv.from){
         if(i != COMM.RANK){
           total.column <- sum(bal.info$recv$org == i)
-          tmp <- spmd.recv.double(double(total.column * p),
+          tmp <- pbdMPI::spmd.recv.double(double(total.column * p),
                                   rank.source = i, tag = i, comm = comm)
           dim(tmp) <- c(p, total.column)
         } else{
@@ -234,7 +234,7 @@ load.balance <- function(X.gbd, bal.info = NULL, comm = .SPMD.CT$comm,
     ret <- X.gbd
   }
 
-  if(bal.info$new.N.allgbd[spmd.comm.rank(comm) + 1] == 0){
+  if(bal.info$new.N.allgbd[pbdMPI::spmd.comm.rank(comm) + 1] == 0){
     if(gbd.major == 1){
       ret <- matrix(0, nrow = 0, ncol = p)
     } else{
@@ -242,8 +242,8 @@ load.balance <- function(X.gbd, bal.info = NULL, comm = .SPMD.CT$comm,
     }
   }
 
-  spmd.wait()
-
+  pbdMPI::wait()
+  
   ret
 } # End of load.balance().
 
