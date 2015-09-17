@@ -5,10 +5,11 @@
 \alias{pbdDEMO-package}
 \title{Demonstrations and Examples for the pbd Project}
 \description{
-Demos
+A set of demos of pbdR packages, together with a useful,
+unifying vignette.
 }
 \details{
-\tabular{ll}{ Package: \tab pbdDMAC\cr Type: \tab Package\cr License: \tab
+\tabular{ll}{ Package: \tab pbdDEMO\cr Type: \tab Package\cr License: \tab
 GPL\cr LazyLoad: \tab yes\cr } This package requires an MPI library
 (OpenMPI, MPICH2, or LAM/MPI).
 }

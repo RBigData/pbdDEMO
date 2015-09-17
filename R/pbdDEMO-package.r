@@ -1,15 +1,21 @@
 #' Demonstrations and Examples for the pbd Project
 #' 
-#' Demos
+#' A set of demos of pbdR packages, together with a useful,
+#' unifying vignette.
 #' 
-#' \tabular{ll}{ Package: \tab pbdDMAC\cr Type: \tab Package\cr License: \tab
+#' \tabular{ll}{ Package: \tab pbdDEMO\cr Type: \tab Package\cr License: \tab
 #' GPL\cr LazyLoad: \tab yes\cr } This package requires an MPI library
 #' (OpenMPI, MPICH2, or LAM/MPI).
 #' 
-#' @import methods pbdMPI pbdBASE pbdDMAT
+#' @import methods 
+#' @importFrom pbdMPI comm.cat comm.print comm.stop allreduce 
+#'   allgather comm.size comm.rank comm.stop spmd.allreduce.integer
+#'   comm.any comm.all comm.warning spmd.allgather.integer
+#' @import pbdBASE pbdDMAT
 #' @importFrom graphics image
 #' @importFrom stats uniroot
 #' @importFrom utils read.csv
+#' 
 #' @useDynLib pbdDEMO, pbddemo_linecount
 #' 
 #' @name pbdDEMO-package
