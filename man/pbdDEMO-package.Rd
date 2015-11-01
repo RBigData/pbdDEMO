@@ -10,7 +10,7 @@ unifying vignette.
 }
 \details{
 \tabular{ll}{ Package: \tab pbdDEMO\cr Type: \tab Package\cr License: \tab
-GPL\cr LazyLoad: \tab yes\cr } This package requires an MPI library
+MPL 2.0\cr LazyLoad: \tab yes\cr } This package requires an MPI library
 (OpenMPI, MPICH2, or LAM/MPI).
 }
 \author{
