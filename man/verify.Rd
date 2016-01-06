@@ -9,16 +9,16 @@
 \title{Distributed Linear Algebra Verification}
 \usage{
 verify.svd(nrows = 1000, ncols = 1000, mean = 0, sd = 1, bldim = 8,
-  tol = 1e-07, ICTXT = .DEMO.CT$ictxt)
+  tol = 1e-07, ICTXT = .pbd_env$ictxt)
 
 verify.chol(nrows = 1000, mean = 0, sd = 1, bldim = 8, tol = 1e-07,
-  ICTXT = .DEMO.CT$ictxt)
+  ICTXT = .pbd_env$ictxt)
 
 verify.inverse(nrows = 1000, mean = 0, sd = 1, bldim = 8, tol = 1e-07,
-  ICTXT = .DEMO.CT$ictxt)
+  ICTXT = .pbd_env$ictxt)
 
 verify.solve(nrows = 1000, mean = 0, sd = 1, const = 1, bldim = 8,
-  tol = 1e-07, ICTXT = .DEMO.CT$ictxt)
+  tol = 1e-07, ICTXT = .pbd_env$ictxt)
 }
 \arguments{
 \item{nrows, ncols}{global dimension.}

@@ -7,11 +7,11 @@
 \title{GBD Matrix to Distributed Dense Matrix and vice versa}
 \usage{
 gbd2dmat(X.gbd, skip.balance = FALSE, comm = .pbd_env$SPMD.CT$comm,
-  gbd.major = .DEMO.CT$gbd.major, bldim = .pbd_env$BLDIM,
+  gbd.major = .pbd_env$gbd.major, bldim = .pbd_env$BLDIM,
   ICTXT = .pbd_env$ICTXT)
 
 dmat2gbd(X.dmat, bal.info = NULL, comm = .pbd_env$SPMD.CT$comm,
-  gbd.major = .DEMO.CT$gbd.major)
+  gbd.major = .pbd_env$gbd.major)
 }
 \arguments{
 \item{X.gbd}{a GBD matrix.}

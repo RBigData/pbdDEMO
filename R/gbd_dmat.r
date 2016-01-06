@@ -119,7 +119,7 @@ demo.gbdc2dmat <- function(X.gbd, skip.balance = FALSE, comm = .pbd_env$SPMD.CT$
 #' @rdname gbd_dmat
 #' @export
 gbd2dmat <- function(X.gbd, skip.balance = FALSE, comm = .pbd_env$SPMD.CT$comm,
-    gbd.major = .DEMO.CT$gbd.major, bldim = .pbd_env$BLDIM,
+    gbd.major = .pbd_env$gbd.major, bldim = .pbd_env$BLDIM,
     ICTXT = .pbd_env$ICTXT){
   if(gbd.major == 1){
     demo.gbdr2dmat(X.gbd, skip.balance = skip.balance, comm = comm,
@@ -201,7 +201,7 @@ demo.dmat2gbdc <- function(X.dmat, bal.info = NULL, comm = .pbd_env$SPMD.CT$comm
 #' @rdname gbd_dmat
 #' @export
 dmat2gbd <- function(X.dmat, bal.info = NULL, comm = .pbd_env$SPMD.CT$comm,
-    gbd.major = .DEMO.CT$gbd.major){
+    gbd.major = .pbd_env$gbd.major){
   if(gbd.major == 1){
     demo.dmat2gbdr(X.dmat, bal.info = bal.info, comm = comm)
   } else if(gbd.major == 2){

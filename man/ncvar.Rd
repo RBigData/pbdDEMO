@@ -12,15 +12,15 @@ demo.ncvar_put_dmat(nc, varid, vals, verbose = FALSE,
   comm = .pbd_env$SPMD.CT$comm)
 
 demo.ncvar_put_gbd(nc, varid, vals, verbose = FALSE,
-  comm = .pbd_env$SPMD.CT$comm, gbd.major = .DEMO.CT$gbd.major)
+  comm = .pbd_env$SPMD.CT$comm, gbd.major = .pbd_env$gbd.major)
 
 demo.ncvar_get_dmat(nc, varid, verbose = FALSE, signedbyte = TRUE,
-  collapse_degen = TRUE, bldim = .DEMO.CT$bldim, ICTXT = .DEMO.CT$ictxt,
+  collapse_degen = TRUE, bldim = .pbd_env$bldim, ICTXT = .pbd_env$ictxt,
   comm = .pbd_env$SPMD.CT$comm)
 
 demo.ncvar_get_gbd(nc, varid, verbose = FALSE, signedbyte = TRUE,
   collapse_degen = TRUE, comm = .pbd_env$SPMD.CT$comm,
-  gbd.major = .DEMO.CT$gbd.major)
+  gbd.major = .pbd_env$gbd.major)
 }
 \arguments{
 \item{nc}{an object of class \code{ncdf4} (as returned by either function
@@ -71,9 +71,6 @@ mpiexec -np 4 Rscript -e "demo(nc4_dmat,'pbdDEMO',ask=F,echo=F)"
 mpiexec -np 4 Rscript -e "demo(nc4_gbdc,'pbdDEMO',ask=F,echo=F)"
 }
 
-}
-\seealso{
-\code{.DEMO.CT}.
 }
 \keyword{programming}
 

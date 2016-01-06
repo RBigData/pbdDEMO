@@ -8,10 +8,10 @@
 \title{Load Balancing a Dataset}
 \usage{
 balance.info(X.gbd, comm = .pbd_env$.SPMD.CT$comm,
-  gbd.major = .DEMO.CT$gbd.major, method = .DEMO.CT$divide.method[1])
+  gbd.major = .pbd_env$gbd.major, method = .pbd_env$divide.method[1])
 
 load.balance(X.gbd, bal.info = NULL, comm = .pbd_env$SPMD.CT$comm,
-  gbd.major = .DEMO.CT$gbd.major)
+  gbd.major = .pbd_env$gbd.major)
 
 unload.balance(new.X.gbd, bal.info, comm = .pbd_env$SPMD.CT$comm)
 }
