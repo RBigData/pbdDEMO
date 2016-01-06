@@ -1,6 +1,6 @@
 library(pbdDEMO, quietly=TRUE)
 
-init.grid(nprow=2, npcol=2)
+init.grid()
 
 comm.set.seed(1234, diff=TRUE)
 
