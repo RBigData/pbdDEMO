@@ -7,13 +7,13 @@
 \alias{unload.balance}
 \title{Load Balancing a Dataset}
 \usage{
-balance.info(X.gbd, comm = .SPMD.CT$comm, gbd.major = .DEMO.CT$gbd.major,
-  method = .DEMO.CT$divide.method[1])
+balance.info(X.gbd, comm = .pbd_env$.SPMD.CT$comm,
+  gbd.major = .DEMO.CT$gbd.major, method = .DEMO.CT$divide.method[1])
 
-load.balance(X.gbd, bal.info = NULL, comm = .SPMD.CT$comm,
+load.balance(X.gbd, bal.info = NULL, comm = .pbd_env$SPMD.CT$comm,
   gbd.major = .DEMO.CT$gbd.major)
 
-unload.balance(new.X.gbd, bal.info, comm = .SPMD.CT$comm)
+unload.balance(new.X.gbd, bal.info, comm = .pbd_env$SPMD.CT$comm)
 }
 \arguments{
 \item{X.gbd}{a GBD data matrix (converted if not).}

@@ -8,17 +8,18 @@
 \alias{ncvar}
 \title{Read and Write Parallel NetCDF4 Files in GBD and ddmatrix Format}
 \usage{
-demo.ncvar_put_dmat(nc, varid, vals, verbose = FALSE, comm = .SPMD.CT$comm)
+demo.ncvar_put_dmat(nc, varid, vals, verbose = FALSE,
+  comm = .pbd_env$SPMD.CT$comm)
 
-demo.ncvar_put_gbd(nc, varid, vals, verbose = FALSE, comm = .SPMD.CT$comm,
-  gbd.major = .DEMO.CT$gbd.major)
+demo.ncvar_put_gbd(nc, varid, vals, verbose = FALSE,
+  comm = .pbd_env$SPMD.CT$comm, gbd.major = .DEMO.CT$gbd.major)
 
 demo.ncvar_get_dmat(nc, varid, verbose = FALSE, signedbyte = TRUE,
   collapse_degen = TRUE, bldim = .DEMO.CT$bldim, ICTXT = .DEMO.CT$ictxt,
-  comm = .SPMD.CT$comm)
+  comm = .pbd_env$SPMD.CT$comm)
 
 demo.ncvar_get_gbd(nc, varid, verbose = FALSE, signedbyte = TRUE,
-  collapse_degen = TRUE, comm = .SPMD.CT$comm,
+  collapse_degen = TRUE, comm = .pbd_env$SPMD.CT$comm,
   gbd.major = .DEMO.CT$gbd.major)
 }
 \arguments{

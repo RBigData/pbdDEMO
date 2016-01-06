@@ -96,7 +96,7 @@ NULL
 
 #' @rdname load_balance
 #' @export
-balance.info <- function(X.gbd, comm = .SPMD.CT$comm,
+balance.info <- function(X.gbd, comm = .pbd_env$.SPMD.CT$comm,
     gbd.major = .DEMO.CT$gbd.major, method = .DEMO.CT$divide.method[1]){
   COMM.SIZE <- comm.size(comm)
   COMM.RANK <- comm.rank(comm)
@@ -163,7 +163,7 @@ balance.info <- function(X.gbd, comm = .SPMD.CT$comm,
 
 #' @rdname load_balance
 #' @export
-load.balance <- function(X.gbd, bal.info = NULL, comm = .SPMD.CT$comm,
+load.balance <- function(X.gbd, bal.info = NULL, comm = .pbd_env$SPMD.CT$comm,
     gbd.major = .DEMO.CT$gbd.major){
   COMM.RANK <- comm.rank(comm)
   if(is.null(bal.info)){
@@ -251,7 +251,7 @@ load.balance <- function(X.gbd, bal.info = NULL, comm = .SPMD.CT$comm,
 
 #' @rdname load_balance
 #' @export
-unload.balance <- function(new.X.gbd, bal.info, comm = .SPMD.CT$comm){
+unload.balance <- function(new.X.gbd, bal.info, comm = .pbd_env$SPMD.CT$comm){
   rev.bal.info <- list(send = data.frame(org = bal.info$recv$belong,
                                          belong = bal.info$recv$org),
                        recv = data.frame(org = bal.info$send$belong,
