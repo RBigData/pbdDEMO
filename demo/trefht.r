@@ -1,6 +1,6 @@
 library(maps)
 library(RColorBrewer)
-library(pbdDEMO, quietly = TRUE)
+suppressMessages(library(pbdDEMO, quietly = TRUE))
 
 lon <- TREFHT$def$dim[[1]]$vals               # longitude
 lat <- TREFHT$def$dim[[2]]$vals               # latitude

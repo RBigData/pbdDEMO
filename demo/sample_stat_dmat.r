@@ -1,7 +1,7 @@
 ### SHELL> mpiexec -np 4 Rscript --vanilla [...].r
 
 ### Initial MPI.
-library(pbdDEMO, quietly = TRUE)
+suppressMessages(library(pbdDEMO, quietly = TRUE))
 init.grid()
 if(comm.size() != 2){
   comm.stop("This example requries 2 processors.")

@@ -1,7 +1,7 @@
 ### SHELL> mpiexec -np 4 Rscript --vanilla [...].r
 
 # Initialize MPI
-library(pbdDEMO, quietly = TRUE)
+suppressMessages(library(pbdDEMO, quietly = TRUE))
 init.grid()
 
 # Number of rows/columns

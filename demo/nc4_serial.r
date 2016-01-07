@@ -1,5 +1,5 @@
-library(pbdDEMO, quietly = TRUE)
-library(pbdNCDF4, quietly = TRUE)
+suppressMessages(library(pbdDEMO, quietly = TRUE))
+suppressMessages(library(pbdNCDF4, quietly = TRUE))
 
 # -------------------------------------
 # Serial write and read NCDF4 file
