@@ -47,7 +47,6 @@
 #' mpiexec -np 4 Rscript -e "demo(nc4_gbdc,'pbdDEMO',ask=F,echo=F)"
 #' }
 #' 
-#' @seealso \code{.DEMO.CT}.
 #' @keywords programming
 #' @name ncvar
 #' @rdname ncvar
@@ -68,7 +67,7 @@ demo.ncvar_ndim <- function(nc, varid, verbose = FALSE){
 
 ### put methods.
 demo.ncvar_put_2D <- function(nc, varid, vals, start = NA, count = NA,
-    verbose = FALSE, comm = .SPMD.CT$comm){
+    verbose = FALSE, comm = .pbd_env$SPMD.CT$comm){
   ### check and rebuild if start or count is NA
   ndim <- demo.ncvar_ndim(nc, varid)
   if(comm.any(is.na(start) || is.na(count), comm = comm)){
@@ -117,7 +116,7 @@ demo.ncvar_put_2D <- function(nc, varid, vals, start = NA, count = NA,
 #' @rdname ncvar
 #' @export
 demo.ncvar_put_dmat <- function(nc, varid, vals, verbose = FALSE,
-    comm = .SPMD.CT$comm){
+    comm = .pbd_env$SPMD.CT$comm){
   ### check
   ndim <- demo.ncvar_ndim(nc, varid)
   if(ndim > 2){
@@ -147,7 +146,7 @@ demo.ncvar_put_dmat <- function(nc, varid, vals, verbose = FALSE,
 #' @rdname ncvar
 #' @export
 demo.ncvar_put_gbd <- function(nc, varid, vals, verbose = FALSE,
-    comm = .SPMD.CT$comm, gbd.major = .DEMO.CT$gbd.major){
+    comm = .pbd_env$SPMD.CT$comm, gbd.major = .pbd_env$gbd.major){
   ### check
   ndim <- demo.ncvar_ndim(nc, varid)
   if(ndim > 2){
@@ -169,7 +168,7 @@ demo.ncvar_put_gbd <- function(nc, varid, vals, verbose = FALSE,
 ### get methods modified from ncvar_get().
 demo.ncvar_get_2D <- function(nc, varid, start = NA, count = NA,
     verbose = FALSE, signedbyte = TRUE, collapse_degen = TRUE,
-    comm = .SPMD.CT$comm){
+    comm = .pbd_env$SPMD.CT$comm){
   ### get variable id from the nc header
   idobj <- pbdNCDF4::vobjtovarid4(nc, varid, verbose = verbose,
                                   allowdimvar = TRUE)
@@ -252,7 +251,7 @@ demo.ncvar_get_2D <- function(nc, varid, start = NA, count = NA,
 #' @export
 demo.ncvar_get_dmat <- function(nc, varid,
     verbose = FALSE, signedbyte = TRUE, collapse_degen = TRUE,
-    bldim = .DEMO.CT$bldim, ICTXT = .DEMO.CT$ictxt, comm = .SPMD.CT$comm){
+    bldim = .pbd_env$bldim, ICTXT = .pbd_env$ictxt, comm = .pbd_env$SPMD.CT$comm){
   ### check
   ndim <- demo.ncvar_ndim(nc, varid)
   if(ndim > 2){
@@ -303,7 +302,7 @@ demo.ncvar_get_dmat <- function(nc, varid,
 #' @rdname ncvar
 demo.ncvar_get_gbd <- function(nc, varid,
     verbose = FALSE, signedbyte = TRUE, collapse_degen = TRUE,
-    comm = .SPMD.CT$comm, gbd.major = .DEMO.CT$gbd.major){
+    comm = .pbd_env$SPMD.CT$comm, gbd.major = .pbd_env$gbd.major){
   ### check
   ndim <- demo.ncvar_ndim(nc, varid)
   if(ndim > 2){

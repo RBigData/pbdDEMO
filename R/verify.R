@@ -36,7 +36,7 @@ NULL
 
 #' @rdname verify
 #' @export
-verify.svd <- function(nrows=1e3, ncols=1e3, mean=0, sd=1, bldim=8, tol=1e-7, ICTXT=.DEMO.CT$ictxt)
+verify.svd <- function(nrows=1e3, ncols=1e3, mean=0, sd=1, bldim=8, tol=1e-7, ICTXT=.pbd_env$ictxt)
 {
   # generating data
   comm.cat(paste("Generating a ", nrows, "x", ncols, " distributed matrix of random normal data, performing the SVD, and then multiplying the factorization back together and comparing it to the original matrix\n", sep=""), quiet=TRUE)
@@ -95,7 +95,7 @@ verify.svd <- function(nrows=1e3, ncols=1e3, mean=0, sd=1, bldim=8, tol=1e-7, IC
 
 #' @rdname verify
 #' @export
-verify.chol <- function(nrows=1e3, mean=0, sd=1, bldim=8, tol=1e-7, ICTXT=.DEMO.CT$ictxt)
+verify.chol <- function(nrows=1e3, mean=0, sd=1, bldim=8, tol=1e-7, ICTXT=.pbd_env$ictxt)
 {
   # generating data
   comm.cat(paste("Generating a ", nrows, "x", nrows, " distributed matrix X of random normal data, 'symmetrizing' it by computing X <- t(X)%*%X, computing the Cholesky factorization, and then multiplying the factorization back together and comparing it to the original matrix\n", sep=""), quiet=TRUE)
@@ -154,7 +154,7 @@ verify.chol <- function(nrows=1e3, mean=0, sd=1, bldim=8, tol=1e-7, ICTXT=.DEMO.
 
 #' @rdname verify
 #' @export
-verify.inverse <- function(nrows=1e3, mean=0, sd=1, bldim=8, tol=1e-7, ICTXT=.DEMO.CT$ictxt)
+verify.inverse <- function(nrows=1e3, mean=0, sd=1, bldim=8, tol=1e-7, ICTXT=.pbd_env$ictxt)
 {
   # generating data
   comm.cat(paste("Generating a ", nrows, "x", nrows, " distributed matrix X of random normal data, inverting it, and then multiplying the inverse against the original matrix and verifying that the identity matrix is produced\n", sep=""), quiet=TRUE)
@@ -208,7 +208,7 @@ verify.inverse <- function(nrows=1e3, mean=0, sd=1, bldim=8, tol=1e-7, ICTXT=.DE
 
 #' @rdname verify
 #' @export
-verify.solve <- function(nrows=1e3, mean=0, sd=1, const=1, bldim=8, tol=1e-7, ICTXT=.DEMO.CT$ictxt)
+verify.solve <- function(nrows=1e3, mean=0, sd=1, const=1, bldim=8, tol=1e-7, ICTXT=.pbd_env$ictxt)
 {
   # generating data
   comm.cat(paste("Generating a ", nrows, "x", nrows, " distributed matrix X of random normal data and a 'true' solution as a vector of 1's. Then the vector of right hand sides is produced by projecting the system onto the true solution, and then finally the system is solved. The numerically determined solution is compared against the vector of 1's.\n", sep=""), quiet=TRUE)

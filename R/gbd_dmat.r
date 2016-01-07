@@ -48,8 +48,8 @@
 #' @rdname gbd_dmat
 NULL
 
-demo.gbdr2dmat <- function(X.gbd, skip.balance = FALSE, comm = .SPMD.CT$comm,
-    bldim = .DEMO.CT$bldim, ICTXT = .DEMO.CT$ictxt){
+demo.gbdr2dmat <- function(X.gbd, skip.balance = FALSE, comm = .pbd_env$SPMD.CT$comm,
+    bldim = .pbd_env$BLDIM, ICTXT = .pbd_env$ICTXT){
   ### check data.
   if(! is.matrix(X.gbd)){
     dim(X.gbd) <- c(length(X.gbd), 1)
@@ -82,8 +82,8 @@ demo.gbdr2dmat <- function(X.gbd, skip.balance = FALSE, comm = .SPMD.CT$comm,
   X.dmat
 } # End of demo.gbdr2dmat().
 
-demo.gbdc2dmat <- function(X.gbd, skip.balance = FALSE, comm = .SPMD.CT$comm,
-    bldim = .DEMO.CT$bldim, ICTXT = .DEMO.CT$ictxt){
+demo.gbdc2dmat <- function(X.gbd, skip.balance = FALSE, comm = .pbd_env$SPMD.CT$comm,
+    bldim = .pbd_env$BLDIM, ICTXT = .pbd_env$ICTXT){
   ### check data.
   if(! is.matrix(X.gbd)){
     dim(X.gbd) <- c(1, length(X.gbd))
@@ -118,9 +118,9 @@ demo.gbdc2dmat <- function(X.gbd, skip.balance = FALSE, comm = .SPMD.CT$comm,
 
 #' @rdname gbd_dmat
 #' @export
-gbd2dmat <- function(X.gbd, skip.balance = FALSE, comm = .SPMD.CT$comm,
-    gbd.major = .DEMO.CT$gbd.major, bldim = .DEMO.CT$bldim,
-    ICTXT = .DEMO.CT$ictxt){
+gbd2dmat <- function(X.gbd, skip.balance = FALSE, comm = .pbd_env$SPMD.CT$comm,
+    gbd.major = .pbd_env$gbd.major, bldim = .pbd_env$BLDIM,
+    ICTXT = .pbd_env$ICTXT){
   if(gbd.major == 1){
     demo.gbdr2dmat(X.gbd, skip.balance = skip.balance, comm = comm,
                     bldim = bldim, ICTXT = ICTXT)
@@ -133,7 +133,7 @@ gbd2dmat <- function(X.gbd, skip.balance = FALSE, comm = .SPMD.CT$comm,
 } # End of gbd2dmat().
 
 
-demo.dmat2gbdr <- function(X.dmat, bal.info = NULL, comm = .SPMD.CT$comm){
+demo.dmat2gbdr <- function(X.dmat, bal.info = NULL, comm = .pbd_env$SPMD.CT$comm){
   COMM.SIZE <- comm.size(comm)
 
   ### check data.
@@ -165,7 +165,7 @@ demo.dmat2gbdr <- function(X.dmat, bal.info = NULL, comm = .SPMD.CT$comm){
   X.gbd
 } # End of demo.dmat2gbdr().
 
-demo.dmat2gbdc <- function(X.dmat, bal.info = NULL, comm = .SPMD.CT$comm){
+demo.dmat2gbdc <- function(X.dmat, bal.info = NULL, comm = .pbd_env$SPMD.CT$comm){
   COMM.SIZE <- comm.size(comm)
 
   ### check data.
@@ -200,8 +200,8 @@ demo.dmat2gbdc <- function(X.dmat, bal.info = NULL, comm = .SPMD.CT$comm){
 
 #' @rdname gbd_dmat
 #' @export
-dmat2gbd <- function(X.dmat, bal.info = NULL, comm = .SPMD.CT$comm,
-    gbd.major = .DEMO.CT$gbd.major){
+dmat2gbd <- function(X.dmat, bal.info = NULL, comm = .pbd_env$SPMD.CT$comm,
+    gbd.major = .pbd_env$gbd.major){
   if(gbd.major == 1){
     demo.dmat2gbdr(X.dmat, bal.info = bal.info, comm = comm)
   } else if(gbd.major == 2){
@@ -210,4 +210,3 @@ dmat2gbd <- function(X.dmat, bal.info = NULL, comm = .SPMD.CT$comm,
     stop("gbd.major = 1 or 2.")
   }
 } # End of dmat2gbd().
-
