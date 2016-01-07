@@ -2,14 +2,15 @@ citHeader("To cite pbdDEMO in a publication use:")
 
 citEntry(
   entry = "Misc",
-  title = "pbdDEMO: Programming with Big Data --
+  title = "{pbdDEMO}: Programming with Big Data --
            Demonstrations of pbd Packages",
   author = personList(as.person("Drew Schmidt"),
                       as.person("Wei-Chen Chen"),
                       as.person("George Ostrouchov"),
                       as.person("Pragneshkumar Patel")),
   year = "2013",
-  note = "R Package, URL http://cran.r-project.org/package=pbdDEMO",
+  note = "R Package",
+  url = "http://cran.r-project.org/package=pbdDEMO",
   textVersion = "Schmidt, D., Chen, W.-C., Ostrouchov, G., and Patel, P. (2013) pbdDEMO: Programming with Big Data -- Demonstrations of pbd Packages, URL http://cran.r-project.org/package=pbdDEMO",
   key = "Schmidt2013pbdDEMOpackage"
 )
@@ -22,7 +23,8 @@ citEntry(
                       as.person("Pragneshkumar Patel"),
                       as.person("George Ostrouchov")),
   year = "2014",
-  note = "R Vignette, URL http://cran.r-project.org/package=pbdDEMO",
+  note = "R Vignette",
+  url = "http://cran.r-project.org/package=pbdDEMO",
   textVersion = "Schmidt, D., Chen, W.-C., Patel, P., and Ostrouchov, G. (2014) Speaking Serial R with a Parallel Accent (Ver. 0.3-0). R Vignette, URL http://cran.r-project.org/package=pbdDEMO",
   key = "Schmidt2014pbdDEMOvignette"
 )

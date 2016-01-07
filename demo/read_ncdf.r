@@ -1,4 +1,4 @@
-library(pbdDEMO, quietly = TRUE)
+suppressMessages(library(pbdDEMO, quietly = TRUE))
 
 # -------------------------------------
 # Read example file

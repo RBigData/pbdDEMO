@@ -1,7 +1,7 @@
 ### SHELL> mpiexec -np 4 Rscript --vanilla [...].r
 
 ### Setup environment.
-library(pbdDEMO, quietly = TRUE)
+suppressMessages(library(pbdDEMO, quietly = TRUE))
 comm.set.seed(1234, diff = TRUE)
 
 ### Run

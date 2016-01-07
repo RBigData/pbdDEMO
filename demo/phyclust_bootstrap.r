@@ -1,5 +1,5 @@
 ### Initial
-library(pbdDEMO, quietly = TRUE)
+suppressMessages(library(pbdDEMO, quietly = TRUE))
 library(phyclust, quietly = TRUE)
 
 ### Load data
