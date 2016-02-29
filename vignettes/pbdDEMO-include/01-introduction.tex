@@ -130,7 +130,7 @@ One can download \pkg{pbdDEMO} from CRAN at
 \url{http://cran.r-project.org}, and
 the installation can be done with the following commands
 \begin{lstlisting}
-tar zxvf pbdDEMO_0.2-0.tar.gz
+tar zxvf pbdDEMO_0.3-0.tar.gz
 R CMD INSTALL pbdDEMO
 \end{lstlisting}
 Since \pkg{pbdEMO} depends on other \pbdR packages, please read
@@ -243,6 +243,7 @@ mpiexec -np 4 Rscript -e "demo(phyclust_bootstrap, package='pbdDEMO', ask=F, ech
 
 ### Chapter 15
 mpiexec -np 4 Rscript -e "demo(mcmc_galaxy, package='pbdDEMO', ask=F, echo=F)"
+mpiexec -np 2 Rscript -e "demo(mcmc_rjags, package='pbdDEMO', ask=F, echo=F)"
 
 ### Chapter 16
 mpiexec -np 4 Rscript -e "demo(dist_iris, package='pbdDEMO', ask=F, echo=F)"

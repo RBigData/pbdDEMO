@@ -43,6 +43,7 @@ iris_gbd            pbdDEMO   Iris GBD code.
 phyclust_bootstrap  pbdDEMO   Bootstrap phyclust results.
 
 mcmc_galaxy         pbdDEMO   Galaxy MCMC example.
+mcmc_rjags          pbdDEMO   Galaxy MCMC using rjags and JAGS.
 
 dist_iris           pbdDEMO   Hierarchical clustering of iris.
 dist_pony           pbdDEMO   Neighbor-joining tree of Pony 524.
