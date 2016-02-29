@@ -1,3 +1,6 @@
+Release 0.3-1
+  * Add an example and a section for JAGS and rjags.
+
 Release 0.3-0
   * Migrated to roxygen2.
   * Restructured internals.

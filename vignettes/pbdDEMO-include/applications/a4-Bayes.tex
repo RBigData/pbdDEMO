@@ -49,8 +49,9 @@ $N(\mu_0, \sigma_0^2)$ where $\mu_0$ and $\sigma_0^2$ are hypothetically known.
 After a few calculation, we have the posterior for $\mu | \bx$
 denoted by conventional syntaxes next.
 \begin{eqnarray}
-\bx & \stackrel{i.i.d.}{\sim} & N(\mu, \sigma^2) \label{eqn:normal_prior} \\
-\mu & \sim & N(\mu_0, \sigma_0^2) \label{eqn:normal_likelihood} \\
+\bx & \stackrel{i.i.d.}{\sim} & N(\mu, \sigma^2)
+  \label{eqn:normal_likelihood} \\
+\mu & \sim & N(\mu_0, \sigma_0^2) \label{eqn:normal_prior} \\
 \mu|\bx & \sim & N(\mu_n, \sigma_n^2) \label{eqn:normal_posterior}
 \end{eqnarray}
 where
@@ -213,8 +214,8 @@ default setting of \code{hist(galaxies)} and the right plot is based on
 \end{figure}
 
 Suppose we are interesting in the mean velocity of those galaxies and want to
-model them as Equations~(\ref{eqn:normal_prior}), (\ref{eqn:normal_likelihood}),
-and (\ref{eqn:normal_posterior}).
+model them as Equations~(\ref{eqn:normal_likelihood}),
+(\ref{eqn:normal_prior}), and (\ref{eqn:normal_posterior}).
 An example code is given in the \pkg{pbdDEMO} demo via
 \begin{lstlisting}
 ### At the shell prompt, run the demo with 4 processors by
@@ -309,6 +310,54 @@ then we can reduce the cost further. In such cases, parallel random
 number generators are better solutions.
 
 
+\section[Just Another Gibbs Sampler]{Just Another Gibbs Sampler}
+\label{sec:jags}
+\index{JAGS}
+
+Just another Gibbs sampler (JAGS)~\citep{plummer2003} is a program for
+simulation from Bayesian models using MCMC. Although JAGS aims for
+compatibility with WinBUGS/OpenBUGS through the same modeling language,
+JAGS provides no GUI for model building. Further, MCMC samples (outputs of
+JAGS) require post processing in a separate program (for example calling JAGS
+from R through a library, such as \pkg{rjags}).
+One advantage of JAGS in comparison to the members of the other
+BUGS family (WinBUGS and OpenBUGS) is its platform independence. Therefore,
+the \pbdR can utilize JAGS and \pkg{rjags} easily for MCMC sampling.
+
+We use the same Galaxy dataset in Section~\ref{sec:galaxy} and
+the same model in Equations~(\ref{eqn:normal_likelihood}),
+(\ref{eqn:normal_prior}), and (\ref{eqn:normal_posterior}), but
+code them in JAGS model then analyze them via \pkg{rjags}.
+Note that the JAGS has its own (parallel) random number generators.
+We can simply use \pkg{pbdMPI}'s functions such as \code{pbdLapply()} or
+\code{task.pull()} to perform speed up MCMC sampling.
+See the task parallelism\index{Parallelism!task parallelism}
+technique in Section~\ref{sec:task_pull} for details.
+
+An example code is given in the \pkg{pbdDEMO} demo via
+\begin{lstlisting}
+### At the shell prompt, run the demo with 2 processors by
+### (Use Rscript.exe for windows system)
+mpiexec -np 2 Rscript -e "demo(mcmc_rjags,'pbdDEMO',ask=F,echo=F)"
+\end{lstlisting}
+Each of two processors use JAGS and \pkg{rjags} to have 500 MCMC samples
+after 1,000 burn-in, then merged back to the head node with 1,000 MCMC samples
+in total.
+Also, Figure~\ref{fig:mcmc_rjags} provides the MCMC trace and
+posterior distribution of $\mu$ based on those MCMC samples.
+\begin{figure}[ht]
+\centering
+  \includegraphics[width=6.0in]{pbdDEMO-include/pics/galaxy_rjags}
+\caption[MCMC results of velocities of 82 galaxies]{
+The left plot shows the MCMC trace of 6,000 iterations for each of two
+processors.
+The right plot displays the posterior distribution of $\mu$ in 1000 samples.
+}
+\label{fig:mcmc_rjags}
+\end{figure}
+
+
+
 
 \section{Exercises}
 \label{sec:bayes_exercise}
@@ -351,11 +400,12 @@ that is an inefficient case of Hastings-Metropolis algorithm.
 \item
 Extend the model and algorithm of galaxy velocities example
 for unknown mean and unknown variance. e.g.
-\begin{eqnarray*}
-\bx & \stackrel{i.i.d.}{\sim} & N(\mu, \sigma^2) \\
-\mu & \sim & N(\mu_0, \sigma_0^2) \\
-\sigma & \sim & Gamma(\alpha_0, \beta_0)
-\end{eqnarray*}
+\begin{eqnarray}
+\bx & \stackrel{i.i.d.}{\sim} & N(\mu, \sigma^2)
+  \label{eqn:normal_likelihood_un} \\
+\mu & \sim & N(\mu_0, \sigma_0^2) \label{eqn:normal_prior_un_mu} \\
+\sigma & \sim & Gamma(\alpha_0, \beta_0 \label{eqn:normal_prior_un_sigma} )
+\end{eqnarray}
 Find the 95\% creditable region for $(\mu|\bx, \sigma|\bx)$.
 
 \item
@@ -383,6 +433,12 @@ The trace plot of Figure~\ref{fig:mcmc_galaxy} appears that the chain is
 converged but is considerable too ``hot'' that may over mixing. Try to
 adjust the simulation code such that acceptance rate is around 20\% to
 30\%.
+
+\item
+Use JAGS and \pkg{rjags} to implement
+Equations~(\ref{eqn:normal_likelihood_un}),
+(\ref{eqn:normal_prior_un_mu}), and (\ref{eqn:normal_prior_un_sigma}).
+Find the 95\% creditable region for $(\mu|\bx, \sigma|\bx)$.
 
 \end{enumerate}
 
