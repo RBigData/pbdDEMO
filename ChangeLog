@@ -1,6 +1,7 @@
 Release 0.3-1
   * Add an example and a section for JAGS and rjags.
-	* Clearer, more informative readme.
+  * Clearer, more informative readme.
+  * Various build/packaging fixes for CRAN.
 
 Release 0.3-0
   * Migrated to roxygen2.
