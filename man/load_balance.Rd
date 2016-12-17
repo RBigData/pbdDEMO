@@ -7,7 +7,7 @@
 \alias{unload.balance}
 \title{Load Balancing a Dataset}
 \usage{
-balance.info(X.gbd, comm = .pbd_env$.SPMD.CT$comm,
+balance.info(X.gbd, comm = .pbd_env$SPMD.CT$comm,
   gbd.major = .pbd_env$gbd.major, method = .pbd_env$divide.method[1])
 
 load.balance(X.gbd, bal.info = NULL, comm = .pbd_env$SPMD.CT$comm,
