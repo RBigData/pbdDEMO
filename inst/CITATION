@@ -1,3 +1,6 @@
+year <- sub("-.*", "", meta$Date)
+note <- sprintf("{R} package version %s", meta$Version)
+
 citHeader("To cite pbdDEMO in a publication use:")
 
 citEntry(
@@ -8,24 +11,24 @@ citEntry(
                       as.person("Wei-Chen Chen"),
                       as.person("George Ostrouchov"),
                       as.person("Pragneshkumar Patel")),
-  year = "2013",
-  note = "R Package",
-  url = "http://cran.r-project.org/package=pbdDEMO",
-  textVersion = "Schmidt, D., Chen, W.-C., Ostrouchov, G., and Patel, P. (2013) pbdDEMO: Programming with Big Data -- Demonstrations of pbd Packages, URL http://cran.r-project.org/package=pbdDEMO",
-  key = "Schmidt2013pbdDEMOpackage"
+  year = year,
+  note = note,
+  url = "https://cran.r-project.org/package=pbdDEMO",
+  textVersion = NULL,
+  key = "pbdDEMOpackage"
 )
 
 citEntry(
   entry = "Manual",
-  title = "Speaking Serial R with a Parallel Accent (Ver. 0.3-0)",
+  title = "Speaking Serial R with a Parallel Accent",
   author = personList(as.person("Drew Schmidt"),
                       as.person("Wei-Chen Chen"),
                       as.person("Pragneshkumar Patel"),
                       as.person("George Ostrouchov")),
-  year = "2014",
-  note = "R Vignette",
-  url = "http://cran.r-project.org/package=pbdDEMO",
-  textVersion = "Schmidt, D., Chen, W.-C., Patel, P., and Ostrouchov, G. (2014) Speaking Serial R with a Parallel Accent (Ver. 0.3-0). R Vignette, URL http://cran.r-project.org/package=pbdDEMO",
-  key = "Schmidt2014pbdDEMOvignette"
+  year = year,
+  note = "R package vignette",
+  url = "https://cran.r-project.org/package=pbdDEMO",
+  textVersion = NULL,
+  key = "pbdDEMOvignette"
 )
 
