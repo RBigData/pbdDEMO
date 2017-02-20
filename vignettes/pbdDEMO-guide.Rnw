@@ -7,7 +7,7 @@
 \input{./pbdDEMO-include/style}
 
 
-\myversion{0.3-1}
+\myversion{0.3-2}
 \mytitle{Speaking Serial R with a Parallel Accent {\normalsize (Ver. \demoversion)}}
 \mysubtitle{\pbdR Package Examples and Demonstrations}
 \myauthor{
