@@ -1,3 +1,8 @@
+inst/doc
+
+*.o
+*.so
+
 *~
 *.swp
 
