@@ -1,15 +1,27 @@
 Package: pbdDEMO
 Type: Package
 Title: Programming with Big Data -- Demonstrations and Examples Using
-        'pbdR' Packages
-Version: 0.3-1
+    'pbdR' Packages
+Version: 0.3-2
 Description: A set of demos of 'pbdR' packages, together with a useful,
     unifying vignette.
 License: Mozilla Public License 2.0
-Depends: R (>= 3.0.0), methods, pbdMPI (>= 0.3-0), pbdBASE(>= 0.4-3),
-        pbdDMAT(>= 0.4-0)
-Enhances: maps, RColorBrewer, pbdNCDF4 (>= 0.1-2), pmclust, MixSim,
-        EMCluster, phyclust, MASS, rjags
+Depends: 
+    R (>= 3.0.0), 
+    methods, 
+    pbdMPI (>= 0.3-0), 
+    pbdBASE(>= 0.5-0),
+    pbdDMAT(>= 0.5-0)
+Enhances: 
+    maps, 
+    RColorBrewer, 
+    pbdNCDF4 (>= 0.1-2), 
+    pmclust, 
+    MixSim,
+    EMCluster, 
+    phyclust, 
+    MASS, 
+    rjags
 SystemRequirements: OpenMPI (>= 1.5.4) on Solaris, Linux, Mac, and
         FreeBSD. MS-MPI (Microsoft HPC Pack 2012 R2 MS-MPI
         Redistributable Package) on Windows.
