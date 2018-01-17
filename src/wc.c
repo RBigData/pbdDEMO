@@ -10,7 +10,7 @@
 SEXP pbddemo_linecount(SEXP file)
 {
   SEXP ret;
-  int i;
+  size_t i;
   int nlines = 0;
   size_t readsize;
   char *buf = malloc(BUFLEN);
@@ -39,4 +39,3 @@ SEXP pbddemo_linecount(SEXP file)
   
   return ret;
 }
-
