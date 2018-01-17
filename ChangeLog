@@ -1,5 +1,9 @@
+Release 0.3-2
+  * Registered native routines.
+  * Fixed some compiler warnings.
+
 Release 0.3-1
-  * Add an example and a section for JAGS and rjags.
+  * Added an example and a section for JAGS and rjags.
   * Clearer, more informative readme.
   * Various build/packaging fixes for CRAN.
 
