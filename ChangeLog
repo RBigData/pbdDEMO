@@ -1,5 +1,5 @@
 Release 0.3-2
-  * Registered native routines.
+  * Exported native routines.
   * Fixed some compiler warnings.
 
 Release 0.3-1
