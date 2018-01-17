@@ -20,7 +20,7 @@
 #' 
 #' @name pbdDEMO-package
 #' @docType package
-#' @author Drew Schmidt \email{schmidt AT math.utk.edu}, Wei-Chen Chen, George
+#' @author Drew Schmidt \email{wrathematics AT gmail.com}, Wei-Chen Chen, George
 #' Ostrouchov, and Pragneshkumar Patel.
 #' @references Programming with Big Data in R Website: \url{http://r-pbd.org/}
 #' @keywords Package

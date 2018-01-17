@@ -14,7 +14,7 @@ MPL 2.0\cr LazyLoad: \tab yes\cr } This package requires an MPI library
 (OpenMPI, MPICH2, or LAM/MPI).
 }
 \author{
-Drew Schmidt \email{schmidt AT math.utk.edu}, Wei-Chen Chen, George
+Drew Schmidt \email{wrathematics AT gmail.com}, Wei-Chen Chen, George
 Ostrouchov, and Pragneshkumar Patel.
 }
 \references{
