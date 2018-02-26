@@ -2,7 +2,7 @@ Package: pbdDEMO
 Type: Package
 Title: Programming with Big Data -- Demonstrations and Examples Using
     'pbdR' Packages
-Version: 0.3-2
+Version: 0.3-3
 Description: A set of demos of 'pbdR' packages, together with a useful,
     unifying vignette.
 License: Mozilla Public License 2.0
