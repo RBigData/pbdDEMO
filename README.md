@@ -25,9 +25,6 @@ install.packages("pbdDEMO")
 The development version is maintained on GitHub, and can easily be installed by any of the packages that offer installations from GitHub:
 
 ```r
-### Pick your preference
-devtools::install_github("wrathematics/pbdDEMO")
-ghit::install_github("wrathematics/pbdDEMO")
 remotes::install_github("wrathematics/pbdDEMO")
 ```
 
